@@ -1,0 +1,34 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>InternetOfThings</title>
+  <g>
+    <rect x="23.5" y="25.99" width="53" height="53" rx="9.12" ry="9.12" fill="#19486f"/>
+    <rect x="23.5" y="23.51" width="53" height="53" rx="9.12" ry="9.12" fill="#2e73b8"/>
+    <rect x="60" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="36" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="54" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="42" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="48" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="14.4" y="60" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="42" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="54" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="48" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="36" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="36" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="60" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="42" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="54" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="48" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="69.67" y="54" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="36" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="48" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="42" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="60" width="15.94" height="4" fill="#2e73b8"/>
+    <path d="M63.18,44l-.26-16.11a.5.5,0,0,0-.5-.49H58.57a.5.5,0,0,0-.5.49l-.23,14L33.53,32.32a1,1,0,0,0-1.37.93v38a1,1,0,0,0,1,1H66.83a1,1,0,0,0,1-1V46.48a1,1,0,0,0-.63-.93Z" fill="#fff"/>
+    <rect x="47.7" y="58.56" width="4.72" height="12.15" rx="0.5" ry="0.5" fill="#2e73b8"/>
+    <rect x="38.08" y="58.56" width="4.83" height="5.52" rx="0.5" ry="0.5" fill="#2e73b8"/>
+    <rect x="57.23" y="58.56" width="4.83" height="5.52" rx="0.5" ry="0.5" fill="#2e73b8"/>
+    <rect x="38.08" y="49.08" width="4.83" height="5.52" rx="0.5" ry="0.5" fill="#2e73b8"/>
+    <rect x="47.58" y="49.08" width="4.83" height="5.52" rx="0.5" ry="0.5" fill="#2e73b8"/>
+    <rect x="57.23" y="49.08" width="4.83" height="5.52" rx="0.5" ry="0.5" fill="#2e73b8"/>
+  </g>
+</svg>

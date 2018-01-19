@@ -1,0 +1,225 @@
+body {
+    background-color: #f0f0f0;
+}
+
+html, body {margin: 0; height: 100%; overflow: hidden}
+
+#menu {
+    color: #666;
+    padding-top: 5px;
+}
+
+#cy {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    background-color: #fff;
+    opacity: 100%;
+}
+
+
+#nodeInfo {
+    position:absolute;
+	z-index: 9999;
+    top: 0;
+    
+    right: 0;
+    left: 0;
+    overflow: hidden;
+    font-family:monospace,monospace;
+    font-size:0.75em;
+    color: #555;
+    padding: 0;
+    margin: 0;
+    height: auto;
+    
+    padding-left: 12px;
+    margin-left: 60%;
+}
+
+#nodeLocation {
+    text-align: right;
+    padding-right: 5px;
+    padding-left: 2px;
+    padding-top: -1px;
+    border-radius: 2px;
+    font-size:0.9em;
+}
+
+.nodeParentSeparater{
+    color:#222;
+    font-weight: bold;
+}
+
+.nodeParent {
+    /*background-color: #d0d0d0;*/
+}
+
+.nodeLink, .siblingLink, .neighborLink, .childLink {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: #555;
+}
+
+#nodeDescriptionHolder {
+    right: 0;
+    float: right;
+    width: 100%;
+}
+
+.akkordion-outer {
+  padding: 0;
+}
+
+.nodeHeader {
+    background-color: #444;
+    color: #aaa;
+    padding: 2px;
+    border-radius: 2px 0px 0px 2px;
+    border: 1px solid #000;
+}
+
+.nodeHeader::before {
+    font: normal normal normal 14px/1 FontAwesome;
+    padding-right: 4px;
+    content: "\f152";
+}
+
+.nodeHeader[data-akkordion-active='true'] {
+    border-radius: 2px 0px 0px 0px;
+}
+
+.nodeHeader[data-akkordion-active='true']::before { 
+    font: normal normal normal 14px/1 FontAwesome;
+    padding-right: 4px;
+    content: "\f150";
+}
+
+#nodeDescription {
+    background-color: #d0d0d0;
+    padding-right: 10px;
+    right: 0;
+    float: right;
+    border: 1px solid #555;
+    border-radius: 0px 0px 0px 2px;
+    box-shadow: 5px 5px 7px grey;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    max-height: 600px;
+    margin-bottom: 10px;
+    padding: 2px;
+
+    /* I can't get this div to not overflow as much as it wants */
+    max-height: 600px;
+    height:auto !important;
+    height:600px;
+}
+
+#nodeDescription .akkordion-title {
+    background-color: #444;
+    color: #aaa;
+    padding: 2px;
+    border-radius: 0px 0px 0px 0px;
+    border: 1px solid #000;
+}
+
+#nodeDescription .akkordion-content {
+    padding-bottom: 5px;
+}
+
+
+#nodeNeighbors, #nodeSiblings, #nodeChildren {
+    background-color: #d0d0d0;
+    overflow-y: scroll;
+    max-height:200px;
+    padding-right: 5px;
+}
+
+#nodeDetails {
+    height: auto;
+    max-height: 200px;
+    overflow: scroll;
+
+    margin: 0px;
+
+    background-color: #bbb;
+    color: #444;
+    font-size:1.2em;
+
+    margin-top: 2px;
+
+    word-break: normal !important;
+    word-wrap: normal !important;
+    white-space: pre !important;
+}
+
+
+.frame {
+    overflow-y: auto;
+    border: 1px solid black;
+    line-height: 1em;
+}
+
+.frame::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.frame::-webkit-scrollbar:vertical {
+    width: 5px;
+}
+
+.frame::-webkit-scrollbar:horizontal {
+    height: 5px;
+}
+
+.frame::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    border: 0px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .3);
+}
+
+#nodeDescription > div > div > div > ul { 
+    margin: 0;
+    padding-left: 5px;
+    list-style-type: none;
+}
+#nodeDescription > div > div > div > ul > li {
+    text-indent: 0px;
+}
+#nodeDescription > div > div > div > ul > li:before {
+    content: "-";
+    text-indent: -5px;
+}
+
+
+.tooltip {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    font-family:monospace,monospace;
+    background-color: #444;
+    color: #aaa;
+    text-align: center;
+    border-radius: 3px;
+    padding: 3px;
+    font-size:0.6em;
+    margin-top: 20px;
+    margin-left: -10px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1000000;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+

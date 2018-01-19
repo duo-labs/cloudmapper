@@ -1,0 +1,10 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>SecurityIdentityCompliance</title>
+  <g>
+    <circle cx="34.1" cy="51.24" r="2.81" fill="#4b612c"/>
+    <rect x="31.29" y="48.76" width="5.62" height="2.48" fill="#4b612c"/>
+    <path d="M23,37.48v28H77v-28ZM69.33,55.81H48.55a10.76,10.76,0,1,1,0-9.15h6.36l1.13,2,4.21-.39,1.62,1.66,1.48.32,3.84-2.3L72,51.58Z" fill="#4b612c"/>
+    <circle cx="34.1" cy="48.76" r="2.81" fill="#759c3e"/>
+    <path d="M23,35V63H77V35ZM69.33,53.33H48.55a10.76,10.76,0,1,1,0-9.15h6.36l1.13,2,4.21-.39,1.62,1.66,1.48.32,3.84-2.3L72,49.1Z" fill="#759c3e"/>
+  </g>
+</svg>

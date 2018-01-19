@@ -1,0 +1,21 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>Database</title>
+  <g>
+    <polygon points="29.5 32.74 20 32.74 20 30.26 24.75 23.24 29.5 30.26 29.5 32.74" fill="#19486f"/>
+    <polygon points="80 32.74 33.5 32.74 33.5 30.26 56.75 23.24 80 30.26 80 32.74" fill="#19486f"/>
+    <polygon points="29.5 48.24 20 48.24 20 45.76 24.75 38.74 29.5 45.76 29.5 48.24" fill="#19486f"/>
+    <polygon points="80 48.24 33.5 48.24 33.5 45.76 56.75 38.74 80 45.76 80 48.24" fill="#19486f"/>
+    <polygon points="29.5 63.74 20 63.74 20 61.26 24.75 54.24 29.5 61.26 29.5 63.74" fill="#19486f"/>
+    <polygon points="80 63.74 33.5 63.74 33.5 61.26 56.75 54.24 80 61.26 80 63.74" fill="#19486f"/>
+    <polygon points="29.5 79.24 20 79.24 20 76.76 24.75 69.74 29.5 76.76 29.5 79.24" fill="#19486f"/>
+    <polygon points="80 79.24 33.5 79.24 33.5 76.76 56.75 69.74 80 76.76 80 79.24" fill="#19486f"/>
+    <rect x="33.5" y="20.76" width="46.5" height="9.5" fill="#2e73b8"/>
+    <rect x="33.5" y="36.26" width="46.5" height="9.5" fill="#2e73b8"/>
+    <rect x="33.5" y="51.76" width="46.5" height="9.5" fill="#2e73b8"/>
+    <rect x="33.5" y="67.26" width="46.5" height="9.5" fill="#2e73b8"/>
+    <rect x="20" y="20.76" width="9.5" height="9.5" fill="#2e73b8"/>
+    <rect x="20" y="36.26" width="9.5" height="9.5" fill="#2e73b8"/>
+    <rect x="20" y="51.76" width="9.5" height="9.5" fill="#2e73b8"/>
+    <rect x="20" y="67.26" width="9.5" height="9.5" fill="#2e73b8"/>
+  </g>
+</svg>

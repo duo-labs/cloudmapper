@@ -1,0 +1,20 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>Database</title>
+  <g>
+    <polygon points="47 37.84 22 37.84 22 35.36 34.5 28.34 47 35.36 47 37.84" fill="#19486f"/>
+    <polygon points="78 37.84 53 37.84 53 35.36 65.5 28.34 78 35.36 78 37.84" fill="#19486f"/>
+    <polygon points="47 58.57 22 58.57 22 56.09 34.5 49.07 47 56.09 47 58.57" fill="#19486f"/>
+    <polygon points="78 58.57 53 58.57 53 56.09 65.5 49.07 78 56.09 78 58.57" fill="#19486f"/>
+    <polygon points="47 79.24 22 79.24 22 76.76 34.5 69.74 47 76.76 47 79.24" fill="#19486f"/>
+    <polygon points="78 79.24 53 79.24 53 76.76 65.5 69.74 78 76.76 78 79.24" fill="#19486f"/>
+    <rect x="53" y="62.09" width="25" height="14.67" transform="translate(131 138.85) rotate(180)" fill="#2e73b8"/>
+    <rect x="53" y="41.43" width="25" height="14.67" transform="translate(131 97.52) rotate(180)" fill="#2e73b8"/>
+    <rect x="53" y="20.76" width="25" height="14.67" transform="translate(131 56.19) rotate(180)" fill="#2e73b8"/>
+    <rect x="22" y="62.09" width="25" height="14.67" transform="translate(69 138.85) rotate(180)" fill="#2e73b8"/>
+    <rect x="22" y="41.43" width="25" height="14.67" transform="translate(69 97.52) rotate(180)" fill="#2e73b8"/>
+    <rect x="22" y="20.76" width="25" height="14.67" transform="translate(69 56.19) rotate(180)" fill="#2e73b8"/>
+    <circle cx="34.5" cy="69.43" r="5" fill="#fff"/>
+    <circle cx="34.5" cy="48.76" r="5" fill="#fff"/>
+    <circle cx="34.5" cy="28.09" r="5" fill="#fff"/>
+  </g>
+</svg>

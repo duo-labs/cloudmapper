@@ -1,0 +1,13 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>SecurityIdentityCompliance_GRAYSCALE</title>
+  <g>
+    <polygon points="83.95 67.84 49.95 61.47 16.05 67.84 49.95 91 83.95 67.84" fill="#d2d3d3"/>
+    <polyline points="16.08 67.84 16.08 74.03 20.4 76.19 50.02 91 50.02 80.67" fill="#4f4f4f"/>
+    <polyline points="83.92 67.84 83.92 74.03 79.6 76.19 49.98 91 49.98 80.67" fill="#acacac"/>
+    <polygon points="50.02 58.74 64.37 60.26 50.02 74.48 35.67 60.26 50.02 58.74" fill="#d2d3d3"/>
+    <polygon points="35.67 70.3 50.02 74.61 50.02 62.33 35.67 60.26 35.67 70.3" fill="#4f4f4f"/>
+    <polygon points="64.37 70.3 50.02 74.61 50.02 62.33 64.37 60.26 64.37 70.3" fill="#acacac"/>
+    <polygon points="35.67 16.21 50.02 9 63.75 35.1 50.02 55.24 35.67 54.09 35.67 16.21" fill="#4f4f4f"/>
+    <polygon points="64.37 54.09 50.02 55.24 50.02 9 64.37 16.21 64.37 54.09" fill="#acacac"/>
+  </g>
+</svg>

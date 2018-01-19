@@ -1,0 +1,19 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>Compute</title>
+  <g>
+    <circle cx="50" cy="51.25" r="30.43" fill="#9d5025"/>
+    <circle cx="50" cy="48.75" r="30.43" fill="#f58536"/>
+    <g>
+      <g>
+        <rect x="38.17" y="58.96" width="19.41" height="2.81" fill="#fff"/>
+        <rect x="38.17" y="53.15" width="19.41" height="2.81" fill="#fff"/>
+        <rect x="38.17" y="41.54" width="19.41" height="2.81" fill="#fff"/>
+        <rect x="24.34" y="47.15" width="44.34" height="3.21" fill="#fff"/>
+        <rect x="38.17" y="35.74" width="19.41" height="2.81" fill="#fff"/>
+        <polygon points="62.05 45.82 59.25 45.82 59.25 33.07 36.49 33.07 36.49 45.77 33.69 45.77 33.69 30.26 62.05 30.26 62.05 45.82" fill="#fff"/>
+        <polygon points="62.05 67.24 33.69 67.24 33.69 51.8 36.49 51.8 36.49 64.43 59.25 64.43 59.25 51.99 62.05 51.99 62.05 67.24" fill="#fff"/>
+      </g>
+      <polygon points="67.26 41.91 75.66 48.75 67.26 55.88 67.26 41.91" fill="#fff"/>
+    </g>
+  </g>
+</svg>

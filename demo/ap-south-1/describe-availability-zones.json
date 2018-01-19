@@ -1,0 +1,16 @@
+{
+    "AvailabilityZones": [
+        {
+            "State": "available", 
+            "ZoneName": "ap-south-1a", 
+            "Messages": [], 
+            "RegionName": "ap-south-1"
+        }, 
+        {
+            "State": "available", 
+            "ZoneName": "ap-south-1b", 
+            "Messages": [], 
+            "RegionName": "ap-south-1"
+        }
+    ]
+}

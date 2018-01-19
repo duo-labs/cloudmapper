@@ -1,0 +1,13 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>Storage</title>
+  <g>
+    <rect x="24.99" y="31.41" width="23.4" height="51.59" fill="#8c3123"/>
+    <rect x="51.62" y="31.41" width="23.4" height="51.59" fill="#8c3123"/>
+    <polygon points="48.15 17.33 25.59 23.42 25.59 25.91 48.38 25.91 48.38 17.39 48.15 17.33" fill="#8c3123"/>
+    <polygon points="73.94 23.42 51.62 17.39 51.62 25.91 73.94 25.91 73.94 23.42" fill="#8c3123"/>
+    <polygon points="67.58 17 51.62 17 51.62 23.42 73.94 23.42 67.58 17" fill="#e05243"/>
+    <polygon points="32.45 17 25.59 23.42 26.09 23.42 48.38 23.42 48.38 17 32.45 17" fill="#e05243"/>
+    <rect x="24.99" y="29.14" width="23.4" height="51.37" fill="#e05243"/>
+    <rect x="51.62" y="29.14" width="23.4" height="51.37" fill="#e05243"/>
+  </g>
+</svg>

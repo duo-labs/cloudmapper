@@ -1,0 +1,18 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>Messaging</title>
+  <g>
+    <path d="M77.58,51.37a27.58,27.58,0,0,1-55.16,0V48.89S40.67,23.79,50,23.79c10.9,0,27.58,25.1,27.58,25.1Z" fill="#876929"/>
+    <circle cx="50" cy="48.89" r="27.58" fill="#d9a741"/>
+    <rect x="40" y="31.87" width="1.49" height="12.47" fill="#fff"/>
+    <rect x="40" y="50.23" width="1.49" height="12.47" fill="#fff"/>
+    <polygon points="60.79 63.73 59.3 63.73 59.3 48.19 40.52 48.19 40.52 46.72 60.79 46.72 60.79 63.73" fill="#fff"/>
+    <polygon points="40.58 54.13 49.5 47.59 40.58 41.05 32.06 47.2 40.58 54.13" fill="#d9a741"/>
+    <path d="M40.56,55.06l-9.72-7.9,9.75-7,10.16,7.46Zm-7.29-7.83,7.33,6,7.64-5.61L40.58,42Z" fill="#fff"/>
+    <rect x="54.25" y="59.61" width="12.06" height="7.12" fill="#d9a741"/>
+    <path d="M67,67.46H53.5V58.87H67ZM55,60.35V66H65.56V60.35Z" fill="#fff"/>
+    <rect x="34.83" y="28.99" width="12.06" height="7.12" fill="#d9a741"/>
+    <path d="M47.63,36.85H34.08V28.26H47.63ZM35.57,35.37H46.14V29.73H35.57Z" fill="#fff"/>
+    <rect x="34.71" y="59.61" width="12.06" height="7.12" fill="#d9a741"/>
+    <path d="M47.51,67.46H34V58.87H47.51ZM35.45,66H46V60.35H35.45Z" fill="#fff"/>
+  </g>
+</svg>
