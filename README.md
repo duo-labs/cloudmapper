@@ -1,6 +1,6 @@
 CloudMapper
 ========
-CloudMapper generates network diagrams of Amazon Web Services (AWS) environments and display them via your browser. It helps you understand visually what exists in your accounts and identify possible network misconfigurations.  
+CloudMapper generates network diagrams of Amazon Web Services (AWS) environments and displays them via your browser. It helps you understand visually what exists in your accounts and identify possible network misconfigurations.  
 
 ![Demo screenshot](docs/images/ideal_layout.png "Demo screenshot")
 
