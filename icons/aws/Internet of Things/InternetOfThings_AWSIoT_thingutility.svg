@@ -1,0 +1,51 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>InternetOfThings</title>
+  <g>
+    <rect x="23.5" y="25.99" width="53" height="53" rx="9.12" ry="9.12" fill="#19486f"/>
+    <rect x="23.5" y="23.51" width="53" height="53" rx="9.12" ry="9.12" fill="#2e73b8"/>
+    <rect x="60" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="36" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="54" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="42" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="48" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="14.4" y="60" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="42" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="54" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="48" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="36" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="36" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="60" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="42" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="54" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="48" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="69.67" y="54" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="36" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="48" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="42" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="60" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="23.5" y="25.99" width="53" height="53" rx="9.12" ry="9.12" fill="#19486f"/>
+    <rect x="23.5" y="23.51" width="53" height="53" rx="9.12" ry="9.12" fill="#2e73b8"/>
+    <rect x="60" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="36" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="54" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="42" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="48" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="14.4" y="60" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="42" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="54" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="48" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="36" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="36" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="60" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="42" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="54" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="48" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="69.67" y="54" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="36" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="48" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="42" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="60" width="15.94" height="4" fill="#2e73b8"/>
+    <path d="M49,54.1a6.69,6.69,0,0,0,5.79-3.34h1.06c3.66,0,3.22,3.84,3.22,3.84v2.88h6.69V50.83a6.69,6.69,0,0,0-6.69-6.69l-4.28-.07a6.71,6.71,0,0,0-2.45-2.45V37.4h0l3.38,0a3.35,3.35,0,1,0,0-6.69H42.32a3.35,3.35,0,1,0,0,6.69l3.34,0v4.22a6.71,6.71,0,0,0-2.45,2.45h-11v6.69h11A6.69,6.69,0,0,0,49,54.1Z" fill="#fff"/>
+    <path d="M62.3,59.9c-1.78,3.27-3,5.06-3,7.7a3,3,0,0,0,6,0C65.31,65,63.82,63.15,62.3,59.9Z" fill="#fff"/>
+  </g>
+</svg>

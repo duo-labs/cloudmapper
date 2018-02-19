@@ -1,0 +1,31 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="linear-gradient" x1="32.1" y1="18.59" x2="67.95" y2="18.59" gradientUnits="userSpaceOnUse">
+      <stop offset="0.2" stop-color="#00b3ff"/>
+      <stop offset="0.22" stop-color="#13b9ff"/>
+      <stop offset="0.26" stop-color="#43c7ff"/>
+      <stop offset="0.32" stop-color="#90deff"/>
+      <stop offset="0.4" stop-color="#fafdff"/>
+      <stop offset="0.4" stop-color="#fff"/>
+      <stop offset="0.55" stop-color="#fff"/>
+      <stop offset="0.62" stop-color="#fcfeff"/>
+      <stop offset="0.68" stop-color="#f2fbff"/>
+      <stop offset="0.74" stop-color="#e1f6ff"/>
+      <stop offset="0.79" stop-color="#c9efff"/>
+      <stop offset="0.83" stop-color="#aae6ff"/>
+      <stop offset="0.88" stop-color="#84daff"/>
+      <stop offset="0.93" stop-color="#58cdff"/>
+      <stop offset="0.97" stop-color="#25beff"/>
+      <stop offset="1" stop-color="#00b3ff"/>
+    </linearGradient>
+  </defs>
+  <title>InternetOfThings</title>
+  <g>
+    <rect x="32.1" y="13.05" width="35.85" height="26.28" fill="#19486f"/>
+    <ellipse cx="50.02" cy="13.05" rx="17.92" ry="4" fill="#2e73b8"/>
+    <path d="M50,26.7c-9.9,0-17.92-1.79-17.92-4V87c0,2.21,8,4,17.92,4s17.92-1.79,17.92-4V22.7C67.95,24.91,59.92,26.7,50,26.7Z" fill="#19486f"/>
+    <path d="M50,24.26c-9.9,0-17.92-1.79-17.92-4V84.51c0,2.21,8,4,17.92,4s17.92-1.79,17.92-4V20.26C67.95,22.47,59.92,24.26,50,24.26Z" fill="#2e73b8"/>
+    <path d="M50,51.26c-9.9,0-17.92-1.79-17.92-4V80.51c0,2.21,8,4,17.92,4s17.92-1.79,17.92-4V47.26C67.95,49.47,59.92,51.26,50,51.26Z" fill="#205b99"/>
+    <path d="M66.63,16.59C64,18.06,57.54,19.09,50,19.09s-13.95-1-16.61-2.5c-.84-.46-1.32-1-1.32-1.5v3c0,2.21,8,4,17.92,4s17.92-1.79,17.92-4v-3C67.95,15.62,67.47,16.13,66.63,16.59Z" fill="url(#linear-gradient)"/>
+  </g>
+</svg>

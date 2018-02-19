@@ -1,0 +1,56 @@
+/*!
+ * akkordion 0.2.5
+ * Accordion UI Element
+ * https://github.com/TrySound/akkordion
+ * 
+ * Released under the MIT license
+ * Copyright (c) 2015, Bogdan Chadkin <trysound@yandex.ru>
+ */
+
+.akkordion-title {
+	cursor: pointer;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+}
+
+.akkordion-outer {
+	overflow: hidden;
+	height: 0;
+	transition: height cubic-bezier(0.165, 0.84, 0.44, 1);
+	will-change: height;
+}
+
+.akkordion-content {
+	box-sizing: border-box;
+	overflow: hidden;
+	height: 0;
+	transition: opacity 500ms cubic-bezier(0.165, 0.84, 0.44, 1), -webkit-transform 500ms cubic-bezier(0.165, 0.84, 0.44, 1);
+	transition: opacity 500ms cubic-bezier(0.165, 0.84, 0.44, 1), transform 500ms cubic-bezier(0.165, 0.84, 0.44, 1);
+	will-change: opacity, transform;
+}
+
+.akkordion-active {
+	height: auto;
+}
+
+.akkordion-fade .akkordion-content {
+	opacity: 0;
+}
+
+.akkordion-shiftY .akkordion-content {
+	-webkit-transform: translateY(30px);
+	        transform: translateY(30px);
+}
+
+.akkordion-shiftX .akkordion-content {
+	-webkit-transform: translateX(100px);
+	        transform: translateX(100px);
+}
+
+.akkordion-content[data-akkordion-active] {
+	opacity: 1;
+	-webkit-transform: none;
+	        transform: none;
+}

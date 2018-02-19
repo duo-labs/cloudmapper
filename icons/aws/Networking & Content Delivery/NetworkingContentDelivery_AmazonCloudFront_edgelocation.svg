@@ -1,0 +1,33 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">
+  <defs>
+    <clipPath id="clip-path">
+      <path d="M76.1,32.91V51.43a56.69,56.69,0,0,0-18.73-4.75V28.16A56.73,56.73,0,0,1,76.1,32.91Z" fill="#9d5025"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <path d="M41.9,33.41V47.19a59.66,59.66,0,0,0-18,6V29.79C28.29,27.48,34.42,34.64,41.9,33.41Z" fill="#9d5025"/>
+    </clipPath>
+  </defs>
+  <title>NetworkingContentDelivery</title>
+  <g>
+    <rect x="23.9" y="60.04" width="52.2" height="18.37" fill="#9d5025"/>
+    <rect x="36.21" y="28.72" width="26.85" height="12.87" fill="#9d5025"/>
+    <g>
+      <path d="M76.1,32.91V51.43a56.69,56.69,0,0,0-18.73-4.75V28.16A56.73,56.73,0,0,1,76.1,32.91Z" fill="#9d5025"/>
+      <g clip-path="url(#clip-path)">
+        <g style="isolation: isolate">
+          <path d="M76.1,48.25v3.18a56.69,56.69,0,0,0-18.73-4.75V43.51A56.73,56.73,0,0,1,76.1,48.25" fill="#9d5025"/>
+        </g>
+      </g>
+    </g>
+    <g>
+      <path d="M41.9,33.41V47.19a59.66,59.66,0,0,0-18,6V29.79C28.29,27.48,34.42,34.64,41.9,33.41Z" fill="#9d5025"/>
+      <g clip-path="url(#clip-path-2)">
+        <g style="isolation: isolate">
+          <path d="M41.9,44v3.18a59.66,59.66,0,0,0-18,6V50a59.76,59.76,0,0,1,18-6" fill="#9d5025"/>
+        </g>
+      </g>
+    </g>
+    <path d="M76.1,21.59V48.25a56.73,56.73,0,0,0-18.73-4.75V38.41H41.9V44a59.76,59.76,0,0,0-18,6V21.59Z" fill="#f58536"/>
+    <path d="M57.37,48.88a57.19,57.19,0,0,1,18.73,4.8V75.23H23.9v-20a58.28,58.28,0,0,1,18-5.91v6.29H57.37Z" fill="#f58536"/>
+  </g>
+</svg>

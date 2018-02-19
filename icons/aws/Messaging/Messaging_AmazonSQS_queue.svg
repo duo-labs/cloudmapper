@@ -1,0 +1,12 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>Messaging</title>
+  <g>
+    <rect x="17.16" y="28.68" width="65.68" height="42.64" fill="#876929"/>
+    <path d="M17.16,28.68H82.84V68.41H17.16Z" fill="#d9a741"/>
+    <rect x="35.39" y="34.03" width="7" height="29.96" fill="#fff"/>
+    <rect x="46.5" y="34.03" width="7" height="29.96" fill="#fff"/>
+    <rect x="57.61" y="34.03" width="7" height="29.96" fill="#fff"/>
+    <polygon points="25.27 42.51 25.27 55.51 31.27 49.01 25.27 42.51" fill="#fff"/>
+    <polygon points="68.73 42.51 68.73 55.51 74.73 49.01 68.73 42.51" fill="#fff"/>
+  </g>
+</svg>

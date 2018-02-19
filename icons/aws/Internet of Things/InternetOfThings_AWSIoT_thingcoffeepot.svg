@@ -1,0 +1,37 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>InternetOfThings</title>
+  <g>
+    <rect x="23.5" y="25.99" width="53" height="53" rx="9.12" ry="9.12" fill="#19486f"/>
+    <rect x="23.5" y="23.51" width="53" height="53" rx="9.12" ry="9.12" fill="#2e73b8"/>
+    <rect x="60" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="36" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="54" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="42" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="48" y="14.4" width="4" height="13.65" fill="#2e73b8"/>
+    <rect x="14.4" y="60" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="42" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="54" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="48" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="14.4" y="36" width="18.1" height="4" fill="#2e73b8"/>
+    <rect x="36" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="60" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="42" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="54" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="48" y="69.88" width="4" height="15.72" fill="#2e73b8"/>
+    <rect x="69.67" y="54" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="36" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="48" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="42" width="15.94" height="4" fill="#2e73b8"/>
+    <rect x="69.67" y="60" width="15.94" height="4" fill="#2e73b8"/>
+    <path d="M55.89,38l3,21.18c1,6.71.14,12.93-8.77,12.93H43.64c-8.43,0-9.73-6.22-8.77-12.93l3-21.18Z" fill="#fff"/>
+    <path d="M37.92,36a8.16,8.16,0,0,1,7.86-7.18H48A8.16,8.16,0,0,1,55.89,36Z" fill="#fff"/>
+    <polygon points="41.92 55.49 35.27 58.71 27.67 40.02 31.98 37.93 41.92 55.49" fill="#fff"/>
+    <path d="M58.81,60.69H57.2v-3h1.62A4.19,4.19,0,0,0,63,53.5V49.13a4.19,4.19,0,0,0-4.19-4.19h-3v-3h3A7.2,7.2,0,0,1,66,49.13V53.5A7.2,7.2,0,0,1,58.81,60.69Z" fill="#fff"/>
+    <rect x="50.52" y="66.48" width="13.98" height="3" fill="#fff"/>
+    <path d="M70,72.19H67.66A4.16,4.16,0,0,1,63.5,68v-.11a4.16,4.16,0,0,1,4.16-4.16H70Z" fill="#fff"/>
+    <g>
+      <path d="M72.72,67.4h-5.5a1.5,1.5,0,0,1,0-3h5.5a1.5,1.5,0,0,1,0,3Z" fill="#fff"/>
+      <path d="M72.72,71.57h-5.5a1.5,1.5,0,0,1,0-3h5.5a1.5,1.5,0,0,1,0,3Z" fill="#fff"/>
+    </g>
+  </g>
+</svg>

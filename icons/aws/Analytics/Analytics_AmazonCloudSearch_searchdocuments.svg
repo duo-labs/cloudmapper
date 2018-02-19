@@ -1,0 +1,19 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>Analytics</title>
+  <g>
+    <g style="isolation: isolate">
+      <rect x="27.98" y="21" width="44" height="56" fill="#9d5125"/>
+    </g>
+    <path d="M28,21V74.65H72V21Z" fill="#f58534"/>
+    <polygon points="24 34.93 30.75 42.42 24 49.92 24 34.93" fill="#f58534"/>
+    <path d="M23,52.52V32.33l9.1,10.09Zm2-15v9.78l4.4-4.89Z" fill="#fff"/>
+    <polygon points="76 49.92 69.25 42.42 76 34.93 76 49.92" fill="#f58534"/>
+    <path d="M77,52.52,67.9,42.42,77,32.33ZM70.6,42.42,75,47.31V37.54Z" fill="#fff"/>
+    <rect x="33" y="26.33" width="34" height="5" fill="#fff"/>
+    <rect x="33" y="33.93" width="34" height="5" fill="#fff"/>
+    <rect x="33" y="41.53" width="34" height="5" fill="#fff"/>
+    <rect x="33" y="49.13" width="34" height="5" fill="#fff"/>
+    <rect x="33" y="56.73" width="34" height="5" fill="#fff"/>
+    <rect x="33" y="64.33" width="34" height="5" fill="#fff"/>
+  </g>
+</svg>

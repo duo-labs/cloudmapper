@@ -1,0 +1,23 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>ManagementTools</title>
+  <g>
+    <g>
+      <circle cx="66.9" cy="30.64" r="13" fill="#4b612c"/>
+      <path d="M66.9,45.14a14.5,14.5,0,1,1,14.5-14.5A14.52,14.52,0,0,1,66.9,45.14Zm0-26a11.5,11.5,0,1,0,11.5,11.5A11.51,11.51,0,0,0,66.9,19.14Z" fill="#4b612c"/>
+    </g>
+    <g>
+      <circle cx="66.9" cy="28.16" r="13" fill="#fff"/>
+      <path d="M66.9,42.66a14.5,14.5,0,1,1,14.5-14.5A14.52,14.52,0,0,1,66.9,42.66Zm0-26a11.5,11.5,0,1,0,11.5,11.5A11.51,11.51,0,0,0,66.9,16.66Z" fill="#4f4f4f"/>
+    </g>
+    <rect x="60.88" y="27.66" width="7.01" height="3" fill="#4f4f4f"/>
+    <rect x="66.4" y="19.1" width="3" height="11.56" fill="#4f4f4f"/>
+    <rect x="27.7" y="50.04" width="10.71" height="26.44" fill="#4b612c"/>
+    <rect x="44.62" y="55.19" width="10.71" height="21.29" fill="#4b612c"/>
+    <rect x="47.14" y="59.28" width="5.66" height="48.45" transform="translate(133.48 33.53) rotate(90)" fill="#4b612c"/>
+    <path d="M61.54,46.86V76.48H72.25V46.86a11.2,11.2,0,0,1-10.71,0Z" fill="#4b612c"/>
+    <rect x="27.7" y="47.56" width="10.71" height="26.44" fill="#759c3e"/>
+    <rect x="44.62" y="52.71" width="10.71" height="21.29" fill="#759c3e"/>
+    <rect x="47.14" y="56.8" width="5.66" height="48.45" transform="translate(131 31.05) rotate(90)" fill="#759c3e"/>
+    <path d="M61.54,44.38V74H72.25V44.38a11.2,11.2,0,0,1-10.71,0Z" fill="#759c3e"/>
+  </g>
+</svg>

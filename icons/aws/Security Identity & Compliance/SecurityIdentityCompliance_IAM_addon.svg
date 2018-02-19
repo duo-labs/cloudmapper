@@ -1,0 +1,11 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <title>SecurityIdentityCompliance</title>
+  <g>
+    <circle cx="38.81" cy="51.24" r="10.76" fill="#4b612c"/>
+    <polygon points="42.45 46.67 54.91 46.67 56.03 48.63 60.24 48.23 61.86 49.89 63.34 50.22 71.95 49.1 71.95 51.58 69.33 55.81 42.45 55.81 42.45 46.67" fill="#4b612c"/>
+    <rect x="28.05" y="48.76" width="10.36" height="2.81" fill="#4b612c"/>
+    <circle cx="38.81" cy="48.76" r="10.76" fill="#759c3e"/>
+    <circle cx="34.1" cy="48.76" r="2.81" fill="#fff"/>
+    <polygon points="42.45 44.19 54.91 44.19 56.03 46.15 60.24 45.76 61.86 47.41 63.34 47.74 67.18 45.44 71.95 49.1 69.33 53.33 42.45 53.33 42.45 44.19" fill="#759c3e"/>
+  </g>
+</svg>
