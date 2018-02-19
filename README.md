@@ -1,6 +1,8 @@
 CloudMapper
 ========
-CloudMapper generates network diagrams of Amazon Web Services (AWS) environments and display them via your browser. It helps you understand visually what exists in your accounts and identify possible network misconfigurations.  
+CloudMapper generates network diagrams of Amazon Web Services (AWS) environments and display them via your browser. It helps you understand visually what exists in your accounts and identify possible network misconfigurations.
+
+*See demo https://duo-labs.github.io/cloudmapper/*
 
 ![Demo screenshot](docs/images/ideal_layout.png "Demo screenshot")
 
@@ -10,8 +12,8 @@ There are three stages to using CloudMapper:
 3. Run a simple web server to view the collected data in your browser.
 
 
-Installation
------------
+## Installation
+
 On macOS:
 
 ```
@@ -30,12 +32,21 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Run with demo data
 
-Running
-=======
+A small set of demo data is provided.  This will display the same environment as the demo site https://duo-labs.github.io/cloudmapper/ 
 
-1. Collect data about the account
----------------------------------
+```
+python cloudmapper.py prepare --config config.json.demo --account demo
+python cloudmapper.py serve
+```
+
+This will run a local webserver at http://127.0.0.1:8000/
+
+# Running with your own data
+
+## 1. Collect data about the account
+
 This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAuditor` policy, or can be reduced to an even more minimal set of permissions if desired.
 
 ```
@@ -46,16 +57,14 @@ This step uses the CLI to make `describe` calls and records the json in the fold
 
 Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names.
 
-2. Prepare the data
--------------------
+## 2. Prepare the data
 
 This step converts the collected AWS data into a format that can be displayed in the browser by generating a `web/data.json` file.
 ```
 python cloudmapper.py prepare --acount my_account
 ```
 
-3. Run a webserver
-------------------
+## 3. Run a webserver
 
 You can host the `web` directory with your webserver of choice, or just run:
 
@@ -95,7 +104,7 @@ Commands
 - Import/Export: This will save the layout as a json file that you can then upload. This is helpful if you've moved nodes or made other changes and wish to "save" your work. Re-opening saved files does have some bugs.
 
 
-When you first start, the initial layout is never ideal.  We use what is believed to be the best layout algorithm for compound node diagrams [CoSE](https://github.com/cytoscape/cytoscape.js-cose-bilkent), but this will still require manual editing by moving nodes around.
+When you first start, the initial layout is never ideal.  We use what is believed to be the best layout algorithm for compound node diagrams, [CoSE](https://github.com/cytoscape/cytoscape.js-cose-bilkent), but this will still require manual editing by moving nodes around.
 
 Here is the layout you'll likely see initially when you view the demo:
 ![Initial layout](docs/images/initial_layout.png "Initial layout")
