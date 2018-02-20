@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 This script manages CloudMapper, a tool for creating network diagrams of AWS environments.
 """
-
+from __future__ import (absolute_import, division, print_function)
 import json
 import argparse
 import sys
@@ -71,7 +71,7 @@ def run_prepare(arguments):
     if args.regions:
         # Regions are given as 'us-east-1,us-west-2'. Split this by the comma,
         # wrap each with quotes, and add the comma back. This is needed for how we do filtering.
-        outputfilter["regions"] = ','.join(map(lambda r: '"' + r + '"', args.regions.split(',')))
+        outputfilter["regions"] = ','.join(['"' + r + '"' for r in args.regions.split(',')])
     outputfilter["internal_edges"] = args.internal_edges
     outputfilter["read_replicas"] = args.read_replicas
     outputfilter["inter_rds_edges"] = args.inter_rds_edges
@@ -91,9 +91,9 @@ def run_prepare(arguments):
 
 
 def show_help():
-    print "usage: {} [prepare|serve] [...]".format(sys.argv[0])
-    print "  prepare: Prepares the data for viewing"
-    print "  serve: Runs a local webserver for viewing the data"
+    print("usage: {} [prepare|serve] [...]".format(sys.argv[0]))
+    print("  prepare: Prepares the data for viewing")
+    print("  serve: Runs a local webserver for viewing the data")
     exit(-1)
 
 
@@ -114,7 +114,7 @@ def main():
     else:
         show_help()
 
-    print "Complete"
+    print("Complete")
 
 
 if __name__ == "__main__":

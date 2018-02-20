@@ -11,12 +11,12 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-import SimpleHTTPServer
-from BaseHTTPServer import HTTPServer
 import argparse
 import os
 import posixpath
-import urllib
+import six.moves.urllib as urllib
+from six.moves.BaseHTTPServer import HTTPServer
+from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
 
 class RootedHTTPServer(HTTPServer):
@@ -25,11 +25,11 @@ class RootedHTTPServer(HTTPServer):
         self.RequestHandlerClass.base_path = base_path
 
 
-class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
-        path = posixpath.normpath(urllib.unquote(path))
+        path = posixpath.normpath(urllib.parse.unquote(path))
         words = path.split('/')
-        words = filter(None, words)
+        words = [_f for _f in words if _f]
         path = self.base_path
         for word in words:
             drive, word = os.path.splitdrive(word)
@@ -43,7 +43,7 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def end_headers(self):
         self.send_my_headers()
-        SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
+        SimpleHTTPRequestHandler.end_headers(self)
 
     def send_my_headers(self):
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
