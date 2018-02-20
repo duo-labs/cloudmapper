@@ -61,7 +61,7 @@ Copy the `config.json.demo` to `config.json` and edit it to include your account
 
 This step converts the collected AWS data into a format that can be displayed in the browser by generating a `web/data.json` file.
 ```
-python cloudmapper.py prepare --acount my_account
+python cloudmapper.py prepare --account my_account
 ```
 
 ## 3. Run a webserver
@@ -92,7 +92,7 @@ Commands
 - Delete (d): Select a node and click the eye with a slash through it to delete (ie. hide) it. Click the eye to undelete (unhide) all deleted nodes.   All nodes connected to a deleted node will get a black border. If you double-click on a node with a black border, it's deleted neighbors will be undeleted.
 ![Deleted node](docs/images/deleted_node.png "Deleted node")
 
-- Highlight (h): Select a node and click the symbol of the connected nodes to highlight the neighbors of a node. Click the inverse symbol to unhighligh the neighbors.  Highlight neighbors makes it easier to see which nodes are connected.
+- Highlight (h): Select a node and click the symbol of the connected nodes to highlight the neighbors of a node. Click the inverse symbol to unhighlight the neighbors.  Highlight neighbors makes it easier to see which nodes are connected.
 ![Highlighted neighbors](docs/images/highlight_neighbors.png "Highlighted neighbors")
 
 - Collapse all: Click the icon of the arrows pointed toward each other to collapse all nodes.  Click the symbol of the arrows pointed away to uncollapse all collapsed node.
