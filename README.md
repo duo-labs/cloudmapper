@@ -70,7 +70,7 @@ This step uses the CLI to make `describe` calls and records the json in the fold
         "ec2:DescribeInstances",
         "ec2:DescribeNetworkInterfaces",
         "rds:DescribeDBInstances",
-        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeLoadBalancers"
       ]
     }
   ]
