@@ -30,6 +30,16 @@ def get_account(account_name, config):
     raise Exception("Account named \"{}\" not found".format(account_name))
 
 
+def run_gathering(arguments):
+    from cloudmapper.gatherer import gather
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--account-name", help="Account to collect from",
+                        required=True, type=str)
+    args = parser.parse_args(arguments)
+
+    gather(args)
+
+
 def run_prepare(arguments):
     from cloudmapper.prepare import prepare
 
@@ -111,6 +121,8 @@ def main():
         run_prepare(arguments)
     elif command == "serve":
         run_webserver(arguments)
+    elif command == "gather":
+        run_gathering(arguments)
     else:
         show_help()
 
