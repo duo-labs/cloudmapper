@@ -47,7 +47,33 @@ This will run a local webserver at http://127.0.0.1:8000/
 
 ## 1. Collect data about the account
 
-This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAuditor` policy, or can be reduced to an even more minimal set of permissions if desired.
+This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAuditor` policy, or can be reduced to an even more minimal set of permissions if desired.  The minimal policy needed is:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": [
+        "ec2:DescribeRegions",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeVpcPeeringConnections",
+        "ec2:DescribeInstances",
+        "ec2:DescribeNetworkInterfaces"
+        "rds:DescribeDBInstances",
+        "elasticloadbalancing:DescribeLoadBalancers",
+      ]
+    }
+  ]
+}
+```
+
+Collect the AWS data with:
 
 ```
 ./collect_data.sh --account my_account
