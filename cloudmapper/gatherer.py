@@ -17,14 +17,14 @@ def gather(arguments):
         # Already exists
         pass
 
-    print "* Getting region names"
+    print("* Getting region names")
     ec2 = boto3.client('ec2')
 
     region_list = ec2.describe_regions()
     with open("./{}/describe-regions.json".format(arguments.account_name), 'w+') as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))
 
-    print "* Creating directory for each region name"
+    print("* Creating directory for each region name")
 
     for region in region_list['Regions']:
         try:
@@ -90,7 +90,7 @@ def gather(arguments):
     ]
 
     for runner in runners_list:
-        print "* Getting {} info".format(runner['Name'])
+        print("* Getting {} info".format(runner['Name']))
         for region in region_list['Regions']:
             handler = boto3.client(runner['Handler'], region_name=region['RegionName'])
             method_to_call = getattr(handler, runner["Function"])
