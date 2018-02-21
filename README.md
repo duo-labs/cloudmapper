@@ -57,7 +57,7 @@ Copy the `config.json.demo` to `config.json` and edit it to include your account
 
 ## 1. Gather data about the account
 
-This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAuditor` policy, or can be reduced to an even more minimal set of permissions if desired.  The minimal policy needed is:
+This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAudit` policy, or can be reduced to an even more minimal set of permissions if desired.  The minimal policy needed is:
 
 ```
 {
