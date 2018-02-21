@@ -21,6 +21,7 @@ import argparse
 import sys
 from cloudmapper.webserver import run_webserver
 
+__version__ = "1.0.0"
 
 def get_account(account_name, config):
     for account in config["accounts"]:
@@ -101,10 +102,11 @@ def run_prepare(arguments):
 
 
 def show_help():
-    print "usage: {} [prepare|serve] [...]".format(sys.argv[0])
-    print "  prepare: Prepares the data for viewing"
-    print "  serve: Runs a local webserver for viewing the data"
-    print "  gather: Queries AWS for account data and caches it locally"
+    print("CloudMapper {}".format(__version__))
+    print("usage: {} [gather|prepare|serve] [...]".format(sys.argv[0]))
+    print("  gather: Queries AWS for account data and caches it locally")
+    print("  prepare: Prepares the data for viewing")
+    print("  serve: Runs a local webserver for viewing the data")
     exit(-1)
 
 
