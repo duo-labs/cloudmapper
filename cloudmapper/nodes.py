@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import pyjq
 from abc import ABCMeta
 from netaddr import IPNetwork, IPAddress
+from six import add_metaclass
 
 
 def truncate(string):
@@ -44,9 +45,8 @@ def is_public_ip(ip):
     return True
 
 
+@add_metaclass(ABCMeta)
 class Node(object):
-    __metaclass__ = ABCMeta
-
     _arn = ""
     _local_id = ""  # Ex. InstanceId
     _name = ""
@@ -236,9 +236,8 @@ class Subnet(Node):
         super(Subnet, self).__init__(parent, json_blob)
 
 
+@add_metaclass(ABCMeta)
 class Leaf(Node):
-    __metaclass__ = ABCMeta
-
     def __init__(self, parent, json_blob):
         self._isLeaf = True
         super(Leaf, self).__init__(parent, json_blob)
@@ -262,9 +261,9 @@ class Ec2(Leaf):
             # as others
             self._ips = []
             private_ips = pyjq.all('.NetworkInterfaces[].PrivateIpAddresses[].PrivateIpAddress', self._json_blob)
-            self._ips.extend(filter(lambda x: x is not None, private_ips))
+            self._ips.extend([x for x in private_ips if x is not None])
             public_ips = pyjq.all('.NetworkInterfaces[].PrivateIpAddresses[].Association.PublicIp', self._json_blob)
-            self._ips.extend(filter(lambda x: x is not None, public_ips))
+            self._ips.extend([x for x in public_ips if x is not None])
         return self._ips
 
     def security_groups(self):
