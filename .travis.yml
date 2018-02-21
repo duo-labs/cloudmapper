@@ -1,0 +1,5 @@
+language: python
+install:
+  - pip install -r requirements-dev.txt
+script:
+  - bash tests/scripts/unit_tests.sh
