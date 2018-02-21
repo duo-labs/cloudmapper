@@ -65,7 +65,7 @@ function loadCytoscape(options) {
         layoutBy: {
             name: "cose-bilkent",
             animate: "end",
-            randomize: true,
+            randomize: false,
             fit: true,
             animationDuration: 1000,
         },
