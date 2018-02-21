@@ -49,7 +49,12 @@ This will run a local webserver at http://127.0.0.1:8000/
 
 # Running with your own data
 
-## 1. Collect data about the account
+## 0. Configure your account
+
+Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names.
+
+
+## 1. Gather data about the account
 
 This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAuditor` policy, or can be reduced to an even more minimal set of permissions if desired.  The minimal policy needed is:
 
@@ -77,15 +82,22 @@ This step uses the CLI to make `describe` calls and records the json in the fold
 }
 ```
 
-Collect the AWS data with:
+Collecting the data can be performed with a bash script or via the python code base.
+
+### Option 1: Bash script
+Using the script is helpful if you need someone else to get this data for you without fiddling with setting up the python environment.
 
 ```
 ./collect_data.sh --account my_account
 ```
 
-`my_account` is just a name for your account (ex. "prod").  You should now have a directory with .json files describing your account.
+`my_account` is just a name for your account (ex. "prod").  You can also pass a `--profile` option if you have multiple AWS profiles configured.  You should now have a directory with .json files describing your account in a directory named after account name.
 
-Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names.
+### Option 2: Python code
+
+```
+python cloudmapper.py gather --account-name my_account
+```
 
 ## 2. Prepare the data
 
