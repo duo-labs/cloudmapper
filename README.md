@@ -20,7 +20,7 @@ On macOS:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool
+brew install autoconf automake libtool jq
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -30,7 +30,7 @@ On Linux:
 ```
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
-sudo yum install autoconf automake libtool python-dev
+sudo yum install autoconf automake libtool python-dev jq
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
