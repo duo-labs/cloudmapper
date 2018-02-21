@@ -104,6 +104,7 @@ def show_help():
     print "usage: {} [prepare|serve] [...]".format(sys.argv[0])
     print "  prepare: Prepares the data for viewing"
     print "  serve: Runs a local webserver for viewing the data"
+    print "  gather: Queries AWS for account data and caches it locally"
     exit(-1)
 
 
