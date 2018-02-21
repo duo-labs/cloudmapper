@@ -94,6 +94,19 @@ This step converts the collected AWS data into a format that can be displayed in
 python cloudmapper.py prepare --account my_account
 ```
 
+There are a number of filtering options that can be applied here to reduce the number of nodes and edges.  This will help the diagram look better, by removing some of its complexity, and is also needed for large environments that will not render.
+
+The two most useful filtering options:
+* `--regions`: Restrict the diagram to a set regions, ex. `us-east-1,us-east-2`
+* `--collapse-by-tag`: This is very useful to provide a tag name, and all nodes with that tag will be reduced to a single displayed node.
+
+The other filtering options are:
+* `--internal-edges` (default) and `--no-internal-edges`: When you only care about showing what is publicly accessible, use `--no-internal-edges`.
+* `--inter-rds-edges` and `--no-inter-rds-edges` (default): By default, any communication paths between RDS nodes are not shown, as this is unlikely to be of interest. To display them, use `--inter-rds-edges`.
+* `--read-replicas` (default) and `--no-read-replicas`: By default, RDS read replica nodes are shown. You can ignore them by using `--no-read-replicas`.
+* `--azs` (default) and `--no-azs`: Availibility zones are shown by default.  To ignore them, use `--no-azs`.
+
+
 ## 3. Run a webserver
 
 You can host the `web` directory with your webserver of choice, or just run:
