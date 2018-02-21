@@ -1,13 +1,56 @@
 #!/bin/bash
 set -euo pipefail
 
+AWS_OPTS="--output json"
+account=""
+profile=""
+ERROR=""
+
+function usage {
+  if [[ ! -z $ERROR ]]
+  then
+    echo "ERROR: $ERROR"
+  fi
+  echo "Usage:"
+  echo "  $0 --account my_account [--profile aws_profile]"
+  exit -1
+}
+
 echo "* Startup checks"
 
-if [ $# -ne 2 ] || [ "$1" != "--account" ] ; then
-  echo "ERROR: No account name specified"
-  echo "Usage:"
-  echo "  $0 --account my_account"
-  exit -1
+while [[ $# -gt 0 ]]
+do
+  key="$1"
+
+  case $key in
+    --account)
+      account="$2"
+      shift
+      shift
+      ;;
+    --profile)
+      profile="$2"
+      shift
+      shift
+      ;;
+    -h|--help)
+      usage
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+if [[ -z "$account" ]]
+then
+  ERROR="No account Name Specified"
+  usage
+fi
+
+if [[ ! -z "$profile" ]]
+then
+  AWS_OPTS="$AWS_OPTS --profile $profile"
 fi
 
 # Ensure the aws cli exists
@@ -18,7 +61,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Ensure we have AWS credentials
-aws sts get-caller-identity > /dev/null
+aws $AWS_OPTS sts get-caller-identity > /dev/null
 if [ $? -ne 0 ]; then
   echo "ERROR: No AWS credentials set"
   exit -1
@@ -31,38 +74,37 @@ if [ $? -ne 0 ]; then
   exit -1
 fi
 
-account=$2
 mkdir -p "$account"
 cd $account
 
 echo "* Getting region names"
-aws ec2 describe-regions > describe-regions.json
+aws $AWS_OPTS ec2 describe-regions > describe-regions.json
 # Create directory for each region name
 cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'mkdir -p $1' -- {}
 
 echo "* Getting VPC info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws ec2 --region "$1" describe-vpcs > "$1/describe-vpcs.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-vpcs > "$1/describe-vpcs.json"' -- {}
 
 echo "* Getting AZ info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws ec2 --region "$1" describe-availability-zones > "$1/describe-availability-zones.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-availability-zones > "$1/describe-availability-zones.json"' -- {}
 
 echo "* Getting subnet info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws ec2 --region "$1" describe-subnets > "$1/describe-subnets.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-subnets > "$1/describe-subnets.json"' -- {}
 
 echo "* Getting EC2 info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws ec2 --region "$1" describe-instances > "$1/describe-instances.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-instances > "$1/describe-instances.json"' -- {}
 
 echo "* Getting RDS info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws rds --region "$1" describe-db-instances > "$1/describe-db-instances.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' rds --region "$1" describe-db-instances > "$1/describe-db-instances.json"' -- {}
 
 echo "* Getting ELB info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws elb --region "$1" describe-load-balancers > "$1/describe-load-balancers.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' elb --region "$1" describe-load-balancers > "$1/describe-load-balancers.json"' -- {}
 
 echo "* Getting security group info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws ec2 --region "$1" describe-security-groups > "$1/describe-security-groups.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-security-groups > "$1/describe-security-groups.json"' -- {}
 
 echo "* Getting network interface info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws ec2 --region "$1" describe-network-interfaces > "$1/describe-network-interfaces.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-network-interfaces > "$1/describe-network-interfaces.json"' -- {}
 
 echo "* Getting VPC peering info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws ec2 --region "$1" describe-vpc-peering-connections > "$1/describe-vpc-peering-connections.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-vpc-peering-connections > "$1/describe-vpc-peering-connections.json"' -- {}

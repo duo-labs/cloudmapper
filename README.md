@@ -17,6 +17,8 @@ There are three stages to using CloudMapper:
 On macOS:
 
 ```
+# clone the repo
+git clone git@github.com:duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
 brew install autoconf automake libtool
 virtualenv venv
@@ -26,6 +28,8 @@ pip install -r requirements.txt
 
 On Linux:
 ```
+# clone the repo
+git clone git@github.com:duo-labs/cloudmapper.git
 sudo yum install autoconf automake libtool python-dev
 virtualenv venv
 source venv/bin/activate
@@ -64,9 +68,9 @@ This step uses the CLI to make `describe` calls and records the json in the fold
         "ec2:DescribeSecurityGroups",
         "ec2:DescribeVpcPeeringConnections",
         "ec2:DescribeInstances",
-        "ec2:DescribeNetworkInterfaces"
+        "ec2:DescribeNetworkInterfaces",
         "rds:DescribeDBInstances",
-        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeLoadBalancers"
       ]
     }
   ]
@@ -106,7 +110,7 @@ Using the UI
 Mouse actions
 -------------
 - Pan and zoom can be done with the UI controls, or arrow keys and -/+ keys.
-- Clicking on a node selects it (background turns yellow).  Double-clicking a node makes it's deleted neighbors visible again.
+- Clicking on a node selects it (background turns yellow).  Double-clicking a node makes its deleted neighbors visible again.
 - Unselect a node by clicking on a new one, or holding shift and clicking on the selected node again.
 - Holding down shift can be used to select multiple nodes. Holding shift, clicking, and dragging over an area, selects all nodes that overlap that area.
 - Click on a node and drag it to move it around.
@@ -115,7 +119,7 @@ Mouse actions
 
 Commands
 --------
-- Delete (d): Select a node and click the eye with a slash through it to delete (ie. hide) it. Click the eye to undelete (unhide) all deleted nodes.   All nodes connected to a deleted node will get a black border. If you double-click on a node with a black border, it's deleted neighbors will be undeleted.
+- Delete (d): Select a node and click the eye with a slash through it to delete (ie. hide) it. Click the eye to undelete (unhide) all deleted nodes.   All nodes connected to a deleted node will get a black border. If you double-click on a node with a black border, its deleted neighbors will be undeleted.
 ![Deleted node](docs/images/deleted_node.png "Deleted node")
 
 - Highlight (h): Select a node and click the symbol of the connected nodes to highlight the neighbors of a node. Click the inverse symbol to unhighlight the neighbors.  Highlight neighbors makes it easier to see which nodes are connected.

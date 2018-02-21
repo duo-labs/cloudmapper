@@ -21,6 +21,7 @@ import argparse
 import sys
 from cloudmapper.webserver import run_webserver
 
+__version__ = "1.0.0"
 
 def get_account(account_name, config):
     for account in config["accounts"]:
@@ -28,6 +29,16 @@ def get_account(account_name, config):
             return account
     # Could not find account
     raise Exception("Account named \"{}\" not found".format(account_name))
+
+
+def run_gathering(arguments):
+    from cloudmapper.gatherer import gather
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--account-name", help="Account to collect from",
+                        required=True, type=str)
+    args = parser.parse_args(arguments)
+
+    gather(args)
 
 
 def run_prepare(arguments):
@@ -91,7 +102,9 @@ def run_prepare(arguments):
 
 
 def show_help():
-    print("usage: {} [prepare|serve] [...]".format(sys.argv[0]))
+    print("CloudMapper {}".format(__version__))
+    print("usage: {} [gather|prepare|serve] [...]".format(sys.argv[0]))
+    print("  gather: Queries AWS for account data and caches it locally")
     print("  prepare: Prepares the data for viewing")
     print("  serve: Runs a local webserver for viewing the data")
     exit(-1)
@@ -111,6 +124,8 @@ def main():
         run_prepare(arguments)
     elif command == "serve":
         run_webserver(arguments)
+    elif command == "gather":
+        run_gathering(arguments)
     else:
         show_help()
 
