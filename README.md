@@ -142,12 +142,12 @@ Mouse actions
 - Holding down shift can be used to select multiple nodes. Holding shift, clicking, and dragging over an area, selects all nodes that overlap that area.
 - Click on a node and drag it to move it around.
 
-![Command icons](docs/images/command_icons.png "Command icons")
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_icons.png" width=200>
 
 Commands
 --------
 - Delete (d): Select a node and click the eye with a slash through it to delete (ie. hide) it. Click the eye to undelete (unhide) all deleted nodes.   All nodes connected to a deleted node will get a black border. If you double-click on a node with a black border, its deleted neighbors will be undeleted.
-![Deleted node](docs/images/deleted_node.png "Deleted node")
+![Deleted node](docs/images/deleted_node.png "Deleted node") <!-- .element height="10%" width="10%" -->
 
 - Highlight (h): Select a node and click the symbol of the connected nodes to highlight the neighbors of a node. Click the inverse symbol to unhighlight the neighbors.  Highlight neighbors makes it easier to see which nodes are connected.
 ![Highlighted neighbors](docs/images/highlight_neighbors.png "Highlighted neighbors")
