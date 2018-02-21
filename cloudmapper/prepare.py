@@ -114,7 +114,7 @@ def get_external_cidrs(account, config):
                     unique_cidrs[cidr] = 1
 
     # Remove private CIDR ranges
-    for cidr in list(unique_cidrs.keys()):
+    for cidr in unique_cidrs.keys():
         if is_external_cidr(cidr):
             # It's something else, so add it
             external_cidrs.append(Cidr(cidr, get_cidr_name(cidr, config)))

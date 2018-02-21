@@ -135,7 +135,7 @@ class Node(object):
 
     @property
     def children(self):
-        return list(self._children.values())
+        return self._children.values()
 
     @property
     def has_leaves(self):
