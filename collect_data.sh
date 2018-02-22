@@ -42,13 +42,13 @@ do
   esac
 done
 
-if [[ -z "$account" ]]
+if [[ -z "$account" ]] && [[ "${AWS_SECRET_ACCESS_KEY:-unset}" == "unset" ]]
 then
   ERROR="No account Name Specified"
   usage
 fi
 
-if [[ ! -z "$profile" ]]
+if [[ ! -z "$profile" ]] && [[ "${AWS_SECRET_ACCESS_KEY:-unset}" == "unset" ]]
 then
   AWS_OPTS="$AWS_OPTS --profile $profile"
 fi
