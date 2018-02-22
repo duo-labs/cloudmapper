@@ -37,8 +37,12 @@ def get_account(account_name, config, config_filename):
     for account in config["accounts"]:
         if account["name"] == account_name:
             return account
+        if account_name is None and account.get("default", False):
+            return account
 
     # Else could not find account
+    if account_name is None:
+        exit("ERROR: Must specify an account, or set one in {} as a default".format(config_filename))
     exit("ERROR: Account named \"{}\" not found in {}".format(account_name, config_filename))
 
 
@@ -60,7 +64,7 @@ def run_prepare(arguments):
     parser.add_argument("--config", help="Config file name",
                         default="config.json", type=str)
     parser.add_argument("--account-name", help="Account to collect from",
-                        required=True, type=str)
+                        required=False, type=str)
     parser.add_argument("--regions", help="Regions to restrict to (ex. us-east-1,us-west-2)",
                         default=None, type=str)
     parser.add_argument("--internal-edges", help="Show all connections (default)",
