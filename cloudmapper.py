@@ -50,7 +50,7 @@ def run_gathering(arguments):
     from cloudmapper.gatherer import gather
     parser = argparse.ArgumentParser()
     parser.add_argument("--account-name", help="Account to collect from",
-                        required=True, type=str)
+                        required=False, type=str)
     args = parser.parse_args(arguments)
 
     gather(args)
@@ -105,13 +105,14 @@ def run_prepare(arguments):
     outputfilter["collapse_by_tag"] = args.collapse_by_tag
 
     # Read accounts file
-    try:
-        config = json.load(open(args.config))
-    except IOError:
-        exit("ERROR: Unable to load config file \"{}\"".format(args.config))
-    except ValueError as e:
-        exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
-    account = get_account(args.account_name, config, args.config)
+    if args.account_name:
+        try:
+            config = json.load(open(args.config))
+        except IOError:
+            exit("ERROR: Unable to load config file \"{}\"".format(args.config))
+        except ValueError as e:
+            exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
+        account = get_account(args.account_name, config, args.config)
 
     prepare(account, config, outputfilter)
 
