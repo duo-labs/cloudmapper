@@ -33,12 +33,13 @@ from cloudmapper.webserver import run_webserver
 
 __version__ = "1.0.0"
 
-def get_account(account_name, config):
+def get_account(account_name, config, config_filename):
     for account in config["accounts"]:
         if account["name"] == account_name:
             return account
-    # Could not find account
-    raise Exception("Account named \"{}\" not found".format(account_name))
+
+    # Else could not find account
+    exit("ERROR: Account named \"{}\" not found in {}".format(account_name, config_filename))
 
 
 def run_gathering(arguments):
@@ -106,7 +107,7 @@ def run_prepare(arguments):
         exit("ERROR: Unable to load config file \"{}\"".format(args.config))
     except ValueError as e:
         exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
-    account = get_account(args.account_name, config)
+    account = get_account(args.account_name, config, args.config)
 
     prepare(account, config, outputfilter)
 
