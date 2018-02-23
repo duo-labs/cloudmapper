@@ -73,6 +73,9 @@ def run_webserver(arguments):
     else:
         listening_host = '127.0.0.1'
 
-    httpd = RootedHTTPServer("web", (listening_host, args.port), MyHTTPRequestHandler)
+    Handler = MyHTTPRequestHandler
+    Handler.extensions_map['.svg'] = 'image/svg+xml'
+
+    httpd = RootedHTTPServer("web", (listening_host, args.port), Handler)
     print("CloudMapper serving on {}:{}".format(listening_host, args.port))
     httpd.serve_forever()
