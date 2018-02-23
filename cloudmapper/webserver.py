@@ -77,4 +77,5 @@ def run_webserver(arguments):
     Handler.extensions_map['.svg'] = 'image/svg+xml'
 
     httpd = RootedHTTPServer("web", (listening_host, args.port), Handler)
+    print("CloudMapper serving on {}:{}".format(listening_host, args.port))
     httpd.serve_forever()
