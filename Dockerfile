@@ -2,9 +2,10 @@ FROM python:alpine AS cloudmapper
 
 LABEL maintainer="https://github.com/fernandomiguel/"
 LABEL Project="https://github.com/duo-labs/cloudmapper"
+LABEL DocherHub="https://hub.docker.com/r/fernandomiguel/cloudmapper/"
 
-# Build with:   $ docker build --tag cloudmapper .
-# Run with:     $ docker run --rm -it -e ACCOUNT=<my_account> -v $PWD/config.json:/cloudmapper/config.json -e AWS_DEFAULT_REGION -e AWS_REGION -p8000 --name cloudmapper cloudmapper
+# Build with:   $ docker build --pull --tag cloudmapper .
+# Run with:     $ docker run --rm -it -e ACCOUNT=<my_account> -v $PWD/config.json:/cloudmapper/config.json -e AWS_DEFAULT_REGION -e AWS_REGION -p8000 --name cloudmapper fernandomiguel/cloudmapper
 # Required parameters: ACCOUNT, AWS_DEFAULT_REGION, AWS_REGION
 # Running with aws-vault: $ aws-vault --debug exec <my_role> --server
 

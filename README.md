@@ -101,6 +101,16 @@ Using the script is helpful if you need someone else to get this data for you wi
 python cloudmapper.py gather --account-name my_account
 ```
 
+### Option 3: Dockerfile
+
+```
+$ docker run --rm -it -e ACCOUNT=<my_account> -v $PWD/config.json:/cloudmapper/config.json -e AWS_DEFAULT_REGION -e AWS_REGION -p8000 --name cloudmapper fernandomiguel/cloudmapper
+
+Required parameters: ACCOUNT, AWS_DEFAULT_REGION, AWS_REGION
+
+Running with aws-vault: $ aws-vault --debug exec <my_role> --server
+```
+
 ## 2. Prepare the data
 
 This step converts the collected AWS data into a format that can be displayed in the browser by generating a `web/data.json` file.
