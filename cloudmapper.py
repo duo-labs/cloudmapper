@@ -56,6 +56,34 @@ def run_gathering(arguments):
     gather(args)
 
 
+def run_configure(arguments):
+    from cloudmapper.configure import configure
+    if len(arguments) == 0:
+        exit("ERROR: Missing action for configure. Should be in {add-cidr|add-account|remove-cidr|remove-account}")
+        return
+    action = arguments[0]
+    arguments = arguments[1:]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config-file", help="Path to the config file",
+                        required=True, type=str)
+    if action == 'add-account' or action == 'remove-account':
+        required = True if action.startswith('add') else False
+        parser.add_argument("--name", help="Account name",
+                            required=required, type=str)
+        parser.add_argument("--id", help="Account ID",
+                        required=required, type=str)
+        parser.add_argument("--default", help="Default account",
+                        required=False, default="False", type=str)
+    elif action == 'add-cidr' or action == 'remove-cidr':
+        required = True if action.startswith('add') else False
+        parser.add_argument("--cidr", help="CIDR IP",
+                        required=required, type=str)
+        parser.add_argument("--name", help="CIDR Name",
+                        required=required, type=str)
+    args = parser.parse_args(arguments)
+    configure(action, args)
+
+
 def run_prepare(arguments):
     from cloudmapper.prepare import prepare
 
@@ -119,6 +147,7 @@ def run_prepare(arguments):
 def show_help():
     print("CloudMapper {}".format(__version__))
     print("usage: {} [gather|prepare|serve] [...]".format(sys.argv[0]))
+    print("  configure: Configure and create your config file")
     print("  gather: Queries AWS for account data and caches it locally")
     print("  prepare: Prepares the data for viewing")
     print("  serve: Runs a local webserver for viewing the data")
@@ -141,6 +170,8 @@ def main():
         run_webserver(arguments)
     elif command == "gather":
         run_gathering(arguments)
+    elif command == "configure":
+        run_configure(arguments)
     else:
         show_help()
 
