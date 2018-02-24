@@ -4,3 +4,4 @@ venv/
 web/data.json
 .coverage
 htmlcov/
+config.json
