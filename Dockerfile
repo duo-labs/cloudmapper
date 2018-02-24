@@ -8,9 +8,10 @@ LABEL Project="https://github.com/duo-labs/cloudmapper"
 
 EXPOSE 8000
 WORKDIR /cloudmapper
+ENV ACCOUNT=$ACCOUNT
+CMD python cloudmapper.py gather --account-name $ACCOUNT && \
+    python cloudmapper.py prepare --account-name $ACCOUNT
 
-# ARG
-# ENV key=value
 
 RUN apk --no-cache --virtual build-dependencies add \
     git \
