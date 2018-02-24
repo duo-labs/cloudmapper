@@ -4,7 +4,7 @@ LABEL maintainer="https://github.com/fernandomiguel/"
 LABEL Project="https://github.com/duo-labs/cloudmapper"
 
 # Build with:   $ docker build --tag cloudmapper .
-# Run with:     $ docker run -it -p80:8000 --name cloudmapper cloudmapper
+# Run with:     $ docker run -it -p80:8000 -v $PWD/config.json:/cloudmapper/config.json --name cloudmapper cloudmapper
 
 EXPOSE 8000
 WORKDIR /cloudmapper
@@ -18,7 +18,9 @@ RUN apk --no-cache --virtual build-dependencies add \
     automake \
     libtool \
     python-dev \
-    jq
+    jq \
+    g++ \
+    make
 
 # clone the repo
 RUN git clone https://github.com/duo-labs/cloudmapper.git /cloudmapper
