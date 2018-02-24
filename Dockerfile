@@ -4,7 +4,9 @@ LABEL maintainer="https://github.com/fernandomiguel/"
 LABEL Project="https://github.com/duo-labs/cloudmapper"
 
 # Build with:   $ docker build --tag cloudmapper .
-# Run with:     $ docker run --rm -it -e ACCOUNT=<my_account> -v $PWD/config.json:/cloudmapper/config.json -e AWS_DEFAULT_REGION -e AWS_REGION -p80:8000 --name cloudmapper cloudmapper
+# Run with:     $ docker run --rm -it -e ACCOUNT=<my_account> -v $PWD/config.json:/cloudmapper/config.json -e AWS_DEFAULT_REGION -e AWS_REGION -p8000 --name cloudmapper cloudmapper
+# Required parameters: ACCOUNT, AWS_DEFAULT_REGION, AWS_REGION
+# Running with aws-vault: $ aws-vault --debug exec <my_role> --server
 
 EXPOSE 8000
 WORKDIR /cloudmapper
