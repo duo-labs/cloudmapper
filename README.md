@@ -105,7 +105,7 @@ python cloudmapper.py gather --account-name my_account
 
 This step converts the collected AWS data into a format that can be displayed in the browser by generating a `web/data.json` file.
 ```
-python cloudmapper.py prepare --account my_account
+python cloudmapper.py prepare --account-name my_account
 ```
 
 There are a number of filtering options that can be applied here to reduce the number of nodes and edges.  This will help the diagram look better, by removing some of its complexity, and is also needed for large environments that will not render.
