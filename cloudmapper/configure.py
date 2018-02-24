@@ -1,13 +1,12 @@
 import json
 import netaddr
-import six
 import os.path
 
 
 def configure(action, arguments):
     if not os.path.isfile(arguments.config_file):
         print("Config file does not exist, creating one")
-        config = {  "accounts": [], "cidrs": {}}
+        config = {"accounts": [], "cidrs": {}}
     else:
         with open(arguments.config_file, 'r') as f:
             config = json.loads(f.read())
@@ -39,13 +38,12 @@ def configure(action, arguments):
             condition = lambda x, y: x or y
         else:
             condition = lambda x, y: x and y
-        
+
         # Force it to be a complete set so that deleting the key later on doesn't raise an error because the dictionary Size changed during iteration
         for cidr in set(config['cidrs'].keys()):
             name = config['cidrs'][cidr]['name']
             if condition(cidr == arguments.cidr, name == arguments.name):
                 del config['cidrs'][cidr]
-    
+
     with open(arguments.config_file, 'w+') as f:
         f.write(json.dumps(config, indent=4, sort_keys=True))
-        
