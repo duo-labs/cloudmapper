@@ -20,7 +20,6 @@ CMD python cloudmapper.py gather --account-name $ACCOUNT && \
     python cloudmapper.py serve
 
 RUN apk --no-cache --virtual build-dependencies add \
-    git \
     autoconf \
     automake \
     libtool \
@@ -30,6 +29,7 @@ RUN apk --no-cache --virtual build-dependencies add \
     make
 
 # clone the repo && Install pre-reqs for pyjq
-RUN git clone https://github.com/duo-labs/cloudmapper.git /cloudmapper &&\
-    touch config.json &&\
+COPY . /cloudmapper
+
+RUN touch config.json &&\
     pip install -r requirements.txt
