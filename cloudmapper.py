@@ -2,32 +2,58 @@
 """
 Copyright 2018 Duo Security
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+disclaimer.
 
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+following disclaimer in the documentation and/or other materials provided with the distribution.
 
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote
+products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 
 This script manages CloudMapper, a tool for creating network diagrams of AWS environments.
 """
-
+from __future__ import (absolute_import, division, print_function)
 import json
 import argparse
 import sys
 from cloudmapper.webserver import run_webserver
 
+__version__ = "1.0.0"
 
-def get_account(account_name, config):
+def get_account(account_name, config, config_filename):
     for account in config["accounts"]:
         if account["name"] == account_name:
             return account
-    # Could not find account
-    raise Exception("Account named \"{}\" not found".format(account_name))
+        if account_name is None and account.get("default", False):
+            return account
+
+    # Else could not find account
+    if account_name is None:
+        exit("ERROR: Must specify an account, or set one in {} as a default".format(config_filename))
+    exit("ERROR: Account named \"{}\" not found in {}".format(account_name, config_filename))
+
+
+def run_gathering(arguments):
+    from cloudmapper.gatherer import gather
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--account-name", help="Account to collect from",
+                        required=True, type=str)
+    args = parser.parse_args(arguments)
+
+    gather(args)
 
 
 def run_prepare(arguments):
@@ -38,7 +64,7 @@ def run_prepare(arguments):
     parser.add_argument("--config", help="Config file name",
                         default="config.json", type=str)
     parser.add_argument("--account-name", help="Account to collect from",
-                        required=True, type=str)
+                        required=False, type=str)
     parser.add_argument("--regions", help="Regions to restrict to (ex. us-east-1,us-west-2)",
                         default=None, type=str)
     parser.add_argument("--internal-edges", help="Show all connections (default)",
@@ -71,7 +97,7 @@ def run_prepare(arguments):
     if args.regions:
         # Regions are given as 'us-east-1,us-west-2'. Split this by the comma,
         # wrap each with quotes, and add the comma back. This is needed for how we do filtering.
-        outputfilter["regions"] = ','.join(map(lambda r: '"' + r + '"', args.regions.split(',')))
+        outputfilter["regions"] = ','.join(['"' + r + '"' for r in args.regions.split(',')])
     outputfilter["internal_edges"] = args.internal_edges
     outputfilter["read_replicas"] = args.read_replicas
     outputfilter["inter_rds_edges"] = args.inter_rds_edges
@@ -85,15 +111,17 @@ def run_prepare(arguments):
         exit("ERROR: Unable to load config file \"{}\"".format(args.config))
     except ValueError as e:
         exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
-    account = get_account(args.account_name, config)
+    account = get_account(args.account_name, config, args.config)
 
     prepare(account, config, outputfilter)
 
 
 def show_help():
-    print "usage: {} [prepare|serve] [...]".format(sys.argv[0])
-    print "  prepare: Prepares the data for viewing"
-    print "  serve: Runs a local webserver for viewing the data"
+    print("CloudMapper {}".format(__version__))
+    print("usage: {} [gather|prepare|serve] [...]".format(sys.argv[0]))
+    print("  gather: Queries AWS for account data and caches it locally")
+    print("  prepare: Prepares the data for viewing")
+    print("  serve: Runs a local webserver for viewing the data")
     exit(-1)
 
 
@@ -111,10 +139,12 @@ def main():
         run_prepare(arguments)
     elif command == "serve":
         run_webserver(arguments)
+    elif command == "gather":
+        run_gathering(arguments)
     else:
         show_help()
 
-    print "Complete"
+    print("Complete")
 
 
 if __name__ == "__main__":

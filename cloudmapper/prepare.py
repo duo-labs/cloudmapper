@@ -1,15 +1,25 @@
 """
 Copyright 2018 Duo Security
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+disclaimer.
 
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+following disclaimer in the documentation and/or other materials provided with the distribution.
 
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote
+products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 """
 
@@ -205,7 +215,7 @@ def build_data_structure(account_data, config, outputfilter):
     cytoscape_json = []
 
     account = Account(None, account_data)
-    print "Building data for account {} ({})".format(account.name, account.local_id)
+    print("Building data for account {} ({})".format(account.name, account.local_id))
 
     cytoscape_json.append(account.cytoscape_data())
     for region_json in get_regions(account, outputfilter):
@@ -267,7 +277,7 @@ def build_data_structure(account_data, config, outputfilter):
             cytoscape_json.append(region.cytoscape_data())
             account.addChild(region)
 
-        print "- {} nodes built in region {}".format(node_count_per_region, region.local_id)
+        print("- {} nodes built in region {}".format(node_count_per_region, region.local_id))
 
     # Get VPC peerings
     for region in account.children:
@@ -297,39 +307,39 @@ def build_data_structure(account_data, config, outputfilter):
     connections = {}
     for region in account.children:
         for vpc in region.children:
-            for c, reasons in get_connections(cidrs, vpc, outputfilter).iteritems():
+            for c, reasons in get_connections(cidrs, vpc, outputfilter).items():
                 r = connections.get(c, [])
                 r.extend(reasons)
                 connections[c] = r
 
     # Add external cidr nodes
     used_cidrs = 0
-    for _, cidr in cidrs.iteritems():
+    for _, cidr in cidrs.items():
         if cidr.is_used:
             used_cidrs += 1
             cytoscape_json.append(cidr.cytoscape_data())
-    print "- {} external CIDRs built".format(used_cidrs)
+    print("- {} external CIDRs built".format(used_cidrs))
 
     total_number_of_nodes = len(cytoscape_json)
 
     # Add the mapping to our graph
-    for c, reasons in connections.iteritems():
+    for c, reasons in connections.items():
         if c.source == c.target:
             # Ensure we don't add connections with the same nodes on either side
             continue
         c._json = reasons
         cytoscape_json.append(c.cytoscape_data())
-    print "- {} connections built".format(len(connections))
+    print("- {} connections built".format(len(connections)))
 
     # Check if we have a lot of data, and if so, show a warning
     # Numbers chosen here are arbitrary
     MAX_NODES_FOR_WARNING = 200
     MAX_EDGES_FOR_WARNING = 500
     if total_number_of_nodes > MAX_NODES_FOR_WARNING or len(connections) > MAX_EDGES_FOR_WARNING:
-        print "WARNING: There are {} total nodes and {} total edges.".format(total_number_of_nodes, len(connections))
-        print "  This will be difficult to display and may be too complex to make sense of."
-        print "  Consider reducing the number of items in the diagram by viewing a single"
-        print "   region, ignoring internal edges, or other filtering."
+        print("WARNING: There are {} total nodes and {} total edges.".format(total_number_of_nodes, len(connections)))
+        print("  This will be difficult to display and may be too complex to make sense of.")
+        print("  Consider reducing the number of items in the diagram by viewing a single")
+        print("   region, ignoring internal edges, or other filtering.")
 
     return cytoscape_json
 

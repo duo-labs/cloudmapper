@@ -1,8 +1,10 @@
 CloudMapper
 ========
-CloudMapper generates network diagrams of Amazon Web Services (AWS) environments and display them via your browser. It helps you understand visually what exists in your accounts and identify possible network misconfigurations.
+CloudMapper generates network diagrams of Amazon Web Services (AWS) environments and displays them via your browser. It helps you understand visually what exists in your accounts and identify possible network misconfigurations.
 
-*See demo https://duo-labs.github.io/cloudmapper/*
+*Demo: https://duo-labs.github.io/cloudmapper/*
+
+*Intro post: https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool*
 
 ![Demo screenshot](docs/images/ideal_layout.png "Demo screenshot")
 
@@ -20,7 +22,7 @@ On macOS:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool
+brew install autoconf automake libtool jq
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -30,7 +32,7 @@ On Linux:
 ```
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
-sudo yum install autoconf automake libtool python-dev
+sudo yum install autoconf automake libtool python-dev jq
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -78,9 +80,14 @@ docker-compose build && accountname="demo" docker-compose up
 
 # Running with your own data
 
-## 1. Collect data about the account
+## 0. Configure your account
 
-This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAuditor` policy, or can be reduced to an even more minimal set of permissions if desired.  The minimal policy needed is:
+Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names.
+
+
+## 1. Gather data about the account
+
+This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAudit` policy, or can be reduced to an even more minimal set of permissions if desired.  The minimal policy needed is:
 
 ```
 {
@@ -106,15 +113,22 @@ This step uses the CLI to make `describe` calls and records the json in the fold
 }
 ```
 
-Collect the AWS data with:
+Collecting the data can be performed with a bash script or via the python code base.
+
+### Option 1: Bash script
+Using the script is helpful if you need someone else to get this data for you without fiddling with setting up the python environment.
 
 ```
 ./collect_data.sh --account my_account
 ```
 
-`my_account` is just a name for your account (ex. "prod").  You should now have a directory with .json files describing your account.
+`my_account` is just a name for your account (ex. "prod").  You can also pass a `--profile` option if you have multiple AWS profiles configured.  You should now have a directory with .json files describing your account in a directory named after account name.
 
-Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names.
+### Option 2: Python code
+
+```
+python cloudmapper.py gather --account-name my_account
+```
 
 ## 2. Prepare the data
 
@@ -122,6 +136,19 @@ This step converts the collected AWS data into a format that can be displayed in
 ```
 python cloudmapper.py prepare --account my_account
 ```
+
+There are a number of filtering options that can be applied here to reduce the number of nodes and edges.  This will help the diagram look better, by removing some of its complexity, and is also needed for large environments that will not render.
+
+The two most useful filtering options:
+* `--regions`: Restrict the diagram to a set regions, ex. `us-east-1,us-east-2`
+* `--collapse-by-tag`: This is very useful to provide a tag name, and all nodes with that tag will be reduced to a single displayed node.
+
+The other filtering options are:
+* `--internal-edges` (default) and `--no-internal-edges`: When you only care about showing what is publicly accessible, use `--no-internal-edges`.
+* `--inter-rds-edges` and `--no-inter-rds-edges` (default): By default, any communication paths between RDS nodes are not shown, as this is unlikely to be of interest. To display them, use `--inter-rds-edges`.
+* `--read-replicas` (default) and `--no-read-replicas`: By default, RDS read replica nodes are shown. You can ignore them by using `--no-read-replicas`.
+* `--azs` (default) and `--no-azs`: Availibility zones are shown by default.  To ignore them, use `--no-azs`.
+
 
 ## 3. Run a webserver
 
@@ -144,18 +171,21 @@ Mouse actions
 - Holding down shift can be used to select multiple nodes. Holding shift, clicking, and dragging over an area, selects all nodes that overlap that area.
 - Click on a node and drag it to move it around.
 
-![Command icons](docs/images/command_icons.png "Command icons")
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_icons.png" width=300 alt="Command icons">
 
 Commands
 --------
 - Delete (d): Select a node and click the eye with a slash through it to delete (ie. hide) it. Click the eye to undelete (unhide) all deleted nodes.   All nodes connected to a deleted node will get a black border. If you double-click on a node with a black border, its deleted neighbors will be undeleted.
-![Deleted node](docs/images/deleted_node.png "Deleted node")
+
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/deleted_node.png" width=300 alt="Deleted node">
 
 - Highlight (h): Select a node and click the symbol of the connected nodes to highlight the neighbors of a node. Click the inverse symbol to unhighlight the neighbors.  Highlight neighbors makes it easier to see which nodes are connected.
-![Highlighted neighbors](docs/images/highlight_neighbors.png "Highlighted neighbors")
+
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/highlight_neighbors.png" width=300 alt="Highlighted neighbors">
 
 - Collapse all: Click the icon of the arrows pointed toward each other to collapse all nodes.  Click the symbol of the arrows pointed away to uncollapse all collapsed node.
-![Collapsed node](docs/images/collapsed_node.png "Collapsed node")
+
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/collapsed_node.png" width=300 alt="Collapsed node">
 
 - Collapse (c/e): The "minus" symbol will collapse a node, and the "plus" symbol will expand it.
 - Randomize layout (r): The hammer symbol will randomly layout the diagram in a new way.
