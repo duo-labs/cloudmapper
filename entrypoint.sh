@@ -6,6 +6,6 @@ then
 else
 	cp config.json.demo config.json
 fi
-pipenv run python cloudmapper.py prepare --account $ACCOUNT
+pipenv run python cloudmapper.py prepare --account-name $ACCOUNT
 pipenv run python cloudmapper.py serve --public
 
