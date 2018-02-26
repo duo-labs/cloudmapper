@@ -65,7 +65,7 @@ def run_configure(arguments):
     arguments = arguments[1:]
     parser = argparse.ArgumentParser()
     parser.add_argument("--config-file", help="Path to the config file",
-                        required=True, type=str)
+                        default="config.json", type=str)
     if action == 'add-account' or action == 'remove-account':
         required = True if action.startswith('add') else False
         parser.add_argument("--name", help="Account name",
