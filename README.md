@@ -25,6 +25,7 @@ git clone git@github.com:duo-labs/cloudmapper.git
 brew install autoconf automake libtool jq
 virtualenv venv
 source venv/bin/activate
+cd cloudmapper/
 pip install -r requirements.txt
 ```
 
@@ -35,6 +36,7 @@ git clone git@github.com:duo-labs/cloudmapper.git
 sudo yum install autoconf automake libtool python-dev jq
 virtualenv venv
 source venv/bin/activate
+cd cloudmapper/
 pip install -r requirements.txt
 ```
 
