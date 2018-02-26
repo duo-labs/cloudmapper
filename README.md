@@ -33,9 +33,9 @@ On Linux:
 ```
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
-(Centos, Fedora, RedHat etc.):
-sudo yum install autoconf automake libtool python-dev jq
-(Debian, Ubuntu etc.):
+# (Centos, Fedora, RedHat etc.):
+# sudo yum install autoconf automake libtool python-dev jq
+# (Debian, Ubuntu etc.):
 sudo apt-get install autoconf automake libtool python-dev jq
 cd cloudmapper/
 virtualenv venv
