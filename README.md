@@ -54,18 +54,6 @@ docker-compose build
 # Set the accountname and run the container (assuming aws_* variables are set)
 accountname="testaccount"  docker-compose up
 ```
-Or, using aws-vault:
-
-```
-# Clone the repo
-git clone git@github.com:duo-labs/cloudmapper.git
-# Edit config.json
-vi config.json
-# Build the docker container
-docker-compose build
-## Run the container using aws-vault
-accountname="testaccount" aws-vault exec audit-role -- docker-compose up
-```
 
 ## Run with demo data
 
@@ -78,7 +66,7 @@ python cloudmapper.py serve
 
 This will run a local webserver at http://127.0.0.1:8000/
 
-Alternatively (using docker):
+Alternatively using docker:
 ```
 docker-compose build && accountname="demo" docker-compose up
 ```
