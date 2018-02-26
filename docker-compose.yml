@@ -9,7 +9,7 @@ services:
       - AWS_SESSION_TOKEN
       - AWS_SECURITY_TOKEN
       - AWS_DEFAULT_REGION=eu-west-1
-      - accountname=accountname
+      - ACCOUNT
     ports:
       - "8000:8000"
     logging:
