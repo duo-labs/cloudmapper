@@ -25,6 +25,7 @@ import argparse
 import os
 import posixpath
 import six.moves.urllib as urllib
+import socket
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
@@ -34,6 +35,10 @@ class RootedHTTPServer(HTTPServer):
         HTTPServer.__init__(self, *args, **kwargs)
         self.RequestHandlerClass.base_path = base_path
 
+class RootedHTTPServerV6(RootedHTTPServer, object):
+    address_family = socket.AF_INET6
+    def __init__(self, *args, **kwargs):
+        super(RootedHTTPServerV6, self).__init__(*args, **kwargs)
 
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
@@ -64,18 +69,22 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
 def run_webserver(arguments):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--port", help="Port to listen on", default=8000, type=int)
-    parser.add_argument("--public", dest='is_public', help="Allow connections from 0.0.0.0 as opposed to only localhost", action='store_true')
-    parser.set_defaults(is_public=False)
+    parser.add_argument("--public", dest='is_public', help="Allow connections from 0.0.0.0 (or :: if --ipv6 was provided) as opposed to only localhost", action='store_true')
+    parser.add_argument("--ipv6", dest='is_ipv6', help="Listen on IPv6", action='store_true')
+    parser.set_defaults(is_public=False, is_ipv6=False)
     args = parser.parse_args(arguments)
 
     if args.is_public:
-        listening_host = '0.0.0.0'
+        listening_host = '::' if args.is_ipv6 else '0.0.0.0'
     else:
-        listening_host = '127.0.0.1'
+        listening_host = '::1' if args.is_ipv6 else '127.0.0.1'
 
     Handler = MyHTTPRequestHandler
     Handler.extensions_map['.svg'] = 'image/svg+xml'
 
-    httpd = RootedHTTPServer("web", (listening_host, args.port), Handler)
+    if args.is_ipv6:
+        httpd = RootedHTTPServerV6("web", (listening_host, args.port), Handler)
+    else:
+        httpd = RootedHTTPServer("web", (listening_host, args.port), Handler)
     print("CloudMapper serving on {}:{}".format(listening_host, args.port))
     httpd.serve_forever()
