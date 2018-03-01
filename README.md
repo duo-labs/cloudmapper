@@ -125,7 +125,7 @@ python cloudmapper.py gather --account-name my_account
 
 ## 2. Generate your config file
 
-These steps allows you yo generate your own config file.
+These steps allows you to generate your own config file.
 ```
 python cloudmapper.py {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
 python cloudmapper.py {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
@@ -149,7 +149,7 @@ The other filtering options are:
 * `--internal-edges` (default) and `--no-internal-edges`: When you only care about showing what is publicly accessible, use `--no-internal-edges`.
 * `--inter-rds-edges` and `--no-inter-rds-edges` (default): By default, any communication paths between RDS nodes are not shown, as this is unlikely to be of interest. To display them, use `--inter-rds-edges`.
 * `--read-replicas` (default) and `--no-read-replicas`: By default, RDS read replica nodes are shown. You can ignore them by using `--no-read-replicas`.
-* `--azs` (default) and `--no-azs`: Availibility zones are shown by default.  To ignore them, use `--no-azs`.
+* `--azs` (default) and `--no-azs`: Availability zones are shown by default.  To ignore them, use `--no-azs`.
 
 
 ## 4. Run a webserver
