@@ -100,6 +100,12 @@ def get_elbs(subnet):
     return elbs + albs
 
 
+def get_albs_and_nlbs(subnet):
+    instances = query_aws(subnet.account, "describe-load-balancers-v2", subnet.region)
+    resource_filter = '.LoadBalancers[] | select(.VpcId == "{}") | select(.AvailabilityZones[].SubnetId == "{}")'
+    return pyjq.all(resource_filter.format(subnet.vpc.local_id, subnet.local_id), instances)
+
+
 def get_rds_instances(subnet):
     instances = query_aws(subnet.account, "describe-db-instances", subnet.region)
     resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
@@ -267,6 +273,11 @@ def build_data_structure(account_data, config, outputfilter):
                     for elb_json in get_elbs(subnet):
                         elb = Elb(subnet, elb_json)
                         subnet.addChild(elb)
+
+                    # Get ALB's and NLB's
+                    for alb_json in get_albs_and_nlbs(subnet):
+                        alb = Elb(subnet, alb_json)
+                        subnet.addChild(alb)
 
                     # If there are leaves, then add this subnet to the final graph
                     if len(subnet.leaves) > 0:
