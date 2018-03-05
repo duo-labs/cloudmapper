@@ -26,6 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import json
 import itertools
 import pyjq
+import os.path
 from netaddr import IPNetwork, IPAddress
 from cloudmapper.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
 
@@ -35,7 +36,10 @@ def query_aws(account, query, region=None):
         file_name = "{}/{}.json".format(account.name, query)
     else:
         file_name = "{}/{}/{}.json".format(account.name, region.name, query)
-    return json.load(open(file_name))
+    if os.path.isfile(file_name): 
+        return json.load(open(file_name))
+    else:
+        return {}
 
 
 def get_regions(account, outputfilter):
@@ -85,6 +89,12 @@ def get_ec2s(subnet):
 def get_elbs(subnet):
     instances = query_aws(subnet.account, "describe-load-balancers", subnet.region)
     resource_filter = '.LoadBalancerDescriptions[] | select(.VPCId == "{}") | select(.Subnets[] == "{}")'
+    return pyjq.all(resource_filter.format(subnet.vpc.local_id, subnet.local_id), instances)
+
+
+def get_albs_and_nlbs(subnet):
+    instances = query_aws(subnet.account, "describe-load-balancers-v2", subnet.region)
+    resource_filter = '.LoadBalancers[] | select(.VpcId == "{}") | select(.AvailabilityZones[].SubnetId == "{}")'
     return pyjq.all(resource_filter.format(subnet.vpc.local_id, subnet.local_id), instances)
 
 
@@ -255,6 +265,11 @@ def build_data_structure(account_data, config, outputfilter):
                     for elb_json in get_elbs(subnet):
                         elb = Elb(subnet, elb_json)
                         subnet.addChild(elb)
+
+                    # Get ALB's and NLB's
+                    for alb_json in get_albs_and_nlbs(subnet):
+                        alb = Elb(subnet, alb_json)
+                        subnet.addChild(alb)
 
                     # If there are leaves, then add this subnet to the final graph
                     if len(subnet.leaves) > 0:
