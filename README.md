@@ -17,7 +17,9 @@ There are four stages to using CloudMapper:
 
 ## Installation
 
-You will need `jq` (https://stedolan.github.io/jq/), `pip`, and the library `pyjq` (https://github.com/doloopwhile/pyjq), which require some additional tools installed.
+Requirements:
+- `pip` and `virtualenv`
+- You will also need `jq` (https://stedolan.github.io/jq/) and the library `pyjq` (https://github.com/doloopwhile/pyjq), which require some additional tools installed that will be shown.
 
 On macOS:
 
