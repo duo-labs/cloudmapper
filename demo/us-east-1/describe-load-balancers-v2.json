@@ -1,0 +1,27 @@
+{
+    "LoadBalancers": [
+        {
+            "IpAddressType": "ipv4", 
+            "VpcId": "vpc-12345678", 
+            "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/demo/qwerty", 
+            "State": {
+                "Code": "active"
+            }, 
+            "DNSName": "webalb", 
+            "SecurityGroups": [
+                "sg-00000003"
+            ], 
+            "LoadBalancerName": "webalb", 
+            "CreatedTime": "2017-12-01T00:00:00.000Z", 
+            "Scheme": "internet-facing", 
+            "Type": "application", 
+            "CanonicalHostedZoneId": "AAAAAAAAAAA", 
+            "AvailabilityZones": [
+                {
+                    "SubnetId": "subnet-00000002", 
+                    "ZoneName": "us-east-1b"
+                }
+            ]
+        }
+    ]
+}
