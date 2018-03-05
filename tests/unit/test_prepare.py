@@ -50,7 +50,7 @@ class TestPrepare(unittest.TestCase):
         json_blob = {u'id': 111111111111, u'name': u'demo'}
         account = Account(None, json_blob)
         region = Region(account, {"Endpoint": "ec2.us-east-1.amazonaws.com", "RegionName": "us-east-1"})
-        assert_equal([{"VpcId": "vpc-12345678", "Tags": [{"Value": "Prod", "Key": "Name"}], "InstanceTenancy": "default", "CidrBlockAssociationSet": [{"AssociationId": "vpc-cidr-assoc-12345678", "CidrBlock": "10.0.0.0/16", "CidrBlockState": {"State": "associated"}}], "State": "available", "DhcpOptionsId": "dopt-12345678", "CidrBlock": "10.0.0.0/16", "IsDefault": True}], get_vpcs(region))
+        assert_equal([{"VpcId": "vpc-12345678", "Tags": [{"Value": "Prod", "Key": "Name"}], "InstanceTenancy": "default", "CidrBlockAssociationSet": [{"AssociationId": "vpc-cidr-assoc-12345678", "CidrBlock": "10.0.0.0/16", "CidrBlockState": {"State": "associated"}}], "State": "available", "DhcpOptionsId": "dopt-12345678", "CidrBlock": "10.0.0.0/16", "IsDefault": True}], get_vpcs(region, {}))
 
     def test_build_data_structure(self):
         # Build the entire demo data set
