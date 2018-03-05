@@ -100,6 +100,9 @@ cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aw
 echo "* Getting ELB info"
 cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' elb --region "$1" describe-load-balancers > "$1/describe-load-balancers.json"' -- {}
 
+echo "* Getting ALB info"
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' elbv2 --region "$1" describe-load-balancers > "$1/describe-load-balancers-v2.json"' -- {}
+
 echo "* Getting security group info"
 cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-security-groups > "$1/describe-security-groups.json"' -- {}
 

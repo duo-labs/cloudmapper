@@ -70,6 +70,12 @@ def gather(arguments):
             "FileName": "describe-load-balancers.json",
         },
         {
+            "Name": "ALBs and NLBs",
+            "Function": "describe_load_balancers",
+            "Handler": "elbv2",
+            "FileName": "describe-load-balancers-v2.json"
+        },
+        {
             "Name": "Security Groups",
             "Function": "describe_security_groups",
             "Handler": "ec2",
