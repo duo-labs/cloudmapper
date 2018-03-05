@@ -8,13 +8,16 @@ CloudMapper generates network diagrams of Amazon Web Services (AWS) environments
 
 ![Demo screenshot](docs/images/ideal_layout.png "Demo screenshot")
 
-There are three stages to using CloudMapper:
-1. Collect information about an AWS account via a shell script that uses the AWS CLI.
-2. Convert that data into a format usable by the web browser.
-3. Run a simple web server to view the collected data in your browser.
+There are four stages to using CloudMapper:
+1. Configure information about your account.
+2. Collect information about an AWS account via a shell script that uses the AWS CLI.
+3. Convert that data into a format usable by the web browser.
+4. Run a simple web server to view the collected data in your browser.
 
 
 ## Installation
+
+You will need `jq` (https://stedolan.github.io/jq/) and the library `pyjq` (https://github.com/doloopwhile/pyjq) which require some additional tools installed.
 
 On macOS:
 
@@ -36,6 +39,7 @@ git clone git@github.com:duo-labs/cloudmapper.git
 # (Centos, Fedora, RedHat etc.):
 # sudo yum install autoconf automake libtool python-dev jq
 # (Debian, Ubuntu etc.):
+# You may additionally need "build-essential"
 sudo apt-get install autoconf automake libtool python-dev jq
 cd cloudmapper/
 virtualenv venv
@@ -73,12 +77,23 @@ docker-compose build && accountname="demo" docker-compose up
 
 # Running with your own data
 
-## 0. Configure your account
+## 1. Configure your account
 
-Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names.
+### Option 1: Edit config file manually
+Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names. A CIDR is an IP range such as `1.2.3.4/32` which means only the IP `1.2.3.4`.
+
+### Option 2: Generate config file
+CloudMapper has commands to configure your account:
+
+```
+python cloudmapper.py {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
+python cloudmapper.py {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
+```
+
+This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
 
 
-## 1. Gather data about the account
+## 2. Gather data about the account
 
 This step uses the CLI to make `describe` calls and records the json in the folder you specify (in this case, named `my_account`). You must have AWS credentials configured that can be used by the CLI.  You must have read-only permissions on the account.  This can be granted via the `SecurityAudit` policy, or can be reduced to an even more minimal set of permissions if desired.  The minimal policy needed is:
 
@@ -123,15 +138,6 @@ Using the script is helpful if you need someone else to get this data for you wi
 python cloudmapper.py gather --account-name my_account
 ```
 
-## 2. Generate your config file
-
-These steps allows you to generate your own config file.
-```
-python cloudmapper.py {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
-python cloudmapper.py {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
-```
-
-This will allow you to define the different AWS accounts you use in your environment or the known CIDR IPs. See `config.json.demo` as an example.
 ## 3. Prepare the data
 
 This step converts the collected AWS data into a format that can be displayed in the browser by generating a `web/data.json` file.
