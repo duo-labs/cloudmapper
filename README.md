@@ -37,10 +37,10 @@ On Linux:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # (Centos, Fedora, RedHat etc.):
-# sudo yum install autoconf automake libtool python-devel jq
+# sudo yum install autoconf automake libtool python-devel jq virtualenv
 # (Debian, Ubuntu etc.):
 # You may additionally need "build-essential"
-sudo apt-get install autoconf automake libtool python-dev jq
+sudo apt-get install autoconf automake libtool python-dev jq virtualenv
 cd cloudmapper/
 virtualenv venv
 source venv/bin/activate
