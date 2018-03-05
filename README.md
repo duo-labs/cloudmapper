@@ -17,7 +17,7 @@ There are four stages to using CloudMapper:
 
 ## Installation
 
-You will need `jq` (https://stedolan.github.io/jq/) and the library `pyjq` (https://github.com/doloopwhile/pyjq) which require some additional tools installed.
+You will need `jq` (https://stedolan.github.io/jq/), `pip`, and the library `pyjq` (https://github.com/doloopwhile/pyjq), which require some additional tools installed.
 
 On macOS:
 
@@ -37,7 +37,7 @@ On Linux:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # (Centos, Fedora, RedHat etc.):
-# sudo yum install autoconf automake libtool python-dev jq
+# sudo yum install autoconf automake libtool python-devel jq
 # (Debian, Ubuntu etc.):
 # You may additionally need "build-essential"
 sudo apt-get install autoconf automake libtool python-dev jq
