@@ -20,7 +20,7 @@ def gather(arguments):
     try:
         mkdir(account_dir)
     except OSError:
-        # Already exists 
+        # Already exists
         pass
 
     print("* Getting region names")

@@ -60,7 +60,6 @@ def run_gathering(arguments):
     args = parser.parse_args(arguments)
 
     if not args.account_name:
-        print("No account name defined... getting from config")
         try:
             config = json.load(open(args.config))
         except IOError:
@@ -69,7 +68,6 @@ def run_gathering(arguments):
             exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
         args.account_name = get_account(args.account_name, config, args.config)['name']
 
-    print("Account name: %s" % args.account_name)
     gather(args)
 
 
@@ -112,9 +110,9 @@ def run_prepare(arguments):
                         required=False, type=str)
     parser.add_argument("--regions", help="Regions to restrict to (ex. us-east-1,us-west-2)",
                         default=None, type=str)
-    parser.add_argument("--vpc-ids", help="VPC ids to restrict to (ex. us-east-1,us-west-2)",
+    parser.add_argument("--vpc-ids", help="VPC ids to restrict to (ex. vpc-1234,vpc-abcd)",
                         default=None, type=str)
-    parser.add_argument("--vpc-names", help="VPC names to restrict to (ex. us-east-1,us-west-2)",
+    parser.add_argument("--vpc-names", help="VPC names to restrict to (ex. prod,dev)",
                         default=None, type=str)
     parser.add_argument("--internal-edges", help="Show all connections (default)",
                         dest='internal_edges', action='store_true')
