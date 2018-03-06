@@ -49,9 +49,24 @@ def get_account(account_name, config, config_filename):
 def run_gathering(arguments):
     from cloudmapper.gatherer import gather
     parser = argparse.ArgumentParser()
+    parser.add_argument("--config", help="Config file name",
+                        default="config.json", type=str)
     parser.add_argument("--account-name", help="Account to collect from",
-                        required=True, type=str)
+                        required=False, type=str)
+    parser.add_argument("--profile-name", help="AWS profile name",
+                        required=False, type=str)
+    parser.add_argument('--clean', help='Remove any existing data for the account before gathering', action='store_true')
+
     args = parser.parse_args(arguments)
+
+    if not args.account_name:
+        try:
+            config = json.load(open(args.config))
+        except IOError:
+            exit("ERROR: Unable to load config file \"{}\"".format(args.config))
+        except ValueError as e:
+            exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
+        args.account_name = get_account(args.account_name, config, args.config)['name']
 
     gather(args)
 
@@ -95,6 +110,10 @@ def run_prepare(arguments):
                         required=False, type=str)
     parser.add_argument("--regions", help="Regions to restrict to (ex. us-east-1,us-west-2)",
                         default=None, type=str)
+    parser.add_argument("--vpc-ids", help="VPC ids to restrict to (ex. vpc-1234,vpc-abcd)",
+                        default=None, type=str)
+    parser.add_argument("--vpc-names", help="VPC names to restrict to (ex. prod,dev)",
+                        default=None, type=str)
     parser.add_argument("--internal-edges", help="Show all connections (default)",
                         dest='internal_edges', action='store_true')
     parser.add_argument("--no-internal-edges", help="Only show connections to external CIDRs",
@@ -126,6 +145,11 @@ def run_prepare(arguments):
         # Regions are given as 'us-east-1,us-west-2'. Split this by the comma,
         # wrap each with quotes, and add the comma back. This is needed for how we do filtering.
         outputfilter["regions"] = ','.join(['"' + r + '"' for r in args.regions.split(',')])
+    if args.vpc_ids:
+        outputfilter["vpc-ids"] = ','.join(['"' + r + '"' for r in args.vpc_ids.split(',')])
+    if args.vpc_names:
+        outputfilter["vpc-names"] = ','.join(['"' + r + '"' for r in args.vpc_names.split(',')])
+    
     outputfilter["internal_edges"] = args.internal_edges
     outputfilter["read_replicas"] = args.read_replicas
     outputfilter["inter_rds_edges"] = args.inter_rds_edges

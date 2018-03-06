@@ -1,6 +1,7 @@
 import datetime
 import json
-from os import mkdir
+from os import mkdir, path
+from shutil import rmtree
 import boto3
 
 
@@ -11,24 +12,35 @@ def datetime_handler(x):
 
 
 def gather(arguments):
+    account_dir = './{}'.format(arguments.account_name)
+    
+    if arguments.clean and path.exists(account_dir):
+        rmtree(account_dir)
+
     try:
-        mkdir('./{}'.format(arguments.account_name))
+        mkdir(account_dir)
     except OSError:
         # Already exists
         pass
 
     print("* Getting region names")
-    ec2 = boto3.client('ec2')
+    session_data = {}
+
+    if arguments.profile_name:
+        session_data['profile_name'] = arguments.profile_name
+
+    session = boto3.Session(**session_data)
+    ec2 = session.client('ec2')
 
     region_list = ec2.describe_regions()
-    with open("./{}/describe-regions.json".format(arguments.account_name), 'w+') as f:
+    with open("{}/describe-regions.json".format(account_dir), 'w+') as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))
 
     print("* Creating directory for each region name")
 
     for region in region_list['Regions']:
         try:
-            mkdir('./{}/{}'.format(arguments.account_name, region.get('RegionName', 'Unknown')))
+            mkdir('{}/{}'.format(account_dir, region.get('RegionName', 'Unknown')))
         except OSError:
             # Already exists
             pass
@@ -102,5 +114,5 @@ def gather(arguments):
             method_to_call = getattr(handler, runner["Function"])
             data = method_to_call()
             data.pop('ResponseMetadata', None)
-            with open("./{}/{}/{}".format(arguments.account_name, region.get('RegionName', 'Unknown'), runner['FileName']), 'w+') as f:
+            with open("{}/{}/{}".format(account_dir, region.get('RegionName', 'Unknown'), runner['FileName']), 'w+') as f:
                 f.write(json.dumps(data, indent=4, sort_keys=True, default=datetime_handler))

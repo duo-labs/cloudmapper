@@ -54,12 +54,14 @@ def get_regions(account, outputfilter):
     return regions
 
 
-def get_vpcs(region):
-    try:
-        vpcs = query_aws(region.account, "describe-vpcs", region)
-        return pyjq.all('.Vpcs[]', vpcs)
-    except BaseException:
-        return None
+def get_vpcs(region, outputfilter):
+    vpc_filter = ""
+    if "vpc-ids" in outputfilter:
+        vpc_filter += " | select (.VpcId | contains({}))".format(outputfilter["vpc-ids"])
+    if "vpc-names" in outputfilter:
+        vpc_filter += ' | select(.Tags != null) | select (.Tags[] | (.Key == "Name") and (.Value | contains({})))'.format(outputfilter["vpc-names"])
+    vpcs = query_aws(region.account, "describe-vpcs", region)
+    return pyjq.all('.Vpcs[]{}'.format(vpc_filter), vpcs)
 
 
 def get_azs(vpc):
@@ -240,7 +242,7 @@ def build_data_structure(account_data, config, outputfilter):
         node_count_per_region = 0
         region = Region(account, region_json)
 
-        for vpc_json in get_vpcs(region):
+        for vpc_json in get_vpcs(region, outputfilter):
             vpc = Vpc(region, vpc_json)
 
             for az_json in get_azs(vpc):
