@@ -123,7 +123,7 @@ This step uses the CLI to make `describe` calls and records the json in the fold
 }
 ```
 
-Collecting the data can be performed with a bash script or via the python code base.
+Collecting the data can be performed with a bash script or via the python code base.  Both options support a `--profile-name` to specify the AWS account profile to use.
 
 ### Option 1: Bash script
 Using the script is helpful if you need someone else to get this data for you without fiddling with setting up the python environment.
@@ -140,6 +140,7 @@ Using the script is helpful if you need someone else to get this data for you wi
 python cloudmapper.py gather --account-name my_account
 ```
 
+
 ## 3. Prepare the data
 
 This step converts the collected AWS data into a format that can be displayed in the browser by generating a `web/data.json` file.
@@ -149,8 +150,9 @@ python cloudmapper.py prepare --account-name my_account
 
 There are a number of filtering options that can be applied here to reduce the number of nodes and edges.  This will help the diagram look better, by removing some of its complexity, and is also needed for large environments that will not render.
 
-The two most useful filtering options:
+The most useful filtering options:
 * `--regions`: Restrict the diagram to a set regions, ex. `us-east-1,us-east-2`
+* `--vpc-ids` and `--vpc-names`: Restrict the diagram to a set of VPCs.
 * `--collapse-by-tag`: This is very useful to provide a tag name, and all nodes with that tag will be reduced to a single displayed node.
 
 The other filtering options are:
