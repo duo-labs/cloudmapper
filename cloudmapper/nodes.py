@@ -30,7 +30,7 @@ from six import add_metaclass
 
 
 def truncate(string):
-    return (string[:19] + '..') if len(string) > 20 else string
+    return (string[:39] + '..') if len(string) > 40 else string
 
 
 def get_name(node, default):
@@ -219,7 +219,7 @@ class Vpc(Node):
         # arn:aws:ec2:region:account-id:vpc/vpc-id
         self._local_id = json_blob["VpcId"]
         self._arn = "arn:aws::{}:{}:vpc/{}".format(parent.region.name, parent.account.local_id, self._local_id)
-        self._name = get_name(json_blob, "VpcId")
+        self._name = get_name(json_blob, "VpcId") + " (" + json_blob["CidrBlock"] + ")"
         self._type = "vpc"
 
         self._peering_connections = []
@@ -241,7 +241,7 @@ class Subnet(Node):
         # arn:aws:ec2:region:account-id:subnet/subnet-id
         self._local_id = json_blob["SubnetId"]
         self._arn = "arn:aws::{}:{}:subnet/{}".format(parent.region.name, parent.account.local_id, self._local_id)
-        self._name = get_name(json_blob, "SubnetId")
+        self._name = get_name(json_blob, "SubnetId") + " (" + json_blob["CidrBlock"] + ")"
         self._type = "subnet"
         super(Subnet, self).__init__(parent, json_blob)
 
