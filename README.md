@@ -6,6 +6,8 @@ CloudMapper generates network diagrams of Amazon Web Services (AWS) environments
 
 *Intro post: https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool*
 
+*Post to show usage in spotting misconfigurations: https://duo.com/blog/spotting-misconfigurations-with-cloudmapper*
+
 ![Demo screenshot](docs/images/ideal_layout.png "Demo screenshot")
 
 There are four stages to using CloudMapper:
