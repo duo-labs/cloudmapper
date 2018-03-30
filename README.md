@@ -90,8 +90,8 @@ Copy the `config.json.demo` to `config.json` and edit it to include your account
 CloudMapper has commands to configure your account:
 
 ```
-python cloudmapper.py {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
-python cloudmapper.py {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
+python cloudmapper.py configure {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
+python cloudmapper.py configure {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
 ```
 
 This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
