@@ -83,7 +83,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
         data.pop('IsTruncated', None)
 
     with open(outputfile, 'w+') as f:
-            f.write(json.dumps(data, indent=4, sort_keys=True, default=datetime_handler))
+        f.write(json.dumps(data, indent=4, sort_keys=True, default=datetime_handler))
 
 
 def collect(arguments):
@@ -96,7 +96,7 @@ def collect(arguments):
     make_directory("account-data/{}".format(account_dir))
 
     print("* Getting region names")
-    session_data = {}
+    session_data = {'region_name': 'us-east-1'}
 
     if arguments.profile_name:
         session_data['profile_name'] = arguments.profile_name
@@ -498,7 +498,7 @@ def collect(arguments):
             # Only call universal services in us-east-1
             if runner['Service'] in universal_services and region['RegionName'] != 'us-east-1':
                 continue
-            handler = boto3.client(runner['Service'], region_name=region['RegionName'])
+            handler = session.client(runner['Service'], region_name=region['RegionName'])
 
             filepath = "account-data/{}/{}/{}-{}".format(
                 account_dir,
