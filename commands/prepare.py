@@ -23,24 +23,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 """
 
+import os.path
 import json
 import itertools
+import argparse
+from shared.common import get_account, query_aws
 import pyjq
-import os.path
 from netaddr import IPNetwork, IPAddress
-from cloudmapper.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
 
-
-def query_aws(account, query, region=None):
-    if not region:
-        file_name = "{}/{}.json".format(account.name, query)
-    else:
-        file_name = "{}/{}/{}.json".format(account.name, region.name, query)
-    if os.path.isfile(file_name): 
-        return json.load(open(file_name))
-    else:
-        return {}
-
+__description__ = "Generate network connection information file"
 
 def get_regions(account, outputfilter):
     # aws ec2 describe-regions
@@ -375,3 +367,68 @@ def prepare(account, config, outputfilter):
 
     with open('web/data.json', 'w') as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
+def run(arguments):
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", help="Config file name",
+                        default="config.json", type=str)
+    parser.add_argument("--account-name", help="Account to collect from",
+                        required=False, type=str)
+    parser.add_argument("--regions", help="Regions to restrict to (ex. us-east-1,us-west-2)",
+                        default=None, type=str)
+    parser.add_argument("--vpc-ids", help="VPC ids to restrict to (ex. vpc-1234,vpc-abcd)",
+                        default=None, type=str)
+    parser.add_argument("--vpc-names", help="VPC names to restrict to (ex. prod,dev)",
+                        default=None, type=str)
+    parser.add_argument("--internal-edges", help="Show all connections (default)",
+                        dest='internal_edges', action='store_true')
+    parser.add_argument("--no-internal-edges", help="Only show connections to external CIDRs",
+                        dest='internal_edges', action='store_false')
+    parser.add_argument("--inter-rds-edges", help="Show connections between RDS instances",
+                        dest='inter_rds_edges', action='store_true')
+    parser.add_argument("--no-inter-rds-edges", help="Do not show connections between RDS instances (default)",
+                        dest='inter_rds_edges', action='store_false')
+    parser.add_argument("--read-replicas", help="Show RDS read replicas (default)",
+                        dest='read_replicas', action='store_true')
+    parser.add_argument("--no-read-replicas", help="Do not show RDS read replicas",
+                        dest='read_replicas', action='store_false')
+    parser.add_argument("--azs", help="Show availability zones (default)",
+                        dest='azs', action='store_true')
+    parser.add_argument("--no-azs", help="Do not show availability zones",
+                        dest='azs', action='store_false')
+    parser.add_argument("--collapse-by-tag", help="Collapse nodes with the same tag to a single node",
+                        dest='collapse_by_tag', default=None, type=str)
+
+    parser.set_defaults(internal_edges=True)
+    parser.set_defaults(inter_rds_edges=False)
+    parser.set_defaults(read_replicas=True)
+    parser.set_defaults(azs=True)
+
+    args = parser.parse_args(arguments)
+
+    outputfilter = {}
+    if args.regions:
+        # Regions are given as 'us-east-1,us-west-2'. Split this by the comma,
+        # wrap each with quotes, and add the comma back. This is needed for how we do filtering.
+        outputfilter["regions"] = ','.join(['"' + r + '"' for r in args.regions.split(',')])
+    if args.vpc_ids:
+        outputfilter["vpc-ids"] = ','.join(['"' + r + '"' for r in args.vpc_ids.split(',')])
+    if args.vpc_names:
+        outputfilter["vpc-names"] = ','.join(['"' + r + '"' for r in args.vpc_names.split(',')])
+
+    outputfilter["internal_edges"] = args.internal_edges
+    outputfilter["read_replicas"] = args.read_replicas
+    outputfilter["inter_rds_edges"] = args.inter_rds_edges
+    outputfilter["azs"] = args.azs
+    outputfilter["collapse_by_tag"] = args.collapse_by_tag
+
+    # Read accounts file
+    try:
+        config = json.load(open(args.config))
+    except IOError:
+        exit("ERROR: Unable to load config file \"{}\"".format(args.config))
+    except ValueError as e:
+        exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
+    account = get_account(args.account_name, config, args.config)
+
+    prepare(account, config, outputfilter)

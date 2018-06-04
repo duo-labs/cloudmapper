@@ -5,3 +5,4 @@ venv/
 web/data.json
 .coverage
 htmlcov/
+account-data/

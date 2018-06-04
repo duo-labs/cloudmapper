@@ -29,6 +29,7 @@ import socket
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
+__description__ = "Run a webserver to display network or wot map"
 
 class RootedHTTPServer(HTTPServer):
     def __init__(self, base_path, *args, **kwargs):
@@ -47,8 +48,8 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         words = [_f for _f in words if _f]
         path = self.base_path
         for word in words:
-            drive, word = os.path.splitdrive(word)
-            head, word = os.path.split(word)
+            _, word = os.path.splitdrive(word)
+            _, word = os.path.split(word)
             if word in (os.curdir, os.pardir):
                 continue
             if '?' in word:

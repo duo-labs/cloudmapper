@@ -1,6 +1,10 @@
 import json
-import netaddr
 import os.path
+import netaddr
+import argparse
+from shared.common import get_account
+
+__description__ = "Add and remove items from the config file"
 
 
 def configure(action, arguments):
@@ -47,3 +51,31 @@ def configure(action, arguments):
 
     with open(arguments.config_file, 'w+') as f:
         f.write(json.dumps(config, indent=4, sort_keys=True))
+
+
+def run(arguments):
+    if len(arguments) == 0:
+        exit("ERROR: Missing action for configure.\n"
+             "Usage: [add-cidr|add-account|remove-cidr|remove-account]")
+        return
+    action = arguments[0]
+    arguments = arguments[1:]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config-file", help="Path to the config file",
+                        default="config.json", type=str)
+    if action == 'add-account' or action == 'remove-account':
+        required = True if action.startswith('add') else False
+        parser.add_argument("--name", help="Account name",
+                            required=required, type=str)
+        parser.add_argument("--id", help="Account ID",
+                            required=required, type=str)
+        parser.add_argument("--default", help="Default account",
+                            required=False, default="False", type=str)
+    elif action == 'add-cidr' or action == 'remove-cidr':
+        required = True if action.startswith('add') else False
+        parser.add_argument("--cidr", help="CIDR IP",
+                            required=required, type=str)
+        parser.add_argument("--name", help="CIDR Name",
+                            required=required, type=str)
+    args = parser.parse_args(arguments)
+    configure(action, args)
