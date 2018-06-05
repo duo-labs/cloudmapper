@@ -143,6 +143,11 @@ Using the script is helpful if you need someone else to get this data for you wi
 python cloudmapper.py collect --account-name my_account
 ```
 
+# Commands
+
+- `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
+
+
 
 Licenses
 --------
