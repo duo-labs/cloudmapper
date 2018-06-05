@@ -6,3 +6,4 @@ pandas==0.22.0
 matplotlib=2.2.2
 geoip2=2.8.0
 policyuniverse=1.1.0.1
+pyyaml=3.12
