@@ -26,8 +26,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 This script manages CloudMapper, a tool for analyzing AWS environments.
 """
 from __future__ import (absolute_import, division, print_function)
-import json
-import argparse
 import sys
 import pkgutil
 import commands
@@ -44,21 +42,20 @@ def show_help(commands):
 
 def main():
     """Entry point for the CLI."""
-    
+
     # Load commands
     # TODO: This adds half a second to the start time. Is there a smarter way to do this?
     commands = {}
     commands_path = 'commands'
     for importer, command_name, _ in pkgutil.iter_modules([commands_path]):
         full_package_name = '%s.%s' % (commands_path, command_name)
-        module = importer.find_module(command_name
-                    ).load_module(full_package_name)
+        module = importer.find_module(command_name).load_module(full_package_name)
         commands[command_name] = module
-    
+
     # Parse command
     if len(sys.argv) <= 1:
         show_help(commands)
-    
+
     command = sys.argv[1]
     arguments = sys.argv[2:]
 

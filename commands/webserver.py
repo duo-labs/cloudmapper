@@ -24,8 +24,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import argparse
 import os
 import posixpath
-import six.moves.urllib as urllib
 import socket
+from six.moves import urllib
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
@@ -67,11 +67,23 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         self.send_header("Expires", "0")
 
 
-def run_webserver(arguments):
+def run(arguments):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--port", help="Port to listen on", default=8000, type=int)
-    parser.add_argument("--public", dest='is_public', help="Allow connections from 0.0.0.0 (or :: if --ipv6 was provided) as opposed to only localhost", action='store_true')
-    parser.add_argument("--ipv6", dest='is_ipv6', help="Listen on IPv6", action='store_true')
+    parser.add_argument(
+        "--port",
+        help="Port to listen on",
+        default=8000,
+        type=int)
+    parser.add_argument(
+        "--public",
+        dest='is_public',
+        help="Allow connections from 0.0.0.0 (or :: if --ipv6 was provided) as opposed to only localhost",
+        action='store_true')
+    parser.add_argument(
+        "--ipv6",
+        dest='is_ipv6',
+        help="Listen on IPv6",
+        action='store_true')
     parser.set_defaults(is_public=False, is_ipv6=False)
     args = parser.parse_args(arguments)
 

@@ -5,7 +5,8 @@ fi
 
 nosetests tests/unit \
 --with-coverage \
---cover-package=cloudmapper \
---cover-min-percentage=85 \
+--cover-package=commands \
+--cover-package=shared \
+--cover-min-percentage=70 \
 --cover-html \
 --cover-html-dir=htmlcov

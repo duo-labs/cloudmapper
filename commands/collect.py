@@ -1,21 +1,18 @@
-import datetime
-import json
-import yaml
 import os.path
 import os
 import argparse
-from shared.common import get_account, datetime_handler
 from shutil import rmtree
+import json
 import boto3
+import yaml
 import pyjq
 from botocore.exceptions import ClientError, EndpointConnectionError
+from shared.common import get_account, datetime_handler
 
 __description__ = "Run AWS API calls to collect data from the account"
 
-
 def snakecase(s):
     return s.replace('-', '_')
-
 
 def get_identifier_from_parameter(parameter):
     if isinstance(parameter, list):
@@ -135,7 +132,7 @@ def collect(arguments):
                 region['RegionName'],
                 runner['Service'],
                 runner['Request'])
-            
+
             method_to_call = snakecase(runner["Request"])
 
             # Identify any parameters
@@ -163,8 +160,6 @@ def collect(arguments):
                     parameter_values = json.load(f)
                     pyjq_parse_string = '|'.join(parameters[dynamic_parameter].split('|')[1:])
                     for parameter in pyjq.all(pyjq_parse_string, parameter_values):
-                        data = ""
-
                         filename = get_filename_from_parameter(parameter)
                         identifier = get_identifier_from_parameter(parameter)
                         parameters[dynamic_parameter] = identifier

@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import unittest
 from nose.tools import assert_equal, assert_true, assert_false
 
-from cloudmapper.nodes import truncate, get_name, is_public_ip, Account
+from shared.nodes import truncate, get_name, is_public_ip, Account
 
 
 class TestNodes(unittest.TestCase):

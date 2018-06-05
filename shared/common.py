@@ -1,11 +1,42 @@
 from __future__ import print_function
-import sys
 import argparse
 import json
 import os
-import pyjq
 import datetime
 
+class Severity:
+    DEBUG = 0
+    INFO = 1
+    WARN = 2
+    ERROR = 3
+
+    @classmethod
+    def str_to_int(cls, level):
+        if level == "DEBUG":
+            return cls.DEBUG
+        elif level == "INFO":
+            return cls.INFO
+        elif level == "WARN":
+            return cls.WARN
+        elif level == "ERROR":
+            return cls.ERROR
+        else:
+            raise Exception("Unknown log level {}".format(level))
+
+    @staticmethod
+    def string(severity_level):
+        if severity_level == Severity.DEBUG:
+            return "DEBUG"
+        elif severity_level == Severity.INFO:
+            return "INFO"
+        elif severity_level == Severity.WARN:
+            return "WARN"
+        elif severity_level == Severity.ERROR:
+            return "ERROR"
+        else:
+            raise Exception("Unknown severity level")
+
+LOG_LEVEL = Severity.INFO
 
 def datetime_handler(x):
     if isinstance(x, datetime.datetime):
@@ -77,6 +108,5 @@ def parse_arguments(arguments, parser=None):
                 accounts.append(account)
             break
         accounts.append(get_account(account_name, config, args.config))
-    
 
     return (args, accounts, config)

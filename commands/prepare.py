@@ -23,13 +23,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 """
 
-import os.path
 import json
 import itertools
 import argparse
-from shared.common import get_account, query_aws
 import pyjq
 from netaddr import IPNetwork, IPAddress
+from shared.common import get_account, query_aws
 from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
 
 __description__ = "Generate network connection information file"

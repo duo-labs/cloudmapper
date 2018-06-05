@@ -28,8 +28,8 @@ from mock import patch
 from nose.tools import assert_equal, assert_true, assert_false
 import pyjq
 
-from cloudmapper.prepare import is_external_cidr, get_regions, get_vpcs, build_data_structure
-from cloudmapper.nodes import Account, Region
+from commands.prepare import is_external_cidr, get_regions, get_vpcs, build_data_structure
+from shared.nodes import Account, Region
 
 
 class TestPrepare(unittest.TestCase):
@@ -38,12 +38,6 @@ class TestPrepare(unittest.TestCase):
     def test_is_external_cidr(self):
         assert_true(is_external_cidr("1.1.1.1/32"))
         assert_false(is_external_cidr("10.0.0.0/32"))
-
-    @patch('cloudmapper.prepare.query_aws')
-    def test_get_regions(self, mock_query_aws):
-        # Just testing something without reading the file system
-        mock_query_aws.return_value = {"Regions": [{"Endpoint": "ec2.us-east-1.amazonaws.com", "RegionName": "us-east-1"}, {"Endpoint": "ec2.us-west-2.amazonaws.com", "RegionName": "us-west-2"}]}
-        assert_equal([{"Endpoint": "ec2.us-east-1.amazonaws.com", "RegionName": "us-east-1"}, {"Endpoint": "ec2.us-west-2.amazonaws.com", "RegionName": "us-west-2"}], get_regions("demo", {}))
 
     def test_get_vpcs(self):
         # This actually uses the demo data files provided
