@@ -18,30 +18,35 @@
   Request: list-saml-providers
 - Service: iam
   Request: get-saml-provider
-  ParameterName: SamlProviderArn
-  ParameterValue: iam-list-saml-providers.json|.OpenIDConnectProviderList[]|.Arn
+  Parameters:
+  - Name: SamlProviderArn
+    Value: iam-list-saml-providers.json|.OpenIDConnectProviderList[]|.Arn
 - Service: iam
   Request: list-open-id-connect-providers
 - Service: iam
   Request: get-open-id-connect-providers
-  ParameterName: SamlProviderArn
-  ParameterValue: iam-list-open-id-connect-providers.json|.SAMLProviderList[]|.Arn
+  Parameters:
+  - Name: SamlProviderArn
+    Value: iam-list-open-id-connect-providers.json|.SAMLProviderList[]|.Arn
 - Service: s3
   Request: list-buckets
 - Service: s3
   Request: get-bucket-acl
-  ParameterName: Bucket
-  ParameterValue: s3-list-buckets.json|.Buckets[].Name
+  Parameters:
+  - Name: Bucket
+    Value: s3-list-buckets.json|.Buckets[].Name
 - Service: s3
   Request: get-bucket-policy
-  ParameterName: Bucket
-  ParameterValue: s3-list-buckets.json|.Buckets[].Name
+  Parameters:
+  - Name: Bucket
+    Value: s3-list-buckets.json|.Buckets[].Name
 - Service: route53
   Request: list-hosted-zones
 - Service: route53
   Request: list-resource-record-sets
-  ParameterName: HostedZoneId
-  ParameterValue: route53-list-hosted-zones.json|.HostedZones[]|[.Id,.Name]
+  Parameters:
+  - Name: HostedZoneId
+    Value: route53-list-hosted-zones.json|.HostedZones[]|[.Id,.Name]
 - Service: route53domains
   Request: list-domains
 - Service: ec2
@@ -62,8 +67,9 @@
   Request: describe-db-snapshots
 - Service: rds
   Request: describe-db-snapshot-attributes
-  ParameterName: DBSnapshotIdentifier
-  ParameterValue: rds-describe-db-snapshots.json|.DBSnapshots[]|.DBSnapshotIdentifier
+  Parameters:
+  - Name: DBSnapshotIdentifier
+    Value: rds-describe-db-snapshots.json|.DBSnapshots[]|.DBSnapshotIdentifier
 - Service: elb
   Request: describe-load-balancers
 - Service: elb
@@ -76,8 +82,9 @@
   Request: list-queues
 - Service: sqs
   Request: get-queue-attributes
-  ParameterName: QueueUrl
-  ParameterValue: sqs-list-queues.json|.QueueUrls[]
+  Parameters:
+  - Name: QueueUrl
+    Value: sqs-list-queues.json|.QueueUrls[]
 - Service: sns
   Request: list-topics
 - Service: ec2
@@ -96,20 +103,23 @@
   Request: describe-stacks
 - Service: cloudformation
   Request: get-template
-  ParameterName: StackName
-  ParameterValue: cloudformation-describe-stacks.json|.Stacks[]|.StackName
+  Parameters:
+  - Name: StackName
+    Value: cloudformation-describe-stacks.json|.Stacks[]|.StackName
 - Service: cloudformation
   Request: describe-stack-resources
-  ParameterName: StackName
-  ParameterValue: cloudformation-describe-stacks.json|.Stacks[]|.StackName
+  Parameters:
+  - Name: StackName
+    Value: cloudformation-describe-stacks.json|.Stacks[]|.StackName
 - Service: cloudfront
   Request: list-distributions
 - Service: cloudsearch
   Request: describe-domains
 - Service: cloudsearch
   Request: describe-service-access-policies
-  ParameterName: DomainName
-  ParameterValue: cloudsearch-describe-domains.json|.DomainStatusList[]|.DomainName
+  Parameters:
+  - Name: DomainName
+    Value: cloudsearch-describe-domains.json|.DomainStatusList[]|.DomainName
 - Service: cloudwatch
   Request: describe-alarms
 - Service: config
@@ -122,8 +132,7 @@
   Request: describe-images
   Parameters:
   - Name: Owners
-    Value:
-    - self
+    Value: "self"
 - Service: ec2
   Request: describe-network-acls
 - Service: ec2
@@ -134,11 +143,9 @@
   Request: describe-snapshots
   Parameters:
   - Name: OwnerIds
-    Value:
-      - self
+    Value: "self"
   - Name: RestorableByUserIds
-    Value:
-      - all
+    Value: "all"
 - Service: ec2
   Request: describe-vpc-endpoint-connections
 - Service: ec2
@@ -149,8 +156,9 @@
   Request: describe-repositories
 - Service: ecr
   Request: get-repository-policy
-  ParameterName: repositoryName
-  ParameterValue: ecr-describe-repositories.json|.repositories[]|.repositoryName
+  Parameters:
+  - Name: repositoryName
+    Value: ecr-describe-repositories.json|.repositories[]|.repositoryName
 - Service: elasticache
   Request: describe-cache-clusters
 - Service: elasticbeanstalk
@@ -161,8 +169,9 @@
   Request: list-domain-names
 - Service: es
   Request: describe-elasticsearch-domain
-  ParameterName: DomainName
-  ParameterValue: es-list-domain-names.json|.DomainNames[]|.DomainName
+  Parameters:
+  - Name: DomainName
+    Value: es-list-domain-names.json|.DomainNames[]|.DomainName
 - Service: events
   Request: describe-event-bus
 - Service: events
@@ -171,40 +180,45 @@
   Request: list-delivery-streams
 - Service: firehose
   Request: describe-delivery-stream
-  ParameterName: DeliveryStreamName
-  ParameterValue: firehose-list-delivery-streams.json|.DeliveryStreamNames[]
+  Parameters:
+  - Name: DeliveryStreamName
+    Value: firehose-list-delivery-streams.json|.DeliveryStreamNames[]
 - Service: glacier
   Request: list-vaults
   Parameters:
   - Name: accountId
-    Value: '-'
+    Value: "-"
 - Service: glacier
   Request: get-vault-access-policy
   Parameters:
+  - Name: vaultName
+    Value: glacier-list-vaults.json|.VaultList[]|.VaultName
   - Name: accountId
-    Value: '-'
-  ParameterName: vaultName
-  ParameterValue: glacier-list-vaults.json|.VaultList[]|.VaultName
+    Value: "-"
 - Service: kms
   Request: list-keys
 - Service: kms
   Request: list-grants
-  ParameterName: KeyId
-  ParameterValue: kms-list-keys.json|.Keys[]|.KeyId
+  Parameters:
+  - Name: KeyId
+    Value: kms-list-keys.json|.Keys[]|.KeyId
 - Service: kms
   Request: list-key-policies
-  ParameterName: KeyId
-  ParameterValue: kms-list-keys.json|.Keys[]|.KeyId
+  Parameters:
+  - Name: KeyId
+    Value: kms-list-keys.json|.Keys[]|.KeyId
 - Service: kms
   Request: get-key-rotation-status
-  ParameterName: KeyId
-  ParameterValue: kms-list-keys.json|.Keys[]|.KeyId
+  Parameters:
+  - Name: KeyId
+    Value: kms-list-keys.json|.Keys[]|.KeyId
 - Service: lambda
   Request: list-functions
 - Service: lambda
   Request: get-policy
-  ParameterName: FunctionName
-  ParameterValue: lambda-list-functins.json|.Functions[]|.FunctionName
+  Parameters:
+  - Name: FunctionName
+    Value: lambda-list-functins.json|.Functions[]|.FunctionName
 - Service: logs
   Request: describe-destinations
 - Service: logs

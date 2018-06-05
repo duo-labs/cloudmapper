@@ -120,16 +120,11 @@ def collect(arguments):
         collect_commands = yaml.safe_load(f)
 
     for runner in collect_commands:
-        print("* Getting {}:{} info".format(runner['Service'], runner['Request']))
+        print('* Getting {}:{} info'.format(runner['Service'], runner['Request']))
 
         parameters = {}
-        if runner.get('Parameters', False):
-            # TODO: I need to consolidate the Parameters and ParameterName/ParameterValue
-            # variables
-            for parameter in runner['Parameters']:
-                parameters[parameter['Name']] = parameter['Value']
-
         for region in region_list['Regions']:
+            dynamic_parameter = None
             # Only call universal services in us-east-1
             if runner['Service'] in universal_services and region['RegionName'] != 'us-east-1':
                 continue
@@ -140,13 +135,24 @@ def collect(arguments):
                 region['RegionName'],
                 runner['Service'],
                 runner['Request'])
-
             
             method_to_call = snakecase(runner["Request"])
-            if runner.get('ParameterName', False):
+
+            # Identify any parameters
+            if runner.get('Parameters', False):
+                for parameter in runner['Parameters']:
+                    parameters[parameter['Name']] = parameter['Value']
+
+                    # Look for any dynamic values (ones that jq parse a file)
+                    if '|' in parameter['Value']:
+                        dynamic_parameter = parameter['Name']
+
+            if dynamic_parameter is not None:
+                # Set up directory for the dynamic value
                 make_directory(filepath)
 
-                parameter_file = runner['ParameterValue'].split('|')[0]
+                # The dynamic parameter must always be the first value
+                parameter_file = parameters[dynamic_parameter].split('|')[0]
                 parameter_file = "account-data/{}/{}/{}".format(account_dir, region['RegionName'], parameter_file)
 
                 if not os.path.isfile(parameter_file):
@@ -155,13 +161,13 @@ def collect(arguments):
 
                 with open(parameter_file, 'r') as f:
                     parameter_values = json.load(f)
-                    pyjq_parse_string = '|'.join(runner['ParameterValue'].split('|')[1:])
+                    pyjq_parse_string = '|'.join(parameters[dynamic_parameter].split('|')[1:])
                     for parameter in pyjq.all(pyjq_parse_string, parameter_values):
                         data = ""
 
                         filename = get_filename_from_parameter(parameter)
                         identifier = get_identifier_from_parameter(parameter)
-                        parameters[runner['ParameterName']] = identifier
+                        parameters[dynamic_parameter] = identifier
 
                         outputfile = "{}/{}".format(
                             filepath,
