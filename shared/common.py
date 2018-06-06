@@ -40,6 +40,9 @@ class Severity:
 
 LOG_LEVEL = Severity.INFO
 
+def log_debug(msg, location=None, reasons=[]):
+    log_issue(Severity.DEBUG, msg, location, reasons)
+
 def log_info(msg, location=None, reasons=[]):
     log_issue(Severity.INFO, msg, location, reasons)
 

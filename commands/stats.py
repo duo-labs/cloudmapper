@@ -1,12 +1,11 @@
 import json
 import itertools
-import pyjq
 import os.path
-from netaddr import IPNetwork, IPAddress
-from shared.nodes import Account, Region
-from shared.common import parse_arguments, query_aws, get_regions, datetime_handler, log_info
-from collections import OrderedDict
 from os import listdir
+from collections import OrderedDict
+import pyjq
+from shared.nodes import Account, Region
+from shared.common import parse_arguments, query_aws, get_regions, log_debug
 
 __description__ = "Print counts of resources for accounts"
 
@@ -14,8 +13,8 @@ __description__ = "Print counts of resources for accounts"
 # I'd prefer to put this in a separate yaml file, but I want to preserve the order.
 resources = OrderedDict([
     ('s3', {
-        'name': 'S3 buckets', 
-        'query': '.Buckets|length', 
+        'name': 'S3 buckets',
+        'query': '.Buckets|length',
         'source': 's3-list-buckets'}),
     ('user', {
         'name': 'IAM users',
@@ -49,7 +48,7 @@ resources = OrderedDict([
         'source': 'ec2-describe-network-acls'}),
     ('route-table', {
         'name': 'Route tables',
-		'query': '.RouteTables|length', 
+		'query': '.RouteTables|length',
         'source': 'ec2-describe-route-tables'}),
     ('ec2-snapshot', {
         'name': 'EC2 snapshots',
@@ -165,9 +164,7 @@ resources = OrderedDict([
 def get_account_stats(account):
     """Returns stats for an account"""
     account = Account(None, account)
-    log_info('Collecting stats in account {} ({})'.format(account.name, account.local_id))
-
-    available_endpoints = []
+    log_debug('Collecting stats in account {} ({})'.format(account.name, account.local_id))
 
     # Init stats to {}
     stats = OrderedDict()
@@ -181,8 +178,8 @@ def get_account_stats(account):
             # Check exceptions that require special code to perform the count
             if key == 'route53_record':
                 path = 'account-data/{}/{}/{}'.format(
-                    account.name, 
-                    region.name, 
+                    account.name,
+                    region.name,
                     'route53-list-resource-record-sets')
                 if os.path.isdir(path):
                     stats[key][region.name] = 0
@@ -206,7 +203,7 @@ def stats(accounts, config):
         account_stats[account['name']] = get_account_stats(account)
 
     # Print header
-    print ('\t' + '\t'.join(map(lambda a: a['name'], accounts)))
+    print ('\t' + '\t'.join(a['name'] for a in accounts))
 
     for resource in resources:
         output_line = resources[resource]['name'].ljust(20)
