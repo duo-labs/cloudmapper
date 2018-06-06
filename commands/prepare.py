@@ -28,21 +28,10 @@ import itertools
 import argparse
 import pyjq
 from netaddr import IPNetwork, IPAddress
-from shared.common import get_account, query_aws
+from shared.common import get_account, query_aws, get_regions
 from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
 
 __description__ = "Generate network connection information file"
-
-def get_regions(account, outputfilter):
-    # aws ec2 describe-regions
-    region_data = query_aws(account, "describe-regions")
-
-    region_filter = ""
-    if "regions" in outputfilter:
-        region_filter = "| select(.RegionName | contains({}))".format(outputfilter["regions"])
-
-    regions = pyjq.all('.Regions[]{}'.format(region_filter), region_data)
-    return regions
 
 def get_vpcs(region, outputfilter):
     vpc_filter = ""
