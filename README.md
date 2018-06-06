@@ -44,7 +44,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-With Docker:
+With Docker (not well supported):
 ```
 # Clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
@@ -72,13 +72,10 @@ Alternatively using docker:
 docker-compose build && accountname="demo" docker-compose up
 ```
 
-# Usage
+# Setup
 
 1. Configure information about your account.
 2. Collect information about an AWS account.
-3. Convert that data into a format usable by the web browser.
-4. Run a simple web server to view the collected data in your browser.
-
 
 ## 1. Configure your account
 
@@ -146,7 +143,7 @@ python cloudmapper.py collect --account-name my_account
 # Commands
 
 - `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
-
+- `stats`: Show counts of resources for accounts
 
 
 Licenses

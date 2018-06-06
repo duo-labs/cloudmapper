@@ -3,6 +3,8 @@ import argparse
 import json
 import os
 import datetime
+import pyjq
+import sys
 
 class Severity:
     DEBUG = 0
@@ -38,16 +40,19 @@ class Severity:
 
 LOG_LEVEL = Severity.INFO
 
-def log_info(msg, location, reasons=[]):
+def log_debug(msg, location=None, reasons=[]):
+    log_issue(Severity.DEBUG, msg, location, reasons)
+
+def log_info(msg, location=None, reasons=[]):
     log_issue(Severity.INFO, msg, location, reasons)
 
-def log_warning(msg, location, reasons=[]):
+def log_warning(msg, location=None, reasons=[]):
     log_issue(Severity.WARN, msg, location, reasons)
 
-def log_error(msg, location, reasons=[]):
+def log_error(msg, location=None, reasons=[]):
     log_issue(Severity.ERROR, msg, location, reasons)
 
-def log_issue(severity, msg, location, reasons=[]):
+def log_issue(severity, msg, location=None, reasons=[]):
     if severity >= LOG_LEVEL:
         json_issue = {
             'Severity': Severity.string(severity),
@@ -77,6 +82,18 @@ def query_aws(account, query, region=None):
         return json.load(open(file_name))
     else:
         return {}
+
+
+def get_regions(account, outputfilter={}):
+    # aws ec2 describe-regions
+    region_data = query_aws(account, "describe-regions")
+
+    region_filter = ""
+    if "regions" in outputfilter:
+        region_filter = "| select(.RegionName | contains({}))".format(outputfilter["regions"])
+
+    regions = pyjq.all('.Regions[]{}'.format(region_filter), region_data)
+    return regions
 
 
 def get_account(account_name, config, config_filename):
