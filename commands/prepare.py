@@ -44,69 +44,62 @@ def get_regions(account, outputfilter):
     regions = pyjq.all('.Regions[]{}'.format(region_filter), region_data)
     return regions
 
-
 def get_vpcs(region, outputfilter):
     vpc_filter = ""
     if "vpc-ids" in outputfilter:
         vpc_filter += " | select (.VpcId | contains({}))".format(outputfilter["vpc-ids"])
     if "vpc-names" in outputfilter:
         vpc_filter += ' | select(.Tags != null) | select (.Tags[] | (.Key == "Name") and (.Value | contains({})))'.format(outputfilter["vpc-names"])
-    vpcs = query_aws(region.account, "describe-vpcs", region)
+    vpcs = query_aws(region.account, "ec2-describe-vpcs", region)
     return pyjq.all('.Vpcs[]{}'.format(vpc_filter), vpcs)
 
 
 def get_azs(vpc):
-    azs = query_aws(vpc.account, "describe-availability-zones", vpc.region)
+    azs = query_aws(vpc.account, "ec2-describe-availability-zones", vpc.region)
     resource_filter = '.AvailabilityZones[]'
     return pyjq.all(resource_filter, azs)
 
 
 def get_vpc_peerings(region):
-    vpc_peerings = query_aws(region.account, "describe-vpc-peering-connections", region)
+    vpc_peerings = query_aws(region.account, "ec2-describe-vpc-peering-connections", region)
     resource_filter = '.VpcPeeringConnections[]'
     return pyjq.all(resource_filter, vpc_peerings)
 
 
 def get_subnets(az):
-    subnets = query_aws(az.account, "describe-subnets", az.region)
+    subnets = query_aws(az.account, "ec2-describe-subnets", az.region)
     resource_filter = '.Subnets[] | select(.VpcId == "{}") | select(.AvailabilityZone == "{}")'
     return pyjq.all(resource_filter.format(az.vpc.local_id, az.local_id), subnets)
 
 
 def get_ec2s(subnet):
-    instances = query_aws(subnet.account, "describe-instances", subnet.region)
+    instances = query_aws(subnet.account, "ec2-describe-instances", subnet.region)
     resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")'
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
 def get_elbs(subnet):
     # ELBs
-    elb_instances = query_aws(subnet.account, "describe-load-balancers", subnet.region)
+    elb_instances = query_aws(subnet.account, "elb-describe-load-balancers", subnet.region)
     elb_resource_filter = '.LoadBalancerDescriptions[] | select(.VPCId == "{}") | select(.Subnets[] == "{}")'
     elbs = pyjq.all(elb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), elb_instances)
 
     # ALBs and NLBs
-    alb_instances = query_aws(subnet.account, "describe-load-balancers-v2", subnet.region)
+    alb_instances = query_aws(subnet.account, "elbv2-describe-load-balancers", subnet.region)
     alb_resource_filter = '.LoadBalancers[] | select(.VPCId == "{}") | select(.Subnets[] == "{}")'
     albs = pyjq.all(alb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), alb_instances)
 
     return elbs + albs
 
 
-def get_albs_and_nlbs(subnet):
-    instances = query_aws(subnet.account, "describe-load-balancers-v2", subnet.region)
-    resource_filter = '.LoadBalancers[] | select(.VpcId == "{}") | select(.AvailabilityZones[].SubnetId == "{}")'
-    return pyjq.all(resource_filter.format(subnet.vpc.local_id, subnet.local_id), instances)
-
-
 def get_rds_instances(subnet):
-    instances = query_aws(subnet.account, "describe-db-instances", subnet.region)
+    instances = query_aws(subnet.account, "rds-describe-db-instances", subnet.region)
     resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
 def get_sgs(vpc):
-    sgs = query_aws(vpc.account, "describe-security-groups", vpc.region)
+    sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
     return pyjq.all('.SecurityGroups[] | select(.VpcId == "{}")'.format(vpc.local_id), sgs)
 
 
@@ -267,10 +260,6 @@ def build_data_structure(account_data, config, outputfilter):
                         elb = Elb(subnet, elb_json)
                         subnet.addChild(elb)
 
-                    # Get ALB's and NLB's
-                    for alb_json in get_albs_and_nlbs(subnet):
-                        alb = Elb(subnet, alb_json)
-                        subnet.addChild(alb)
 
                     # If there are leaves, then add this subnet to the final graph
                     if len(subnet.leaves) > 0:

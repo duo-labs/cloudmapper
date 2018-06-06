@@ -38,6 +38,24 @@ class Severity:
 
 LOG_LEVEL = Severity.INFO
 
+def log_info(msg, location, reasons=[]):
+    log_issue(Severity.INFO, msg, location, reasons)
+
+def log_warning(msg, location, reasons=[]):
+    log_issue(Severity.WARN, msg, location, reasons)
+
+def log_error(msg, location, reasons=[]):
+    log_issue(Severity.ERROR, msg, location, reasons)
+
+def log_issue(severity, msg, location, reasons=[]):
+    if severity >= LOG_LEVEL:
+        json_issue = {
+            'Severity': Severity.string(severity),
+            'Issue': msg,
+            'Location': location,
+            'Reasons': reasons
+        }
+        print(json.dumps(json_issue, sort_keys=True), file=sys.stderr)
 def datetime_handler(x):
     if isinstance(x, datetime.datetime):
         return x.isoformat()
