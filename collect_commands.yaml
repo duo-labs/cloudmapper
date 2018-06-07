@@ -1,4 +1,3 @@
-
 # Put this first so the report can be downloaded later
 - Service: iam
   Request: generate-credential-report
@@ -132,7 +131,8 @@
   Request: describe-images
   Parameters:
   - Name: Owners
-    Value: "self"
+    Value:
+    - "self"
 - Service: ec2
   Request: describe-network-acls
 - Service: ec2
@@ -143,9 +143,11 @@
   Request: describe-snapshots
   Parameters:
   - Name: OwnerIds
-    Value: "self"
+    Value:
+    - "self"
   - Name: RestorableByUserIds
-    Value: "all"
+    Value:
+    - "all"
 - Service: ec2
   Request: describe-vpc-endpoint-connections
 - Service: ec2
