@@ -142,9 +142,10 @@ python cloudmapper.py collect --account-name my_account
 
 # Commands
 
+- `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
 - `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
-- `stats`: Show counts of resources for accounts
-
+- `stats`: Show counts of resources for accounts. More details [here](https://summitroute.com/blog/2018/06/06/cloudmapper_stats/).
+- `sg_ips`: Get geoip info on CIDRs trusted in Security Groups. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_sg_ips/).
 
 Licenses
 --------
