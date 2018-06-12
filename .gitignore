@@ -6,3 +6,6 @@ web/data.json
 .coverage
 htmlcov/
 account-data/
+tmp/
+trusted_ips.png
+data/
