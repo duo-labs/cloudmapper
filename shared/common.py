@@ -5,6 +5,7 @@ import os
 import datetime
 import pyjq
 import sys
+from netaddr import IPNetwork
 
 class Severity:
     DEBUG = 0
@@ -61,6 +62,8 @@ def log_issue(severity, msg, location=None, reasons=[]):
             'Reasons': reasons
         }
         print(json.dumps(json_issue, sort_keys=True), file=sys.stderr)
+
+
 def datetime_handler(x):
     if isinstance(x, datetime.datetime):
         return x.isoformat()
@@ -71,6 +74,17 @@ def make_list(v):
     if not isinstance(v, list):
         return [v]
     return v
+
+
+def is_external_cidr(cidr):
+    ipnetwork = IPNetwork(cidr)
+    if (
+            ipnetwork in IPNetwork("10.0.0.0/8") or
+            ipnetwork in IPNetwork("172.16.0.0/12") or
+            ipnetwork in IPNetwork("192.168.0.0/16")
+    ):
+        return False
+    return True
 
 
 def query_aws(account, query, region=None):

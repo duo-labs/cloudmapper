@@ -28,7 +28,7 @@ import itertools
 import argparse
 import pyjq
 from netaddr import IPNetwork, IPAddress
-from shared.common import get_account, query_aws, get_regions
+from shared.common import get_account, query_aws, get_regions, is_external_cidr
 from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
 
 __description__ = "Generate network connection information file"
@@ -90,17 +90,6 @@ def get_rds_instances(subnet):
 def get_sgs(vpc):
     sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
     return pyjq.all('.SecurityGroups[] | select(.VpcId == "{}")'.format(vpc.local_id), sgs)
-
-
-def is_external_cidr(cidr):
-    ipnetwork = IPNetwork(cidr)
-    if (
-            ipnetwork in IPNetwork("10.0.0.0/8") or
-            ipnetwork in IPNetwork("172.16.0.0/12") or
-            ipnetwork in IPNetwork("192.168.0.0/16")
-    ):
-        return False
-    return True
 
 
 def get_external_cidrs(account, config):
