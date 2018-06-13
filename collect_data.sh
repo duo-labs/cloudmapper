@@ -74,8 +74,8 @@ if [ $? -ne 0 ]; then
   exit -1
 fi
 
-mkdir -p "$account"
-cd $account
+mkdir -p "account-data/$account"
+cd account-data/$account
 
 echo "* Getting region names"
 aws $AWS_OPTS ec2 describe-regions > describe-regions.json

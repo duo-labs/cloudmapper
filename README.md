@@ -22,7 +22,7 @@ On macOS:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool jq
+brew install autoconf automake libtool jq awscli
 cd cloudmapper/
 virtualenv venv
 source venv/bin/activate
@@ -34,10 +34,10 @@ On Linux:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # (Centos, Fedora, RedHat etc.):
-# sudo yum install autoconf automake libtool python-devel jq
+# sudo yum install autoconf automake libtool python-devel jq awscli
 # (Debian, Ubuntu etc.):
 # You may additionally need "build-essential"
-sudo apt-get install autoconf automake libtool python-dev jq
+sudo apt-get install autoconf automake libtool python-dev jq awscli
 cd cloudmapper/
 virtualenv venv
 source venv/bin/activate
@@ -97,6 +97,8 @@ This will allow you to define the different AWS accounts you use in your environ
 
 This step uses the CLI to make `describe` and `list` calls and records the json in the folder specified by the account name under `account-data`.
 
+Locally, AWS CLI must be configured with proper access key and region information. Generate new access keys in AWS Console and input the generated keys to `aws configure` if you have not done so yet.
+
 You must have AWS credentials configured that can be used by the CLI with read permissions for the different metadata to collect.  This can be granted via the `SecurityAudit` policy, or can be reduced to an even more minimal set of permissions if desired for network visualization.  The minimal policy needed is:
 
 ```
@@ -127,6 +129,8 @@ Collecting the data can be performed with a bash script or via the python code b
 
 ### Option 1: Bash script
 Using the script is helpful if you need someone else to get this data for you without fiddling with setting up the python environment.
+
+*NOTE* The script will collect a small subset of available data. It is preferable to use Option 2 below whenever possible.
 
 ```
 ./collect_data.sh --account my_account
