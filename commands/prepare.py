@@ -33,6 +33,14 @@ from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, 
 
 __description__ = "Generate network connection information file"
 
+MUTE = False
+
+def log(msg):
+    if MUTE:
+        return
+    print msg
+
+
 def get_vpcs(region, outputfilter):
     vpc_filter = ""
     if "vpc-ids" in outputfilter:
@@ -196,8 +204,12 @@ def get_connections(cidrs, vpc, outputfilter):
 def build_data_structure(account_data, config, outputfilter):
     cytoscape_json = []
 
+    if outputfilter.get('mute', False):
+        global MUTE
+        MUTE = True
+
     account = Account(None, account_data)
-    print("Building data for account {} ({})".format(account.name, account.local_id))
+    log("Building data for account {} ({})".format(account.name, account.local_id))
 
     cytoscape_json.append(account.cytoscape_data())
     for region_json in get_regions(account, outputfilter):
@@ -260,7 +272,7 @@ def build_data_structure(account_data, config, outputfilter):
             cytoscape_json.append(region.cytoscape_data())
             account.addChild(region)
 
-        print("- {} nodes built in region {}".format(node_count_per_region, region.local_id))
+        log("- {} nodes built in region {}".format(node_count_per_region, region.local_id))
 
     # Get VPC peerings
     for region in account.children:
@@ -301,7 +313,7 @@ def build_data_structure(account_data, config, outputfilter):
         if cidr.is_used:
             used_cidrs += 1
             cytoscape_json.append(cidr.cytoscape_data())
-    print("- {} external CIDRs built".format(used_cidrs))
+    log("- {} external CIDRs built".format(used_cidrs))
 
     total_number_of_nodes = len(cytoscape_json)
 
@@ -312,17 +324,17 @@ def build_data_structure(account_data, config, outputfilter):
             continue
         c._json = reasons
         cytoscape_json.append(c.cytoscape_data())
-    print("- {} connections built".format(len(connections)))
+    log("- {} connections built".format(len(connections)))
 
     # Check if we have a lot of data, and if so, show a warning
     # Numbers chosen here are arbitrary
     MAX_NODES_FOR_WARNING = 200
     MAX_EDGES_FOR_WARNING = 500
     if total_number_of_nodes > MAX_NODES_FOR_WARNING or len(connections) > MAX_EDGES_FOR_WARNING:
-        print("WARNING: There are {} total nodes and {} total edges.".format(total_number_of_nodes, len(connections)))
-        print("  This will be difficult to display and may be too complex to make sense of.")
-        print("  Consider reducing the number of items in the diagram by viewing a single")
-        print("   region, ignoring internal edges, or other filtering.")
+        log("WARNING: There are {} total nodes and {} total edges.".format(total_number_of_nodes, len(connections)))
+        log("  This will be difficult to display and may be too complex to make sense of.")
+        log("  Consider reducing the number of items in the diagram by viewing a single")
+        log("   region, ignoring internal edges, or other filtering.")
 
     return cytoscape_json
 
