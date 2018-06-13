@@ -97,6 +97,8 @@ This will allow you to define the different AWS accounts you use in your environ
 
 This step uses the CLI to make `describe` and `list` calls and records the json in the folder specified by the account name under `account-data`.
 
+Locally, AWS CLI must be configured with proper access key and region information. Generate new access keys in AWS Console and input the generated keys to `aws configure` if you have not done so yet.
+
 You must have AWS credentials configured that can be used by the CLI with read permissions for the different metadata to collect.  This can be granted via the `SecurityAudit` policy, or can be reduced to an even more minimal set of permissions if desired for network visualization.  The minimal policy needed is:
 
 ```
