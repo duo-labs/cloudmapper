@@ -28,7 +28,7 @@ The other filtering options are:
 You can host the `web` directory with your webserver of choice, or just run:
 
 ```
-python cloudmapper.py serve
+python cloudmapper.py webserver
 ```
 
 
