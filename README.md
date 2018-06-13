@@ -130,6 +130,8 @@ Collecting the data can be performed with a bash script or via the python code b
 ### Option 1: Bash script
 Using the script is helpful if you need someone else to get this data for you without fiddling with setting up the python environment.
 
+*NOTE* The script will collect a small subset of available data. It is preferable to use Option 2 below whenever possible.
+
 ```
 ./collect_data.sh --account my_account
 ```
