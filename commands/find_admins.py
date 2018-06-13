@@ -102,7 +102,7 @@ def find_admins(accounts, config):
                 continue
             log_error('Problem opening iam data, skipping account', location, [file_name])
             continue
-        
+
         admin_policies = []
         policy_action_counts = {}
         for policy in iam['Policies']:
@@ -112,7 +112,7 @@ def find_admins(accounts, config):
 
             if is_admin_policy(policy_doc, location):
                 admin_policies.append(policy['Arn'])
-                if ('arn:aws:iam::aws:policy/AdministratorAccess' in policy['Arn'] or 
+                if ('arn:aws:iam::aws:policy/AdministratorAccess' in policy['Arn'] or
                     'arn:aws:iam::aws:policy/IAMFullAccess' in policy['Arn']):
                     # Ignore the admin policies that are obviously admin
                     continue
