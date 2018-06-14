@@ -1,0 +1,102 @@
+- name: Cloudhealth
+  source: 'https://github.com/mozilla/security/blob/master/operations/cloudformation-templates/cloudhealth_iam_role.json'
+  accounts: ['454464851268']
+- name: 'SegmentIO'
+  source: 'https://segment.com/docs/destinations/amazon-s3/'
+  accounts: ['107630771604']
+- name: 'StackDriver'
+  source: 'https://web.archive.org/web/20150423044518/https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account'
+  accounts: ['314658760392']
+- name: 'Zencoder'
+  source: 'https://support.brightcove.com/using-zencoder-s3'
+  accounts: ['395540211253']
+- name: 'Datadog'
+  source: 'https://docs.datadoghq.com/integrations/amazon_web_services/'
+  accounts: ['464622532012']
+- name: 'Cloudability'
+  source: 'https://github.com/edrans/tf-aws-iam-cloudability'
+  accounts: ['165736516723']
+- name: 'Rackspace'
+  source: 'https://manage.rackspace.com/aws/docs/product-guide/patching/ec2/meltdown.html'
+  accounts: ['507897595701']
+- name: 'New Relic'
+  source: ['https://docs.newrelic.com/docs/integrations/amazon-integrations/get-started/connect-aws-services-infrastructure', 'https://docs.newrelic.com/docs/infrastructure/new-relic-infrastructure/data-instrumentation/amazon-aws-ec2-integration-infrastructure']
+  accounts: ['754728514883', '017663287629']
+- name: 'Brightcove'
+  source: 'https://support.brightcove.com/using-dynamic-ingest-s3'
+  accounts: ['749779118921']
+- name: 'CloudCheckr'
+  source: 'https://support.cloudcheckr.com/cloudcheckr-api-userguide/cloudcheckr-admin-api-reference-guide/'
+  accounts: ['352813966189']
+- name: 'SignifAI'
+  source: 'https://docs.signifai.io/docs/amazon-web-services'
+  accounts: ['265975144233']
+- name: 'ParkMyCloud'
+  source: 'https://parkmycloud.atlassian.net/wiki/spaces/PMCUG/pages/43876427/Create+an+IAM+Role+in+AWS+for+ParkMyCloud'
+  accounts: ['753542375798']
+- name: 'CenturyLinkCloud'
+  source: 'https://www.ctl.io/knowledge-base/cloud-application-manager/deploying-anywhere/using-your-aws-account/'
+  accounts: ['540339316802']
+- name: 'ELB logs'
+  type: 'aws'
+  source: 'https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/enable-access-logs.html'
+  accounts: ['127311923021', '033677994240', '027434742980', '797873946194', '985666609251', '054676820928', '156460612806', '652711504416', '009996457667', '582318560864', '600734575887', '383597477331', '114774131450', '783225319266', '718504428378', '507241528517', '048591011584', '638102146993', '037604701340']
+- name: 'Redshift logs'
+  type: 'aws'
+  source: 'https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html'
+  accounts: ['193672423079', '391106570357', '262260360010', '902366379725', '865932855811', '760740231472', '361669875840', '762762565011', '404641285394', '660998842044', '907379612154', '053454850223', '210876761215', '307160386991', '915173422425', '075028567923']
+- name: 'Cloudfront logs'
+  type: 'aws'
+  # This one is odd as the account ID is 'cloudfront' instead of a number, but I've seen it.
+  accounts: ['cloudfront']
+- name: 'Billing'
+  type: 'aws'
+  source: 'https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-getting-started.html#step-2'
+  accounts: ['386209384616']
+
+  # The following are from https://github.com/dagrz/aws_pwn/blob/master/miscellanea/integrations.txt and still need logos
+- name: 'dome9'
+  source: 'http://support.dome9.com/knowledgebase/articles/796419-convert-dome9-aws-account-connection-from-iam-user'
+  accounts: ['634729597623']
+- name: 'stackdriver'
+  source: 'https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account'
+  accounts: ['314658760392']
+- name: 'skeddly'
+  source: 'http://thecloudmarket.com/owner/478299826944'
+  accounts: ['478299826944']
+- name: 'freshservice'
+  source: 'https://support.freshservice.com/support/solutions/articles/207515-creating-a-role-arn-for-integrating-amazon-web-services-aws-in-freshservice'
+  accounts: ['618708667954']
+- name: 'signalfx'
+  source: 'https://signalfx-product-docs.readthedocs-hosted.com/en/latest/getting-started/send-data.html'
+  accounts: ['134183635603']
+- name: 'cloudsploit'
+  source: 'https://cloudsploit.freshdesk.com/support/solutions/articles/17000008755-connecting-an-aws-account-to-cloudsploit'
+  accounts: ['057012691312']
+- name: 'globus'
+  source: 'https://docs.globus.org/how-to/amazon-aws-s3-endpoints/'
+  accounts: ['328067584297']
+- name: 'dynatrace'
+  source: 'https://help.dynatrace.com/monitor-cloud-virtualization-and-hosts/cloud/how-do-i-start-amazon-web-services-monitoring/'
+  accounts: ['509560245411']
+- name: 'deepsecurity'
+  source: 'https://esupport.trendmicro.com/media/13166096/Generate-AWS-Role.pdf'
+  accounts: ['862820443276']
+- name: 'cloudbreak'
+  source: 'https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.3.0/bk_cldbrk_install/bk_CLBK_IAG/content/clbk_iam_console.html'
+  accounts: ['755047402263']
+- name: 'teraproc'
+  source: 'http://www.teraproc.com/awskey/'
+  accounts: ['122931797421']
+- name: 'orbitera'
+  source: 'https://support.orbitera.com/support/solutions/articles/147040-add-new-aws-accounts'
+  accounts: ['328676173091']
+- name: 'redline13'
+  source: 'https://www.redline13.com/blog/aws-setup/'
+  accounts: ['635144173025']
+- name: 'kochava'
+  source: 'https://support.kochava.com/reference-information/traffic-import-tool'
+  accounts: ['719465667078']
+- name: 'instaclustr'
+  source: 'https://support.instaclustr.com/hc/en-us/articles/226565607-Setting-Up-a-Datacenter-with-EBS-Encryption'
+  accounts: ['624537489435']
