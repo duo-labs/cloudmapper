@@ -184,8 +184,6 @@ class Node(object):
         response = {"data": {
             "id": self.arn,
             "name": self.name,
-            "fullname": self.fullname,
-            "name_truncated": self.name_truncated,
             "type": self.node_type,
             "local_id": self.local_id,
             "node_data": self.json
