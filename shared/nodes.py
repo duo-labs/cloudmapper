@@ -37,11 +37,12 @@ def get_name(node, default):
     try:
         for tag in node["Tags"]:
             if tag["Key"] == "Name":
-                return truncate(tag["Value"])
+                truncated = truncate(tag["Value"])
+                return (truncated, tag["Value"], truncated != tag["Value"])
     except Exception:
         # If the keys in tag don't exist, just return the default
         pass
-    return node[default]
+    return (node[default], node[default], False)
 
 
 def is_public_ip(ip):
@@ -60,6 +61,8 @@ class Node(object):
     _arn = ""
     _local_id = ""  # Ex. InstanceId
     _name = ""
+    _fullname = ""
+    _name_truncated = ""
     _type = ""
 
     _parent = None
@@ -88,6 +91,14 @@ class Node(object):
     @property
     def name(self):
         return self._name
+    
+    @property
+    def fullname(self):
+        return self._fullname
+    
+    @property
+    def name_truncated(self):
+        return self._name_truncated
 
     @property
     def node_type(self):
@@ -173,6 +184,8 @@ class Node(object):
         response = {"data": {
             "id": self.arn,
             "name": self.name,
+            "fullname": self.fullname,
+            "name_truncated": self.name_truncated,
             "type": self.node_type,
             "local_id": self.local_id,
             "node_data": self.json
@@ -188,6 +201,8 @@ class Account(Node):
         self._local_id = json_blob["id"]
         self._arn = "arn:aws:::{}:".format(self._local_id)
         self._name = json_blob["name"]
+        self._fullname = self._name
+        self._name_truncated = False
         self._type = "account"
         super(Account, self).__init__(parent, json_blob)
 
@@ -197,6 +212,8 @@ class Region(Node):
         self._local_id = json_blob["RegionName"]
         self._arn = "arn:aws::{}:{}:".format(self.local_id, parent.account.local_id)
         self._name = json_blob["RegionName"]
+        self._fullname = self._name
+        self._name_truncated = False
         self._type = "region"
         super(Region, self).__init__(parent, json_blob)
 
@@ -219,7 +236,7 @@ class Vpc(Node):
         # arn:aws:ec2:region:account-id:vpc/vpc-id
         self._local_id = json_blob["VpcId"]
         self._arn = "arn:aws::{}:{}:vpc/{}".format(parent.region.name, parent.account.local_id, self._local_id)
-        self._name = get_name(json_blob, "VpcId")
+        (self._name, self._fullname, self._name_truncated) = get_name(json_blob, "VpcId")
         self._type = "vpc"
 
         self._peering_connections = []
@@ -232,6 +249,8 @@ class Az(Node):
         self._local_id = json_blob["ZoneName"]
         self._arn = "arn:aws::{}:{}:vpc/{}/az/{}".format(parent.region.local_id, parent.account.local_id, parent.local_id, self._local_id)
         self._name = json_blob["ZoneName"]
+        self._fullname = self._name
+        self._name_truncated = False
         self._type = "az"
         super(Az, self).__init__(parent, json_blob)
 
@@ -241,7 +260,7 @@ class Subnet(Node):
         # arn:aws:ec2:region:account-id:subnet/subnet-id
         self._local_id = json_blob["SubnetId"]
         self._arn = "arn:aws::{}:{}:subnet/{}".format(parent.region.name, parent.account.local_id, self._local_id)
-        self._name = get_name(json_blob, "SubnetId")
+        (self._name, self._fullname, self._name_truncated) = get_name(json_blob, "SubnetId")
         self._type = "subnet"
         super(Subnet, self).__init__(parent, json_blob)
 
@@ -295,7 +314,7 @@ class Ec2(Leaf):
             self._local_id = json_blob["InstanceId"]
 
         self._arn = "arn:aws:ec2:{}:{}:instance/{}".format(parent.region.name, parent.account.local_id, self._local_id)
-        self._name = get_name(json_blob, "InstanceId")
+        (self._name, self._fullname, self._name_truncated) = get_name(json_blob, "InstanceId")
         super(Ec2, self).__init__(parent, json_blob)
 
 
@@ -324,6 +343,8 @@ class Elb(Leaf):
             self._local_id,
             parent.local_id)
         self._name = json_blob["LoadBalancerName"]
+        self._fullname = self._name
+        self._name_truncated = False
         super(Elb, self).__init__(parent, json_blob)
 
 
@@ -357,6 +378,8 @@ class Rds(Leaf):
             parent.local_id
         )
         self._name = truncate(json_blob["DBInstanceIdentifier"])
+        self._fullname = json_blob["DBInstanceIdentifier"]
+        self._name_truncated = self._name != self._fullname
         super(Rds, self).__init__(parent, json_blob)
 
 
@@ -376,7 +399,8 @@ class Cidr(Leaf):
         if cidr == "0.0.0.0/0":
             self._name = "Public"
             self._type = "cloud"
-
+        self._fullname = self._name
+        self._truncated = False
         # For determining if this IP is actually connected to anything
         self.is_used = False
 
