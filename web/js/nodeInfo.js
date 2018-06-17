@@ -62,7 +62,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             } else {
                 summary.append('<span class="label">Type:</span><span> '+n.data().type+'</span><br>');
                 summary.append('<span class="label">ID:</span><span> '+n.data().local_id+'</span><br>');
-                summary.append('<span class="label">Name:</span><span> '+n.data().name+'</span><br>');
+                if (n.data().name_truncated){
+                    summary.append('<span class="label">Name:</span><span title="'+n.data().fullname+'"'+'> '+n.data().name+'</span><br>');
+                } else {
+                    summary.append('<span class="label">Name:</span><span> '+n.data().name+'</span><br>');
+                }
             }
             
             var details = $('#Details');
