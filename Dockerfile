@@ -19,7 +19,8 @@ libtool \
 python-dev \
 jq \
 g++ \
-make
+make \
+freetype-dev
 
 # clone the repo && Install pre-reqs for pyjq
 COPY . /opt/cloudmapper
