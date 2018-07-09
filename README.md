@@ -44,17 +44,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-With Docker (not well supported):
-```
-# Clone the repo
-git clone git@github.com:duo-labs/cloudmapper.git
-# Edit config.json
-vi config.json
-# Build the docker container
-docker-compose build
-# Set the accountname and run the container (assuming aws_* variables are set)
-accountname="testaccount"  docker-compose up
-```
 
 ## Run with demo data
 
@@ -67,10 +56,6 @@ python cloudmapper.py webserver
 
 This will run a local webserver at http://127.0.0.1:8000/
 
-Alternatively using docker:
-```
-docker-compose build && accountname="demo" docker-compose up
-```
 
 # Setup
 
@@ -125,7 +110,7 @@ You must have AWS credentials configured that can be used by the CLI with read p
 }
 ```
 
-Collecting the data can be performed with a bash script or via the python code base.  Both options support a `--profile-name` to specify the AWS account profile to use.
+Collecting the data can be performed with a bash script or via the python code base.  Both options support a `--profile` to specify the AWS account profile to use.
 
 ### Option 1: Bash script
 Using the script is helpful if you need someone else to get this data for you without fiddling with setting up the python environment.
@@ -141,7 +126,7 @@ Using the script is helpful if you need someone else to get this data for you wi
 ### Option 2: Python code
 
 ```
-python cloudmapper.py collect --account-name my_account
+python cloudmapper.py collect --account my_account
 ```
 
 # Commands
