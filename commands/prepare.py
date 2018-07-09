@@ -350,7 +350,7 @@ def run(arguments):
     parser.add_argument("--config", help="Config file name",
                         default="config.json", type=str)
     parser.add_argument("--account", help="Account to collect from",
-                        required=False, type=str)
+                        required=False, type=str, dest='account_name')
     parser.add_argument("--regions", help="Regions to restrict to (ex. us-east-1,us-west-2)",
                         default=None, type=str)
     parser.add_argument("--vpc-ids", help="VPC ids to restrict to (ex. vpc-1234,vpc-abcd)",
