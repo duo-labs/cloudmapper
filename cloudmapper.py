@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 """
 Copyright 2018 Duo Security
 
@@ -28,6 +28,7 @@ This script manages CloudMapper, a tool for analyzing AWS environments.
 from __future__ import (absolute_import, division, print_function)
 import sys
 import pkgutil
+import importlib 
 import commands
 
 __version__ = "2.0.0"
@@ -49,7 +50,7 @@ def main():
     commands_path = 'commands'
     for importer, command_name, _ in pkgutil.iter_modules([commands_path]):
         full_package_name = '%s.%s' % (commands_path, command_name)
-        module = importer.find_module(command_name).load_module(full_package_name)
+        module = importlib.import_module(full_package_name)
         commands[command_name] = module
 
     # Parse command

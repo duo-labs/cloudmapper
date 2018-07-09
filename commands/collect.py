@@ -47,7 +47,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
         # Data already collected, so skip
         return
 
-    print "Making call for {}".format(outputfile)
+    print("Making call for {}".format(outputfile))
     try:
         if handler.can_paginate(method_to_call):
             paginator = handler.get_paginator(method_to_call)
@@ -57,7 +57,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
                 if not data:
                     data = response
                 else:
-                    print "  ...paginating"
+                    print("  ...paginating")
                     for k in data:
                         if isinstance(data[k], list):
                             data[k].extend(response[k])
@@ -70,7 +70,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
         if "NoSuchBucketPolicy" in str(e):
             pass
         else:
-            print "ClientError: {}".format(e)
+            print("ClientError: {}".format(e))
     except EndpointConnectionError as e:
         pass
 

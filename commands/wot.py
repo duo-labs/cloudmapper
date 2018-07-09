@@ -216,9 +216,9 @@ def get_s3_trusts(account, nodes, connections):
             principals = s.get('Principal', None)
             if principals is None:
                 if s.get('NotPrincipal', None) is not None:
-                    print "WARNING: Use of NotPrincipal in {} for {}: {}".format(account.name, s3_policy_file, s)
+                    print("WARNING: Use of NotPrincipal in {} for {}: {}".format(account.name, s3_policy_file, s))
                     continue
-                print 'WARNING: Malformed statement in {} for {}: {}'.format(account.name, s3_policy_file, s)
+                print('WARNING: Malformed statement in {} for {}: {}'.format(account.name, s3_policy_file, s))
                 continue
 
             for principal in principals:
@@ -337,7 +337,7 @@ def wot(args, accounts, config):
                     break
 
             if n.type == 'unknown_account':
-                print 'Unknown account: {}'.format(n.id)
+                print('Unknown account: {}'.format(n.id))
 
             # Ignore AWS accounts unless the argument was given not to
             if n.type == 'aws' and not args.show_aws_owned_accounts:
@@ -364,7 +364,7 @@ def wot(args, accounts, config):
         if (c._type == 's3_read') and (connections.get(Connection(c.source, c.target, 's3'), False) is not False):
             # Don't show an s3 connection if we have an iam or admin connection between the same nodes
             continue
-        #print "{} -> {}".format(c.source.id, c.target.id)
+        #print('{} -> {}'.format(c.source.id, c.target.id))
         c._json = reasons
         cytoscape_json.append(c.cytoscape_data())
         num_connections += 1

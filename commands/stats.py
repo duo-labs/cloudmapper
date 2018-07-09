@@ -212,7 +212,7 @@ def stats(accounts, config):
             #if count == 0:
             #    count = ''
             output_line += ("\t"+str(count)).ljust(8)
-        print output_line
+        print(output_line)
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)
