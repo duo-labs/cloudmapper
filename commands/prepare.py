@@ -38,7 +38,7 @@ MUTE = False
 def log(msg):
     if MUTE:
         return
-    print msg
+    print(msg)
 
 
 def get_vpcs(region, outputfilter):

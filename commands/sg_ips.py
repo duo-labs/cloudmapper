@@ -39,7 +39,7 @@ def get_cidrs_for_account(account, cidrs):
                 if not is_external_cidr(cidr):
                     continue
                 if is_unneeded_cidr(cidr):
-                    print 'WARNING: Unneeded cidr used {}'.format(cidr)
+                    print('WARNING: Unneeded cidr used {}'.format(cidr))
                     continue
                 if cidr == '0.0.0.0/0':
                     continue
@@ -121,7 +121,7 @@ def sg_ips(accounts):
 
         ip = IPNetwork(cidr)
         if ip.size > 2048:
-            print "WARNING: Large CIDR {} contains {} IPs in it".format(cidr, ip.size)
+            print('WARNING: Large CIDR {} contains {} IPs in it'.format(cidr, ip.size))
 
         # Look up the cidr in the databases
         location = city_reader.city(str(ip.ip))
@@ -131,7 +131,7 @@ def sg_ips(accounts):
             # Convert to ascii
             isp = isp.encode('ascii', 'ignore').decode('ascii')
         except geoip2.errors.AddressNotFoundError:
-            print "WARNING: Unknown CIDR {}".format(cidr)
+            print('WARNING: Unknown CIDR {}'.format(cidr))
             isp = "Unknown"
 
         # Collect the longitude and latitude locations for graphing
@@ -187,11 +187,11 @@ def sg_ips(accounts):
 
     # Print them in sorted order
     for _, cidr in sorted_cidrs.items():
-        print "{}\t {}\t {}\t {}".format(
+        print('{}\t {}\t {}\t {}'.format(
             cidr['cidr'].ljust(18),
             cidr['description'].ljust(20),
             cidr['location'].ljust(50),
-            cidr['isp'])
+            cidr['isp']))
 
     # Save image
     fig, ax = plt.subplots()
