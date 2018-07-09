@@ -178,9 +178,9 @@ def run(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", help="Config file name",
                         default="config.json", type=str)
-    parser.add_argument("--account-name", help="Account to collect from",
+    parser.add_argument("--account", help="Account to collect from",
                         required=False, type=str)
-    parser.add_argument("--profile-name", help="AWS profile name",
+    parser.add_argument("--profile", help="AWS profile name",
                         required=False, type=str)
     parser.add_argument('--clean', help='Remove any existing data for the account before gathering', action='store_true')
 

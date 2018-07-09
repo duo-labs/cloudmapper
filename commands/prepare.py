@@ -349,7 +349,7 @@ def run(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", help="Config file name",
                         default="config.json", type=str)
-    parser.add_argument("--account-name", help="Account to collect from",
+    parser.add_argument("--account", help="Account to collect from",
                         required=False, type=str)
     parser.add_argument("--regions", help="Regions to restrict to (ex. us-east-1,us-west-2)",
                         default=None, type=str)
