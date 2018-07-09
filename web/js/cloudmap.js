@@ -70,6 +70,24 @@ function loadCytoscape(options) {
     // Add ability to undo moves
     var ur = cy.undoRedo();
 
+    function setEdgeActions() {
+        // Do something when an edge is clicked on
+        cy.edges().on('tap', function( e ){
+            // This function is just to get us to directtap
+            var eventIsDirect = e.target.same( this ); // don't use 2.x cyTarget
+            
+            if( eventIsDirect ){
+                this.emit('directtap');
+            }
+        }).on('directtap', function( e ){
+            // An edge has been click on
+            ni.describe(this);
+            
+            e.stopPropagation();
+        });
+        console.log("Setting edge actions");
+    }
+
     // Add ability to expand and collapse nodes
     cy.expandCollapse({
         layoutBy: {
@@ -79,6 +97,7 @@ function loadCytoscape(options) {
             fit: true,
             animationDuration: 1000,
         },
+        cueEnabled: false,
         fisheye: true,
         animate: true
     });
@@ -118,6 +137,7 @@ function loadCytoscape(options) {
         }
     });
 
+
     // Increase border width to show nodes with hidden neighbors
     function thickenBorder(eles){
         eles.forEach(function( ele ){
@@ -143,6 +163,7 @@ function loadCytoscape(options) {
         ur.do("collapseRecursively", {
             nodes: cy.$(":selected")
         });
+        setEdgeActions();
     });
 
     // Expand selected nodes
@@ -150,16 +171,19 @@ function loadCytoscape(options) {
         ur.do("expandRecursively", {
             nodes: cy.$(":selected")
         });
+        setEdgeActions();
     });
 
     // Collapse all
     document.getElementById("collapseAll").addEventListener("click", function () {
         ur.do("collapseAll");
+        setEdgeActions();
     });
 
     // Expand all
     document.getElementById("expandAll").addEventListener("click", function () {
         ur.do("expandAll");
+        setEdgeActions();
     });
 
 
@@ -256,6 +280,7 @@ function loadCytoscape(options) {
             .connectedNodes().intersection(hiddenEles.nodes());
         actions.push({name: "thickenBorder", param: nodesWithHiddenNeighbor}); 
         cy.undoRedo().do("batch", actions);
+        setEdgeActions();
     });
 
     var highlight = false;
@@ -303,20 +328,7 @@ function loadCytoscape(options) {
         e.stopPropagation();
     });
 
-    // Do something when an edge is clicked on
-    cy.edges().on('tap', function( e ){
-        // This function is just to get us to directtap
-        var eventIsDirect = e.target.same( this ); // don't use 2.x cyTarget
-        
-        if( eventIsDirect ){
-            this.emit('directtap');
-        }
-    }).on('directtap', function( e ){
-        // An edge has been click on
-        ni.describe(this);
-        
-        e.stopPropagation();
-    });
+    setEdgeActions();
 
     //
     // Handle hotkeys
@@ -354,6 +366,7 @@ function loadCytoscape(options) {
         ur.do("expandRecursively", {
             nodes: cy.$(":selected")
         });
+        setEdgeActions();
     });
 
     // Randomize layout
