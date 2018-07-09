@@ -19,12 +19,13 @@ libtool \
 python-dev \
 jq \
 g++ \
-make
+make \
+freetype-dev
 
 # clone the repo && Install pre-reqs for pyjq
 COPY . /opt/cloudmapper
 
-RUN pip install pipenv && pipenv --two && pipenv install
+RUN pip install pipenv && pipenv --two && PIP_NO_BUILD_ISOLATION=false pipenv install
 RUN chmod +x entrypoint.sh && touch config.json
 
 
