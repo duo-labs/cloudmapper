@@ -83,31 +83,31 @@ aws $AWS_OPTS ec2 describe-regions > describe-regions.json
 cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'mkdir -p $1' -- {}
 
 echo "* Getting VPC info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-vpcs > "$1/describe-vpcs.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-vpcs > "$1/ec2-describe-vpcs.json"' -- {}
 
 echo "* Getting AZ info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-availability-zones > "$1/describe-availability-zones.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-availability-zones > "$1/ec2-describe-availability-zones.json"' -- {}
 
 echo "* Getting subnet info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-subnets > "$1/describe-subnets.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-subnets > "$1/ec2-describe-subnets.json"' -- {}
 
 echo "* Getting EC2 info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-instances > "$1/describe-instances.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-instances > "$1/ec2-describe-instances.json"' -- {}
 
 echo "* Getting RDS info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' rds --region "$1" describe-db-instances > "$1/describe-db-instances.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' rds --region "$1" describe-db-instances > "$1/rds-describe-db-instances.json"' -- {}
 
 echo "* Getting ELB info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' elb --region "$1" describe-load-balancers > "$1/describe-load-balancers.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' elb --region "$1" describe-load-balancers > "$1/elb-describe-load-balancers.json"' -- {}
 
 echo "* Getting ALB info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' elbv2 --region "$1" describe-load-balancers > "$1/describe-load-balancers-v2.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' elbv2 --region "$1" describe-load-balancers > "$1/elbv2-describe-load-balancers.json"' -- {}
 
 echo "* Getting security group info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-security-groups > "$1/describe-security-groups.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-security-groups > "$1/ec2-describe-security-groups.json"' -- {}
 
 echo "* Getting network interface info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-network-interfaces > "$1/describe-network-interfaces.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-network-interfaces > "$1/ec2-describe-network-interfaces.json"' -- {}
 
 echo "* Getting VPC peering info"
-cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-vpc-peering-connections > "$1/describe-vpc-peering-connections.json"' -- {}
+cat describe-regions.json | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws '"$AWS_OPTS"' ec2 --region "$1" describe-vpc-peering-connections > "$1/ec2-describe-vpc-peering-connections.json"' -- {}
