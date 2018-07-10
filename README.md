@@ -22,7 +22,7 @@ On macOS:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool jq awscli
+brew install autoconf automake libtool jq awscli python3
 cd cloudmapper/
 python3 -m venv ./venv
 source venv/bin/activate
@@ -34,10 +34,10 @@ On Linux:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # (Centos, Fedora, RedHat etc.):
-# sudo yum install autoconf automake libtool python-devel jq awscli
+# sudo yum install autoconf automake libtool python34-devel jq awscli
 # (Debian, Ubuntu etc.):
 # You may additionally need "build-essential"
-sudo apt-get install autoconf automake libtool python-dev jq awscli
+sudo apt-get install autoconf automake libtool python3-dev jq awscli
 cd cloudmapper/
 python3 -m venv ./venv
 source venv/bin/activate
