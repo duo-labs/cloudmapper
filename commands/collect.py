@@ -181,7 +181,7 @@ def run(arguments):
     parser.add_argument("--account", help="Account to collect from",
                         required=False, type=str, dest='account_name')
     parser.add_argument("--profile", help="AWS profile name",
-                        required=False, type=str)
+                        required=False, type=str, dest='profile_name')
     parser.add_argument('--clean', help='Remove any existing data for the account before gathering', action='store_true')
 
     args = parser.parse_args(arguments)
