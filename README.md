@@ -84,7 +84,7 @@ This step uses the CLI to make `describe` and `list` calls and records the json 
 
 Locally, AWS CLI must be configured with proper access key and region information. Generate new access keys in AWS Console and input the generated keys to `aws configure` if you have not done so yet.
 
-You must have AWS credentials configured that can be used by the CLI with read permissions for the different metadata to collect.  This can be granted via the `SecurityAudit` policy, or can be reduced to an even more minimal set of permissions if desired for network visualization.  The minimal policy needed is:
+You must have AWS credentials configured that can be used by the CLI with read permissions for the different metadata to collect.  If you plan to use all the features of CloudMapper, grant the `SecurityAudit` policy. If you only plan to use the network visualization, this can be reduced to an even more minimal set of permissions:
 
 ```
 {
