@@ -64,9 +64,11 @@ def log_issue(severity, msg, location=None, reasons=[]):
         print(json.dumps(json_issue, sort_keys=True), file=sys.stderr)
 
 
-def datetime_handler(x):
+def custom_serializer(x):
     if isinstance(x, datetime.datetime):
         return x.isoformat()
+    elif isinstance(x, bytes):
+        return x.decode()
     raise TypeError("Unknown type")
 
 

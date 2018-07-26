@@ -7,7 +7,7 @@ import boto3
 import yaml
 import pyjq
 from botocore.exceptions import ClientError, EndpointConnectionError
-from shared.common import get_account, datetime_handler
+from shared.common import get_account, custom_serializer
 
 __description__ = "Run AWS API calls to collect data from the account"
 
@@ -81,7 +81,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
         data.pop('IsTruncated', None)
 
     with open(outputfile, 'w+') as f:
-        f.write(json.dumps(data, indent=4, sort_keys=True, default=datetime_handler))
+        f.write(json.dumps(data, indent=4, sort_keys=True, default=custom_serializer))
 
 
 def collect(arguments):
