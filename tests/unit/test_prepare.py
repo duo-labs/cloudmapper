@@ -56,6 +56,7 @@ class TestPrepare(unittest.TestCase):
         outputfilter["inter_rds_edges"] = True
         outputfilter["azs"] = False
         outputfilter["collapse_by_tag"] = False
+        outputfilter["collapse_asgs"] = False
 
         config = {"accounts": [{"id": 123456789012, "name": "demo"}], "cidrs": {"1.1.1.1/32": {"name": "SF Office"}, "2.2.2.2/28": {"name": "NY Office"}}}
 
