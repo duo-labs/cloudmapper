@@ -286,7 +286,7 @@ class Ec2(Leaf):
             collapse_by_tag_value = pyjq.all('.Tags[] | select(.Key == "{}") | .Value'.format(collapse_by_tag), json_blob)
         if autoscaling_name != []:
             self._type = "autoscaling"
-            self._local_id = autoscaling_name[0]
+            self._local_id = autoscaling_name[0] + parent.local_id
         elif collapse_by_tag_value != []:
             self._type = "grouped_ec2"
             self._local_id = "grouped_ec2_{}".format(collapse_by_tag_value[0])
