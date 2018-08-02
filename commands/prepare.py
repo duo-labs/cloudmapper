@@ -235,7 +235,9 @@ def build_data_structure(account_data, config, outputfilter):
 
                     # Get EC2's
                     for ec2_json in get_ec2s(subnet):
-                        ec2 = Ec2(subnet, ec2_json, outputfilter["collapse_by_tag"])
+                        ec2 = Ec2(subnet, ec2_json,
+                                  outputfilter["collapse_by_tag"],
+                                  outputfilter["collapse_asgs"])
                         subnet.addChild(ec2)
 
                     # Get RDS's
@@ -375,6 +377,8 @@ def run(arguments):
                         dest='azs', action='store_false')
     parser.add_argument("--collapse-by-tag", help="Collapse nodes with the same tag to a single node",
                         dest='collapse_by_tag', default=None, type=str)
+    parser.add_argument("--collapse-asgs", help="Only show the AutoScalingGroup instead of all contained instances.",
+                        dest='collapse_asgs', action='store_true')
 
     parser.set_defaults(internal_edges=True)
     parser.set_defaults(inter_rds_edges=False)
@@ -398,6 +402,7 @@ def run(arguments):
     outputfilter["inter_rds_edges"] = args.inter_rds_edges
     outputfilter["azs"] = args.azs
     outputfilter["collapse_by_tag"] = args.collapse_by_tag
+    outputfilter["collapse_asgs"] = args.collapse_asgs
 
     # Read accounts file
     try:
