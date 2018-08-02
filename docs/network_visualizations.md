@@ -15,6 +15,7 @@ The most useful filtering options:
 * `--regions`: Restrict the diagram to a set regions, ex. `us-east-1,us-east-2`
 * `--vpc-ids` and `--vpc-names`: Restrict the diagram to a set of VPCs.
 * `--collapse-by-tag`: This is very useful to provide a tag name, and all nodes with that tag will be reduced to a single displayed node.
+* `--collapse-asgs`: Collapses multiple EC2 instances into their and AutoScalingGroup. When the ASG spreads accross multiple Availability Zones, only one will be displayed.
 
 The other filtering options are:
 * `--internal-edges` (default) and `--no-internal-edges`: When you only care about showing what is publicly accessible, use `--no-internal-edges`.
