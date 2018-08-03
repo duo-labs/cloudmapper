@@ -377,13 +377,16 @@ def run(arguments):
                         dest='azs', action='store_false')
     parser.add_argument("--collapse-by-tag", help="Collapse nodes with the same tag to a single node",
                         dest='collapse_by_tag', default=None, type=str)
-    parser.add_argument("--collapse-asgs", help="Only show the AutoScalingGroup instead of all contained instances.",
+    parser.add_argument("--collapse-asgs", help="Show a single node for Auto Scaling Groups instead of all contained instances (default)",
                         dest='collapse_asgs', action='store_true')
+    parser.add_argument("--no-collapse-asgs", help="Show all EC2 instances of Auto Scaling Groups",
+                        dest='collapse_asgs', action='store_false')
 
     parser.set_defaults(internal_edges=True)
     parser.set_defaults(inter_rds_edges=False)
     parser.set_defaults(read_replicas=True)
     parser.set_defaults(azs=True)
+    parser.set_defaults(collapse_asgs=True)
 
     args = parser.parse_args(arguments)
 
