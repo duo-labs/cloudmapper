@@ -15,13 +15,13 @@ The most useful filtering options:
 * `--regions`: Restrict the diagram to a set regions, ex. `us-east-1,us-east-2`
 * `--vpc-ids` and `--vpc-names`: Restrict the diagram to a set of VPCs.
 * `--collapse-by-tag`: This is very useful to provide a tag name, and all nodes with that tag will be reduced to a single displayed node.
-* `--collapse-asgs`: Collapses multiple EC2 instances into their AutoScalingGroup. When the ASG spreads accross multiple Availability Zones, only one will be displayed.
 
 The other filtering options are:
 * `--internal-edges` (default) and `--no-internal-edges`: When you only care about showing what is publicly accessible, use `--no-internal-edges`.
 * `--inter-rds-edges` and `--no-inter-rds-edges` (default): By default, any communication paths between RDS nodes are not shown, as this is unlikely to be of interest. To display them, use `--inter-rds-edges`.
 * `--read-replicas` (default) and `--no-read-replicas`: By default, RDS read replica nodes are shown. You can ignore them by using `--no-read-replicas`.
 * `--azs` (default) and `--no-azs`: Availability zones are shown by default.  To ignore them, use `--no-azs`.
+* `--no-collapse-asgs`: By default, auto-scaling groups are collapsed to a single node.  This flag causes all instances to be shown instead.
 
 
 ## Run a webserver
