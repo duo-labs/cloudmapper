@@ -103,19 +103,28 @@ def public(accounts, config):
                 print(pyjq.first('.[].data|select(.id=="{}")|[.type, (.node_data|keys)]'.format(target['arn']), network, {}))
 
             # Check if any protocol is allowed (indicated by IpProtocol == -1)
-            ingress = pyjq.all('.[].IpPermissions[]', edge.get('node_data', {}))
-            if pyjq.first('.[]|select(.IpProtocol=="-1")|.IpProtocol', ingress, '1') == '-1':
-                log_warning('All protocols allowed access to {}'.format(target))
+            ingress = pyjq.all('.[]', edge.get('node_data', {}))
+
+            sg_group_allowing_all_protocols = pyjq.first('select(.IpPermissions[]|.IpProtocol=="-1")|.GroupId', ingress, None)
+            public_sgs = set()
+            if sg_group_allowing_all_protocols is not None:
+                log_warning('All protocols allowed access to {} due to {}'.format(target, sg_group_allowing_all_protocols))
                 range_string = '0-65535'
+                public_sgs.add(sg_group_allowing_all_protocols)
             else:
                 # from_port and to_port mean the beginning and end of a port range
                 # We only care about TCP (6) and UDP (17)
                 # For more info see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html
-                selection = 'select((.IpProtocol=="tcp") or (.IpProtocol=="udp")) | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
-                port_ranges = pyjq.all('.[]|{}| [.FromPort,.ToPort]'.format(selection), ingress)
+                port_ranges = []
+                for sg in ingress:
+                    for ip_permission in sg['IpPermissions']:
+                        selection = 'select((.IpProtocol=="tcp") or (.IpProtocol=="udp")) | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
+                        port_ranges.extend(pyjq.all('{}| [.FromPort,.ToPort]'.format(selection), ip_permission))
+                        public_sgs.add(sg['GroupId'])
                 range_string = port_ranges_string(regroup_ranges(port_ranges))
 
             target['ports'] = range_string
+            target['public_sgs'] = list(public_sgs)
             if target['ports'] == "":
                 issue_msg = 'No ports open for tcp or udp (probably can only be pinged). Rules that are not tcp or udp: {} -- {}'
                 log_warning(issue_msg.format(json.dumps(pyjq.all('.[]|select((.IpProtocol!="tcp") and (.IpProtocol!="udp"))'.format(selection), ingress)), account))
