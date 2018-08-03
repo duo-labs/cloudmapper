@@ -73,7 +73,7 @@ def log_warning(msg):
 def public(accounts, config):
     for account in accounts:
         # Get the data from the `prepare` command
-        outputfilter = {'internal_edges': False, 'read_replicas': False, 'inter_rds_edges': False, 'azs': False, 'collapse_by_tag': None, 'mute': True}
+        outputfilter = {'internal_edges': False, 'read_replicas': False, 'inter_rds_edges': False, 'azs': False, 'collapse_by_tag': None, 'collapse_asgs': None, 'mute': True}
         network = build_data_structure(account, config, outputfilter)
 
         # Look at all the edges for ones connected to the public Internet (0.0.0.0/0)
