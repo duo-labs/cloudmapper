@@ -21,6 +21,7 @@ The other filtering options are:
 * `--inter-rds-edges` and `--no-inter-rds-edges` (default): By default, any communication paths between RDS nodes are not shown, as this is unlikely to be of interest. To display them, use `--inter-rds-edges`.
 * `--read-replicas` (default) and `--no-read-replicas`: By default, RDS read replica nodes are shown. You can ignore them by using `--no-read-replicas`.
 * `--azs` (default) and `--no-azs`: Availability zones are shown by default.  To ignore them, use `--no-azs`.
+* `--no-collapse-asgs`: By default, auto-scaling groups are collapsed to a single node.  This flag causes all instances to be shown instead.
 
 
 ## Run a webserver
@@ -70,4 +71,3 @@ When you first start, the initial layout is never ideal.  We use what is believe
 
 Here is the layout you'll likely see initially when you view the demo:
 ![Initial layout](docs/images/initial_layout.png "Initial layout")
-
