@@ -102,7 +102,8 @@ resources = OrderedDict([
     ('cloudfront', {
 		'name': 'CloudFronts',
 		'query': '.DistributionList|length',
-		'source': 'cloudfront-list-distributions'}),
+		'source': 'cloudfront-list-distributions',
+		'region': 'us-east-1'}),
     ('cloudsearch', {
 		'name': 'CloudSearch domains',
 		'query': '.DomainStatusList|length',
@@ -175,6 +176,10 @@ def get_account_stats(account):
         region = Region(account, region_json)
 
         for key, resource in resources.items():
+            # Skip global services (just CloudFront)
+            if ('region' in resource) and (resource['region'] != region.name):
+                continue
+
             # Check exceptions that require special code to perform the count
             if key == 'route53_record':
                 path = 'account-data/{}/{}/{}'.format(
