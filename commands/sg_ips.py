@@ -34,15 +34,29 @@ def get_cidrs_for_account(account, cidrs):
         sg_json = query_aws(account, "ec2-describe-security-groups", region)
         sgs = pyjq.all('.SecurityGroups[]', sg_json)
         for sg in sgs:
+            cidrs_seen = set()
             cidr_and_name_list = pyjq.all('.IpPermissions[].IpRanges[]|[.CidrIp,.Description]', sg)
             for cidr, name in cidr_and_name_list:
                 if not is_external_cidr(cidr):
                     continue
+
                 if is_unneeded_cidr(cidr):
-                    print('WARNING: Unneeded cidr used {}'.format(cidr))
+                    print('WARNING: Unneeded cidr used {} in {}'.format(cidr, sg['GroupId']))
                     continue
+
+                for cidr_seen in cidrs_seen:
+                    if (IPNetwork(cidr_seen) in IPNetwork(cidr) or
+                                IPNetwork(cidr) in IPNetwork(cidr_seen)):
+                        print('WARNING: Overlapping CIDRs in {}, {} and {}'.format(sg['GroupId'], cidr, cidr_seen))
+                cidrs_seen.add(cidr)
+
+                if cidr.startswith('0.0.0.0') and not cidr.endswith('/0'):
+                    print('WARNING: Unexpected CIDR for attempted public access {} in {}'.format(cidr, sg['GroupId']))
+                    continue
+
                 if cidr == '0.0.0.0/0':
                     continue
+
                 cidrs[cidr] = cidrs.get(cidr, set())
                 if name is not None:
                     cidrs[cidr].add(name)
@@ -124,15 +138,15 @@ def sg_ips(accounts):
             print('WARNING: Large CIDR {} contains {} IPs in it'.format(cidr, ip.size))
 
         # Look up the cidr in the databases
-        location = city_reader.city(str(ip.ip))
         try:
+            location = city_reader.city(str(ip.ip))
             asn = asn_reader.asn(str(ip.ip))
             isp = asn.autonomous_system_organization
             # Convert to ascii
             isp = isp.encode('ascii', 'ignore').decode('ascii')
         except geoip2.errors.AddressNotFoundError:
             print('WARNING: Unknown CIDR {}'.format(cidr))
-            isp = "Unknown"
+            continue
 
         # Collect the longitude and latitude locations for graphing
         latlong['longitude'].append(location.location.longitude)
