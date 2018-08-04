@@ -4,6 +4,7 @@ import os
 import json
 import yaml
 import pyjq
+import urllib.parse
 
 from shared.common import parse_arguments, make_list, query_aws, get_regions
 
@@ -215,13 +216,14 @@ def get_s3_trusts(account, nodes, connections):
     for s3_policy_file in [f for f in listdir(policy_dir) if path.isfile(path.join(policy_dir, f)) and path.getsize(path.join(policy_dir, f)) > 4]:
         s3_policy = json.load(open(os.path.join(policy_dir, s3_policy_file)))
         s3_policy = json.loads(s3_policy['Policy'])
+        s3_bucket_name = urllib.parse.unquote_plus(s3_policy_file)
         for s in s3_policy['Statement']:
             principals = s.get('Principal', None)
             if principals is None:
                 if s.get('NotPrincipal', None) is not None:
-                    print("WARNING: Use of NotPrincipal in {} for {}: {}".format(account.name, s3_policy_file, s))
+                    print("WARNING: Use of NotPrincipal in {} for {}: {}".format(account.name, s3_bucket_name, s))
                     continue
-                print('WARNING: Malformed statement in {} for {}: {}'.format(account.name, s3_policy_file, s))
+                print('WARNING: Malformed statement in {} for {}: {}'.format(account.name, s3_bucket_name, s))
                 continue
 
             for principal in principals:

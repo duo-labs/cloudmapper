@@ -1,6 +1,7 @@
 import json
 import itertools
 import os.path
+import urllib.parse
 from os import listdir
 from collections import OrderedDict
 import pyjq
@@ -189,7 +190,7 @@ def get_account_stats(account):
                 if os.path.isdir(path):
                     stats[key][region.name] = 0
                     for f in listdir(path):
-                        json_data = json.load(open(os.path.join(path, f)))
+                        json_data = json.load(open(os.path.join(path, urllib.parse.quote_plus(f))))
                         stats[key][region.name] += sum(pyjq.all('.ResourceRecordSets|length', json_data))
             else:
                 # Normal path
