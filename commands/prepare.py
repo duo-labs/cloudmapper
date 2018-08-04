@@ -91,7 +91,7 @@ def get_elbs(subnet):
 
 def get_rds_instances(subnet):
     instances = query_aws(subnet.account, "rds-describe-db-instances", subnet.region)
-    resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
+    resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets != null and .DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
