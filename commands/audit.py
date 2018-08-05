@@ -14,17 +14,26 @@ from shared.nodes import Account, Region
 
 __description__ = "Identify potential issues such as public S3 buckets"
 
+def get_parameter_file(region, service, function, parameter_value):
+    file_name = 'account-data/{}/{}/{}/{}'.format(
+        region.account.name, 
+        region.name, 
+        '{}-{}'.format(service, function),
+        urllib.parse.quote_plus(parameter_value))
+    if os.path.getsize(file_name) <= 4:
+        return None
+
+    # Load the json data from the file
+    return json.load(open(file_name))
+
+
 def audit_s3_buckets(region):
     buckets_json = query_aws(region.account, "s3-list-buckets", region)
     buckets = pyjq.all('.Buckets[].Name', buckets_json)
     for bucket in buckets:
-        bucket_filename = urllib.parse.unquote_plus(bucket)
-
         # Check policy
-        file_name = 'account-data/{}/{}/{}/{}'.format(region.account.name, region.name, 's3-get-bucket-policy', bucket_filename)
-        if os.path.getsize(file_name) > 4:
-            # Load the json data from the file
-            policy_file_json = json.load(open(file_name))
+        try:
+            policy_file_json = get_parameter_file(region, 's3', 'get-bucket-policy', bucket)
             # Find the entity we need
             policy_string = policy_file_json['Policy']
             # Load the string value as json
@@ -32,17 +41,19 @@ def audit_s3_buckets(region):
             policy = Policy(policy)
             if policy.is_internet_accessible():
                 print('- Internet accessible S3 bucket {}: {}'.format(bucket, policy_string))
+        except:
+            pass
 
         # Check ACL
-        file_name = 'account-data/{}/{}/{}/{}'.format(region.account.name, region.name, 's3-get-bucket-acl', bucket_filename)
-        if os.path.getsize(file_name) > 4:
-            # Load the json data from the file
-            file_json = json.load(open(file_name))
+        try:
+            file_json = get_parameter_file(region, 's3', 'get-bucket-acl', bucket)
             for grant in file_json['Grants']:
                 uri = grant['Grantee'].get('URI', "")
                 if (uri == 'http://acs.amazonaws.com/groups/global/AllUsers' or
                     uri == 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'):
                     print('- Public grant to bucket {}: {}'.format(bucket, grant))
+        except:
+            pass
 
 
 def audit_cloudtrail(region):
@@ -198,14 +209,11 @@ def audit_route53(region):
 def audit_ebs_snapshots(region):
     json_blob = query_aws(region.account, "ec2-describe-snapshots", region)
     for snapshot in json_blob['Snapshots']:
-        file_name = 'account-data/{}/{}/{}/{}'.format(region.account.name, region.name, 'ec2-describe-snapshot-attribute', urllib.parse.quote_plus(snapshot['SnapshotId']))
         try:
-            if os.path.getsize(file_name) > 4:
-                # Load the json data from the file
-                file_json = json.load(open(file_name))
-                for attribute in file_json['CreateVolumePermissions']:
-                    if attribute['Group'] != 'self':
-                        print('- EBS snapshot in {} is public: {}, entities allowed to restore: {}'.format(region.name, snapshot, attribute['Group']))
+            file_json = get_parameter_file(region, 'ec2', 'describe-snapshot-attribute', snapshot['SnapshotId'])
+            for attribute in file_json['CreateVolumePermissions']:
+                if attribute['Group'] != 'self':
+                    print('- EBS snapshot in {} is public: {}, entities allowed to restore: {}'.format(region.name, snapshot, attribute['Group']))
         except OSError:
             print('WARNING: Could not open {}'.format(file_name))
 
@@ -213,15 +221,12 @@ def audit_ebs_snapshots(region):
 def audit_rds_snapshots(region):
     json_blob = query_aws(region.account, "rds-describe-db-snapshots", region)
     for snapshot in json_blob.get('DBSnapshots', []):
-        file_name = 'account-data/{}/{}/{}/{}'.format(region.account.name, region.name, 'rds-describe-db-snapshot-attributes', urllib.parse.quote_plus(snapshot['DBSnapshotIdentifier']))
         try:
-            if os.path.getsize(file_name) > 4:
-                # Load the json data from the file
-                file_json = json.load(open(file_name))
-                for attribute in file_json['DBSnapshotAttributesResult']['DBSnapshotAttributes']:
-                    if attribute['AttributeName'] == 'restore':
-                        if "all" in attribute['AttributeValues']:
-                            print('- RDS snapshot in {} is public: {}, entities allowed to restore: {}'.format(region.name, snapshot, attribute['AttributeValues']))
+            file_json = get_parameter_file(region, 'rds', 'describe-db-snapshot-attributes', snapshot['DBSnapshotIdentifier'])
+            for attribute in file_json['DBSnapshotAttributesResult']['DBSnapshotAttributes']:
+                if attribute['AttributeName'] == 'restore':
+                    if "all" in attribute['AttributeValues']:
+                        print('- RDS snapshot in {} is public: {}, entities allowed to restore: {}'.format(region.name, snapshot, attribute['AttributeValues']))
         except OSError:
             print('WARNING: Could not open {}'.format(file_name))
 
@@ -244,20 +249,16 @@ def audit_ecr_repos(region):
     json_blob = query_aws(region.account, "ecr-describe-repositories", region)
     for repo in json_blob.get('repositories', []):
         name = repo['repositoryName']
-        name = name.replace('/', '-')
 
         # Check policy
-        file_name = 'account-data/{}/{}/{}/{}'.format(region.account.name, region.name, 'ecr-get-repository-policy', urllib.parse.quote_plus(name))
-        if os.path.getsize(file_name) > 4:
-            # Load the json data from the file
-            policy_file_json = json.load(open(file_name))
-            # Find the entity we need
-            policy_string = policy_file_json['policyText']
-            # Load the string value as json
-            policy = json.loads(policy_string)
-            policy = Policy(policy)
-            if policy.is_internet_accessible():
-                print('- Internet accessible ECR repo {}: {}'.format(name, policy_string))
+        policy_file_json = get_parameter_file(region, 'ecr', 'get-repository-policy', name)
+        # Find the entity we need
+        policy_string = policy_file_json['policyText']
+        # Load the string value as json
+        policy = json.loads(policy_string)
+        policy = Policy(policy)
+        if policy.is_internet_accessible():
+            print('- Internet accessible ECR repo {}: {}'.format(name, policy_string))
 
 
 def audit_redshift(region):
@@ -273,21 +274,18 @@ def audit_es(region):
         name = domain['DomainName']
 
         # Check policy
-        file_name = 'account-data/{}/{}/{}/{}'.format(region.account.name, region.name, 'es-describe-elasticsearch-domain', urllib.parse.quote_plus(name))
-        if os.path.getsize(file_name) > 4:
-            # Load the json data from the file
-            policy_file_json = json.load(open(file_name))
-            # Find the entity we need
-            policy_string = policy_file_json['DomainStatus']['AccessPolicies']
-            # Load the string value as json
-            policy = json.loads(policy_string)
-            policy = Policy(policy)
+        policy_file_json = get_parameter_file(region, 'es', 'describe-elasticsearch-domain', name)
+        # Find the entity we need
+        policy_string = policy_file_json['DomainStatus']['AccessPolicies']
+        # Load the string value as json
+        policy = json.loads(policy_string)
+        policy = Policy(policy)
 
-            # ES clusters or either public, with an "Endpoint" (singular), which is bad, or
-            # they are VPC-only, in which case they have an "Endpoints" (plural) array containing a "vpc" element
-            if policy_file_json['DomainStatus'].get('Endpoint', '') != '' or policy_file_json['DomainStatus'].get('Endpoints', {}).get('vpc', '') == '':
-                if policy.is_internet_accessible():
-                    print('- Internet accessible ElasticSearch cluster {}: {}'.format(name, policy_string))
+        # ES clusters or either public, with an "Endpoint" (singular), which is bad, or
+        # they are VPC-only, in which case they have an "Endpoints" (plural) array containing a "vpc" element
+        if policy_file_json['DomainStatus'].get('Endpoint', '') != '' or policy_file_json['DomainStatus'].get('Endpoints', {}).get('vpc', '') == '':
+            if policy.is_internet_accessible():
+                print('- Internet accessible ElasticSearch cluster {}: {}'.format(name, policy_string))
 
 
 def audit_cloudfront(region):
@@ -347,6 +345,23 @@ def audit_sg(region):
     pass
 
 
+def audit_lambda(region):
+    # Check for publicly accessible functions.  They should be called from apigateway or something else.
+    json_blob = query_aws(region.account, "lambda-list-functions", region)
+    for function in json_blob.get('Functions', []):
+        name = function['FunctionName']
+
+        # Check policy
+        policy_file_json = get_parameter_file(region, 'lambda', 'get-policy', name)
+        # Find the entity we need
+        policy_string = policy_file_json['Policy']
+        # Load the string value as json
+        policy = json.loads(policy_string)
+        policy = Policy(policy)
+        if policy.is_internet_accessible():
+            print('- Internet accessible Lambda {}: {}'.format(name, policy_string))
+
+
 def audit(accounts, config):
     """Audit the accounts"""
 
@@ -374,6 +389,7 @@ def audit(accounts, config):
             audit_ec2(region)
             audit_elb(region)
             audit_sg(region)
+            audit_lambda(region)
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)

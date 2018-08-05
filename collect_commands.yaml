@@ -224,7 +224,7 @@
   Request: get-policy
   Parameters:
   - Name: FunctionName
-    Value: lambda-list-functins.json|.Functions[]|.FunctionName
+    Value: lambda-list-functions.json|.Functions[]|.FunctionName
 - Service: logs
   Request: describe-destinations
 - Service: logs
