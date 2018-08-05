@@ -214,6 +214,13 @@
   - Name: KeyId
     Value: kms-list-keys.json|.Keys[]|.KeyId
 - Service: kms
+  Request: get-key-policy
+  Parameters:
+  - Name: KeyId
+    Value: kms-list-keys.json|.Keys[]|.KeyId
+  - Name: PolicyName
+    Value: 'default'
+- Service: kms
   Request: get-key-rotation-status
   Parameters:
   - Name: KeyId

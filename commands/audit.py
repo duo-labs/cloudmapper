@@ -389,7 +389,32 @@ def audit_glacier(region):
         policy = Policy(policy)
         if policy.is_internet_accessible():
             print('- Internet accessible Glacier vault {}: {}'.format(name, policy_string))
-        
+
+
+def audit_kms(region):
+    # Check for publicly accessible vaults.
+    json_blob = query_aws(region.account, "kms-list-keys", region)
+    if json_blob is None:
+        # Service not supported in the region
+        return
+
+    for vault in json_blob.get('Keys', []):
+        name = vault['KeyId']
+
+        # Check policy
+        policy_file_json = get_parameter_file(region, 'kms', 'get-key-policy', name)
+        if policy_file_json is None:
+            # No policy
+            continue
+
+        # Find the entity we need
+        policy_string = policy_file_json['Policy']
+        # Load the string value as json
+        policy = json.loads(policy_string)
+        policy = Policy(policy)
+        if policy.is_internet_accessible():
+            print('- Internet accessible KMS {}: {}'.format(name, policy_string))
+    
 
 
 def audit(accounts, config):
@@ -421,6 +446,7 @@ def audit(accounts, config):
             audit_sg(region)
             audit_lambda(region)
             audit_glacier(region)
+            audit_kms(region)
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)
