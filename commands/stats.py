@@ -209,7 +209,7 @@ def stats(accounts, config):
         account_stats[account['name']] = get_account_stats(account)
 
     # Print header
-    print ('\t' + '\t'.join(a['name'] for a in accounts))
+    print('\t' + '\t'.join(a['name'] for a in accounts))
 
     for resource in resources:
         output_line = resources[resource]['name'].ljust(20)
