@@ -392,14 +392,14 @@ def audit_glacier(region):
 
 
 def audit_kms(region):
-    # Check for publicly accessible vaults.
+    # Check for publicly accessible KMS keys.
     json_blob = query_aws(region.account, "kms-list-keys", region)
     if json_blob is None:
         # Service not supported in the region
         return
 
-    for vault in json_blob.get('Keys', []):
-        name = vault['KeyId']
+    for key in json_blob.get('Keys', []):
+        name = key['KeyId']
 
         # Check policy
         policy_file_json = get_parameter_file(region, 'kms', 'get-key-policy', name)
@@ -414,7 +414,35 @@ def audit_kms(region):
         policy = Policy(policy)
         if policy.is_internet_accessible():
             print('- Internet accessible KMS {}: {}'.format(name, policy_string))
-    
+
+
+def audit_sqs(region):
+    # Check for publicly accessible sqs.
+    json_blob = query_aws(region.account, "sqs-list-queues", region)
+    if json_blob is None:
+        # Service not supported in the region
+        return
+
+    for queue in json_blob.get('QueueUrls', []):
+        # Check policy
+        attributes = get_parameter_file(region, 'sqs', 'get-queue-attributes', queue)
+        if attributes is None:
+            # No policy
+            continue
+
+        # Find the entity we need
+        attributes = attributes['Attributes']
+        if 'Policy' in attributes:
+            policy_string = attributes['Policy']
+        else:
+            # No policy set
+            continue
+
+        # Load the string value as json
+        policy = json.loads(policy_string)
+        policy = Policy(policy)
+        if policy.is_internet_accessible():
+            print('- Internet accessible SQS {}: {}'.format(name, policy_string))
 
 
 def audit(accounts, config):
@@ -447,6 +475,7 @@ def audit(accounts, config):
             audit_lambda(region)
             audit_glacier(region)
             audit_kms(region)
+            audit_sqs(region)
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)
