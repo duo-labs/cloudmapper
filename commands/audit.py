@@ -353,6 +353,10 @@ def audit_lambda(region):
 
         # Check policy
         policy_file_json = get_parameter_file(region, 'lambda', 'get-policy', name)
+        if policy_file_json is None:
+            # No policy
+            continue
+
         # Find the entity we need
         policy_string = policy_file_json['Policy']
         # Load the string value as json
@@ -360,6 +364,32 @@ def audit_lambda(region):
         policy = Policy(policy)
         if policy.is_internet_accessible():
             print('- Internet accessible Lambda {}: {}'.format(name, policy_string))
+
+
+def audit_glacier(region):
+    # Check for publicly accessible vaults.
+    json_blob = query_aws(region.account, "glacier-list-vaults", region)
+    if json_blob is None:
+        # Service not supported in the region
+        return
+
+    for vault in json_blob.get('VaultList', []):
+        name = vault['VaultName']
+
+        # Check policy
+        policy_file_json = get_parameter_file(region, 'glacier', 'get-vault-access-policy', name)
+        if policy_file_json is None:
+            # No policy
+            continue
+
+        # Find the entity we need
+        policy_string = policy_file_json['policy']['Policy']
+        # Load the string value as json
+        policy = json.loads(policy_string)
+        policy = Policy(policy)
+        if policy.is_internet_accessible():
+            print('- Internet accessible Glacier vault {}: {}'.format(name, policy_string))
+        
 
 
 def audit(accounts, config):
@@ -390,6 +420,7 @@ def audit(accounts, config):
             audit_elb(region)
             audit_sg(region)
             audit_lambda(region)
+            audit_glacier(region)
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)
