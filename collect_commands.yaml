@@ -145,9 +145,13 @@
   - Name: OwnerIds
     Value:
     - "self"
-  - Name: RestorableByUserIds
-    Value:
-    - "all"
+- Service: ec2
+  Request: describe-snapshot-attribute
+  Parameters:
+  - Name: SnapshotId
+    Value: ec2-describe-snapshots.json|.Snapshots[]|.SnapshotId
+  - Name: Attribute
+    Value: 'createVolumePermission'
 - Service: ec2
   Request: describe-vpc-endpoint-connections
 - Service: ec2
