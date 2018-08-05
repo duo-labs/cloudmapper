@@ -108,11 +108,14 @@ def collect(arguments):
     # Ensure we can make iam calls
     iam = session.client('iam')
     try:
-        iam.get_user()
+        iam.get_user(UserName='test')
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
             print("ERROR: AWS doesn't allow you to make IAM calls without MFA, and the collect command gathers IAM data.  Please use MFA.")
             exit(-1)
+        if 'NoSuchEntity' in str(e):
+            # Ignore, we're just testing that our creds work
+            pass
         else:
             print("ERROR: Ensure your creds are valid.")
             print(e)
