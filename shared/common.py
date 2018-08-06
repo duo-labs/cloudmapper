@@ -5,6 +5,7 @@ import os
 import datetime
 import pyjq
 import sys
+import urllib.parse
 from netaddr import IPNetwork
 
 class Severity:
@@ -98,6 +99,21 @@ def query_aws(account, query, region=None):
         return json.load(open(file_name))
     else:
         return {}
+
+
+def get_parameter_file(region, service, function, parameter_value):
+    file_name = 'account-data/{}/{}/{}/{}'.format(
+        region.account.name,
+        region.name,
+        '{}-{}'.format(service, function),
+        urllib.parse.quote_plus(parameter_value))
+    if not os.path.isfile(file_name):
+        return None
+    if os.path.getsize(file_name) <= 4:
+        return None
+
+    # Load the json data from the file
+    return json.load(open(file_name))
 
 
 def get_regions(account, outputfilter={}):

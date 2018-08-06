@@ -172,6 +172,7 @@ python cloudmapper.py collect --account my_account
 
 # Commands
 
+- `api_endpoints`: List the URLs that can be called via API Gateway.
 - `audit`: Check for potential misconfigurations.
 - `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
 - `find_admins`: Look at IAM policies to identify admin users and roles and spot potential IAM issues. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
