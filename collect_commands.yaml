@@ -86,6 +86,11 @@
     Value: sqs-list-queues.json|.QueueUrls[]
 - Service: sns
   Request: list-topics
+- Service: sns
+  Request: get-topic-attributes
+  Parameters:
+  - Name: TopicArn
+    Value: sns-list-topics.json|.Topics[].TopicArn
 - Service: ec2
   Request: describe-security-groups
 - Service: ec2
@@ -214,6 +219,13 @@
   - Name: KeyId
     Value: kms-list-keys.json|.Keys[]|.KeyId
 - Service: kms
+  Request: get-key-policy
+  Parameters:
+  - Name: KeyId
+    Value: kms-list-keys.json|.Keys[]|.KeyId
+  - Name: PolicyName
+    Value: 'default'
+- Service: kms
   Request: get-key-rotation-status
   Parameters:
   - Name: KeyId
@@ -224,7 +236,7 @@
   Request: get-policy
   Parameters:
   - Name: FunctionName
-    Value: lambda-list-functins.json|.Functions[]|.FunctionName
+    Value: lambda-list-functions.json|.Functions[]|.FunctionName
 - Service: logs
   Request: describe-destinations
 - Service: logs
