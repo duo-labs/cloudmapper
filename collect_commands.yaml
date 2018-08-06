@@ -86,6 +86,11 @@
     Value: sqs-list-queues.json|.QueueUrls[]
 - Service: sns
   Request: list-topics
+- Service: sns
+  Request: get-topic-attributes
+  Parameters:
+  - Name: TopicArn
+    Value: sns-list-topics.json|.Topics[].TopicArn
 - Service: ec2
   Request: describe-security-groups
 - Service: ec2

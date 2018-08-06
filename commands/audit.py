@@ -445,6 +445,35 @@ def audit_sqs(region):
             print('- Internet accessible SQS {}: {}'.format(name, policy_string))
 
 
+def audit_sns(region):
+    # Check for publicly accessible sns.
+    json_blob = query_aws(region.account, "sns-list-topics", region)
+    if json_blob is None:
+        # Service not supported in the region
+        return
+
+    for topic in json_blob.get('Topics', []):
+        # Check policy
+        attributes = get_parameter_file(region, 'sns', 'get-topic-attributes', topic)
+        if attributes is None:
+            # No policy
+            continue
+
+        # Find the entity we need
+        attributes = attributes['Attributes']
+        if 'Policy' in attributes:
+            policy_string = attributes['Policy']
+        else:
+            # No policy set
+            continue
+
+        # Load the string value as json
+        policy = json.loads(policy_string)
+        policy = Policy(policy)
+        if policy.is_internet_accessible():
+            print('- Internet accessible SNS {}: {}'.format(name, policy_string))
+
+
 def audit(accounts, config):
     """Audit the accounts"""
 
@@ -476,6 +505,7 @@ def audit(accounts, config):
             audit_glacier(region)
             audit_kms(region)
             audit_sqs(region)
+            audit_sns(region)
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)
