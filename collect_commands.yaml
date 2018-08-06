@@ -249,3 +249,18 @@
   Request: get-load-balancers
 - Service: apigateway
   Request: get-rest-apis
+- Service: apigateway
+  Request: get-resources
+  Parameters:
+  - Name: restApiId
+    Value: apigateway-get-rest-apis.json|.items[]|.id
+- Service: apigateway
+  Request: get-deployments
+  Parameters:
+  - Name: restApiId
+    Value: apigateway-get-rest-apis.json|.items[]|.id
+- Service: apigateway
+  Request: get-stages
+  Parameters:
+  - Name: restApiId
+    Value: apigateway-get-rest-apis.json|.items[]|.id

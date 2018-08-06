@@ -3,30 +3,15 @@ import os.path
 import ssl
 from datetime import datetime
 import urllib
-import urllib.parse
 import pyjq
 
 from policyuniverse.policy import Policy
 
-from shared.common import parse_arguments, query_aws, get_regions
+from shared.common import parse_arguments, query_aws, get_parameter_file, get_regions
 from shared.nodes import Account, Region
 
 
 __description__ = "Identify potential issues such as public S3 buckets"
-
-def get_parameter_file(region, service, function, parameter_value):
-    file_name = 'account-data/{}/{}/{}/{}'.format(
-        region.account.name, 
-        region.name, 
-        '{}-{}'.format(service, function),
-        urllib.parse.quote_plus(parameter_value))
-    if not os.path.isfile(file_name):
-        return None
-    if os.path.getsize(file_name) <= 4:
-        return None
-
-    # Load the json data from the file
-    return json.load(open(file_name))
 
 
 def audit_s3_buckets(region):
