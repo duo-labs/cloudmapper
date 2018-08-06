@@ -20,6 +20,8 @@ def get_parameter_file(region, service, function, parameter_value):
         region.name, 
         '{}-{}'.format(service, function),
         urllib.parse.quote_plus(parameter_value))
+    if not os.path.isfile(file_name):
+        return None
     if os.path.getsize(file_name) <= 4:
         return None
 
@@ -236,6 +238,8 @@ def audit_rds(region):
     for instance in json_blob.get('DBInstances', []):
         if instance['PubliclyAccessible']:
             print('- RDS instance in {} is public: {}'.format(region.name, instance['DBInstanceIdentifier']))
+        if instance.get('DBSubnetGroup', {}).get('VpcId', '') == '':
+            print('- RDS instance in {} is in VPC classic: {}'.format(region.name, instance['DBInstanceIdentifier']))
 
 
 def audit_amis(region):
@@ -299,15 +303,17 @@ def audit_cloudfront(region):
     for distribution in json_blob.get('DistributionList', {}).get('Items', []):
         if not distribution['Enabled']:
             continue
+
         minimum_protocol_version = distribution.get('ViewerCertificate', {}) \
             .get('MinimumProtocolVersion', '')
         if minimum_protocol_version == 'SSLv3':
             print('- CloudFront is using insecure minimum protocol version {} for {} in {}'.format(minimum_protocol_version, distribution['DomainName'], region.name))
+        
+        domain = distribution['DomainName']
 
         # TODO: Not sure if this works.  I'm trying to see if I can access the cloudfront distro,
         # or if I get a 403
         # This is from https://github.com/MindPointGroup/cloudfrunt/blob/master/cloudfrunt.py
-        domain = distribution['DomainName']
         try:
             urllib.request.urlopen('https://' + domain, context=ctx)
         except urllib.error.HTTPError as e:
@@ -454,7 +460,7 @@ def audit_sns(region):
 
     for topic in json_blob.get('Topics', []):
         # Check policy
-        attributes = get_parameter_file(region, 'sns', 'get-topic-attributes', topic)
+        attributes = get_parameter_file(region, 'sns', 'get-topic-attributes', topic['TopicArn'])
         if attributes is None:
             # No policy
             continue
@@ -472,6 +478,26 @@ def audit_sns(region):
         policy = Policy(policy)
         if policy.is_internet_accessible():
             print('- Internet accessible SNS {}: {}'.format(name, policy_string))
+
+
+def audit_lightsail(region):
+    # Just check if lightsail is in use
+    json_blob = query_aws(region.account, "lightsail-get-instances", region)
+    if json_blob is None:
+        # Service not supported in the region
+        return
+    
+    if len(json_blob.get('instances', [])) > 0:
+        print('- Lightsail used ({} instances) in region {}'.format(json_blob['instances'], region.name))
+    
+    json_blob = query_aws(region.account, "lightsail-get-load-balancers", region)
+    if json_blob is None:
+        # Service not supported in the region
+        return
+    
+    if len(json_blob.get('loadBalancers', [])) > 0:
+        print('- Lightsail used ({} load balancers) in region {}'.format(json_blob['loadBalancers'], region.name))
+
 
 
 def audit(accounts, config):
@@ -506,6 +532,7 @@ def audit(accounts, config):
             audit_kms(region)
             audit_sqs(region)
             audit_sns(region)
+            audit_lightsail(region)
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)

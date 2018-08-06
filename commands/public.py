@@ -2,8 +2,10 @@ from __future__ import print_function
 import sys
 import json
 import pyjq
-from shared.common import parse_arguments
+from shared.common import parse_arguments, query_aws, get_regions
+from shared.nodes import Account, Region
 from commands.prepare import build_data_structure
+
 
 __description__ = "Find publicly exposed services and their ports"
 
@@ -129,6 +131,34 @@ def public(accounts, config):
                 issue_msg = 'No ports open for tcp or udp (probably can only be pinged). Rules that are not tcp or udp: {} -- {}'
                 log_warning(issue_msg.format(json.dumps(pyjq.all('.[]|select((.IpProtocol!="tcp") and (.IpProtocol!="udp"))'.format(selection), ingress)), account))
             print(json.dumps(target, indent=4, sort_keys=True))
+        
+        account = Account(None, account)
+        for region_json in get_regions(account):
+            region = Region(account, region_json)
+            # Look for CloudFront
+            if region.name == 'us-east-1':
+                json_blob = query_aws(region.account, 'cloudfront-list-distributions', region)
+
+                for distribution in json_blob.get('DistributionList', {}).get('Items', []):
+                    if not distribution['Enabled']:
+                        continue
+
+                    target = {'arn': distribution['ARN'], 'account': account.name}
+                    target['type'] = 'cloudfront'
+                    target['hostname'] = distribution['DomainName']
+                    target['ports'] = '80,443'
+
+                    print(json.dumps(target, indent=4, sort_keys=True))
+            
+            # Look for API Gateway
+            json_blob = query_aws(region.account, 'apigateway-get-rest-apis', region)
+            for api in json_blob.get('items', []):
+                target = {'arn': api['id'], 'account': account.name}
+                target['type'] = 'apigateway'
+                target['hostname'] = '{}.execute-api.{}.amazonaws.com'.format(api['id'], region.name)
+                target['ports'] = '80,443'
+
+                print(json.dumps(target, indent=4, sort_keys=True))
 
 
 def run(arguments):
