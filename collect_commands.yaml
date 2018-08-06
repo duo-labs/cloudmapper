@@ -243,3 +243,9 @@
   Request: describe-log-groups
 - Service: logs
   Request: describe-resource-policies
+- Service: lightsail
+  Request: get-instances
+- Service: lightsail
+  Request: get-load-balancers
+- Service: apigateway
+  Request: get-rest-apis
