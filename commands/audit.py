@@ -308,14 +308,36 @@ def audit_cloudfront(region):
 
 def audit_ec2(region):
     json_blob = query_aws(region.account, 'ec2-describe-instances', region)
+    route_table_json = query_aws(region.account, 'ec2-describe-route-tables', region)
+
     ec2_classic_count = 0
     for reservation in json_blob.get('Reservations', []):
         for instance in reservation.get('Instances', []):
             if instance.get('State', {}).get('Name', '') == 'terminated':
                 # Ignore EC2's that are off
                 continue
+
             if 'vpc' not in instance.get('VpcId', ''):
                 ec2_classic_count += 1
+
+            if not instance.get('SourceDestCheck', True):
+                print('- EC2 SourceDestCheck is off: {}'.format(instance['InstanceId']))
+
+                route_to_instance = None
+                for table in route_table_json['RouteTables']:
+                    if table['VpcId'] == instance.get('VpcId', ''):
+                        for route in table['Routes']:
+                            if route['GatewayId'] == instance['InstanceId']:
+                                route_to_instance = route
+                                break
+                    if route_to_instance is not None:
+                        break
+
+                if route_to_instance is None:
+                    print('  - No routes to instance, SourceDestCheck is not doing anything')
+                else:
+                    print('  -Routes: {}'.format(route_to_instance))
+
     if ec2_classic_count != 0:
         print('- EC2 classic instances found: {}'.format(ec2_classic_count))
 
