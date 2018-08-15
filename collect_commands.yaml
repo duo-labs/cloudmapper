@@ -19,14 +19,14 @@
   Request: get-saml-provider
   Parameters:
   - Name: SamlProviderArn
-    Value: iam-list-saml-providers.json|.OpenIDConnectProviderList[]|.Arn
+    Value: iam-list-saml-providers.json|.SAMLProviderList[]|.Arn
 - Service: iam
   Request: list-open-id-connect-providers
 - Service: iam
-  Request: get-open-id-connect-providers
+  Request: get-open-id-connect-provider
   Parameters:
-  - Name: SamlProviderArn
-    Value: iam-list-open-id-connect-providers.json|.SAMLProviderList[]|.Arn
+  - Name: OpenIdConnectProviderArn
+    Value: iam-list-open-id-connect-providers.json|.OpenIDConnectProviderList[]|.Arn
 - Service: s3
   Request: list-buckets
 - Service: s3
