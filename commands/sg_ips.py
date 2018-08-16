@@ -34,7 +34,6 @@ def get_cidrs_for_account(account, cidrs):
         sg_json = query_aws(account, "ec2-describe-security-groups", region)
         sgs = pyjq.all('.SecurityGroups[]', sg_json)
         for sg in sgs:
-            cidrs_seen = set()
             cidr_and_name_list = pyjq.all('.IpPermissions[].IpRanges[]|[.CidrIp,.Description]', sg)
             for cidr, name in cidr_and_name_list:
                 if not is_external_cidr(cidr):
@@ -43,12 +42,6 @@ def get_cidrs_for_account(account, cidrs):
                 if is_unneeded_cidr(cidr):
                     print('WARNING: Unneeded cidr used {} in {}'.format(cidr, sg['GroupId']))
                     continue
-
-                for cidr_seen in cidrs_seen:
-                    if (IPNetwork(cidr_seen) in IPNetwork(cidr) or
-                                IPNetwork(cidr) in IPNetwork(cidr_seen)):
-                        print('WARNING: Overlapping CIDRs in {}, {} and {}'.format(sg['GroupId'], cidr, cidr_seen))
-                cidrs_seen.add(cidr)
 
                 if cidr.startswith('0.0.0.0') and not cidr.endswith('/0'):
                     print('WARNING: Unexpected CIDR for attempted public access {} in {}'.format(cidr, sg['GroupId']))
@@ -60,6 +53,18 @@ def get_cidrs_for_account(account, cidrs):
                 cidrs[cidr] = cidrs.get(cidr, set())
                 if name is not None:
                     cidrs[cidr].add(name)
+            
+            for ip_permissions in sg['IpPermissions']:
+                cidrs_seen = set()
+                for ip_ranges in ip_permissions['IpRanges']:
+                    if 'CidrIp' not in ip_ranges:
+                        continue
+                    cidr = ip_ranges['CidrIp']
+                    for cidr_seen in cidrs_seen:
+                            if (IPNetwork(cidr_seen) in IPNetwork(cidr) or
+                                        IPNetwork(cidr) in IPNetwork(cidr_seen)):
+                                print('WARNING: Overlapping CIDRs in {}, {} and {}'.format(sg['GroupId'], cidr, cidr_seen))
+                    cidrs_seen.add(cidr)
 
 
 def sg_ips(accounts):

@@ -4,6 +4,8 @@ import ssl
 from datetime import datetime
 import urllib
 import pyjq
+import traceback
+import sys
 
 from policyuniverse.policy import Policy
 
@@ -38,7 +40,7 @@ def audit_s3_buckets(region):
                 uri = grant['Grantee'].get('URI', "")
                 if (uri == 'http://acs.amazonaws.com/groups/global/AllUsers' or
                     uri == 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'):
-                    print('- Public grant to bucket {}: {}'.format(bucket, grant))
+                    print('- Public grant to S3 bucket {}: {}'.format(bucket, grant))
         except:
             pass
 
@@ -199,7 +201,7 @@ def audit_ebs_snapshots(region):
         try:
             file_json = get_parameter_file(region, 'ec2', 'describe-snapshot-attribute', snapshot['SnapshotId'])
             for attribute in file_json['CreateVolumePermissions']:
-                if attribute['Group'] != 'self':
+                if attribute.get('Group', 'self') != 'self':
                     print('- EBS snapshot in {} is public: {}, entities allowed to restore: {}'.format(region.name, snapshot, attribute['Group']))
         except OSError:
             print('WARNING: Could not open {}'.format(file_name))
@@ -241,6 +243,11 @@ def audit_ecr_repos(region):
 
         # Check policy
         policy_file_json = get_parameter_file(region, 'ecr', 'get-repository-policy', name)
+        if policy_file_json is None:
+            # This means only the owner can access the repo, so this is fine.
+            # The collect command would have received the exception 
+            # `RepositoryPolicyNotFoundException` for this to happen.
+            continue
         # Find the entity we need
         policy_string = policy_file_json['policyText']
         # Load the string value as json
@@ -302,7 +309,7 @@ def audit_cloudfront(region):
         try:
             urllib.request.urlopen('https://' + domain, context=ctx)
         except urllib.error.HTTPError as e:
-            if e.code == 403 and 'Bad request' in e.fp.read():
+            if e.code == 403 and 'Bad request' in str(e.fp.read()):
                 print('- CloudFront distribution {} is missing origin'.format(distribution['DomainName']))
 
 
@@ -327,7 +334,7 @@ def audit_ec2(region):
                 for table in route_table_json['RouteTables']:
                     if table['VpcId'] == instance.get('VpcId', ''):
                         for route in table['Routes']:
-                            if route['GatewayId'] == instance['InstanceId']:
+                            if route.get('InstanceId', '') == instance['InstanceId']:
                                 route_to_instance = route
                                 break
                     if route_to_instance is not None:
@@ -346,9 +353,12 @@ def audit_elb(region):
     json_blob = query_aws(region.account, 'elb-describe-load-balancers', region)
     for description in json_blob.get('LoadBalancerDescriptions', []):
         if len(description['Instances']) == 0:
-            print('- ELB has no backend instances: {} in {}'.format(
-                  description['DNSName'],
-                  region.name))
+            # Checks if there are backend's or not. Not a security risk, just odd that this is so common,
+            # and wastes money, but this just clutters my report.
+            #print('- ELB has no backend instances: {} in {}'.format(
+            #      description['DNSName'],
+            #      region.name))
+            pass
 
 
 def audit_sg(region):
@@ -484,7 +494,7 @@ def audit_sns(region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible SNS {}: {}'.format(name, policy_string))
+            print('- Internet accessible SNS {}: {}'.format(topic['TopicArn'], policy_string))
 
 
 def audit_lightsail(region):
@@ -516,30 +526,35 @@ def audit(accounts, config):
 
         for region_json in get_regions(account):
             region = Region(account, region_json)
-            if region.name == 'us-east-1':
-                audit_s3_buckets(region)
-                audit_cloudtrail(region)
-                audit_password_policy(region)
-                audit_root_user(region)
-                audit_users(region)
-                audit_route53(region)
-                audit_cloudfront(region)
-            audit_ebs_snapshots(region)
-            audit_rds_snapshots(region)
-            audit_rds(region)
-            audit_amis(region)
-            audit_ecr_repos(region)
-            audit_redshift(region)
-            audit_es(region)
-            audit_ec2(region)
-            audit_elb(region)
-            audit_sg(region)
-            audit_lambda(region)
-            audit_glacier(region)
-            audit_kms(region)
-            audit_sqs(region)
-            audit_sns(region)
-            audit_lightsail(region)
+            try:
+                if region.name == 'us-east-1':
+                    audit_s3_buckets(region)
+                    audit_cloudtrail(region)
+                    audit_password_policy(region)
+                    audit_root_user(region)
+                    audit_users(region)
+                    audit_route53(region)
+                    audit_cloudfront(region)
+                audit_ebs_snapshots(region)
+                audit_rds_snapshots(region)
+                audit_rds(region)
+                audit_amis(region)
+                audit_ecr_repos(region)
+                audit_redshift(region)
+                audit_es(region)
+                audit_ec2(region)
+                audit_elb(region)
+                audit_sg(region)
+                audit_lambda(region)
+                audit_glacier(region)
+                audit_kms(region)
+                audit_sqs(region)
+                audit_sns(region)
+                audit_lightsail(region)
+            except Exception as e:
+                print('Exception in {} in {}'.format(region.account.name, region.name), file=sys.stderr)
+                traceback.print_exc()
+
 
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)

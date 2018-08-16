@@ -152,13 +152,14 @@ def public(accounts, config):
             
             # Look for API Gateway
             json_blob = query_aws(region.account, 'apigateway-get-rest-apis', region)
-            for api in json_blob.get('items', []):
-                target = {'arn': api['id'], 'account': account.name}
-                target['type'] = 'apigateway'
-                target['hostname'] = '{}.execute-api.{}.amazonaws.com'.format(api['id'], region.name)
-                target['ports'] = '80,443'
+            if json_blob is not None:
+                for api in json_blob.get('items', []):
+                    target = {'arn': api['id'], 'account': account.name}
+                    target['type'] = 'apigateway'
+                    target['hostname'] = '{}.execute-api.{}.amazonaws.com'.format(api['id'], region.name)
+                    target['ports'] = '80,443'
 
-                print(json.dumps(target, indent=4, sort_keys=True))
+                    print(json.dumps(target, indent=4, sort_keys=True))
 
 
 def run(arguments):

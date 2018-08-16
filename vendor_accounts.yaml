@@ -104,3 +104,16 @@
   type: 'aws'
   source: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-supported-regions.html'
   accounts: ['475085895292', '086441151436', '388731089494', '113285607260', '819402241893', '977081816279', '765225791966', '492519147666', '903692715234', '284668455005', '216624486486', '681348832753', '035351147821', '859597730677', '282025262664', '262312530599', '814480443879']
+- name: 'Summit Route'
+  type: 'SummitRoute'
+  source: 'https://summitroute.com/aws_security_assessments/'
+  accounts: '393727464233'
+- name: 'TrendMicro'
+  source: 'https://help.deepsecurity.trendmicro.com/Add-Computers/add-aws.html'
+  accounts: ['147995105371']
+- name: 'Convox'
+  source: 'https://convox.com/docs/aws-integration'
+  accounts: ['665986001363']
+- name: 'Spotinst'
+  source: 'https://help.spotinst.com/hc/en-us/articles/360000343509-Functions-Permissions-Model-IAM-Role-'
+  accounts: ['922761411349']
