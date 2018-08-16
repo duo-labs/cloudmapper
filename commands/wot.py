@@ -178,6 +178,9 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                 elif principal['Federated'] == 'cognito-identity.amazonaws.com':
                     # TODO: Should show this somehow
                     continue
+                elif principal['Federated'] == 'www.amazon.com':
+                    node = Account(json_blob={'id':'Amazon.com', 'name':'Amazon.com', 'type':'Amazon'})
+                    continue
                 else:
                     raise Exception('Unknown federation provider: {}'.format(principal['Federated']))
             if principal.get('AWS', None):

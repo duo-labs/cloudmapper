@@ -17,6 +17,8 @@ def api_endpoints(accounts, config):
             
             # Look for API Gateway
             json_blob = query_aws(region.account, 'apigateway-get-rest-apis', region)
+            if json_blob is None:
+                continue
             for api in json_blob.get('items', []):
                 rest_id = api['id']
                 deployments = get_parameter_file(region, 'apigateway', 'get-deployments', rest_id)
