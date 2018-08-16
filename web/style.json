@@ -503,7 +503,42 @@
             "height": 100
         }
     },
-    
+    {
+        "selector": "[type = \"TrendMicro\"]",
+        
+        "css": {
+            "background-opacity": 0,
+            "background-image": "./icons/logos/trendmicro.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Convox\"]",
+        
+        "css": {
+            "background-opacity": 0,
+            "background-image": "./icons/logos/convox.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Spotinst\"]",
+        
+        "css": {
+            "background-opacity": 0,
+            "background-image": "./icons/logos/spotinst.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
     
     
     
