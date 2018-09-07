@@ -1,6 +1,4 @@
 language: python
-install:
-  - pip install pipenv
-  - pipenv install --skip-lock --dev
+install: "make"
 script:
-  - bash tests/scripts/unit_tests.sh
+  - make test

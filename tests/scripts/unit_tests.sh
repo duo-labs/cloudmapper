@@ -3,7 +3,7 @@ if [ -f .coverage ]; then
   rm .coverage
 fi
 
-pipenv run nosetests tests/unit \
+nosetests tests/unit \
 --with-coverage \
 --cover-package=commands \
 --cover-package=shared \
