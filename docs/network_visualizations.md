@@ -70,4 +70,4 @@ Commands
 When you first start, the initial layout is never ideal.  We use what is believed to be the best layout algorithm for compound node diagrams, [CoSE](https://github.com/cytoscape/cytoscape.js-cose-bilkent), but this will still require manual editing by moving nodes around.
 
 Here is the layout you'll likely see initially when you view the demo:
-![Initial layout](docs/images/initial_layout.png "Initial layout")
+![Initial layout](/docs/images/initial_layout.png "Initial layout")
