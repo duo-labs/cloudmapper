@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyjq = "==2.1.0"
+netaddr = "==0.7.19"
+six = "==1.10.0"
+boto3 = "==1.5.32"
+pandas = "==0.22.0"
+matplotlib = "==2.2.2"
+geoip2 = "==2.8.0"
+policyuniverse = "==1.1.0.1"
+pyproj = "==1.9.5.1"
+PyYAML = "==3.12"
+
+[dev-packages]
+autoflake= "==0.7"
+autopep8 = "==1.3.1"
+nose = "==1.3.7"
+coverage = "==4.4.2"
+mock = "==2.0.0"
+pylint = "==1.8.1"
+
+[requires]
+python_version = "3.6"
