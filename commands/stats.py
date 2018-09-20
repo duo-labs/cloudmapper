@@ -126,6 +126,8 @@ def get_account_stats(account):
 
 def output_image(accounts, account_stats, resources, output_image_file):
     # Display graph
+    import matplotlib
+    matplotlib.use('Agg')
     import pandas as pd
     import seaborn as sns
     import matplotlib.pyplot as plt
