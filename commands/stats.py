@@ -1,3 +1,6 @@
+from __future__ import print_function
+import sys
+import argparse
 import json
 import itertools
 import os.path
@@ -17,57 +20,10 @@ resources = OrderedDict([
         'name': 'S3 buckets',
         'query': '.Buckets|length',
         'source': 's3-list-buckets'}),
-    ('user', {
-        'name': 'IAM users',
-        'query': '.UserDetailList|length',
-        'source': 'iam-get-account-authorization-details'}),
-    ('role', {
-        'name': 'IAM roles',
-        'query': '.RoleDetailList|length',
-        'source': 'iam-get-account-authorization-details'}),
-    ('hosted_zone', {
-        'name': 'Route53 hosted zones',
-        'query': '.HostedZones|length',
-        'source': 'route53-list-hosted-zones'}),
-    ('route53_record', {
-        'name': 'Route53 records'}),
-    ('domain', {
-        'name': 'Route53 domains',
-        'query': '.Domains|length',
-        'source': 'route53domains-list-domains'}),
     ('ec2', {
         'name': 'EC2 instances',
         'query': '.Reservations[].Instances|length',
         'source': 'ec2-describe-instances'}),
-    ('ec2-image', {
-        'name': 'EC2 AMIs',
-        'query': '.Images|length',
-        'source': 'ec2-describe-images'}),
-    ('network-acl', {
-        'name': 'Network ACLs',
-        'query': '.NetworkAcls|length',
-        'source': 'ec2-describe-network-acls'}),
-    ('route-table', {
-        'name': 'Route tables',
-		'query': '.RouteTables|length',
-        'source': 'ec2-describe-route-tables'}),
-    ('ec2-snapshot', {
-        'name': 'EC2 snapshots',
-		'query': '.Snapshots|length',
-        'source': 'ec2-describe-snapshots'}),
-    ('vpc-endpoint', {
-        'name': 'VPC endpoints',
-		'query': '.VpcEndpointConnections|length',
-        'source': 'ec2-describe-vpc-endpoint-connections'
-		}),
-    ('vpn-connection', {
-		'name': 'VPN connections',
-		'query': '.VpnConnections|length',
-		'source': 'ec2-describe-vpn-connections'}),
-    ('directconnect', {
-		'name': 'DirectConnects',
-		'query': '.connections|length',
-		'source': 'directconnect-describe-connections'}),
     ('elb', {
 		'name': 'ELBs',
 		'query': '.LoadBalancerDescriptions|length',
@@ -105,18 +61,6 @@ resources = OrderedDict([
 		'query': '.DistributionList|length',
 		'source': 'cloudfront-list-distributions',
 		'region': 'us-east-1'}),
-    ('cloudsearch', {
-		'name': 'CloudSearch domains',
-		'query': '.DomainStatusList|length',
-		'source': 'cloudsearch-describe-domains'}),
-    ('ecr-repository', {
-		'name': 'ECR repositories',
-		'query': '.repositories|length',
-		'source': 'ecr-describe-repositories'}),
-    ('cloudformation', {
-		'name': 'CloudFormation stacks',
-		'query': '.Stacks|length',
-		'source': 'cloudformation-describe-stacks'}),
     ('autoscaling', {
 		'name': 'Autoscaling groups',
 		'query': '.AutoScalingGroups|length',
@@ -125,10 +69,6 @@ resources = OrderedDict([
 		'name': 'ElasticBeanstalks',
 		'query': '.Applications|length',
 		'source': 'elasticbeanstalk-describe-applications'}),
-    ('efs', {
-		'name': 'EFS',
-		'query': '.FileSystems|length',
-		'source': 'efs-describe-file-systems.json'}),
     ('firehose', {
 		'name': 'Firehose streams',
 		'query': '.DeliveryStreamNames|length',
@@ -144,23 +84,7 @@ resources = OrderedDict([
     ('lambda', {
 		'name': 'Lambda functions',
 		'query': '.Functions|length',
-		'source': 'lambda-list-functions'}),
-    ('cloudwatch-alarm', {
-		'name': 'Cloudwatch alarms',
-		'query': '.MetricAlarms|length',
-		'source': 'cloudwatch-describe-alarms'}),
-    ('config-rule', {
-		'name': 'Config rules',
-		'query': '.ConfigRules|length',
-		'source': 'config-describe-config-rules'}),
-    ('event-rule', {
-		'name': 'Event rules',
-		'query': '.Rules|length',
-		'source': 'events-list-rules'}),
-    ('log-group', {
-		'name': 'Log groups',
-         'query': '.logGroups|length',
-		'source': 'logs-describe-log-groups'})
+		'source': 'lambda-list-functions'})
 ])
 
 def get_account_stats(account):
@@ -200,7 +124,46 @@ def get_account_stats(account):
     return stats
 
 
-def stats(accounts, config):
+def output_image(accounts, account_stats, resources, output_image_file):
+    # Display graph
+    import pandas as pd
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    from pandas.plotting import table
+
+    # Reverse order of accounts so they appear in the graph correctly
+    accounts = list(reversed(accounts))
+
+    account_names = ['Resource']
+    for account in accounts:
+        account_names.append(account['name'])
+
+    data = []
+    for resource in resources:
+        resource_array = [resources[resource]['name']]
+        for account in accounts:
+            count = sum(account_stats[account['name']][resource].values())
+            resource_array.append(count)
+        data.append(resource_array)
+
+    df = pd.DataFrame(
+        columns=account_names,
+        data=data)
+
+    sns.set()
+    plot = df.set_index('Resource').T.plot(kind='barh', stacked=True, fontsize=10, figsize=[8,0.3*len(accounts)])
+    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+    fig = plot.get_figure()
+    # TODO: Set color cycle as explained here https://stackoverflow.com/questions/8389636/creating-over-20-unique-legend-colors-using-matplotlib
+    # This is needed because there are 17 resources graphed, but only 10 colors in the cycle.
+    # So if you have only S3 buckets and CloudFront, you end up with two blue bands
+    # next to each other.
+
+    fig.savefig(output_image_file, format='png', bbox_inches='tight', dpi=200)
+    print('Image saved to {}'.format(output_image_file), file=sys.stderr)
+
+
+def stats(accounts, config, args):
     '''Collect stats'''
 
     # Collect counts
@@ -209,17 +172,26 @@ def stats(accounts, config):
         account_stats[account['name']] = get_account_stats(account)
 
     # Print header
-    print ('\t' + '\t'.join(a['name'] for a in accounts))
+    print('\t'.rjust(20) + '\t'.join(a['name'] for a in accounts))
 
     for resource in resources:
         output_line = resources[resource]['name'].ljust(20)
         for account in accounts:
             count = sum(account_stats[account['name']][resource].values())
-            #if count == 0:
-            #    count = ''
-            output_line += ("\t"+str(count)).ljust(8)
+            output_line += ('\t' + str(count)).ljust(8)
         print(output_line)
 
+    if not args.no_output_image:
+        output_image(accounts, account_stats, resources, args.output_image)
+
 def run(arguments):
-    _, accounts, config = parse_arguments(arguments)
-    stats(accounts, config)
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--output_image',
+        help='Name of output image', default='resource_stats.png', type=str)
+    parser.add_argument("--no_output_image", help="Don't create output image",
+        default=False, action='store_true')
+
+    args, accounts, config = parse_arguments(arguments, parser)
+
+    stats(accounts, config, args)
