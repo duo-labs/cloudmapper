@@ -9,7 +9,7 @@ import boto3
 import yaml
 import pyjq
 import urllib.parse
-from botocore.exceptions import ClientError, EndpointConnectionError
+from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
 from shared.common import get_account, custom_serializer
 
 __description__ = "Run AWS API calls to collect data from the account"
@@ -97,7 +97,6 @@ def collect(arguments):
     make_directory("account-data")
     make_directory("account-data/{}".format(account_dir))
 
-    print("* Getting region names")
     session_data = {'region_name': 'us-east-1'}
 
     if arguments.profile_name:
@@ -108,18 +107,24 @@ def collect(arguments):
     # Ensure we can make iam calls
     iam = session.client('iam')
     try:
-        iam.get_user()
+        iam.get_user(UserName='test')
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
             print("ERROR: AWS doesn't allow you to make IAM calls without MFA, and the collect command gathers IAM data.  Please use MFA.")
             exit(-1)
+        if 'NoSuchEntity' in str(e):
+            # Ignore, we're just testing that our creds work
+            pass
         else:
             print("ERROR: Ensure your creds are valid.")
             print(e)
             exit(-1)
+    except NoCredentialsError:
+        print("ERROR: No AWS credentials configured.")
+        exit(-1)
 
+    print("* Getting region names")
     ec2 = session.client('ec2')
-
     region_list = ec2.describe_regions()
     with open("account-data/{}/describe-regions.json".format(account_dir), 'w+') as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))

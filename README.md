@@ -1,6 +1,6 @@
 CloudMapper
 ========
-CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains more functionality.
+CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality.
 
 *Demo: https://duo-labs.github.io/cloudmapper/*
 
@@ -13,7 +13,7 @@ CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The 
 ## Installation
 
 Requirements:
-- `pip` and `virtualenv`
+- python 3, `pip`, and `virtualenv`
 - You will also need `jq` (https://stedolan.github.io/jq/) and the library `pyjq` (https://github.com/doloopwhile/pyjq), which require some additional tools installed that will be shown.
 
 On macOS:
@@ -82,55 +82,98 @@ This will allow you to define the different AWS accounts you use in your environ
 
 This step uses the CLI to make `describe` and `list` calls and records the json in the folder specified by the account name under `account-data`.
 
-Locally, AWS CLI must be configured with proper access key and region information. Generate new access keys in AWS Console and input the generated keys to `aws configure` if you have not done so yet.
+### AWS Privileges required
+You must have AWS credentials configured that can be used by the CLI with read permissions for the different metadata to collect.  I recommend using [aws-vault](https://github.com/99designs/aws-vault).  CloudMapper will collect IAM information, which means you MUST use MFA.  Only the `collect` step requires AWS access.
 
-You must have AWS credentials configured that can be used by the CLI with read permissions for the different metadata to collect.  If you plan to use all the features of CloudMapper, grant the `SecurityAudit` policy. If you only plan to use the network visualization, this can be reduced to an even more minimal set of permissions:
+You must have the following privileges (these grant various read access of metadata):
 
+- `arn:aws:iam::aws:policy/SecurityAudit`
+- `arn:aws:iam::aws:policy/job-function/ViewOnlyAccess`
+
+And also:
 ```
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Resource": "*",
-      "Action": [
-        "ec2:DescribeRegions",
-        "ec2:DescribeAvailabilityZones",
-        "ec2:DescribeVpcs",
-        "ec2:DescribeSubnets",
-        "ec2:DescribeSecurityGroups",
-        "ec2:DescribeVpcPeeringConnections",
-        "ec2:DescribeInstances",
-        "ec2:DescribeNetworkInterfaces",
-        "rds:DescribeDBInstances",
-        "elasticloadbalancing:DescribeLoadBalancers"
-      ]
-    }
-  ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "acm:DescribeCertificate",
+                "apigateway:GET",
+                "ec2:DescribeLaunchTemplates",
+                "eks:DescribeCluster",
+                "eks:ListClusters",
+                "elasticfilesystem:DescribeMountTargetSecurityGroups",
+                "elasticfilesystem:DescribeMountTargets",
+                "elasticmapreduce:DescribeCluster",
+                "elasticmapreduce:DescribeSecurityConfiguration",
+                "events:DescribeRule",
+                "fms:ListComplianceStatus",
+                "fms:ListPolicies",
+                "guardduty:ListDetectors",
+                "guardduty:ListFindings",
+                "guardduty:ListIPSets",
+                "guardduty:ListInvitations",
+                "guardduty:ListMembers",
+                "guardduty:ListThreatIntelSets",
+                "iam:GetSSHPublicKey",
+                "inspector:DescribeAssessmentRuns",
+                "inspector:DescribeAssessmentTargets",
+                "inspector:DescribeAssessmentTemplates",
+                "inspector:DescribeCrossAccountAccessRole",
+                "inspector:DescribeFindings",
+                "inspector:DescribeResourceGroups",
+                "inspector:DescribeRulesPackages",
+                "iot:DescribeAuthorizer",
+                "iot:DescribeCACertificate",
+                "iot:DescribeCertificate",
+                "iot:DescribeDefaultAuthorizer",
+                "iot:GetPolicy",
+                "iot:GetPolicyVersion",
+                "lambda:GetFunctionConfiguration",
+                "lightsail:GetInstances",
+                "lightsail:GetLoadBalancers",
+                "opsworks:DescribeStacks",
+                "organizations:DescribeAccount",
+                "organizations:DescribeCreateAccountStatus",
+                "organizations:DescribeHandshake",
+                "organizations:DescribeOrganization",
+                "organizations:DescribeOrganizationalUnit",
+                "organizations:DescribePolicy",
+                "organizations:ListAWSServiceAccessForOrganization",
+                "shield:DescribeAttack",
+                "shield:DescribeProtection",
+                "shield:DescribeSubscription",
+                "sso:DescribePermissionsPolicies",
+                "sso:ListApplicationInstanceCertificates",
+                "sso:ListApplicationInstances",
+                "sso:ListApplicationTemplates",
+                "sso:ListApplications",
+                "sso:ListDirectoryAssociations",
+                "sso:ListPermissionSets",
+                "sso:ListProfileAssociations",
+                "sso:ListProfiles"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]
 }
 ```
 
-Collecting the data can be performed with a bash script or via the python code base.  Both options support a `--profile` to specify the AWS account profile to use.
+### Collect the data
 
-### Option 1: Bash script
-Using the script is helpful if you need someone else to get this data for you without fiddling with setting up the python environment.
-
-*NOTE* The script will collect a small subset of available data. It is preferable to use Option 2 below whenever possible.
-
-```
-./collect_data.sh --account my_account
-```
-
-`my_account` is just a name for your account (ex. "prod").  You can also pass a `--profile` option if you have multiple AWS profiles configured.  You should now have a directory with .json files describing your account in a directory named after account name.
-
-### Option 2: Python code
+Collecting the data is done as follows:
 
 ```
 python cloudmapper.py collect --account my_account
 ```
 
+
+
 # Commands
 
+- `api_endpoints`: List the URLs that can be called via API Gateway.
+- `audit`: Check for potential misconfigurations.
 - `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
 - `find_admins`: Look at IAM policies to identify admin users and roles and spot potential IAM issues. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
 - `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)

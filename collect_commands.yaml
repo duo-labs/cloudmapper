@@ -18,15 +18,15 @@
 - Service: iam
   Request: get-saml-provider
   Parameters:
-  - Name: SamlProviderArn
-    Value: iam-list-saml-providers.json|.OpenIDConnectProviderList[]|.Arn
+  - Name: SAMLProviderArn
+    Value: iam-list-saml-providers.json|.SAMLProviderList[]|.Arn
 - Service: iam
   Request: list-open-id-connect-providers
 - Service: iam
-  Request: get-open-id-connect-providers
+  Request: get-open-id-connect-provider
   Parameters:
-  - Name: SamlProviderArn
-    Value: iam-list-open-id-connect-providers.json|.SAMLProviderList[]|.Arn
+  - Name: OpenIDConnectProviderArn
+    Value: iam-list-open-id-connect-providers.json|.OpenIDConnectProviderList[]|.Arn
 - Service: s3
   Request: list-buckets
 - Service: s3
@@ -86,6 +86,11 @@
     Value: sqs-list-queues.json|.QueueUrls[]
 - Service: sns
   Request: list-topics
+- Service: sns
+  Request: get-topic-attributes
+  Parameters:
+  - Name: TopicArn
+    Value: sns-list-topics.json|.Topics[].TopicArn
 - Service: ec2
   Request: describe-security-groups
 - Service: ec2
@@ -145,9 +150,13 @@
   - Name: OwnerIds
     Value:
     - "self"
-  - Name: RestorableByUserIds
-    Value:
-    - "all"
+- Service: ec2
+  Request: describe-snapshot-attribute
+  Parameters:
+  - Name: SnapshotId
+    Value: ec2-describe-snapshots.json|.Snapshots[]|.SnapshotId
+  - Name: Attribute
+    Value: 'createVolumePermission'
 - Service: ec2
   Request: describe-vpc-endpoint-connections
 - Service: ec2
@@ -210,6 +219,13 @@
   - Name: KeyId
     Value: kms-list-keys.json|.Keys[]|.KeyId
 - Service: kms
+  Request: get-key-policy
+  Parameters:
+  - Name: KeyId
+    Value: kms-list-keys.json|.Keys[]|.KeyId
+  - Name: PolicyName
+    Value: 'default'
+- Service: kms
   Request: get-key-rotation-status
   Parameters:
   - Name: KeyId
@@ -220,10 +236,31 @@
   Request: get-policy
   Parameters:
   - Name: FunctionName
-    Value: lambda-list-functins.json|.Functions[]|.FunctionName
+    Value: lambda-list-functions.json|.Functions[]|.FunctionName
 - Service: logs
   Request: describe-destinations
 - Service: logs
   Request: describe-log-groups
 - Service: logs
   Request: describe-resource-policies
+- Service: lightsail
+  Request: get-instances
+- Service: lightsail
+  Request: get-load-balancers
+- Service: apigateway
+  Request: get-rest-apis
+- Service: apigateway
+  Request: get-resources
+  Parameters:
+  - Name: restApiId
+    Value: apigateway-get-rest-apis.json|.items[]|.id
+- Service: apigateway
+  Request: get-deployments
+  Parameters:
+  - Name: restApiId
+    Value: apigateway-get-rest-apis.json|.items[]|.id
+- Service: apigateway
+  Request: get-stages
+  Parameters:
+  - Name: restApiId
+    Value: apigateway-get-rest-apis.json|.items[]|.id
