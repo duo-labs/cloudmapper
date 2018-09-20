@@ -1,5 +1,7 @@
 language: python
-install:
-  - pip install -r requirements-dev.txt
-script:
-  - bash tests/scripts/unit_tests.sh
+env:
+  global:
+    - PIPENV_VENV_IN_PROJECT=1
+    - PIPENV_IGNORE_VIRTUALENVS=1
+install: make setup
+script: make test
