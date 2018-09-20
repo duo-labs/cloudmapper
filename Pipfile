@@ -14,6 +14,7 @@ matplotlib = "==2.2.2"
 policyuniverse = "==1.1.0.1"
 pyproj = "==1.9.5.1"
 PyYAML = "==3.12"
+numpy = "1.15.1"
 
 [dev-packages]
 autoflake = "==0.7"
