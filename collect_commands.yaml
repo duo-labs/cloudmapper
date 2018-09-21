@@ -19,33 +19,33 @@
   Request: get-saml-provider
   Parameters:
   - Name: SAMLProviderArn
-    Value: iam-list-saml-providers.json|.SAMLProviderList[]|.Arn
+    Value: iam-list-saml-providers.json|.SAMLProviderList[]?|.Arn
 - Service: iam
   Request: list-open-id-connect-providers
 - Service: iam
   Request: get-open-id-connect-provider
   Parameters:
   - Name: OpenIDConnectProviderArn
-    Value: iam-list-open-id-connect-providers.json|.OpenIDConnectProviderList[]|.Arn
+    Value: iam-list-open-id-connect-providers.json|.OpenIDConnectProviderList[]?|.Arn
 - Service: s3
   Request: list-buckets
 - Service: s3
   Request: get-bucket-acl
   Parameters:
   - Name: Bucket
-    Value: s3-list-buckets.json|.Buckets[].Name
+    Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: s3
   Request: get-bucket-policy
   Parameters:
   - Name: Bucket
-    Value: s3-list-buckets.json|.Buckets[].Name
+    Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: route53
   Request: list-hosted-zones
 - Service: route53
   Request: list-resource-record-sets
   Parameters:
   - Name: HostedZoneId
-    Value: route53-list-hosted-zones.json|.HostedZones[]|[.Id,.Name]
+    Value: route53-list-hosted-zones.json|.HostedZones[]?|[.Id,.Name]
 - Service: route53domains
   Request: list-domains
 - Service: ec2
@@ -68,7 +68,7 @@
   Request: describe-db-snapshot-attributes
   Parameters:
   - Name: DBSnapshotIdentifier
-    Value: rds-describe-db-snapshots.json|.DBSnapshots[]|.DBSnapshotIdentifier
+    Value: rds-describe-db-snapshots.json|.DBSnapshots[]?|.DBSnapshotIdentifier
 - Service: elb
   Request: describe-load-balancers
 - Service: elb
@@ -83,14 +83,14 @@
   Request: get-queue-attributes
   Parameters:
   - Name: QueueUrl
-    Value: sqs-list-queues.json|.QueueUrls[]
+    Value: sqs-list-queues.json|.QueueUrls[]?
 - Service: sns
   Request: list-topics
 - Service: sns
   Request: get-topic-attributes
   Parameters:
   - Name: TopicArn
-    Value: sns-list-topics.json|.Topics[].TopicArn
+    Value: sns-list-topics.json|.Topics[]?|.TopicArn
 - Service: ec2
   Request: describe-security-groups
 - Service: ec2
@@ -109,12 +109,12 @@
   Request: get-template
   Parameters:
   - Name: StackName
-    Value: cloudformation-describe-stacks.json|.Stacks[]|.StackName
+    Value: cloudformation-describe-stacks.json|.Stacks[]?|.StackName
 - Service: cloudformation
   Request: describe-stack-resources
   Parameters:
   - Name: StackName
-    Value: cloudformation-describe-stacks.json|.Stacks[]|.StackName
+    Value: cloudformation-describe-stacks.json|.Stacks[]?|.StackName
 - Service: cloudfront
   Request: list-distributions
 - Service: cloudsearch
@@ -123,7 +123,7 @@
   Request: describe-service-access-policies
   Parameters:
   - Name: DomainName
-    Value: cloudsearch-describe-domains.json|.DomainStatusList[]|.DomainName
+    Value: cloudsearch-describe-domains.json|.DomainStatusList[]?|.DomainName
 - Service: cloudwatch
   Request: describe-alarms
 - Service: config
@@ -154,7 +154,7 @@
   Request: describe-snapshot-attribute
   Parameters:
   - Name: SnapshotId
-    Value: ec2-describe-snapshots.json|.Snapshots[]|.SnapshotId
+    Value: ec2-describe-snapshots.json|.Snapshots[]?|.SnapshotId
   - Name: Attribute
     Value: 'createVolumePermission'
 - Service: ec2
@@ -182,7 +182,7 @@
   Request: describe-elasticsearch-domain
   Parameters:
   - Name: DomainName
-    Value: es-list-domain-names.json|.DomainNames[]|.DomainName
+    Value: es-list-domain-names.json|.DomainNames[]?|.DomainName
 - Service: events
   Request: describe-event-bus
 - Service: events
@@ -193,7 +193,7 @@
   Request: describe-delivery-stream
   Parameters:
   - Name: DeliveryStreamName
-    Value: firehose-list-delivery-streams.json|.DeliveryStreamNames[]
+    Value: firehose-list-delivery-streams.json|.DeliveryStreamNames[]?
 - Service: glacier
   Request: list-vaults
   Parameters:
@@ -203,7 +203,7 @@
   Request: get-vault-access-policy
   Parameters:
   - Name: vaultName
-    Value: glacier-list-vaults.json|.VaultList[]|.VaultName
+    Value: glacier-list-vaults.json|.VaultList[]?|.VaultName
   - Name: accountId
     Value: "-"
 - Service: kms
@@ -212,31 +212,31 @@
   Request: list-grants
   Parameters:
   - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]|.KeyId
+    Value: kms-list-keys.json|.Keys[]?|.KeyId
 - Service: kms
   Request: list-key-policies
   Parameters:
   - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]|.KeyId
+    Value: kms-list-keys.json|.Keys[]?|.KeyId
 - Service: kms
   Request: get-key-policy
   Parameters:
   - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]|.KeyId
+    Value: kms-list-keys.json|.Keys[]?|.KeyId
   - Name: PolicyName
     Value: 'default'
 - Service: kms
   Request: get-key-rotation-status
   Parameters:
   - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]|.KeyId
+    Value: kms-list-keys.json|.Keys[]?|.KeyId
 - Service: lambda
   Request: list-functions
 - Service: lambda
   Request: get-policy
   Parameters:
   - Name: FunctionName
-    Value: lambda-list-functions.json|.Functions[]|.FunctionName
+    Value: lambda-list-functions.json|.Functions[]?|.FunctionName
 - Service: logs
   Request: describe-destinations
 - Service: logs
@@ -253,14 +253,14 @@
   Request: get-resources
   Parameters:
   - Name: restApiId
-    Value: apigateway-get-rest-apis.json|.items[]|.id
+    Value: apigateway-get-rest-apis.json|.items[]?|.id
 - Service: apigateway
   Request: get-deployments
   Parameters:
   - Name: restApiId
-    Value: apigateway-get-rest-apis.json|.items[]|.id
+    Value: apigateway-get-rest-apis.json|.items[]?|.id
 - Service: apigateway
   Request: get-stages
   Parameters:
   - Name: restApiId
-    Value: apigateway-get-rest-apis.json|.items[]|.id
+    Value: apigateway-get-rest-apis.json|.items[]?|.id
