@@ -10,3 +10,4 @@ env:
     - PIPENV_IGNORE_VIRTUALENVS=1
 install: make setup
 script: make test
+
