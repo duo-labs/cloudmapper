@@ -1,7 +1,7 @@
 language: python
 matrix:
   include:
-  - python: 3.7-dev
+  - python: 3.7
     dist: xenial
     sudo: true
 env:
@@ -10,4 +10,3 @@ env:
     - PIPENV_IGNORE_VIRTUALENVS=1
 install: make setup
 script: make test
-
