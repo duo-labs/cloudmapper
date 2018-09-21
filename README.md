@@ -1,5 +1,7 @@
 CloudMapper
 ========
+[![Build Status](https://travis-ci.org/duo-labs/cloudmapper.svg?branch=master)](https://travis-ci.org/duo-labs/cloudmapper)
+
 CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality.
 
 *Demo: https://duo-labs.github.io/cloudmapper/*
