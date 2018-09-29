@@ -84,6 +84,8 @@
   Parameters:
   - Name: QueueUrl
     Value: sqs-list-queues.json|.QueueUrls[]?
+  - Name: AttributeNames
+    Value: [All]
 - Service: sns
   Request: list-topics
 - Service: sns
