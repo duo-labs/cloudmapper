@@ -8,13 +8,10 @@ services:
       - AWS_DEFAULT_REGION=eu-east-1
     volumes:
       - ${AWS_CONF_DIR}:/root/.aws
-      - ${PRAETORIAN_TOOLS_DIR}:/praetorian_tools
       - ${ENGAGEMENTS_DIR}:/engagements
     ports:
       - "8000:8000"
     command: ["/bin/bash", "-l", "-c", "tail", "-f", "/dev/null"]
-    #command: ["/bin/bash", "-c", "python", "/praetorian_tools/cloudmapper/cloudmapper.py", "prepare", "--config", "config.demo.json", "--account", "demo", "--outputfile", "web/demo-data.json", "--instance-ips", "10.0.0.1"]
-    #command: python /praetorian_tools/cloudmapper/cloudmapper.py prepare --config config.json.demo --account demo --outputfile web/demo-data.json --instance-ips 10.0.0.1
     tty: true
-    working_dir: /praetorian_tools/cloudmapper/
+    working_dir: /cloudmapper/
     #command: ["/bin/bash", "pipenv", "shell"]

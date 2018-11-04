@@ -14,13 +14,10 @@ CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The 
 
 ## Installation
 
-See scout2 [Project Structure](https://git.praetorianlabs.com/praetorian-tools/cloudmapper/cloudmapper.git) for setting up a project. Assume it is `~/engagements/customer/cloudmapper` 
-for this Readme.
-
 ### Docker (Recommended)
 Until the docker image is hosted publicly, you must first build the docker image.
 
-In `~/praetorian-tools/cloudmapper` build the container
+In `~/tools/cloudmapper` build the container
 ```
 $ export CLOUDMAPPER_IMAGE=cloudmapper:0.1
 $ docker build -t ${CLOUDMAPPER_IMAGE} .
@@ -29,9 +26,8 @@ $ docker build -t ${CLOUDMAPPER_IMAGE} .
 Then setup the environment in `~engagements/customer/cloudmapper` and modify $CLOUDMAPPER_IMAGE 
 in the .env 
 ```
-$ cp ~/praetorian-tools/cloudmapper/.env-sample .env
-$ cp ~/praetorian-tools/cloudmapper/docker-compose.yml . 
-$ cp -R ~/praetorian-tools/cloudmapper/web .
+$ cp ~/tools/cloudmapper/docker-compose.yml . 
+$ cp -R ~/tools/cloudmapper/web .
 ```
 
 
