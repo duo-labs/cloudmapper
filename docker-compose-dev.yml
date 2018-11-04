@@ -1,0 +1,17 @@
+version: "3.4"
+services:
+  cloudmapper:
+    image: ${CLOUDMAPPER_IMAGE}
+    build:
+      context: .
+    environment:
+      - AWS_DEFAULT_REGION=eu-east-1
+    volumes:
+      - ${AWS_CONF_DIR}:/root/.aws
+      - ${ENGAGEMENTS_DIR}:/engagements
+    ports:
+      - "8000:8000"
+    command: ["/bin/bash", "-l", "-c", "tail", "-f", "/dev/null"]
+    tty: true
+    working_dir: /cloudmapper/
+    #command: ["/bin/bash", "pipenv", "shell"]
