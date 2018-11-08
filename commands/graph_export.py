@@ -12,11 +12,9 @@ __description__ = "Export data to neo4j"
 def run(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument("--graph-url", required=True)
-    parser.add_argument("--region", required=True)
     args, accounts, config = parse_arguments(arguments, parser)
 
     graph_url = args.graph_url
-    region_name = args.region
 
     parsed_url = urlparse(args.graph_url)
     graph_username = parsed_url.username
@@ -53,7 +51,7 @@ def run(arguments):
                     MERGE (v:VPC { id: $vpc_id })
                     MERGE (a)-[:vpc]->(v)
                     MERGE (r)-[:vpc]->(v)
-                """, account_arn=account.arn, region_name=region_name, vpc_id=vpc_id)
+                """, account_arn=account.arn, region_name=region.name, vpc_id=vpc_id)
 
             # sync instances
             describe_instances = query_aws(account, "ec2-describe-instances", region)
