@@ -31,45 +31,42 @@ def run(arguments):
         describe_instances = query_aws(account, "ec2-describe-instances", region)
 
         with driver.session() as session:
-            with session.begin_transaction() as tx:
-                tx.run(""" MATCH (n) DETACH DELETE n """)
+            session.run(""" MATCH (n) DETACH DELETE n """)
 
         # sync account
         with driver.session() as session:
-            with session.begin_transaction() as tx:
-                tx.run("""
-                    MERGE (a:Account { arn: $account_arn })
-                """, account_arn=account.arn)
+            session.run("""
+                MERGE (a:Account { arn: $account_arn })
+            """, account_arn=account.arn)
 
         with driver.session() as session:
-            with session.begin_transaction() as tx:
-                # sync region
-                tx.run("""
-                    MERGE (a:Account { arn: $account_arn })
+            # sync region
+            session.run("""
+                MERGE (a:Account { arn: $account_arn })
+                MERGE (r:Region { name: $region_name })
+                MERGE (a)-[:region]->(r)
+            """, account_arn=account.arn, region_name=region_name)
+
+            # sync vpcs
+            for vpc_data in describe_vpcs['Vpcs']:
+                vpc_id = vpc_data['VpcId']
+                session.run("""
                     MERGE (r:Region { name: $region_name })
-                    MERGE (a)-[:region]->(r)
-                """, account_arn=account.arn, region_name=region_name)
+                    MERGE (v:VPC { id: $vpc_id })
+                    MERGE (r)-[:vpc]->(v)
+                """, region_name=region_name, vpc_id=vpc_id)
 
-                # sync vpcs
-                for vpc_data in describe_vpcs['Vpcs']:
-                    vpc_id = vpc_data['VpcId']
-                    tx.run("""
-                        MERGE (r:Region { name: $region_name })
-                        MERGE (v:VPC { id: $vpc_id })
-                        MERGE (r)-[:vpc]->(v)
-                    """, region_name=region_name, vpc_id=vpc_id)
+            # sync instances
+            for reservation_data in describe_instances['Reservations']:
+                for instance_data in reservation_data['Instances']:
+                    instance_id = instance_data['InstanceId']
+                    instance_vpc_id = instance_data['VpcId']
 
-                # sync instances
-                for reservation_data in describe_instances['Reservations']:
-                    for instance_data in reservation_data['Instances']:
-                        instance_id = instance_data['InstanceId']
-                        instance_vpc_id = instance_data['VpcId']
-
-                        tx.run("""
-                            MERGE (v:VPC { id: $instance_vpc_id })
-                            MERGE (i:Instance { id: $instance_id })
-                            MERGE (v)-[:instance]->(i)
-                        """,
-                            instance_id=instance_id,
-                            instance_vpc_id=instance_vpc_id,
-                        )
+                    session.run("""
+                        MERGE (v:VPC { id: $instance_vpc_id })
+                        MERGE (i:Instance { id: $instance_id })
+                        MERGE (v)-[:instance]->(i)
+                    """,
+                        instance_id=instance_id,
+                        instance_vpc_id=instance_vpc_id,
+                    )
