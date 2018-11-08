@@ -63,3 +63,5 @@ def run(arguments):
                         instance_id=instance_id,
                         instance_vpc_id=instance_vpc_id,
                     )
+
+    session.close()
