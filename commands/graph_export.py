@@ -21,7 +21,7 @@ def run(arguments):
     graph_password = parsed_url.password
     driver = GraphDatabase.driver(graph_url, auth=(graph_username, graph_password))
     session = driver.session()
-    session.run("MATCH (n) DETACH DELETE n")
+    # session.run("MATCH (n) DETACH DELETE n")
     session.run("CREATE CONSTRAINT ON (a:Account) ASSERT a.arn IS UNIQUE")
     session.run("CREATE CONSTRAINT ON (r:Region) ASSERT r.arn IS UNIQUE")
     session.run("CREATE CONSTRAINT ON (v:VPC) ASSERT v.id IS UNIQUE")
