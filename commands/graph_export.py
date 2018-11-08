@@ -29,13 +29,14 @@ def run(arguments):
     session.run("CREATE CONSTRAINT ON (v:VPC) ASSERT v.id IS UNIQUE")
     session.run("CREATE CONSTRAINT ON (i:Instance) ASSERT i.id IS UNIQUE")
 
+    accounts = [Account(None, a) for a in accounts]
     for account in accounts:
         # sync account
-        account = Account(None, account)
         session.run("MERGE (a:Account { arn: $account_arn })",
             account_arn=account.arn)
 
         describe_regions = query_aws(account, "describe-regions")
+        regions = [Region(account, r) for r in describe_regions['Regions']]
         for region_data in describe_regions['Regions']:
             # sync region
             region = Region(account, region_data)
@@ -60,7 +61,6 @@ def run(arguments):
                 for instance_data in reservation_data['Instances']:
                     instance_id = instance_data['InstanceId']
                     instance_vpc_id = instance_data['VpcId']
-
                     session.run("""
                         MERGE (v:VPC { id: $instance_vpc_id })
                         MERGE (i:Instance { id: $instance_id })
@@ -70,4 +70,15 @@ def run(arguments):
                         instance_vpc_id=instance_vpc_id,
                     )
 
+                    for security_group_data in instance_data['SecurityGroups']:
+                        group_name = security_group_data['GroupName']
+                        group_id = security_group_data['GroupId']
+                        session.run("""
+
+                            MERGE (i:Instance { id: $instance_id })
+                            MERGE (v)-[:instance]->(i)
+                        """,
+                            instance_id=instance_id,
+                            instance_vpc_id=instance_vpc_id,
+                        )
     session.close()
