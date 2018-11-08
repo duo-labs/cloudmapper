@@ -22,35 +22,31 @@ def run(arguments):
     graph_username = parsed_url.username
     graph_password = parsed_url.password
     driver = GraphDatabase.driver(graph_url, auth=(graph_username, graph_password))
+    session = driver.session()
+    session.run("MATCH (n) DETACH DELETE n")
+    session.run("CREATE CONSTRAINT ON (a:Account) ASSERT a.arn IS UNIQUE")
+    session.run("CREATE CONSTRAINT ON (v:VPC) ASSERT v.id IS UNIQUE")
+    session.run("CREATE CONSTRAINT ON (i:Instance) ASSERT i.id IS UNIQUE")
 
     for account in accounts:
+        # sync account
         account = Account(None, account)
-        region = Region(account, {'RegionName': region_name})
+        session.run("MERGE (a:Account { arn: $account_arn })",
+            account_arn=account.arn)
 
-        with driver.session() as session:
-            session.run(""" MATCH (n) DETACH DELETE n """)
-
-            # sync account
-            session.run("""
-                MERGE (a:Account { arn: $account_arn })
-            """, account_arn=account.arn)
-
-            # sync region
-            session.run("""
-                MERGE (a:Account { arn: $account_arn })
-                MERGE (r:Region { name: $region_name })
-                MERGE (a)-[:region]->(r)
-            """, account_arn=account.arn, region_name=region_name)
+        describe_regions = query_aws(account, "describe-regions")
+        for region_data in describe_regions['Regions']:
+            region = Region(account, region_data)
 
             # sync vpcs
             describe_vpcs = query_aws(account, "ec2-describe-vpcs", region)
             for vpc_data in describe_vpcs['Vpcs']:
                 vpc_id = vpc_data['VpcId']
                 session.run("""
-                    MERGE (r:Region { name: $region_name })
+                    MERGE (a:Account { arn: $account_arn })
                     MERGE (v:VPC { id: $vpc_id })
-                    MERGE (r)-[:vpc]->(v)
-                """, region_name=region_name, vpc_id=vpc_id)
+                    MERGE (a)-[:vpc]->(v)
+                """, account_arn=account.arn, vpc_id=vpc_id)
 
             # sync instances
             describe_instances = query_aws(account, "ec2-describe-instances", region)
