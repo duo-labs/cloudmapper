@@ -25,6 +25,7 @@ def run(arguments):
     session = driver.session()
     session.run("MATCH (n) DETACH DELETE n")
     session.run("CREATE CONSTRAINT ON (a:Account) ASSERT a.arn IS UNIQUE")
+    session.run("CREATE CONSTRAINT ON (r:Region) ASSERT r.name IS UNIQUE")
     session.run("CREATE CONSTRAINT ON (v:VPC) ASSERT v.id IS UNIQUE")
     session.run("CREATE CONSTRAINT ON (i:Instance) ASSERT i.id IS UNIQUE")
 
@@ -36,7 +37,10 @@ def run(arguments):
 
         describe_regions = query_aws(account, "describe-regions")
         for region_data in describe_regions['Regions']:
+            # sync region
             region = Region(account, region_data)
+            session.run("MERGE (r:Region { name: $region_name})",
+                region_name=region.name)
 
             # sync vpcs
             describe_vpcs = query_aws(account, "ec2-describe-vpcs", region)
@@ -44,9 +48,11 @@ def run(arguments):
                 vpc_id = vpc_data['VpcId']
                 session.run("""
                     MERGE (a:Account { arn: $account_arn })
+                    MERGE (r:Region { name: $region_name })
                     MERGE (v:VPC { id: $vpc_id })
                     MERGE (a)-[:vpc]->(v)
-                """, account_arn=account.arn, vpc_id=vpc_id)
+                    MERGE (r)-[:vpc]->(v)
+                """, account_arn=account.arn, region_name=region_name, vpc_id=vpc_id)
 
             # sync instances
             describe_instances = query_aws(account, "ec2-describe-instances", region)
