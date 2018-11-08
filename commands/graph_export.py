@@ -27,19 +27,14 @@ def run(arguments):
         account = Account(None, account)
         region = Region(account, {'RegionName': region_name})
 
-        describe_vpcs = query_aws(account, "ec2-describe-vpcs", region)
-        describe_instances = query_aws(account, "ec2-describe-instances", region)
-
         with driver.session() as session:
             session.run(""" MATCH (n) DETACH DELETE n """)
 
-        # sync account
-        with driver.session() as session:
+            # sync account
             session.run("""
                 MERGE (a:Account { arn: $account_arn })
             """, account_arn=account.arn)
 
-        with driver.session() as session:
             # sync region
             session.run("""
                 MERGE (a:Account { arn: $account_arn })
@@ -48,6 +43,7 @@ def run(arguments):
             """, account_arn=account.arn, region_name=region_name)
 
             # sync vpcs
+            describe_vpcs = query_aws(account, "ec2-describe-vpcs", region)
             for vpc_data in describe_vpcs['Vpcs']:
                 vpc_id = vpc_data['VpcId']
                 session.run("""
@@ -57,6 +53,7 @@ def run(arguments):
                 """, region_name=region_name, vpc_id=vpc_id)
 
             # sync instances
+            describe_instances = query_aws(account, "ec2-describe-instances", region)
             for reservation_data in describe_instances['Reservations']:
                 for instance_data in reservation_data['Instances']:
                     instance_id = instance_data['InstanceId']
