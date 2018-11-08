@@ -70,13 +70,13 @@ def run(arguments):
 
                     for security_group_data in instance_data['SecurityGroups']:
                         group_name = security_group_data['GroupName']
-                        group_id = security_group_data['GroupId']
+                        security_group_id = security_group_data['GroupId']
                         session.run("""
-
                             MERGE (i:Instance { id: $instance_id })
-                            MERGE (v)-[:instance]->(i)
+                            MERGE (s:SecurityGroup { id: $security_group_id })
+                            MERGE (i)-[:security_group]->(s)
                         """,
                             instance_id=instance_id,
-                            instance_vpc_id=instance_vpc_id,
+                            security_group_id=security_group_id,
                         )
     session.close()
