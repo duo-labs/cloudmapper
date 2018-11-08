@@ -66,48 +66,30 @@ def run(arguments):
             describe_instances = query_aws(account, "ec2-describe-instances", region)
             for reservation_data in describe_instances['Reservations']:
                 for instance_data in reservation_data['Instances']:
-                    instance_id = instance_data['InstanceId']
-                    instance_vpc_id = instance_data['VpcId']
                     session.run("""
-                        MERGE (v:VPC { id: $instance_vpc_id })
-                        MERGE (i:Instance { id: $instance_id })
+                        MERGE (v:VPC { id: $VpcId })
+                        MERGE (i:Instance { id: $InstanceId })
                         MERGE (v)-[:instance]->(i)
-                    """,
-                        instance_id=instance_id,
-                        instance_vpc_id=instance_vpc_id,
-                    )
+                    """, **instance_data)
 
-                    for security_group_data in instance_data['SecurityGroups']:
-                        group_name = security_group_data['GroupName']
-                        security_group_id = security_group_data['GroupId']
+                    for sg_data in instance_data['SecurityGroups']:
                         session.run("""
-                            MERGE (v:VPC { id: $instance_vpc_id })
-                            MERGE (v)-[:security_group]->(s:SecurityGroup { id: $security_group_id })
-                            MERGE (v)-[:instance]->(i:Instance { id: $instance_id })
+                            MERGE (v:VPC { id: $VpcId })
+                            MERGE (v)-[:security_group]->(s:SecurityGroup { id: $GroupId })
+                            MERGE (v)-[:instance]->(i:Instance { id: $InstanceId })
                             MERGE (i)-[:security_group]->(s)
-                        """,
-                            instance_id=instance_id,
-                            security_group_id=security_group_id,
-                            instance_vpc_id=instance_vpc_id,
-                        )
+                        """, { **instance_data, **sg_data })
 
             describe_db_instances = query_aws(account, "rds-describe-db-instances", region)
             for db_instance_data in describe_db_instances['DBInstances']:
-                db_arn = db_instance_data['DBInstanceArn']
-                db_vpc_security_groups = db_instance_data['VpcSecurityGroups']
-
                 session.run("""
-                    MERGE (v:VPC { id: $instance_vpc_id })
-                    MERGE (db:DB { arn: $db_arn } )
-                    MERGE (v)-[:db_instance]->(db)
-                    FOREACH (vs IN $db_vpc_security_groups |
+                    MERGE (a:Account { arn: $account_arn })
+                    MERGE (db:DB { arn: $DBInstanceArn } )
+                    MERGE (a)-[:db_instance]->(db)
+                    FOREACH (vs IN $VpcSecurityGroups |
                         MERGE (v)-[:security_group]->(s:SecurityGroup { id: vs.VpcSecurityGroupId })
                         MERGE (db)-[:security_group]->(s)
                     )
-                """,
-                    db_arn=db_arn,
-                    instance_vpc_id=instance_vpc_id,
-                    db_vpc_security_groups=db_vpc_security_groups,
-                )
+                """, { **db_instance_data, 'account_arn': account.arn })
 
     session.close()
