@@ -34,9 +34,9 @@ def run(arguments):
             with session.begin_transaction() as tx:
                 tx.run(""" MATCH (n) DETACH DELETE n """)
 
+        # sync account
         with driver.session() as session:
             with session.begin_transaction() as tx:
-                # sync account
                 tx.run("""
                     MERGE (a:Account { arn: $account_arn })
                 """, account_arn=account.arn)
