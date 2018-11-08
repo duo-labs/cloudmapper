@@ -23,7 +23,7 @@ def run(arguments):
     session = driver.session()
     session.run("MATCH (n) DETACH DELETE n")
     session.run("CREATE CONSTRAINT ON (a:Account) ASSERT a.arn IS UNIQUE")
-    session.run("CREATE CONSTRAINT ON (r:Region) ASSERT r.name IS UNIQUE")
+    session.run("CREATE CONSTRAINT ON (r:Region) ASSERT r.arn IS UNIQUE")
     session.run("CREATE CONSTRAINT ON (v:VPC) ASSERT v.id IS UNIQUE")
     session.run("CREATE CONSTRAINT ON (i:Instance) ASSERT i.id IS UNIQUE")
 
@@ -38,8 +38,8 @@ def run(arguments):
         for region_data in describe_regions['Regions']:
             # sync region
             region = Region(account, region_data)
-            session.run("MERGE (r:Region { name: $region_name})",
-                region_name=region.name)
+            session.run("MERGE (r:Region { name: $region_arn})",
+                region_arn=region.arn)
 
             # sync vpcs
             describe_vpcs = query_aws(account, "ec2-describe-vpcs", region)
@@ -47,11 +47,11 @@ def run(arguments):
                 vpc_id = vpc_data['VpcId']
                 session.run("""
                     MERGE (a:Account { arn: $account_arn })
-                    MERGE (r:Region { name: $region_name })
+                    MERGE (r:Region { name: $region_arn })
                     MERGE (v:VPC { id: $vpc_id })
                     MERGE (a)-[:vpc]->(v)
                     MERGE (r)-[:vpc]->(v)
-                """, account_arn=account.arn, region_name=region.name, vpc_id=vpc_id)
+                """, account_arn=account.arn, region_arn=region.arn, vpc_id=vpc_id)
 
             # sync instances
             describe_instances = query_aws(account, "ec2-describe-instances", region)
@@ -72,11 +72,13 @@ def run(arguments):
                         group_name = security_group_data['GroupName']
                         security_group_id = security_group_data['GroupId']
                         session.run("""
-                            MERGE (i:Instance { id: $instance_id })
-                            MERGE (s:SecurityGroup { id: $security_group_id })
+                            MERGE (v:VPC { id: $instance_vpc_id })
+                            MERGE (v)-[:security_group]->(s:SecurityGroup { id: $security_group_id })
+                            MERGE (v)-[:instance]->(i:Instance { id: $instance_id })
                             MERGE (i)-[:security_group]->(s)
                         """,
                             instance_id=instance_id,
                             security_group_id=security_group_id,
+                            instance_vpc_id=instance_vpc_id,
                         )
     session.close()
