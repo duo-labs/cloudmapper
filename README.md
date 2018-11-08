@@ -181,7 +181,7 @@ python cloudmapper.py collect --account my_account
 - `sg_ips`: Get geoip info on CIDRs trusted in Security Groups. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_sg_ips/).
 - `stats`: Show counts of resources for accounts. More details [here](https://summitroute.com/blog/2018/06/06/cloudmapper_stats/).
 - `wot`: Show Web Of Trust. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_wot/).
-
+- `export_graph`: Export data to neo4j. example: ./cloudmapper.py graph_export --accounts demo --graph-url bolt://neo4j:neo4j@127.0.0.1:7687
 
 Licenses
 --------
