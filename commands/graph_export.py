@@ -56,16 +56,11 @@ def run(arguments):
             # sync security groups
             describe_sgs = query_aws(account, "ec2-describe-security-groups", region)
             for sg_data in describe_sgs['SecurityGroups']:
-                sg_vpc_id = sg_data['VpcId']
-                sg_id = sg_data['GroupId']
                 session.run("""
-                    MERGE (v:VPC { id: $sg_vpc_id })
-                    MERGE (sg:SecurityGroup { id: $sg_id })
+                    MERGE (v:VPC { id: $VpcId })
+                    MERGE (sg:SecurityGroup { id: $GroupId })
                     MERGE (v)-[:security_group]->(sg)
-                """,
-                    sg_id=sg_id,
-                    sg_vpc_id=sg_vpc_id,
-                )
+                """, **sg_data)
 
             # sync instances
             describe_instances = query_aws(account, "ec2-describe-instances", region)
