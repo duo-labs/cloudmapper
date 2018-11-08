@@ -81,4 +81,17 @@ def run(arguments):
                             security_group_id=security_group_id,
                             instance_vpc_id=instance_vpc_id,
                         )
+
+            describe_db_instances = query_aws(account, "rds-describe-db-instances", region)
+            for db_instance_data in describe_db_instances['DBInstances']:
+                db_arn = db_instance_data['DBInstanceArn']
+                session.run("""
+                    MERGE (v:VPC { id: $instance_vpc_id })
+                    MERGE (db:DB { arn: $db_arn } )
+                    MERGE (v)-[:db_instance]->(db)
+                """,
+                    db_arn=db_arn,
+                    instance_vpc_id=instance_vpc_id,
+                )
+
     session.close()
