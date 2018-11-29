@@ -447,14 +447,15 @@ def audit_sqs(region):
         return
 
     for queue in json_blob.get('QueueUrls', []):
+        queue_name = queue.split("/")[-1]
         # Check policy
-        attributes = get_parameter_file(region, 'sqs', 'get-queue-attributes', queue)
-        if attributes is None:
+        queue_attributes = get_parameter_file(region, 'sqs', 'get-queue-attributes', queue)
+        if queue_attributes is None:
             # No policy
             continue
 
         # Find the entity we need
-        attributes = attributes['Attributes']
+        attributes = queue_attributes['Attributes']
         if 'Policy' in attributes:
             policy_string = attributes['Policy']
         else:
@@ -465,7 +466,7 @@ def audit_sqs(region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible SQS {}: {}'.format(name, policy_string))
+            print('- Internet accessible SQS {}: {}'.format(queue_name, policy_string))
 
 
 def audit_sns(region):
