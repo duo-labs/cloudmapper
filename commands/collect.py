@@ -50,7 +50,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
         # Data already collected, so skip
         return
 
-    print("Making call for {}".format(outputfile))
+    print("Making call for {}".format(outputfile), flush=True)
     try:
         if handler.can_paginate(method_to_call):
             paginator = handler.get_paginator(method_to_call)
@@ -60,7 +60,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
                 if not data:
                     data = response
                 else:
-                    print("  ...paginating")
+                    print("  ...paginating", flush=True)
                     for k in data:
                         if isinstance(data[k], list):
                             data[k].extend(response[k])
@@ -73,7 +73,7 @@ def call_function(outputfile, handler, method_to_call, parameters):
         if "NoSuchBucketPolicy" in str(e):
             pass
         else:
-            print("ClientError: {}".format(e))
+            print("ClientError: {}".format(e), flush=True)
     except EndpointConnectionError as e:
         pass
 
@@ -110,26 +110,26 @@ def collect(arguments):
         iam.get_user(UserName='test')
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
-            print("ERROR: AWS doesn't allow you to make IAM calls without MFA, and the collect command gathers IAM data.  Please use MFA.")
+            print("ERROR: AWS doesn't allow you to make IAM calls without MFA, and the collect command gathers IAM data.  Please use MFA.", flush=True)
             exit(-1)
         if 'NoSuchEntity' in str(e):
             # Ignore, we're just testing that our creds work
             pass
         else:
-            print("ERROR: Ensure your creds are valid.")
-            print(e)
+            print("ERROR: Ensure your creds are valid.", flush=True)
+            print(e, flush=True)
             exit(-1)
     except NoCredentialsError:
-        print("ERROR: No AWS credentials configured.")
+        print("ERROR: No AWS credentials configured.", flush=True)
         exit(-1)
 
-    print("* Getting region names")
+    print("* Getting region names", flush=True)
     ec2 = session.client('ec2')
     region_list = ec2.describe_regions()
     with open("account-data/{}/describe-regions.json".format(account_dir), 'w+') as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))
 
-    print("* Creating directory for each region name")
+    print("* Creating directory for each region name", flush=True)
     for region in region_list['Regions']:
         make_directory('account-data/{}/{}'.format(account_dir, region.get('RegionName', 'Unknown')))
 
@@ -140,7 +140,7 @@ def collect(arguments):
         collect_commands = yaml.safe_load(f)
 
     for runner in collect_commands:
-        print('* Getting {}:{} info'.format(runner['Service'], runner['Request']))
+        print('* Getting {}:{} info'.format(runner['Service'], runner['Request']), flush=True)
 
         parameters = {}
         for region in region_list['Regions']:
