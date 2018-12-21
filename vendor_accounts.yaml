@@ -1,3 +1,17 @@
+# This file is appended to as I find out about more vendors that have publicly
+# referenced their AWS account IDs to create some sort of trust relationships.
+#
+# -- Parameterers
+# name: Vendor name.
+# source: URL that publicly mentions the account ID in association with this
+#     vendor.
+# type: Optional parameter, mostly used to reference `aws`
+# accounts: Array of 12-digit AWS account IDs
+#
+# Note the `name` is referenced in ./web/style.json which then references an
+# image file in ./web/icons/logos/ for these vendors to display in the 
+# web-of-trust view.
+
 - name: Cloudhealth
   source: 'https://github.com/mozilla/security/blob/master/operations/cloudformation-templates/cloudhealth_iam_role.json'
   accounts: ['454464851268']
