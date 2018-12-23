@@ -40,17 +40,24 @@ def make_directory(path):
         # Already exists
         pass
 
-def call_function(outputfile, handler, method_to_call, parameters):
-    """Calls the AWS API function and downloads the data"""
+def call_function(outputfile, handler, method_to_call, parameters, summary):
+    """
+    Calls the AWS API function and downloads the data
+
+    summary: Keeps tracks of failures
+    """
     # TODO: Decorate this with rate limiters from
     # https://github.com/Netflix-Skunkworks/cloudaux/blob/master/cloudaux/aws/decorators.py
 
     data = None
     if os.path.isfile(outputfile):
         # Data already collected, so skip
+        print("  Response already collected at {}".format(outputfile), flush=True)
         return
+    
+    call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters}
 
-    print("Making call for {}".format(outputfile))
+    print("  Making call for {}".format(outputfile), flush=True)
     try:
         if handler.can_paginate(method_to_call):
             paginator = handler.get_paginator(method_to_call)
@@ -60,21 +67,22 @@ def call_function(outputfile, handler, method_to_call, parameters):
                 if not data:
                     data = response
                 else:
-                    print("  ...paginating")
+                    print("  ...paginating", flush=True)
                     for k in data:
                         if isinstance(data[k], list):
                             data[k].extend(response[k])
 
         else:
             function = getattr(handler, method_to_call)
-            data = function(**parameters)
-
+        
     except ClientError as e:
+        call_summary['exception'] = e
         if "NoSuchBucketPolicy" in str(e):
             pass
         else:
-            print("ClientError: {}".format(e))
+            print("ClientError: {}".format(e), flush=True)
     except EndpointConnectionError as e:
+        call_summary['exception'] = e
         pass
 
     # Remove unused values
@@ -83,13 +91,18 @@ def call_function(outputfile, handler, method_to_call, parameters):
         data.pop('Marker', None)
         data.pop('IsTruncated', None)
 
-    with open(outputfile, 'w+') as f:
-        f.write(json.dumps(data, indent=4, sort_keys=True, default=custom_serializer))
+    if data is not None:
+        with open(outputfile, 'w+') as f:
+            f.write(json.dumps(data, indent=4, sort_keys=True, default=custom_serializer))
+    
+    summary.append(call_summary)
 
 
 def collect(arguments):
     logging.getLogger('botocore').setLevel(logging.WARN)
     account_dir = './{}'.format(arguments.account_name)
+
+    summary = []
 
     if arguments.clean and os.path.exists(account_dir):
         rmtree(account_dir)
@@ -104,43 +117,56 @@ def collect(arguments):
 
     session = boto3.Session(**session_data)
 
+
+    sts = session.client('sts')
+    try:
+        sts.get_caller_identity()
+    except ClientError as e:
+        if 'InvalidClientTokenId' in str(e):
+            print("ERROR: sts.get_caller_identity failed with InvalidClientTokenId. Likely cause is no AWS credentials are set.", flush=True)
+            exit(-1)
+        else:
+            print("ERROR: Unknown exception when trying to call sts.get_caller_identity: {}".format(e), flush=True)
+            exit(-1)
+
     # Ensure we can make iam calls
     iam = session.client('iam')
     try:
         iam.get_user(UserName='test')
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
-            print("ERROR: AWS doesn't allow you to make IAM calls without MFA, and the collect command gathers IAM data.  Please use MFA.")
+            print("ERROR: AWS doesn't allow you to make IAM calls without MFA, and the collect command gathers IAM data.  Please use MFA.", flush=True)
             exit(-1)
         if 'NoSuchEntity' in str(e):
             # Ignore, we're just testing that our creds work
             pass
         else:
-            print("ERROR: Ensure your creds are valid.")
-            print(e)
+            print("ERROR: Ensure your creds are valid.", flush=True)
+            print(e, flush=True)
             exit(-1)
     except NoCredentialsError:
-        print("ERROR: No AWS credentials configured.")
+        print("ERROR: No AWS credentials configured.", flush=True)
         exit(-1)
 
-    print("* Getting region names")
+    print("* Getting region names", flush=True)
     ec2 = session.client('ec2')
     region_list = ec2.describe_regions()
     with open("account-data/{}/describe-regions.json".format(account_dir), 'w+') as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))
 
-    print("* Creating directory for each region name")
+    print("* Creating directory for each region name", flush=True)
     for region in region_list['Regions']:
         make_directory('account-data/{}/{}'.format(account_dir, region.get('RegionName', 'Unknown')))
 
     # Services that will only be queried in us-east-1
+    # TODO: Identify these from boto
     universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3']
 
     with open("collect_commands.yaml", 'r') as f:
         collect_commands = yaml.safe_load(f)
 
     for runner in collect_commands:
-        print('* Getting {}:{} info'.format(runner['Service'], runner['Request']))
+        print('* Getting {}:{} info'.format(runner['Service'], runner['Request']), flush=True)
 
         parameters = {}
         for region in region_list['Regions']:
@@ -191,10 +217,23 @@ def collect(arguments):
                             filepath,
                             filename)
 
-                        call_function(outputfile, handler, method_to_call, parameters)
+                        call_function(outputfile, handler, method_to_call, parameters, summary)
             else:
                 filepath = filepath+".json"
-                call_function(filepath, handler, method_to_call, parameters)
+                call_function(filepath, handler, method_to_call, parameters, summary)
+
+    # Print summary
+    print("--------------------------------------------------------------------")
+    failures = []
+    for call_summary in summary:
+        if 'exception' in call_summary:
+            failures.append(call_summary)
+
+    print("Summary: {} APIs called. {} errors".format(len(summary), len(failures)))
+    if len(failures) > 0:
+        print("Failures:")
+        for call_summary in failures:
+            print("  {}.{}({}): {}".format(call_summary['service'], call_summary['action'], call_summary['parameters'], call_summary['exception']))
 
 
 def run(arguments):
