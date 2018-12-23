@@ -30,8 +30,8 @@ def audit_s3_buckets(region):
             policy = Policy(policy)
             if policy.is_internet_accessible():
                 print('- Internet accessible S3 bucket {}: {}'.format(bucket, policy_string))
-        except:
-            pass
+        except Exception as e:
+            print('- Exception checking policy of S3 bucket {}: {}; e'.format(bucket, policy_string, e))
 
         # Check ACL
         try:
@@ -41,8 +41,8 @@ def audit_s3_buckets(region):
                 if (uri == 'http://acs.amazonaws.com/groups/global/AllUsers' or
                     uri == 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'):
                     print('- Public grant to S3 bucket {}: {}'.format(bucket, grant))
-        except:
-            pass
+        except Exception as e:
+            print('- Exception checking ACL of S3 bucket {}: {}; {}'.format(bucket, grant, e))
 
 
 def audit_cloudtrail(region):
@@ -287,11 +287,6 @@ def audit_es(region):
 def audit_cloudfront(region):
     json_blob = query_aws(region.account, 'cloudfront-list-distributions', region)
 
-    # Ignore cert issues, as urlopen doesn't understand '*.s3.amazonaws.com'
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-
     for distribution in json_blob.get('DistributionList', {}).get('Items', []):
         if not distribution['Enabled']:
             continue
@@ -302,15 +297,6 @@ def audit_cloudfront(region):
             print('- CloudFront is using insecure minimum protocol version {} for {} in {}'.format(minimum_protocol_version, distribution['DomainName'], region.name))
         
         domain = distribution['DomainName']
-
-        # TODO: Not sure if this works.  I'm trying to see if I can access the cloudfront distro,
-        # or if I get a 403
-        # This is from https://github.com/MindPointGroup/cloudfrunt/blob/master/cloudfrunt.py
-        try:
-            urllib.request.urlopen('https://' + domain, context=ctx)
-        except urllib.error.HTTPError as e:
-            if e.code == 403 and 'Bad request' in str(e.fp.read()):
-                print('- CloudFront distribution {} is missing origin'.format(distribution['DomainName']))
 
 
 def audit_ec2(region):
