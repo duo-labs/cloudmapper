@@ -74,6 +74,7 @@ def call_function(outputfile, handler, method_to_call, parameters, summary):
 
         else:
             function = getattr(handler, method_to_call)
+            data = function(**parameters)
         
     except ClientError as e:
         call_summary['exception'] = e
