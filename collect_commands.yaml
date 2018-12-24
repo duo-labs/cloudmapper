@@ -6,6 +6,28 @@
 - Service: iam
   Request: get-account-authorization-details
 - Service: iam
+  # Generate the access reports for all roles, and collect them later
+  Request: generate-service-last-accessed-details
+  Parameters:
+    - Name: Arn
+      Value: iam-get-account-authorization-details.json|.RoleDetailList[]?|.Arn
+- Service: iam
+  # Generate the access reports for all roles, and collect them later
+  Request: generate-service-last-accessed-details
+  Parameters:
+    - Name: Arn
+      Value: iam-get-account-authorization-details.json|.UserDetailList[]?|.Arn
+- Service: iam
+  Request: get-role # Need to get IAM boundaries
+  Parameters:
+  - Name: RoleName
+    Value: iam-get-account-authorization-details.json|.RoleDetailList[]?|.RoleName
+- Service: iam
+  Request: get-user # Needed to get IAM boundaries
+  Parameters:
+  - Name: UserName
+    Value: iam-get-account-authorization-details.json|.UserDetailList[]?|.UserName
+- Service: iam
   Request: get-account-password-policy
 - Service: iam
   Request: get-account-summary
@@ -13,6 +35,14 @@
   Request: list-account-aliases
 - Service: iam
   Request: get-credential-report
+- Service: iam
+  Request: get-service-last-accessed-details
+  Parameters:
+    - Name: JobId
+      Value: iam-generate-service-last-accessed-details/*|.JobId
+  Check:
+    - Name: JobStatus
+      Value: "COMPLETED"
 - Service: iam
   Request: list-saml-providers
 - Service: iam
