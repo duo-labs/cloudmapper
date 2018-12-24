@@ -31,7 +31,7 @@ import pkgutil
 import importlib 
 import commands
 
-__version__ = "2.2.0"
+__version__ = "2.2.1"
 
 def show_help(commands):
     print("CloudMapper {}".format(__version__))
@@ -47,11 +47,12 @@ def main():
     # Load commands
     # TODO: This adds half a second to the start time. Is there a smarter way to do this?
     commands = {}
-    commands_path = 'commands'
-    for importer, command_name, _ in pkgutil.iter_modules([commands_path]):
-        full_package_name = '%s.%s' % (commands_path, command_name)
-        module = importlib.import_module(full_package_name)
-        commands[command_name] = module
+    commands_paths = ['commands', 'private_commands']
+    for commands_path in commands_paths:
+        for importer, command_name, _ in pkgutil.iter_modules([commands_path]):
+            full_package_name = '%s.%s' % (commands_path, command_name)
+            module = importlib.import_module(full_package_name)
+            commands[command_name] = module
 
     # Parse command
     if len(sys.argv) <= 1:

@@ -176,6 +176,7 @@ python cloudmapper.py collect --account my_account
 - `stats`: Show counts of resources for accounts. More details [here](https://summitroute.com/blog/2018/06/06/cloudmapper_stats/).
 - `wot`: Show Web Of Trust. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_wot/).
 
+If you want to add your own private commands, you can create a `private_commands` directory and add them there.
 
 Licenses
 --------
