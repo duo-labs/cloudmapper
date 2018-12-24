@@ -5,6 +5,17 @@
   Request: get-caller-identity
 - Service: iam
   Request: get-account-authorization-details
+# This is needed to get IAM boundaries because get-account-authorization-details does not
+- Service: iam
+  Request: get-role
+  Parameters:
+  - Name: RoleName
+    Value: iam-get-account-authorization-details.json|.RoleDetailList[]?|.RoleName
+- Service: iam
+  Request: get-user
+  Parameters:
+  - Name: UserName
+    Value: iam-get-account-authorization-details.json|.UserDetailList[]?|.UserName
 - Service: iam
   Request: get-account-password-policy
 - Service: iam

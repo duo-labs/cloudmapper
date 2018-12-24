@@ -203,6 +203,11 @@ def collect(arguments):
 
                 if not os.path.isfile(parameter_file):
                     # The file where parameters are obtained from does not exist
+                    # Need to manually add the failure to our list of calls made as this failure
+                    # occurs before the call is attempted.
+                    call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters, 'exception': 'Parameter file does not exist: {}'.format(parameter_file)}
+                    summary.append(call_summary)
+                    print("  The file where parameters are obtained from does not exist: {}".format(parameter_file), flush=True)
                     continue
 
                 with open(parameter_file, 'r') as f:
