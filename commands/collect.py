@@ -1,6 +1,7 @@
 
 import os.path
 import os
+import glob
 import argparse
 from shutil import rmtree
 import logging
@@ -202,28 +203,33 @@ def collect(arguments):
                 parameter_file = parameters[dynamic_parameter].split('|')[0]
                 parameter_file = "account-data/{}/{}/{}".format(account_dir, region['RegionName'], parameter_file)
 
-                if not os.path.isfile(parameter_file):
-                    # The file where parameters are obtained from does not exist
-                    # Need to manually add the failure to our list of calls made as this failure
-                    # occurs before the call is attempted.
-                    call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters, 'exception': 'Parameter file does not exist: {}'.format(parameter_file)}
-                    summary.append(call_summary)
-                    print("  The file where parameters are obtained from does not exist: {}".format(parameter_file), flush=True)
-                    continue
+                # Get array if a globbing pattern is used (ex. "*.json")
+                parameter_files = glob.glob(parameter_file)
 
-                with open(parameter_file, 'r') as f:
-                    parameter_values = json.load(f)
-                    pyjq_parse_string = '|'.join(parameters[dynamic_parameter].split('|')[1:])
-                    for parameter in pyjq.all(pyjq_parse_string, parameter_values):
-                        filename = get_filename_from_parameter(parameter)
-                        identifier = get_identifier_from_parameter(parameter)
-                        parameters[dynamic_parameter] = identifier
+                for parameter_file in parameter_files:
+                    if not os.path.isfile(parameter_file):
+                        # The file where parameters are obtained from does not exist
+                        # Need to manually add the failure to our list of calls made as this failure
+                        # occurs before the call is attempted.
+                        call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters, 'exception': 'Parameter file does not exist: {}'.format(parameter_file)}
+                        summary.append(call_summary)
+                        print("  The file where parameters are obtained from does not exist: {}".format(parameter_file), flush=True)
+                        continue
 
-                        outputfile = "{}/{}".format(
-                            filepath,
-                            filename)
+                    with open(parameter_file, 'r') as f:
+                        parameter_values = json.load(f)
+                        pyjq_parse_string = '|'.join(parameters[dynamic_parameter].split('|')[1:])
+                        for parameter in pyjq.all(pyjq_parse_string, parameter_values):
+                            filename = get_filename_from_parameter(parameter)
+                            identifier = get_identifier_from_parameter(parameter)
+                            call_parameters = dict(parameters)
+                            call_parameters[dynamic_parameter] = identifier
 
-                        call_function(outputfile, handler, method_to_call, parameters, summary)
+                            outputfile = "{}/{}".format(
+                                filepath,
+                                filename)
+
+                            call_function(outputfile, handler, method_to_call, call_parameters, summary)
             else:
                 filepath = filepath+".json"
                 call_function(filepath, handler, method_to_call, parameters, summary)
