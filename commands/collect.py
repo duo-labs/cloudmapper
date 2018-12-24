@@ -6,6 +6,7 @@ import argparse
 from shutil import rmtree
 import logging
 import json
+import time
 import boto3
 import yaml
 import pyjq
@@ -14,6 +15,8 @@ from botocore.exceptions import ClientError, EndpointConnectionError, NoCredenti
 from shared.common import get_account, custom_serializer
 
 __description__ = "Run AWS API calls to collect data from the account"
+
+MAX_RETRIES = 3
 
 def snakecase(s):
     return s.replace('-', '_')
@@ -41,10 +44,11 @@ def make_directory(path):
         # Already exists
         pass
 
-def call_function(outputfile, handler, method_to_call, parameters, summary):
+def call_function(outputfile, handler, method_to_call, parameters, check, summary):
     """
     Calls the AWS API function and downloads the data
 
+    check: Value to check and repeat the call if it fails
     summary: Keeps tracks of failures
     """
     # TODO: Decorate this with rate limiters from
@@ -58,24 +62,37 @@ def call_function(outputfile, handler, method_to_call, parameters, summary):
     
     call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters}
 
+    if check is not None:
+        check = check.pop()
+
     print("  Making call for {}".format(outputfile), flush=True)
     try:
-        if handler.can_paginate(method_to_call):
-            paginator = handler.get_paginator(method_to_call)
-            page_iterator = paginator.paginate(**parameters)
+        for retries in range(MAX_RETRIES):
+            if handler.can_paginate(method_to_call):
+                paginator = handler.get_paginator(method_to_call)
+                page_iterator = paginator.paginate(**parameters)
 
-            for response in page_iterator:
-                if not data:
-                    data = response
-                else:
-                    print("  ...paginating", flush=True)
-                    for k in data:
-                        if isinstance(data[k], list):
-                            data[k].extend(response[k])
+                for response in page_iterator:
+                    if not data:
+                        data = response
+                    else:
+                        print("  ...paginating", flush=True)
+                        for k in data:
+                            if isinstance(data[k], list):
+                                data[k].extend(response[k])
 
-        else:
-            function = getattr(handler, method_to_call)
-            data = function(**parameters)
+            else:
+                function = getattr(handler, method_to_call)
+                data = function(**parameters)
+
+            if check is not None:
+                if data[check['Name']] == check['Value']:
+                    continue
+                if retries == MAX_RETRIES - 1:
+                    raise Exception("Check value {} never set as {} in response".format(check['Name'], check['Value']))
+                print("  Sleeping and retrying")
+                time.sleep(3)
+
         
     except ClientError as e:
         call_summary['exception'] = e
@@ -84,6 +101,9 @@ def call_function(outputfile, handler, method_to_call, parameters, summary):
         else:
             print("ClientError: {}".format(e), flush=True)
     except EndpointConnectionError as e:
+        call_summary['exception'] = e
+        pass
+    except Exception as e:
         call_summary['exception'] = e
         pass
 
@@ -229,10 +249,22 @@ def collect(arguments):
                                 filepath,
                                 filename)
 
-                            call_function(outputfile, handler, method_to_call, call_parameters, summary)
+                            call_function(
+                                outputfile,
+                                handler,
+                                method_to_call,
+                                call_parameters,
+                                runner.get('Check', None),
+                                summary)
             else:
                 filepath = filepath+".json"
-                call_function(filepath, handler, method_to_call, parameters, summary)
+                call_function(
+                    filepath,
+                    handler,
+                    method_to_call,
+                    parameters,
+                    runner.get('Check', None),
+                    summary)
 
     # Print summary
     print("--------------------------------------------------------------------")
