@@ -93,15 +93,18 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
 
         
     except ClientError as e:
-        call_summary['exception'] = e
         if "NoSuchBucketPolicy" in str(e):
+            # This error occurs when you try to get the bucket policy for a bucket that has no bucket policy, so this can be ignored.
             pass
         else:
             print("ClientError: {}".format(e), flush=True)
+            call_summary['exception'] = e
     except EndpointConnectionError as e:
+        print("EndpointConnectionError: {}".format(e), flush=True)
         call_summary['exception'] = e
         pass
     except Exception as e:
+        print("Exception: {}".format(e), flush=True)
         call_summary['exception'] = e
         pass
 
@@ -180,7 +183,7 @@ def collect(arguments):
 
     # Services that will only be queried in us-east-1
     # TODO: Identify these from boto
-    universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3']
+    universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 'cloudfront']
 
     with open("collect_commands.yaml", 'r') as f:
         collect_commands = yaml.safe_load(f)
@@ -192,7 +195,11 @@ def collect(arguments):
         for region in region_list['Regions']:
             dynamic_parameter = None
             # Only call universal services in us-east-1
-            if runner['Service'] in universal_services and region['RegionName'] != 'us-east-1':
+            if runner['Service'] in universal_services:
+                if region['RegionName'] != 'us-east-1':
+                    continue
+            elif region['RegionName'] not in session.get_available_regions(runner['Service']):
+                print('  Skipping region {}, as {} does not exist there'.format(region['RegionName'], runner['Service']))
                 continue
             handler = session.client(runner['Service'], region_name=region['RegionName'])
 
