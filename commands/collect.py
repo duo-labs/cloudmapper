@@ -62,9 +62,6 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
     
     call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters}
 
-    if check is not None:
-        check = check.pop()
-
     print("  Making call for {}".format(outputfile), flush=True)
     try:
         for retries in range(MAX_RETRIES):
@@ -80,18 +77,19 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
                         for k in data:
                             if isinstance(data[k], list):
                                 data[k].extend(response[k])
-
             else:
                 function = getattr(handler, method_to_call)
                 data = function(**parameters)
 
             if check is not None:
-                if data[check['Name']] == check['Value']:
+                if data[check[0]['Name']] == check[0]['Value']:
                     continue
                 if retries == MAX_RETRIES - 1:
                     raise Exception("Check value {} never set as {} in response".format(check['Name'], check['Value']))
                 print("  Sleeping and retrying")
                 time.sleep(3)
+            else:
+                break
 
         
     except ClientError as e:
