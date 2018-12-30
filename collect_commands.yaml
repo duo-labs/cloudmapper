@@ -90,6 +90,11 @@
   Request: describe-addresses
 - Service: cloudtrail
   Request: describe-trails
+- Service: cloudtrail
+  Request: get-event-selectors
+  Parameters:
+  - Name: TrailName
+    Value: cloudtrail-describe-trails.json|.trailList[].TrailARN
 - Service: rds
   Request: describe-db-instances
 - Service: rds
