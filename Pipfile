@@ -14,7 +14,7 @@ numpy = "==1.15.1"
 matplotlib = "==2.2.2"
 "geoip2" = "==2.8.0"
 policyuniverse = "==1.1.0.1"
-PyYAML = "==3.13"
+PyYAML = "==4.2b4"
 
 [dev-packages]
 autoflake = "==0.7"
