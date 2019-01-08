@@ -96,6 +96,9 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
         if "NoSuchBucketPolicy" in str(e):
             # This error occurs when you try to get the bucket policy for a bucket that has no bucket policy, so this can be ignored.
             pass
+        elif "NoSuchPublicAccessBlockConfiguration" in str(e):
+            # This error occurs when you try to get the account Public Access Block policy for an account that has none, so this can be ignored.
+            pass
         else:
             print("ClientError: {}".format(e), flush=True)
             call_summary['exception'] = e
@@ -158,7 +161,7 @@ def collect(arguments):
         iam.get_user(UserName='test')
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
-            print("ERROR: AWS doesn't allow you to make IAM calls without MFA, and the collect command gathers IAM data.  Please use MFA.", flush=True)
+            print("ERROR: AWS doesn't allow you to make IAM calls from a session without MFA, and the collect command gathers IAM data.  Please use MFA or don't use a session. With aws-vault, specify `--no-session` on your `exec`.", flush=True)
             exit(-1)
         if 'NoSuchEntity' in str(e):
             # Ignore, we're just testing that our creds work
@@ -183,7 +186,7 @@ def collect(arguments):
 
     # Services that will only be queried in us-east-1
     # TODO: Identify these from boto
-    universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 'cloudfront']
+    universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 's3control', 'cloudfront']
 
     with open("collect_commands.yaml", 'r') as f:
         collect_commands = yaml.safe_load(f)

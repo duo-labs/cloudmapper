@@ -57,6 +57,11 @@
   Parameters:
   - Name: OpenIDConnectProviderArn
     Value: iam-list-open-id-connect-providers.json|.OpenIDConnectProviderList[]?|.Arn
+- Service: s3control
+  Request: get-public-access-block
+  Parameters:
+  - Name: AccountId
+    Value: sts-get-caller-identity.json|.Account
 - Service: s3
   Request: list-buckets
 - Service: s3
@@ -301,3 +306,10 @@
   Parameters:
   - Name: restApiId
     Value: apigateway-get-rest-apis.json|.items[]?|.id
+- Service: guardduty
+  Request: list-detectors
+- Service: guardduty
+  Request: get-detector
+  Parameters:
+  - Name: DetectorId
+    Value: guardduty-list-detectors.json|.DetectorIds[]?|.
