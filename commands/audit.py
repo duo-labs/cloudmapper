@@ -23,15 +23,19 @@ def audit_s3_buckets(region):
         # Check policy
         try:
             policy_file_json = get_parameter_file(region, 's3', 'get-bucket-policy', bucket)
-            # Find the entity we need
-            policy_string = policy_file_json['Policy']
-            # Load the string value as json
-            policy = json.loads(policy_string)
-            policy = Policy(policy)
-            if policy.is_internet_accessible():
-                print('- Internet accessible S3 bucket {}: {}'.format(bucket, policy_string))
+            if policy_file_json is not None:
+                # Find the entity we need
+                policy_string = policy_file_json['Policy']
+                # Load the string value as json
+                policy = json.loads(policy_string)
+                policy = Policy(policy)
+                if policy.is_internet_accessible():
+                    if len(policy.statements) == 1 and len(policy.statements[0].actions) == 1 and 's3:GetObject' in policy.statements[0].actions:
+                        print('- Internet accessible S3 bucket via policy (only GetObject) {}'.format(bucket))
+                    else:
+                        print('- Internet accessible S3 bucket via policy {}: {}'.format(bucket, policy_string))
         except Exception as e:
-            print('- Exception checking policy of S3 bucket {}: {}; e'.format(bucket, policy_string, e))
+            print('- Exception checking policy of S3 bucket {}: {}; {}'.format(bucket, policy_string, e))
 
         # Check ACL
         try:
@@ -40,7 +44,7 @@ def audit_s3_buckets(region):
                 uri = grant['Grantee'].get('URI', "")
                 if (uri == 'http://acs.amazonaws.com/groups/global/AllUsers' or
                     uri == 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'):
-                    print('- Public grant to S3 bucket {}: {}'.format(bucket, grant))
+                    print('- Public grant to S3 bucket via ACL {}: {}'.format(bucket, grant))
         except Exception as e:
             print('- Exception checking ACL of S3 bucket {}: {}; {}'.format(bucket, grant, e))
 
@@ -200,6 +204,9 @@ def audit_ebs_snapshots(region):
     for snapshot in json_blob['Snapshots']:
         try:
             file_json = get_parameter_file(region, 'ec2', 'describe-snapshot-attribute', snapshot['SnapshotId'])
+            if file_json == None:
+                print('- EBS snapshot in {} has no attributes: {}'.format(region.name, snapshot))
+                continue
             for attribute in file_json['CreateVolumePermissions']:
                 if attribute.get('Group', 'self') != 'self':
                     print('- EBS snapshot in {} is public: {}, entities allowed to restore: {}'.format(region.name, snapshot, attribute['Group']))
