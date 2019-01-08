@@ -49,6 +49,38 @@ def audit_s3_buckets(region):
             print('- Exception checking ACL of S3 bucket {}: {}; {}'.format(bucket, grant, e))
 
 
+def audit_s3_block_policy(region):
+    caller_identity_json = query_aws(region.account, "sts-get-caller-identity", region)
+    block_policy_json = get_parameter_file(region, 's3control', 'get-public-access-block', caller_identity_json['Account'])
+    if block_policy_json is None:
+        print('- S3 Control Access Block is not on')
+    else:
+        conf = block_policy_json['PublicAccessBlockConfiguration']
+        if not conf['BlockPublicAcls'] or not conf['BlockPublicPolicy'] or not conf['IgnorePublicAcls'] or not conf['RestrictPublicBuckets']:
+            print('- S3 Control Access Block is not blocking all access: {}'.format(block_policy_json))
+
+
+def audit_guardduty(region):
+    regions_without = []
+    possible_regions = 0
+    for region_json in get_regions(region.account):
+        region = Region(region.account, region_json)
+        detector_list_json = query_aws(region.account, "guardduty-list-detectors", region)
+        if not detector_list_json:
+            # GuardDuty must not exist in this region (or the collect data is old)
+            continue
+        possible_regions += 1
+        is_enabled = False
+        for detector in detector_list_json['DetectorIds']:
+            detector_json = get_parameter_file(region, 'guardduty', 'get-detector', detector)
+            if detector_json['Status'] == 'ENABLED':
+                is_enabled = True
+        if not is_enabled:
+            regions_without.append(region.name)
+    if len(regions_without) != 0:
+        print('- GuardDuty not turned on for {}/{} regions: {}'.format(len(regions_without), possible_regions, regions_without))
+
+
 def audit_cloudtrail(region):
     json_blob = query_aws(region.account, "cloudtrail-describe-trails", region)
     if len(json_blob['trailList']) == 0:
@@ -529,6 +561,8 @@ def audit(accounts, config):
                     audit_users(region)
                     audit_route53(region)
                     audit_cloudfront(region)
+                    audit_s3_block_policy(region)
+                    audit_guardduty(region)
                 audit_ebs_snapshots(region)
                 audit_rds_snapshots(region)
                 audit_rds(region)
