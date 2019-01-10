@@ -136,7 +136,9 @@ def collect(arguments):
     make_directory("account-data")
     make_directory("account-data/{}".format(account_dir))
 
-    session_data = {'region_name': 'us-east-1'}
+    default_region = os.environ.get('AWS_REGION', 'us-east-1')
+
+    session_data = {'region_name': default_region}
 
     if arguments.profile_name:
         session_data['profile_name'] = arguments.profile_name
@@ -184,7 +186,7 @@ def collect(arguments):
     for region in region_list['Regions']:
         make_directory('account-data/{}/{}'.format(account_dir, region.get('RegionName', 'Unknown')))
 
-    # Services that will only be queried in us-east-1
+    # Services that will only be queried in the default_
     # TODO: Identify these from boto
     universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 's3control', 'cloudfront']
 
@@ -197,9 +199,9 @@ def collect(arguments):
         parameters = {}
         for region in region_list['Regions']:
             dynamic_parameter = None
-            # Only call universal services in us-east-1
+            # Only call universal services in default region
             if runner['Service'] in universal_services:
-                if region['RegionName'] != 'us-east-1':
+                if region['RegionName'] != default_region:
                     continue
             elif region['RegionName'] not in session.get_available_regions(runner['Service']):
                 print('  Skipping region {}, as {} does not exist there'.format(region['RegionName'], runner['Service']))
