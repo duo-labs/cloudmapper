@@ -1,0 +1,52 @@
+- name: S3 buckets
+  query: .Buckets|length
+  source: s3-list-buckets
+- name: EC2 instances
+  query: .Reservations[].Instances|length
+  source: ec2-describe-instances
+- name: ELBs
+  query: .LoadBalancerDescriptions|length
+  source: elb-describe-load-balancers
+- name: ELBv2s
+  query: .LoadBalancers|length
+  source: elbv2-describe-load-balancers
+- name: RDS instances
+  query: .DBInstances|length
+  source: rds-describe-db-instances
+- name: Redshift clusters
+  query: .Clusters|length
+  source: redshift-describe-clusters
+- name: ElasticSearch domains
+  query: .DomainNames|length
+  source: es-list-domain-names
+- name: Elasticache clusters
+  query: .CacheClusters|length
+  source: elasticache-describe-cache-clusters
+- name: SNS topics
+  query: .Topics|length
+  source: sns-list-topics
+- name: SQS queues
+  query: .QueueUrls|length
+  source: sqs-list-queues
+- name: CloudFronts
+  query: .DistributionList.Items|length
+  source: cloudfront-list-distributions
+  region: us-east-1
+- name: Autoscaling groups
+  query: .AutoScalingGroups|length
+  source: autoscaling-describe-auto-scaling-groups
+- name: ElasticBeanstalks
+  query: .Applications|length
+  source: elasticbeanstalk-describe-applications
+- name: Firehose streams
+  query: .DeliveryStreamNames|length
+  source: firehose-list-delivery-streams
+- name: Glacier vaults
+  query: .VaultList|length
+  source: glacier-list-vaults
+- name: KMS keys
+  query: .Keys|length
+  source: kms-list-keys
+- name: Lambda functions
+  query: .Functions|length
+  source: lambda-list-functions
