@@ -12,7 +12,7 @@ def public(accounts, config):
     for account in accounts:
         public_nodes, warnings = get_public_nodes(account, config)
         for public_node in public_nodes:
-            print(public_node)
+            print(json.dumps(public_node, indent=4, sort_keys=True))
         for warning in warnings:
             print('WARNING: {}'.format(warning), file=sys.stderr)
 
