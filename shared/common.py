@@ -4,9 +4,13 @@ import json
 import os
 import datetime
 import pyjq
+from collections import OrderedDict
+import yaml
 import sys
 import urllib.parse
 from netaddr import IPNetwork
+
+from shared.nodes import Account, Region
 
 class Severity:
     DEBUG = 0
@@ -177,3 +181,34 @@ def parse_arguments(arguments, parser=None):
         accounts.append(get_account(account_name, config, args.config))
 
     return (args, accounts, config)
+
+
+def get_account_stats(account):
+    """Returns stats for an account"""
+
+    with open("stats_config.yaml", 'r') as f:
+        resources = yaml.safe_load(f)
+
+    account = Account(None, account)
+    log_debug('Collecting stats in account {} ({})'.format(account.name, account.local_id))
+
+    stats = {}
+    stats['keys'] = []
+    for resource in resources:
+        stats['keys'].append(resource['name'])
+        stats[resource['name']] = {}
+
+
+    for region_json in get_regions(account):
+        region = Region(account, region_json)
+
+        for resource in resources:
+            # Skip global services (just CloudFront)
+            if ('region' in resource) and (resource['region'] != region.name):
+                continue
+
+            # Normal path
+            stats[resource['name']][region.name] = sum(pyjq.all(resource['query'], 
+                query_aws(region.account, resource['source'], region)))
+
+    return stats

@@ -201,8 +201,12 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                 access_type = 'iam'
                 # TODO: Identify all admins better.  Use code from find_admins.py
                 for m in role['AttachedManagedPolicies']:
-                    if m['PolicyArn'] == 'arn:aws:iam::aws:policy/AdministratorAccess':
-                        access_type = 'admin'
+                    for p in pyjq.all('.Policies[]', iam):
+                        if p['Arn'] == m['PolicyArn']:
+                            for policy_doc in p['PolicyVersionList']:
+                                if policy_doc['IsDefaultVersion'] == True:
+                                    if is_admin_policy(policy_doc['Document']):
+                                        access_type = 'admin'
                 for policy in role['RolePolicyList']:
                     policy_doc = policy['PolicyDocument']
                     if is_admin_policy(policy_doc):
