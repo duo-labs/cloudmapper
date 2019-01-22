@@ -35,7 +35,7 @@ On Linux:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # (AWS Linux, Centos, Fedora, RedHat etc.):
-# sudo yum install autoconf automake libtool python3-devel.x86_64 python3-tkinter jq awscli
+# sudo yum install autoconf automake libtool python3-devel.x86_64 python3-tkinter python-pip jq awscli
 # (Debian, Ubuntu etc.):
 # You may additionally need "build-essential"
 sudo apt-get install autoconf automake libtool python3.7-dev python3-tk jq awscli
