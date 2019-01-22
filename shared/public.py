@@ -70,10 +70,17 @@ def port_ranges_string(port_ranges):
     return ','.join(map(port_range_string, port_ranges))
 
 
-def get_public_nodes(account, config):
+def get_public_nodes(account, config, use_cache=False):
     # TODO Look for IPv6 also
     # TODO Look at more services from https://github.com/arkadiyt/aws_public_ips
     # TODO Integrate into something to more easily port scan and screenshot web services
+
+    # Try reading from cache
+    cache_file_path = 'account-data/{}/public_nodes.json'.format(account['name'])
+    if use_cache:
+        if os.path.isfile(cache_file_path):
+            with open(cache_file_path) as f:
+                return json.load(f), []
 
     # Get the data from the `prepare` command
     outputfilter = {'internal_edges': False, 'read_replicas': False, 'inter_rds_edges': False, 'azs': False, 'collapse_by_tag': None, 'collapse_asgs': True, 'mute': True}
@@ -136,7 +143,22 @@ def get_public_nodes(account, config):
             if target['ports'] == "":
                 issue_msg = 'No ports open for tcp or udp (probably can only be pinged). Rules that are not tcp or udp: {} -- {}'
                 warnings.append(issue_msg.format(json.dumps(pyjq.all('.[]|select((.IpProtocol!="tcp") and (.IpProtocol!="udp"))'.format(selection), ingress)), account))
-            public_nodes.append(json.dumps(target, indent=4, sort_keys=True))
+            public_nodes.append(target)
+    
+    # For the network diagram, if an ELB has availability across 3 subnets, I put one node in each subnet.
+    # We don't care about that when we want to know what is public and it makes it confusing when you
+    # see 3 resources with the same hostname, when you view your environment as only having one ELB.
+    # This same issue exists for RDS.
+    # Reduce these to single nodes.
+
+    reduced_nodes = {}
+
+    for node in public_nodes:
+        reduced_nodes[node['hostname']] = node
+    
+    public_nodes = []
+    for _, node in reduced_nodes.items():
+        public_nodes.append(node)
         
     account = Account(None, account)
     for region_json in get_regions(account):
@@ -154,7 +176,7 @@ def get_public_nodes(account, config):
                 target['hostname'] = distribution['DomainName']
                 target['ports'] = '80,443'
 
-                public_nodes.append(json.dumps(target, indent=4, sort_keys=True))
+                public_nodes.append(target)
         
         # Look for API Gateway
         json_blob = query_aws(region.account, 'apigateway-get-rest-apis', region)
@@ -165,6 +187,10 @@ def get_public_nodes(account, config):
                 target['hostname'] = '{}.execute-api.{}.amazonaws.com'.format(api['id'], region.name)
                 target['ports'] = '80,443'
 
-                public_nodes.append(json.dumps(target, indent=4, sort_keys=True))
+                public_nodes.append(target)
+    
+    # Write cache file
+    with open(cache_file_path,'w') as f:
+        f.write(json.dumps(public_nodes, indent=4, sort_keys=True))
     
     return public_nodes, warnings

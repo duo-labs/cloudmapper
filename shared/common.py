@@ -12,6 +12,7 @@ from netaddr import IPNetwork
 
 from shared.nodes import Account, Region
 
+
 class Severity:
     DEBUG = 0
     INFO = 1
@@ -212,3 +213,56 @@ def get_account_stats(account):
                 query_aws(region.account, resource['source'], region)))
 
     return stats
+
+
+def get_us_east_1(account):
+    for region_json in get_regions(account):
+        region = Region(account, region_json)
+        if region.name == 'us-east-1':
+            return region
+    
+    raise Exception('us-east-1 not found')
+
+
+def get_collection_date(account):
+    account_struct = Account(None, account)
+    json_blob = query_aws(account_struct, "iam-get-credential-report", get_us_east_1(account_struct))
+    # GeneratedTime looks like "2019-01-30T15:43:24+00:00"
+    return json_blob['GeneratedTime'][:10]
+
+
+def get_access_advisor_active_counts(account, max_age=90):
+    region = get_us_east_1(account)
+    
+    json_account_auth_details = query_aws(region.account, "iam-get-account-authorization-details", region)
+    
+    account_stats = {'users': {'active': 0, 'inactive': 0}, 'roles': {'active': 0, 'inactive': 0}}
+    for principal_auth in [*json_account_auth_details['UserDetailList'], *json_account_auth_details['RoleDetailList']]:
+        stats = {}
+        stats['auth'] = principal_auth
+
+        principal_type = 'roles'
+        if 'UserName' in principal_auth:
+            principal_type = 'users'
+        
+        job_id = get_parameter_file(region, 'iam', 'generate-service-last-accessed-details', principal_auth['Arn'])['JobId']
+        json_last_access_details = get_parameter_file(region, 'iam', 'get-service-last-accessed-details', job_id)
+        stats['last_access'] = json_last_access_details
+
+        stats['is_inactive'] = True
+
+        job_completion_date = datetime.datetime.strptime(json_last_access_details['JobCompletionDate'][0:10], '%Y-%m-%d')
+
+        for service in json_last_access_details['ServicesLastAccessed']:
+            if 'LastAuthenticated' in service:
+                last_access_date = datetime.datetime.strptime(service['LastAuthenticated'][0:10], '%Y-%m-%d')
+                if (job_completion_date - last_access_date).days < max_age:
+                    stats['is_inactive'] = False
+                    break
+        
+        if stats['is_inactive']:
+            account_stats[principal_type]['inactive'] += 1
+        else:
+            account_stats[principal_type]['active'] += 1
+        
+    return account_stats
