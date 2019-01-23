@@ -301,12 +301,13 @@ def build_data_structure(account_data, config, outputfilter):
     # Find connections between nodes
     # Only looking at Security Groups currently, which are a VPC level construct
     connections = {}
-    for region in account.children:
-        for vpc in region.children:
-            for c, reasons in get_connections(cidrs, vpc, outputfilter).items():
-                r = connections.get(c, [])
-                r.extend(reasons)
-                connections[c] = r
+    if not outputfilter["no_external_edges"]:
+        for region in account.children:
+            for vpc in region.children:
+                for c, reasons in get_connections(cidrs, vpc, outputfilter).items():
+                    r = connections.get(c, [])
+                    r.extend(reasons)
+                    connections[c] = r
 
     # Add external cidr nodes
     used_cidrs = 0
@@ -363,6 +364,8 @@ def run(arguments):
                         dest='internal_edges', action='store_true')
     parser.add_argument("--no-internal-edges", help="Only show connections to external CIDRs",
                         dest='internal_edges', action='store_false')
+    parser.add_argument("--no-external-edges", help="Hide external connections",
+                        dest='no_external_edges', action='store_true')
     parser.add_argument("--inter-rds-edges", help="Show connections between RDS instances",
                         dest='inter_rds_edges', action='store_true')
     parser.add_argument("--no-inter-rds-edges", help="Do not show connections between RDS instances (default)",
@@ -387,6 +390,7 @@ def run(arguments):
     parser.set_defaults(read_replicas=True)
     parser.set_defaults(azs=True)
     parser.set_defaults(collapse_asgs=True)
+    parser.set_defaults(no_external_edges=False)
 
     args = parser.parse_args(arguments)
 
@@ -401,6 +405,7 @@ def run(arguments):
         outputfilter["vpc-names"] = ','.join(['"' + r + '"' for r in args.vpc_names.split(',')])
 
     outputfilter["internal_edges"] = args.internal_edges
+    outputfilter["no_external_edges"] = args.no_external_edges
     outputfilter["read_replicas"] = args.read_replicas
     outputfilter["inter_rds_edges"] = args.inter_rds_edges
     outputfilter["azs"] = args.azs
