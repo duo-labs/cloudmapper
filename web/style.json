@@ -201,6 +201,15 @@
             }
     },
     {
+            "selector": "[type = \"rscluster\"]",
+            "css": {
+            "background-opacity": 0,
+            "background-image": "./icons/aws/Database/Database_AmazonRedshift_densecomputenode.svg",
+            "background-fit": "contain",
+            "background-clip": "none"
+            }
+    },
+    {
         "selector": "[type = \"rds_rr\"]",
         "css": {
         "background-opacity": 0,

@@ -363,6 +363,23 @@ class Rds(Leaf):
         self._name = truncate(json_blob["DBInstanceIdentifier"])
         super(Rds, self).__init__(parent, json_blob)
 
+class Rscluster(Leaf):
+    @property
+    def ips(self):
+        #redshift clusters don't have IPs
+        return[]
+
+    @property
+    def is_public(self):
+       return pyjq.all('.PubliclyAccessible', self._json_blob)[0] 
+    
+    def __init__(self, parent, json_blob):
+        self._type = "rscluster"
+
+        self._local_id = json_blob["ClusterIdentifier"]
+        self._name = json_blob["ClusterIdentifier"]
+        self._arn = "arn:aws:ec2:{}:{}:cluster/{}".format(parent.region.name, parent.account.local_id, self._local_id)
+        super(Rscluster, self).__init__(parent, json_blob) 
 
 class Cidr(Leaf):
     def ips(self):

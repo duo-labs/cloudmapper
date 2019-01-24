@@ -29,7 +29,7 @@ import argparse
 import pyjq
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, query_aws, get_regions, is_external_cidr
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection, Rscluster
 
 __description__ = "Generate network connection information file"
 
@@ -94,11 +94,13 @@ def get_rds_instances(subnet):
     resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets != null and .DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
+def get_redshift_clusters(az):
+    clusters = query_aws(az.account, "redshift-describe-clusters", az.region)
+    return pyjq.all('.Clusters[] | select(.VpcId == "{}") | select(.AvailabilityZone == "{}")'.format(az.vpc.local_id, az.local_id), clusters)
 
 def get_sgs(vpc):
     sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
     return pyjq.all('.SecurityGroups[] | select(.VpcId == "{}")'.format(vpc.local_id), sgs)
-
 
 def get_external_cidrs(account, config):
     external_cidrs = []
@@ -224,6 +226,12 @@ def build_data_structure(account_data, config, outputfilter):
                 # so I make VPC a higher level construct
                 az = Az(vpc, az_json)
 
+                # This next block looks for redshift clusters and adds them as children of the az (and vpc) to which they belong
+                # It goes here because redshift clusters don't exist in a subnet
+                for rscluster_json in get_redshift_clusters(az):
+                    rscluster = Rscluster(az, rscluster_json)
+                    az.addChild(rscluster)
+
                 for subnet_json in get_subnets(az):
                     # If we ignore AZz, then tie the subnets up the VPC as the parent
                     if outputfilter["azs"]:
@@ -262,6 +270,8 @@ def build_data_structure(account_data, config, outputfilter):
 
                 if az.has_leaves:
                     if outputfilter["azs"]:
+                        for leaf in az.leaves:
+                            cytoscape_json.append(leaf.cytoscape_data())
                         cytoscape_json.append(az.cytoscape_data())
                     vpc.addChild(az)
 
