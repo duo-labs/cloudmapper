@@ -6,8 +6,9 @@ matrix:
     sudo: true
   - os: osx
     language: generic
+    env: PATH=/usr/local/opt/python/libexec/bin:$PATH
     before_install:
-      - pip3 install virtualenv && virtualenv osx && source osx/bin/activate
+      - pip install virtualenv && virtualenv osx && source osx/bin/activate
 addons:
   homebrew:
     update: true
