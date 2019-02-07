@@ -24,7 +24,7 @@ On macOS:
 # clone the repo
 git clone git@github.com:duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool jq awscli python3 pipenv
+brew bundle
 cd cloudmapper/
 pipenv install --skip-lock
 pipenv shell

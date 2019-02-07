@@ -1,0 +1,7 @@
+brew 'autoconf'
+brew 'automake'
+brew 'libtool'
+brew 'jq'
+brew 'awscli'
+brew 'python3'
+brew 'pipenv'

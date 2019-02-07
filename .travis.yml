@@ -4,6 +4,14 @@ matrix:
   - python: 3.7
     dist: xenial
     sudo: true
+  - os: osx
+    language: generic
+    before_install:
+      - pip3 install virtualenv && virtualenv osx && source osx/bin/activate
+addons:
+  homebrew:
+    update: true
+    brewfile: true
 env:
   global:
     - PIPENV_VENV_IN_PROJECT=1
