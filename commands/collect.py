@@ -130,8 +130,8 @@ def collect(arguments):
 
     summary = []
 
-    if arguments.clean and os.path.exists(account_dir):
-        rmtree(account_dir)
+    if arguments.clean and os.path.exists("account-data/{}".format(account_dir)):
+        rmtree("account-data/{}".format(account_dir))
 
     make_directory("account-data")
     make_directory("account-data/{}".format(account_dir))
