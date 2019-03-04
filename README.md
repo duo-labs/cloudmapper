@@ -5,6 +5,7 @@ CloudMapper
 CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality, including auditing for security issues.
 
 *Network mapping demo: https://duo-labs.github.io/cloudmapper/*
+
 *Report demo: https://duo-labs.github.io/cloudmapper/account-data/report.html*
 
 *Intro post: https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool*
