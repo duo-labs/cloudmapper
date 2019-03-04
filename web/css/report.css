@@ -1,0 +1,540 @@
+body,
+html {
+    width: 100%;
+    height: 100%;
+    color: #444;
+}
+
+body, blockquote,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 400;
+}
+
+/* Needed for footer */
+html, body { height: 100%; }
+.stretchforfooter {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -120px; /* the bottom margin is the negative value of the footer's height */
+}
+
+footer, .pushfooter {
+    height: 120px; /* .pushfooter must be the same height as .footer */
+}
+
+
+.jumbotron h1 {
+    font-weight: 100;
+    font-size: 50px;
+}
+
+.jumbotron h2 {
+    font-weight: 100;
+    font-size: 40px;
+}
+
+
+
+
+
+.intro-header {
+    padding-top: 70px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 50px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.navbar {
+    width: 100%;
+    border-color: #e7e7e7;
+    border-radius: 0px;
+    border: 1px solid transparent;
+    background-color: #ffffff;
+}
+
+.logodisplay {
+    height: 86px;
+    width: 400px;
+}
+
+.navbar-brand {
+  float: left;
+  /*background: url('/img/logo.png') no-repeat left center;*/
+  background-size: 100% 100%;
+  -webkit-background-size: 100% 100%;
+  -moz-background-size:100% 100%;
+  -o-background-size:100% 100%;
+  height: 43px;
+  width: 200px;
+  padding: 0px;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.navbar-fixed-topa {
+  position: fixed;
+  z-index: 1030;
+  -webkit-transform: translate3d(0, 0, 0);
+       -o-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+}
+
+.navbar-default .navbar-nav > li > a {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-top: 5px;
+    margin-top: 10px;
+}
+
+
+/* Overline From Center */
+.hvr-overline-from-center {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow: hidden;
+}
+.hvr-overline-from-center:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  right: 50%;
+  top: 0;
+  background: #2b82ff;
+  height: 4px;
+  -webkit-transition-property: left, right;
+  transition-property: left, right;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+.hvr-overline-from-center:hover:before, .hvr-overline-from-center:focus:before, .hvr-overline-from-center:active:before {
+  left: 0;
+  right: 0;
+}
+
+
+
+.gap {
+  height: 40px;
+}
+
+.jumbotron {
+  padding: 0px;
+  margin: 0px;
+}
+
+.jumbotron h1, .jumbotron h2 {
+    margin: 0px;
+}
+
+.invert {
+    background-color: #365787;
+    margin-bottom: 30px;
+    color: #ffffff;
+    padding: 50px;
+    font-weight: 300;
+}
+
+.feature {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    /* background-color: #f3f8ff; */
+}
+
+.feature h4 {
+    padding-top: 0px;
+    color: #365787; /* #2b80ff; */
+}
+
+hr.gradient {
+  border: 0;
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+  background-image: -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+  background-image: -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+  background-image: -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+  margin: 0;
+}
+
+
+@media(max-width:767px) {
+    .intro-message {
+        padding-bottom: 15%;
+    }
+
+    .intro-message > h1 {
+        font-size: 3em;
+    }
+
+    .intro-divider {
+        width: 100%;
+    }
+}
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+
+.content-section-b {
+    padding: 50px 0;
+    border-top: 1px solid #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.section-heading {
+    margin-bottom: 30px;
+}
+
+.section-heading-spacer {
+    float: left;
+    width: 200px;
+    border-top: 3px solid #e7e7e7;
+}
+
+
+@media(max-width:767px) {
+    .banner h2 {
+        margin: 0;
+        text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+        font-size: 3em;
+    }
+}
+
+footer {
+    padding: 0;
+    background-color: #e4e9f0;
+    text-align: center;
+}
+
+.footernav {
+    padding-top: 10px;
+}
+
+p.copyright {
+    margin: 15px 0 0;
+}
+
+.post h1 {
+  font-weight:bold;
+  font-size: 24px;
+  margin-top: 100px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #CCC;
+}
+
+.post h1 + h2 {
+  margin-top:0px;
+}
+
+.post h2 {
+  font-weight:bold;
+  font-size: 18px;
+  margin-top: 50px;
+  margin-bottom: 5px;
+  display: inline-block;
+  border-bottom: 1px solid #CCC;
+}
+
+.post h3 {
+  font-weight:bold;
+  font-size: 16px;
+}
+
+.post h4 {
+  font-weight:bold;
+  font-size: 14px;
+}
+
+
+.post-title h2 {
+  padding: 0px;
+  margin: 0px;
+  text-align:center;
+}
+
+.excerpt h3 {
+  font-size: 14px;
+  padding: 0px;
+  margin: 0px;
+}
+
+
+h4 {
+  color: #333;
+  padding-top: 30px;
+  -webkit-margin-after: 0.3em;;
+}
+
+.marketing h4 {
+    padding-top: 0px;
+}
+
+
+li.list_post {
+    padding-bottom: 20px;
+}
+
+
+
+p + ul {
+    margin-top: -5px;
+}
+
+.alignleft {
+    float: left;
+}
+.alignright {
+    float: right;
+}
+
+
+.muted, .meta {
+    color: #aaa;
+    font-size: 90%;
+}
+
+.mute {
+    color: #999;
+}
+
+/*
+a:link, a:hover, a:visited, a:active {
+   font-weight:bold;
+   color: #444;
+}
+*/
+
+a:hover {
+    color: #2b82ff;
+}
+
+a {
+ text-decoration: underline; 
+}
+
+
+hr {
+     display: block; height: 1px;
+    border: 0; border-top: 1px solid #888;
+    margin: 1em 0; padding: 0;
+}
+
+
+blockquote {
+font-style: italic;
+margin: 0.25em 0;
+padding: 0.25em 40px;
+line-height: 1.45;
+position: relative;
+color: #383838;
+font-size: 14px;
+}
+
+
+blockquote cite {
+display: block;
+margin-top: 5px;
+}
+
+blockquote cite:before {
+content: "\2014 \2009";
+}
+
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #383838;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+table
+{
+  border-collapse:collapse;
+}
+table, td, th
+{
+  border:1px solid black;
+  padding: 1px;
+}
+
+.post img, .screenshot {
+    padding: 10px;
+    box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+    /* center */
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.explanation {
+    color: #888;
+    border:1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    padding: 2px;
+
+    
+    font-style: italic;
+}
+
+.section {
+    border:1px dashed #ccc;
+    border-radius: 10px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    padding: 5px;
+}
+
+.section table, .section td {
+    border:0px;
+    padding:0px;
+    padding-right:1px;
+}
+
+.section table.privs, .section .privs td, .privs th {
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding-right: 5px;
+  padding-left: 2px;
+}
+
+pre {
+    font-size: 80%;
+}
+
+.privs .good {
+  background-color: #99ff99;
+}
+
+.privs .warn {
+  background-color: #ffff66;
+}
+
+.privs .bad {
+  background-color: #ff9999;
+}
+
+td.mute {
+  font-size: 90%;
+}
+
+.caption {
+    text-align: center;
+    color: #888;
+    display: block;
+}
+
+.bg-light-gray {
+    background-color: #eeeeee;
+    border-radius: 25px;
+}
+
+
+table {
+    margin-left:auto; 
+    margin-right:auto;
+}
+
+th {
+    background-color: #ddd;
+    text-align: center;
+}
+
+
+th.rotate {
+    /* Something you can count on */
+    height: 140px;
+    white-space: nowrap;
+    position: relative;
+    text-align: left;
+  }
+
+th.rotate > div {
+    transform: 
+      /* Magic Numbers */
+      translate(39px, 47px)
+      /* 45 is really 360 - 45 */
+      rotate(315deg);
+    width: 50px;
+  }
+  th.rotate > div > span {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0px;
+  }
+
+.rotated td {
+  width: 50px;
+}
+
+.rotated {
+    border-style: none;
+}
+
+.highlight {
+    background-color: #cfc;
+}
+
+.rotated th {
+  background-color: transparent;
+  border-style: none;
+  border-bottom: 1px solid #000;
+}
+
+.mytooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+  
+/* Tooltip text */
+.mytooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    box-shadow: 5px 10px 8px #888888;
+    color: #fff;
+    text-align: left;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.mytooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+#chartjs-tooltip td {
+    background-color: #fff;
+}
+
+#chartjs-tooltip table {
+    box-shadow: 5px 10px 8px #888888;
+}
