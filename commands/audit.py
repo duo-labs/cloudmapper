@@ -263,7 +263,7 @@ def audit_rds(region):
     json_blob = query_aws(region.account, "rds-describe-db-instances", region)
     for instance in json_blob.get('DBInstances', []):
         if instance['PubliclyAccessible']:
-            print('- RDS instance in {} is public: {}'.format(region.name, instance['DBInstanceIdentifier']))
+            print('- RDS instance in {} has public IP: {}'.format(region.name, instance['DBInstanceIdentifier']))
         if instance.get('DBSubnetGroup', {}).get('VpcId', '') == '':
             print('- RDS instance in {} is in VPC classic: {}'.format(region.name, instance['DBInstanceIdentifier']))
 
