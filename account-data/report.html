@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Try to avoid this showing up in search results if accidently made public -->
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    
+    <title>CloudMapper AWS Security Report</title>
+    
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/lato.css" rel="stylesheet">
+
+    <link href="/css/report.css" rel="stylesheet">
+
+    <script src="/js/chart.js"></script>
+    <script src="/js/report.js"></script>
+
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 64x64" type="image/vnd.microsoft.icon">
+</head>
+
+<body>
+    <div class="stretchforfooter">
+        <div class="container">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="https://summitroute.com"></a>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><h1>CloudMapper Report</h1><i class="muted">Report developed by <a href="https://summitroute.com/">Summit Route</a></i></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <hr class="gradient">
+
+          <div class="container">
+        <div class="row">
+
+<div class="content, report">
+    <div class="row">
+        <div class="col-sm-12">
+
+<h1>Account Summary</h1>
+<h2>Accounts reviewed</h2>
+<table id='accounts'>
+    <tr><th>Account name</th><th>Account ID</th><th>Collection date</th></tr>
+    
+        <tr><td>test<td>954574370272<td>2019-01-23</tr>
+    
+</table>
+
+<h2>Resources</h2>
+
+<h3>Resource counts</h3>
+
+<div><canvas id="resource_counts"></canvas></div>
+<script>makeChart("resource_counts", ['test'], [{'label': 'S3 buckets', 'data': [7], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': 'EC2 instances', 'data': [6], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'ELBs', 'data': [0], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'ELBv2s', 'data': [2], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'RDS instances', 'data': [2], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'Redshift clusters', 'data': [0], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'ElasticSearch domains', 'data': [0], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'Elasticache clusters', 'data': [0], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'SNS topics', 'data': [2], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'SQS queues', 'data': [1], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'CloudFronts', 'data': [0], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'Autoscaling groups', 'data': [2], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'ElasticBeanstalks', 'data': [0], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': 'Firehose streams', 'data': [0], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'Glacier vaults', 'data': [0], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'KMS keys', 'data': [20], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'Lambda functions', 'data': [0], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+
+
+
+<table id='resources' class='rotated'>
+    <tr><th></th>
+    
+        <th class="rotate"><div><span>S3 buckets</span></div></th>
+    
+        <th class="rotate"><div><span>EC2 instances</span></div></th>
+    
+        <th class="rotate"><div><span>ELBs</span></div></th>
+    
+        <th class="rotate"><div><span>ELBv2s</span></div></th>
+    
+        <th class="rotate"><div><span>RDS instances</span></div></th>
+    
+        <th class="rotate"><div><span>Redshift clusters</span></div></th>
+    
+        <th class="rotate"><div><span>ElasticSearch domains</span></div></th>
+    
+        <th class="rotate"><div><span>Elasticache clusters</span></div></th>
+    
+        <th class="rotate"><div><span>SNS topics</span></div></th>
+    
+        <th class="rotate"><div><span>SQS queues</span></div></th>
+    
+        <th class="rotate"><div><span>CloudFronts</span></div></th>
+    
+        <th class="rotate"><div><span>Autoscaling groups</span></div></th>
+    
+        <th class="rotate"><div><span>ElasticBeanstalks</span></div></th>
+    
+        <th class="rotate"><div><span>Firehose streams</span></div></th>
+    
+        <th class="rotate"><div><span>Glacier vaults</span></div></th>
+    
+        <th class="rotate"><div><span>KMS keys</span></div></th>
+    
+        <th class="rotate"><div><span>Lambda functions</span></div></th>
+    
+    </tr>
+
+    
+    <tr>
+        
+            
+            <td>
+            
+            
+            test</td>
+        
+            
+            <td class="highlight">
+            
+            
+            7</td>
+        
+            
+            <td class="highlight">
+            
+            
+            6</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="highlight">
+            
+            
+            2</td>
+        
+            
+            <td class="highlight">
+            
+            
+            2</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="highlight">
+            
+            
+            2</td>
+        
+            
+            <td class="highlight">
+            
+            
+            1</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="highlight">
+            
+            
+            2</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="highlight">
+            
+            
+            20</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+    </tr>
+    
+    
+</table>
+
+
+
+<h3>Region usage</h3>
+<p>This table shows whether a region contains the resources being counted. Currently all S3 buckets, no matter their location, and CloudFronts, are identified as being in us-east-1.</p>
+
+<table id='regions' class='rotated'>
+        <tr><th></th>
+        
+            <th class="rotate"><div><span>ap-south-1</span></div></th>
+        
+            <th class="rotate"><div><span>eu-west-3</span></div></th>
+        
+            <th class="rotate"><div><span>eu-north-1</span></div></th>
+        
+            <th class="rotate"><div><span>eu-west-2</span></div></th>
+        
+            <th class="rotate"><div><span>eu-west-1</span></div></th>
+        
+            <th class="rotate"><div><span>ap-northeast-2</span></div></th>
+        
+            <th class="rotate"><div><span>ap-northeast-1</span></div></th>
+        
+            <th class="rotate"><div><span>sa-east-1</span></div></th>
+        
+            <th class="rotate"><div><span>ca-central-1</span></div></th>
+        
+            <th class="rotate"><div><span>ap-southeast-1</span></div></th>
+        
+            <th class="rotate"><div><span>ap-southeast-2</span></div></th>
+        
+            <th class="rotate"><div><span>eu-central-1</span></div></th>
+        
+            <th class="rotate"><div><span>us-east-1</span></div></th>
+        
+            <th class="rotate"><div><span>us-east-2</span></div></th>
+        
+            <th class="rotate"><div><span>us-west-1</span></div></th>
+        
+            <th class="rotate"><div><span>us-west-2</span></div></th>
+        
+        </tr>
+    
+        
+        <tr>
+            <td>test</td>
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">S3 buckets:7<br>EC2 instances:3<br>SNS topics:1<br>SQS queues:1<br>KMS keys:7<br></span></div></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:2<br></span></div></td>
+                
+            
+                
+                <td></td>
+                
+            
+                
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">EC2 instances:3<br>ELBv2s:2<br>RDS instances:2<br>SNS topics:1<br>Autoscaling groups:2<br>KMS keys:1<br></span></div></td>
+                
+            
+        </tr>
+        
+        
+    </table>
+
+<h2>IAM</h2>
+<div><canvas id="iam_active"></canvas></div>
+<script>makeChart("iam_active", ['test'], [{'label': 'Active users', 'stack': 'users', 'data': [3], 'backgroundColor': 'rgb(162, 203, 249)', 'borderWidth': 1}, {'label': 'Inactive users', 'stack': 'users', 'data': [2], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}, {'label': 'Active roles', 'stack': 'roles', 'data': [5], 'backgroundColor': 'rgb(139, 214, 140)', 'borderWidth': 1}, {'label': 'Inactive roles', 'stack': 'roles', 'data': [2], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+
+
+<h2>Public network resources</h2>
+
+<h3>Counts of public resources by type</h3>
+
+<table id='public_network_resource_types' class='rotated'>
+    <tr><th></th>
+        
+            <th class="rotate"><div><span>ec2</span></div></th>
+        
+            <th class="rotate"><div><span>elb</span></div></th>
+        
+            <th class="rotate"><div><span>rds</span></div></th>
+        
+            <th class="rotate"><div><span>autoscaling</span></div></th>
+        
+            <th class="rotate"><div><span>cloudfront</span></div></th>
+        
+            <th class="rotate"><div><span>apigateway</span></div></th>
+        
+        </tr>
+    
+        
+        <tr>
+            <td>test</td>
+            
+                
+                
+                    <td class="highlight">
+                
+                3</td>
+            
+                
+                
+                    <td class="muted">
+                
+                0</td>
+            
+                
+                
+                    <td class="muted">
+                
+                0</td>
+            
+                
+                
+                    <td class="highlight">
+                
+                2</td>
+            
+                
+                
+                    <td class="muted">
+                
+                0</td>
+            
+                
+                
+                    <td class="highlight">
+                
+                2</td>
+            
+        </tr>
+        
+</table>
+
+<h3>Counts of public resources by port ranges</h3>
+<div><canvas id="public_ports"></canvas></div>
+<script>makeChart("public_ports", ['test'], [{'label': '22,80,443', 'data': [1], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': '22', 'data': [3], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': '22,3306', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': '80,443', 'data': [2], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
