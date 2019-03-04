@@ -13,6 +13,7 @@ import pyjq
 import urllib.parse
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
 from shared.common import get_account, custom_serializer
+from awsretry import AWSRetry
 
 __description__ = "Run AWS API calls to collect data from the account"
 
@@ -44,6 +45,7 @@ def make_directory(path):
         # Already exists
         pass
 
+@AWSRetry.backoff()
 def call_function(outputfile, handler, method_to_call, parameters, check, summary):
     """
     Calls the AWS API function and downloads the data
