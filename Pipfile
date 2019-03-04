@@ -17,6 +17,7 @@ policyuniverse = "==1.1.0.1"
 PyYAML = "==4.2b4"
 awsretry = "==1.0.1"
 awscli = "==1.16.109"
+Jinja2 = "==2.10"
 
 [dev-packages]
 autoflake = "==0.7"

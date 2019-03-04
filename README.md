@@ -2,9 +2,11 @@ CloudMapper
 ========
 [![Build Status](https://travis-ci.org/duo-labs/cloudmapper.svg?branch=master)](https://travis-ci.org/duo-labs/cloudmapper)
 
-CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality.
+CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality, including auditing for security issues.
 
-*Demo: https://duo-labs.github.io/cloudmapper/*
+*Network mapping demo: https://duo-labs.github.io/cloudmapper/*
+
+*Report demo: https://duo-labs.github.io/cloudmapper/account-data/report.html*
 
 *Intro post: https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool*
 
@@ -97,22 +99,11 @@ And also:
     "Statement": [
         {
             "Action": [
-                "acm:DescribeCertificate",
-                "eks:DescribeCluster",
-                "eks:ListClusters",
                 "elasticfilesystem:DescribeMountTargetSecurityGroups",
                 "elasticfilesystem:DescribeMountTargets",
-                "elasticmapreduce:DescribeCluster",
-                "elasticmapreduce:DescribeSecurityConfiguration",
                 "events:DescribeRule",
                 "fms:ListComplianceStatus",
                 "fms:ListPolicies",
-                "guardduty:ListDetectors",
-                "guardduty:ListFindings",
-                "guardduty:ListIPSets",
-                "guardduty:ListInvitations",
-                "guardduty:ListMembers",
-                "guardduty:ListThreatIntelSets",
                 "iam:GenerateServiceLastAccessedDetails",
                 "inspector:DescribeAssessmentRuns",
                 "inspector:DescribeAssessmentTargets",
@@ -121,22 +112,12 @@ And also:
                 "inspector:DescribeFindings",
                 "inspector:DescribeResourceGroups",
                 "inspector:DescribeRulesPackages",
-                "iot:DescribeAuthorizer",
-                "iot:DescribeCACertificate",
-                "iot:DescribeCertificate",
-                "iot:DescribeDefaultAuthorizer",
                 "iot:GetPolicy",
                 "iot:GetPolicyVersion",
                 "lambda:GetFunctionConfiguration",
                 "lambda:GetLayerVersionPolicy",
-                "lambda:ListLayers",
                 "lightsail:GetInstances",
                 "opsworks:DescribeStacks",
-                "organizations:Describe*",
-                "organizations:List*",
-                "shield:DescribeAttack",
-                "shield:DescribeProtection",
-                "shield:DescribeSubscription",
                 "sso:DescribePermissionsPolicies",
                 "sso:ListApplicationInstanceCertificates",
                 "sso:ListApplicationInstances",

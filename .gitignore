@@ -3,6 +3,7 @@ config.json
 *.pyc
 venv/
 web/data.json
+web/account-data/
 .coverage
 htmlcov/
 account-data/
