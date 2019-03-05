@@ -12,13 +12,12 @@ from collections import OrderedDict
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 import pyjq
+from jinja2 import Template
+
 from policyuniverse.policy import Policy
 from shared.common import parse_arguments, query_aws, get_parameter_file, get_regions, get_account_stats, get_us_east_1, get_collection_date, get_access_advisor_active_counts
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
-
-
-from jinja2 import Template
 
 __description__ = "Create report"
 
@@ -248,12 +247,14 @@ def dashboard(accounts, config, args):
     # Generate report from template
     with open(DASHBOARD_OUTPUT_FILE,'w') as f:
         f.write(template.render(t=t))
+    
+    print('Report written to {}'.format(DASHBOARD_OUTPUT_FILE))
 
 def run(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--max-age",
-        help="Number of days a user or role hasn't been used before it's marked dead",
+        help="Number of days a user or role hasn't been used before it's marked inactive",
         default=90,
         type=int)
     args, accounts, config = parse_arguments(arguments, parser)
