@@ -69,29 +69,48 @@ def get_subnets(az):
     return pyjq.all(resource_filter.format(az.vpc.local_id, az.local_id), subnets)
 
 
-def get_ec2s(subnet):
+def get_ec2s(subnet, name=False):
     instances = query_aws(subnet.account, "ec2-describe-instances", subnet.region)
     resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")'
+    if name:
+        filter_instances = ' |  select(.State.Name == "running") ' + \
+                           ' | select(.Tags != null) ' + \
+                           ' | select (.Tags[] | (.Key == "Name") and ' + \
+                           '  (.Value | contains("{}")))'.format(name)
+        resource_filter = resource_filter + filter_instances
+    #resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") |  select(.State.Name == "running") | select(.Tags != null) | select (.Tags[] | (.Key == "Name") and (.Value | contains("hmpo")))'
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
-def get_elbs(subnet):
-    # ELBs
+def get_elbs(subnet, name=False):
     elb_instances = query_aws(subnet.account, "elb-describe-load-balancers", subnet.region)
-    elb_resource_filter = '.LoadBalancerDescriptions[] | select(.VPCId == "{}") | select(.Subnets[] == "{}")'
-    elbs = pyjq.all(elb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), elb_instances)
-
-    # ALBs and NLBs
     alb_instances = query_aws(subnet.account, "elbv2-describe-load-balancers", subnet.region)
-    alb_resource_filter = '.LoadBalancers[] | select(.VpcId == "{}") | select(.AvailabilityZones[].SubnetId == "{}")'
+
+    elb_resource_filter = '.LoadBalancerDescriptions[] | select(.VPCId == "{}") | select(.Subnets[] == "{}")'
+    alb_resource_filter = '.LoadBalancers[] | select(.VpcId == "{}") | select(.AvailabilityZones[].SubnetId == "{}") '
+
+    if name:
+        filter_elbs = ' | select(.LoadBalancerName | contains("{}"))'.format(
+        name)
+        filter_albs = ' | select(.LoadBalancerName | contains("{}"))'.format(
+        name)
+
+        elb_resource_filter = elb_resource_filter + filter_elbs
+        alb_resource_filter = alb_resource_filter + filter_albs
+
+    elbs = pyjq.all(elb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), elb_instances)
     albs = pyjq.all(alb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), alb_instances)
 
     return elbs + albs
 
 
-def get_rds_instances(subnet):
+def get_rds_instances(subnet, name=False):
     instances = query_aws(subnet.account, "rds-describe-db-instances", subnet.region)
     resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets != null and .DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
+    if name:
+        filter_rds = \
+        ' | select(.DBInstanceIdentifier | contains("{}"))'.format(name)
+        resource_filter = resource_filter + filter_rds
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
@@ -234,21 +253,27 @@ def build_data_structure(account_data, config, outputfilter):
                     subnet = Subnet(parent, subnet_json)
 
                     # Get EC2's
-                    for ec2_json in get_ec2s(subnet):
+                    for ec2_json in get_ec2s(
+                            subnet,
+                            outputfilter['filter_ec2_by_name']):
                         ec2 = Ec2(subnet, ec2_json,
                                   outputfilter["collapse_by_tag"],
                                   outputfilter["collapse_asgs"])
                         subnet.addChild(ec2)
 
                     # Get RDS's
-                    for rds_json in get_rds_instances(subnet):
+                    for rds_json in get_rds_instances(
+                            subnet,
+                            outputfilter['filter_rds_by_name']):
                         rds = Rds(subnet, rds_json)
                         if not outputfilter["read_replicas"] and rds.node_type == "rds_rr":
                             continue
                         subnet.addChild(rds)
 
                     # Get ELB's
-                    for elb_json in get_elbs(subnet):
+                    for elb_json in get_elbs(
+                            subnet,
+                            outputfilter['filter_elb_by_name']):
                         elb = Elb(subnet, elb_json)
                         subnet.addChild(elb)
 
@@ -381,12 +406,24 @@ def run(arguments):
                         dest='collapse_asgs', action='store_true')
     parser.add_argument("--no-collapse-asgs", help="Show all EC2 instances of Auto Scaling Groups",
                         dest='collapse_asgs', action='store_false')
+    parser.add_argument("--filter-ec2-by-name", help="Filter EC2 instances"
+                        " that contain name",
+                        dest='filter_ec2_by_name', required=False, type=str)
+    parser.add_argument("--filter-elb-by-name", help="Filter ELBs "
+                        " that contain name",
+                        dest='filter_elb_by_name', required=False, type=str)
+    parser.add_argument("--filter-rds-by-name", help="Filter RDSs "
+                        " that contain name",
+                        dest='filter_rds_by_name', required=False, type=str)
 
     parser.set_defaults(internal_edges=True)
     parser.set_defaults(inter_rds_edges=False)
     parser.set_defaults(read_replicas=True)
     parser.set_defaults(azs=True)
     parser.set_defaults(collapse_asgs=True)
+    parser.set_defaults(filter_ec2_by_name=False)
+    parser.set_defaults(filter_elb_by_name=False)
+    parser.set_defaults(filter_rds_by_name=False)
 
     args = parser.parse_args(arguments)
 
@@ -406,6 +443,9 @@ def run(arguments):
     outputfilter["azs"] = args.azs
     outputfilter["collapse_by_tag"] = args.collapse_by_tag
     outputfilter["collapse_asgs"] = args.collapse_asgs
+    outputfilter["filter_ec2_by_name"] = args.filter_ec2_by_name
+    outputfilter["filter_elb_by_name"] = args.filter_elb_by_name
+    outputfilter["filter_rds_by_name"] = args.filter_rds_by_name
 
     # Read accounts file
     try:
