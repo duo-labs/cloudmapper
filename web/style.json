@@ -237,7 +237,7 @@
     
     
     {
-        "selector": "[type = \"wot_account\"]",
+        "selector": "[type = \"weboftrust_account\"]",
         "css": {
             "shape": "rectangle",
             "width": "200",
