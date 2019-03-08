@@ -8,7 +8,7 @@ import urllib.parse
 
 from shared.common import parse_arguments, make_list, query_aws, get_regions
 
-__description__ = "Determine Web Of Trust (wot) for accounts"
+__description__ = "Create Web Of Trust diagram for accounts"
 
 # TODO: This command would benefit from a few days of work and some sample data sets to improve:
 # - How saml providers are identified. Currently only Okta is identified, and that's a hack.
@@ -47,7 +47,7 @@ class Account(object):
         if json_blob:
             self.name = json_blob["name"]
             self.id = json_blob["id"]
-            self.type = json_blob.get('type', 'wot_account')
+            self.type = json_blob.get('type', 'weboftrust_account')
         elif account_id:
             self.name = account_id
             self.id = account_id
@@ -290,7 +290,7 @@ def get_nodes_and_connections(account_data, nodes, connections, args):
         get_s3_trusts(account, nodes, connections)
 
 
-def wot(args, accounts, config):
+def weboftrust(args, accounts, config):
     """Collect the data and write it to a file"""
 
     nodes = {}
@@ -328,7 +328,7 @@ def wot(args, accounts, config):
                 was_scanned = True
 
                 # TODO: This is a hack to set this again here, as I had an account of type 'unknown_account' somehow
-                n.type = 'wot_account'
+                n.type = 'weboftrust_account'
                 n.name = scanned_account['name']
                 break
 
@@ -398,6 +398,6 @@ def run(arguments):
         print("ERROR: You cannot use network_only and admin_only at the same time")
         exit(-1)
 
-    cytoscape_json = wot(args, accounts, config)
+    cytoscape_json = weboftrust(args, accounts, config)
     with open('web/data.json', 'w') as outfile:
         json.dump(cytoscape_json, outfile, indent=4)

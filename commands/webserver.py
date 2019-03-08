@@ -29,7 +29,7 @@ from six.moves import urllib
 from six.moves.BaseHTTPServer import HTTPServer
 from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
-__description__ = "Run a webserver to display network or wot map"
+__description__ = "Run a webserver to display network or web of trust map"
 
 class RootedHTTPServer(HTTPServer):
     def __init__(self, base_path, *args, **kwargs):

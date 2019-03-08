@@ -31,7 +31,7 @@ import pkgutil
 import importlib 
 import commands
 
-__version__ = "2.3.1"
+__version__ = "2.3.2"
 
 def show_help(commands):
     print("CloudMapper {}".format(__version__))
