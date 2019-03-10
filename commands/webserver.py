@@ -99,5 +99,5 @@ def run(arguments):
         httpd = RootedHTTPServerV6("web", (listening_host, args.port), Handler)
     else:
         httpd = RootedHTTPServer("web", (listening_host, args.port), Handler)
-    print("CloudMapper serving on {}:{}".format(listening_host, args.port))
+    print("CloudMapper serving web directory on {}:{}".format(listening_host, args.port))
     httpd.serve_forever()
