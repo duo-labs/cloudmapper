@@ -36,12 +36,12 @@ def dashboard(accounts, config, args):
 
     # Create directory for output file if it doesn't already exists
     try:
-        os.mkdir(os.path.dirname(DASHBOARD_OUTPUT_FILE))
+        os.mkdir(os.path.dirname(REPORT_OUTPUT_FILE))
     except OSError:
         # Already exists
         pass
 
-    # Create output file
+    # Read template
     with open(os.path.join('templates', 'report.html'),'r') as dashboard_template:
         template = Template(dashboard_template.read())
     
@@ -245,10 +245,10 @@ def dashboard(accounts, config, args):
         color_index = (color_index + 1) % len(COLOR_PALETTE)
 
     # Generate report from template
-    with open(DASHBOARD_OUTPUT_FILE,'w') as f:
+    with open(REPORT_OUTPUT_FILE,'w') as f:
         f.write(template.render(t=t))
     
-    print('Report written to {}'.format(DASHBOARD_OUTPUT_FILE))
+    print('Report written to {}'.format(REPORT_OUTPUT_FILE))
 
 def run(arguments):
     parser = argparse.ArgumentParser()

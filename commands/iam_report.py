@@ -11,6 +11,8 @@ from collections import OrderedDict
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 import pyjq
+from jinja2 import Template
+
 from policyuniverse.policy import Policy
 from shared.common import parse_arguments, query_aws, get_parameter_file, get_regions
 from shared.nodes import Account, Region
@@ -29,7 +31,7 @@ def get_cred_usage():
     MAX_DAYS_SINCE_LAST_USAGE = 90
 
     def days_between(s1, s2):
-        """s1 and s2 are date strings, such as 2018-04-08T23:33:20+00:00 """
+        """s1 and s2 are date strings, in the format 2018-04-08T23:33:20+00:00 """
         time_format = "%Y-%m-%dT%H:%M:%S"
 
         d1 = datetime.strptime(s1.split("+")[0], time_format)
@@ -367,240 +369,257 @@ def build_cytoscape_graph(iam_graph):
     return cytoscape_json
 
 
-def leastprivs(accounts, config, args):
-    '''Create least privilege guidance document'''
+def iam_report(accounts, config, args):
+    '''Create IAM report'''
     principal_stats = {}
     json_account_auth_details = None
 
+    # Ensure only one account is given
+    if len(accounts) > 1:
+        raise Exception('This command only works with one account at a time')
+    account = accounts.pop()
+
+    # Create directory for output file if it doesn't already exists
+    try:
+        os.mkdir(os.path.dirname(REPORT_OUTPUT_FILE))
+    except OSError:
+        # Already exists
+        pass
+
+    # Read template
+    with open(os.path.join('templates', 'iam_report.html'),'r') as report_template:
+        template = Template(report_template.read())
+    
+    # Data to be passed to the template
+    t = {}
+    
+    account = Account(None, account)
+    principal_stats = {}
+
+    print('Creating IAM report for: {}'.format(account.name))
+
+    t['account_name'] = account.name
+    t['account_id'] = account.local_id
+    t['report_generated_time'] = datetime.datetime.now().strftime('%Y-%m-%d')
+
+    t['graph'] = ''
+    if args.show_graph:
+         t['graph'] = '<br><iframe width=700 height=700 src="./map.html"></iframe>'
+
+    for region_json in get_regions(account):
+        region = Region(account, region_json)
+        if region.name == 'us-east-1':
+            json_account_auth_details = query_aws(region.account, "iam-get-account-authorization-details", region)
+            get_access_advisor(region, principal_stats, json_account_auth_details, args)
+    
+    
+    users = []
+    roles = []
+    inactive_principals = []
+    for principal, stats in principal_stats.items():
+        if 'RoleName' in stats['auth']:
+            stats['short_name'] = stats['auth']['RoleName']
+            stats['type'] = 'role'
+            if stats['is_inactive']:
+                inactive_principals.append(principal)
+                continue
+            roles.append(principal)
+        else:
+            stats['short_name'] = stats['auth']['UserName']
+            stats['type'] = 'user'
+            if stats['is_inactive']:
+                inactive_principals.append(principal)
+                continue
+            users.append(principal)
+    
+    print("* Generating IAM graph")
+    # This needs to be generated even if we don't show the graph,
+    # because this data is needed for other functionality in this command
+    iam_graph = get_iam_graph(json_account_auth_details)
+    cytoscape_json = build_cytoscape_graph(iam_graph)
+
+    with open(os.path.join('web', 'account-data', 'data.json'), 'w') as outfile:
+        json.dump(cytoscape_json, outfile, indent=4)
+    
+    print("* Generating the rest of the report")
+
+    t['users'] = []
+    for principal in sorted(users):
+        service_counts = get_service_count_and_used(
+            principal_stats[principal]['last_access']['ServicesLastAccessed'])
+        t['users'].append({
+            'arn': principal,
+            'name': principal_stats[principal]['auth']['UserName'],
+            'services_used': service_counts['service_used_count'],
+            'services_granted': service_counts['service_count']})
+
+    t['roles'] = []
+    for principal in sorted(roles):
+        service_counts = get_service_count_and_used(
+            principal_stats[principal]['last_access']['ServicesLastAccessed'])
+        t['roles'].append({
+            'arn': principal,
+            'name': principal_stats[principal]['auth']['RoleName'],
+            'services_used': service_counts['service_used_count'],
+            'services_granted': service_counts['service_count']})
+    
+
+    t['inactive_principals'] = []
+    for principal in sorted(inactive_principals):
+        # Choose icon
+        icon = '<i class="fas fa-user-astronaut"></i>'
+        if principal_stats[principal]['type'] == 'user':
+            icon = '<i class="fas fa-user"></i>'
+        
+        t['inactive_principals'].append({
+            'arn': principal,
+            'icon': icon,
+            'name': principal_stats[principal]['short_name']})
+    
+
+
+    # for principal, stats in principal_stats.items():
+    #     if stats['is_inactive']:
+    #         continue
+
+    #     f.write('<div class="section"><a name="{}"></a>'.format(principal))
+    #     if 'RoleName' in stats['auth']:
+    #         f.write('<h3><a href="#{}"><i class="fas fa-user-astronaut"></i>{}</a></h3>'.format(stats['auth']['Arn'],stats['auth']['RoleName']))
+    #     if 'UserName' in stats['auth']:
+    #         f.write('<h3><a href="#{}"><i class="fas fa-user"></i>{}</a></h3>'.format(stats['auth']['Arn'],stats['auth']['UserName']))
+        
+    #     principal_node = iam_graph[stats['auth']['Arn']]
+    #     privilege_sources = principal_node.get_services_allowed()
+
+    #     # Show access advisor info
+    #     f.write('<table class="privs"><tr><th>Service<th>Days since last use<th>Privilege Source')
+    #     # Get collection date
+    #     report_date = datetime.datetime.strptime(stats['last_access']['JobCompletionDate'][0:10], '%Y-%m-%d')
+    #     for service in stats['last_access']['ServicesLastAccessed']:
+    #         last_use = '-'
+    #         if service.get('LastAuthenticated', '-') != '-':
+    #             last_use = (report_date - datetime.datetime.strptime(service['LastAuthenticated'][0:10], '%Y-%m-%d')).days
+
+    #         style = ""
+    #         if last_use == '-' or last_use > 90:
+    #             style = "bad"
+            
+
+    #         source = privilege_sources.get(service['ServiceNamespace'], ['unknown'])
+    #         source = ';'.join(source)
+
+    #         f.write('<tr><td class="{}">{}<td class="{}">{}<td>{}'.format(style, service['ServiceName'], style, last_use, source))
+    #     f.write('</table>')
+
+    #     # List groups
+    #     groups = stats['auth'].get('GroupList', [])
+    #     if len(groups) > 0:
+    #         f.write('Groups:<ul>')
+    #         arn_prefix = stats['auth']['Arn'][0:26]
+    #         for group in groups:
+    #             f.write('<li><a href="#{}">{}</a>'.format(tolink(arn_prefix+'group/'+group), group))
+    #     f.write('</ul>')
+        
+    #     # List attached policies
+    #     policies = stats['auth']['AttachedManagedPolicies']
+    #     if len(policies) > 0:
+    #         f.write('<h4>Managed policies</h4><ul>')
+    #         for policy in policies:
+    #             f.write('<li><a href="#{}">{}</a>'.format(tolink(policy['PolicyArn']), policy['PolicyName']))
+    #         f.write('</ul>')
+
+    #     # Show inline policies
+    #     policies = stats['auth'].get('UserPolicyList', [])
+    #     policies.extend(stats['auth'].get('RolePolicyList', []))
+    #     if len(policies) > 0:
+    #         f.write('<h4>Inline policies</h4><ul>')
+    #         for policy in policies:
+    #             f.write('<h5>{}</h5><pre>{}</pre>'.format(
+    #                 policy['PolicyName'],
+    #                 json.dumps(policy['PolicyDocument'], indent=4)))
+    #         f.write('</ul>')
+        
+
+    #     # Show AssumeRolePolicyDocument
+    #     if 'RoleName' in stats['auth']:
+    #         f.write('<h4>AssumeRolePolicyDocument</h4>')
+    #         f.write('<pre>{}</pre>'.format(json.dumps(stats['auth']['AssumeRolePolicyDocument'], indent=4)))
+
+
+    #     f.write('</div>')
+    
+
+
+
+
+    
+    # f.write('<hr><h2>Groups</h2>')
+    # for group in json_account_auth_details['GroupDetailList']:
+    #     f.write('<div class="section"><a name="{}"></a>'.format(tolink(group['Arn'])))
+    #     f.write('<h3>{}</h3>'.format(group['GroupName']))
+
+    #     # List members
+    #     group_node = iam_graph[group['Arn']]
+    #     f.write('<h4>Members</h4><ul>')
+    #     for parent in group_node.parents():
+    #         f.write('<li><a href="#{}">{}</a>'.format(tolink(parent.key()), parent.name()))
+    #     f.write('</ul>')
+
+
+    #     if len(group['AttachedManagedPolicies']) > 0:
+    #         f.write('<h4>Managed policies</h4><ul>')
+    #         for policy in group['AttachedManagedPolicies']:
+    #             f.write('<li><a href="#{}">{}</a>'.format(policy['PolicyArn'], policy['PolicyName']))
+    #         f.write('</ul>')
+
+    #     if len(group['GroupPolicyList']) > 0:
+    #         f.write('<h4>Inline policies</h4>')
+    #         for policy in group['GroupPolicyList']:
+    #             f.write('<h5>{}</h5>'.format(policy['PolicyName']))
+    #             f.write('<pre>')
+    #             f.write(json.dumps(policy['PolicyDocument'], indent=4))
+    #             f.write('</pre>')
+    #         f.write('</ul>')
+        
+    #     if len(group['AttachedManagedPolicies']) == 0 and len(group['GroupPolicyList']) == 0:
+    #         f.write('WARN: This policy does nothing.  No attached managed policies or inline policies.')
+        
+
+    #     f.write('</div>')
+
+    # f.write('<hr><h2>Policies</h2>')
+    # for policy in json_account_auth_details['Policies']:
+    #     f.write('<div class="section"><a name="{}"></a>'.format(tolink(policy['Arn'])))
+    #     f.write('<h3>{}</h3>'.format(policy['PolicyName']))
+    #     if 'arn:aws:iam::aws:policy' in policy['Arn']:
+    #         f.write('<i class="fab fa-amazon"></i>AWS managed policy<br>')
+        
+
+    #     # Attachments
+    #     policy_node = iam_graph[policy['Arn']]
+    #     if len(policy_node.parents()) > 0:
+    #         f.write('<h4>Attachments</h4><ul>')
+    #         for parent in policy_node.parents():
+    #             f.write('<li><a href="#{}">{}</a>'.format(tolink(parent.key()), parent.name()))
+    #         f.write('</ul>')
+    #     else:
+    #         f.write('WARN: This policy is not attached to anything and can be removed.')
+
+    #     f.write('<h4>Policy document</h4><ul>')
+    #     f.write('<pre>')
+    #     for version in policy['PolicyVersionList']:
+    #         if version['IsDefaultVersion']:
+    #             f.write(json.dumps(version['Document'], indent=4))
+    #     f.write('</pre>')
+
+    #     f.write('</div>')
+
+
+    # Generate report from template
     with open(REPORT_OUTPUT_FILE,'w') as f:
-        with open(os.path.join('templates', 'iam_report.html'),'r') as report_template:
-            f.write(report_template.read())
+        f.write(template.render(t=t))
 
-        for account in accounts:
-            account = Account(None, account)
-            principal_stats = {}
-
-            print(account.name)
-
-            f.write('Account: {}<br>Report Generated: {}'.format(account.local_id, datetime.datetime.now().strftime('%Y-%m-%d')))
-
-            if args.show_graph:
-                f.write('<br><iframe width=700 height=700 src="./map.html"></iframe>')
-
-            for region_json in get_regions(account):
-                region = Region(account, region_json)
-                if region.name == 'us-east-1':
-                    json_account_auth_details = query_aws(region.account, "iam-get-account-authorization-details", region)
-                    get_access_advisor(region, principal_stats, json_account_auth_details, args)
-            
-            
-            users = []
-            roles = []
-            inactive_principals = []
-            for principal, stats in principal_stats.items():
-                if 'RoleName' in stats['auth']:
-                    stats['short_name'] = stats['auth']['RoleName']
-                    stats['type'] = 'role'
-                    if stats['is_inactive']:
-                        inactive_principals.append(principal)
-                        continue
-                    roles.append(principal)
-                else:
-                    stats['short_name'] = stats['auth']['UserName']
-                    stats['type'] = 'user'
-                    if stats['is_inactive']:
-                        inactive_principals.append(principal)
-                        continue
-                    users.append(principal)
-            
-            print("* Generating IAM graph")
-            iam_graph = get_iam_graph(json_account_auth_details)
-            cytoscape_json = build_cytoscape_graph(iam_graph)
-
-            with open('private_commands/output/data.json', 'w') as outfile:
-                json.dump(cytoscape_json, outfile, indent=4)
-            
-            print("* Writing the rest of the report")
-                
-            if len(users) > 0:
-                f.write('<h2><i class="fas fa-user"></i>Users</h2>')
-                f.write('<ul>')
-                for principal in sorted(users):
-                    service_counts = get_service_count_and_used(
-                        principal_stats[principal]['last_access']['ServicesLastAccessed'])
-                    f.write('<li><a href="#{}">{}</a>: {}/{} {}'.format(
-                        principal,
-                        principal_stats[principal]['auth']['UserName'],
-                        service_counts['service_used_count'],
-                        service_counts['service_count'],
-                        html_service_chart(principal_stats[principal]['auth']['UserName'], service_counts['service_used_count'], service_counts['service_count'])))
-                f.write('</ul>')
-            
-            if len(roles) > 0:
-                f.write('<h2><i class="fas fa-user-astronaut"></i>Roles</h2>')
-                f.write('<ul>')
-                for principal in sorted(roles):
-                    service_counts = get_service_count_and_used(
-                        principal_stats[principal]['last_access']['ServicesLastAccessed'])
-                    f.write('<li><a href="#{}">{}</a>: {}/{} {}'.format(
-                        principal,
-                        principal_stats[principal]['auth']['RoleName'],
-                        service_counts['service_used_count'],
-                        service_counts['service_count'],
-                        html_service_chart(principal_stats[principal]['auth']['RoleName'], service_counts['service_used_count'], service_counts['service_count'])))
-                f.write('</ul>')
-            
-            if len(inactive_principals) > 0:
-                f.write('<h2><i class="fas fa-user-clock"></i>Inactive principals</h2>')
-                f.write('<ul>')
-                for principal in sorted(inactive_principals):
-                    icon = '<i class="fas fa-user-astronaut"></i>'
-                    if principal_stats[principal]['type'] == 'user':
-                        icon = '<i class="fas fa-user"></i>'
-                    f.write('<li><a href="#{}">{}{}</a>'.format(
-                        principal,
-                        icon,
-                        principal_stats[principal]['short_name']))
-                f.write('</ul>')
-
-            f.write('<h2>In-depth analysis</h2>')
-
-            for principal, stats in principal_stats.items():
-                if stats['is_inactive']:
-                    continue
-
-                f.write('<div class="section"><a name="{}"></a>'.format(principal))
-                if 'RoleName' in stats['auth']:
-                    f.write('<h3><a href="#{}"><i class="fas fa-user-astronaut"></i>{}</a></h3>'.format(stats['auth']['Arn'],stats['auth']['RoleName']))
-                if 'UserName' in stats['auth']:
-                    f.write('<h3><a href="#{}"><i class="fas fa-user"></i>{}</a></h3>'.format(stats['auth']['Arn'],stats['auth']['UserName']))
-                
-                principal_node = iam_graph[stats['auth']['Arn']]
-                privilege_sources = principal_node.get_services_allowed()
-
-                # Show access advisor info
-                f.write('<table class="privs"><tr><th>Service<th>Days since last use<th>Privilege Source')
-                # Get collection date
-                report_date = datetime.datetime.strptime(stats['last_access']['JobCompletionDate'][0:10], '%Y-%m-%d')
-                for service in stats['last_access']['ServicesLastAccessed']:
-                    last_use = '-'
-                    if service.get('LastAuthenticated', '-') != '-':
-                        last_use = (report_date - datetime.datetime.strptime(service['LastAuthenticated'][0:10], '%Y-%m-%d')).days
-
-                    style = ""
-                    if last_use == '-' or last_use > 90:
-                        style = "bad"
-                    
-
-                    source = privilege_sources.get(service['ServiceNamespace'], ['unknown'])
-                    source = ';'.join(source)
-
-                    f.write('<tr><td class="{}">{}<td class="{}">{}<td>{}'.format(style, service['ServiceName'], style, last_use, source))
-                f.write('</table>')
-
-                # List groups
-                groups = stats['auth'].get('GroupList', [])
-                if len(groups) > 0:
-                    f.write('Groups:<ul>')
-                    arn_prefix = stats['auth']['Arn'][0:26]
-                    for group in groups:
-                        f.write('<li><a href="#{}">{}</a>'.format(tolink(arn_prefix+'group/'+group), group))
-                f.write('</ul>')
-                
-                # List attached policies
-                policies = stats['auth']['AttachedManagedPolicies']
-                if len(policies) > 0:
-                    f.write('<h4>Managed policies</h4><ul>')
-                    for policy in policies:
-                        f.write('<li><a href="#{}">{}</a>'.format(tolink(policy['PolicyArn']), policy['PolicyName']))
-                    f.write('</ul>')
-
-                # Show inline policies
-                policies = stats['auth'].get('UserPolicyList', [])
-                policies.extend(stats['auth'].get('RolePolicyList', []))
-                if len(policies) > 0:
-                    f.write('<h4>Inline policies</h4><ul>')
-                    for policy in policies:
-                        f.write('<h5>{}</h5><pre>{}</pre>'.format(
-                            policy['PolicyName'],
-                            json.dumps(policy['PolicyDocument'], indent=4)))
-                    f.write('</ul>')
-                
-
-                # Show AssumeRolePolicyDocument
-                if 'RoleName' in stats['auth']:
-                    f.write('<h4>AssumeRolePolicyDocument</h4>')
-                    f.write('<pre>{}</pre>'.format(json.dumps(stats['auth']['AssumeRolePolicyDocument'], indent=4)))
-
-
-                f.write('</div>')
-            
-            f.write('<hr><h2>Groups</h2>')
-            for group in json_account_auth_details['GroupDetailList']:
-                f.write('<div class="section"><a name="{}"></a>'.format(tolink(group['Arn'])))
-                f.write('<h3>{}</h3>'.format(group['GroupName']))
-
-                # List members
-                group_node = iam_graph[group['Arn']]
-                f.write('<h4>Members</h4><ul>')
-                for parent in group_node.parents():
-                    f.write('<li><a href="#{}">{}</a>'.format(tolink(parent.key()), parent.name()))
-                f.write('</ul>')
-
-
-                if len(group['AttachedManagedPolicies']) > 0:
-                    f.write('<h4>Managed policies</h4><ul>')
-                    for policy in group['AttachedManagedPolicies']:
-                        f.write('<li><a href="#{}">{}</a>'.format(policy['PolicyArn'], policy['PolicyName']))
-                    f.write('</ul>')
-
-                if len(group['GroupPolicyList']) > 0:
-                    f.write('<h4>Inline policies</h4>')
-                    for policy in group['GroupPolicyList']:
-                        f.write('<h5>{}</h5>'.format(policy['PolicyName']))
-                        f.write('<pre>')
-                        f.write(json.dumps(policy['PolicyDocument'], indent=4))
-                        f.write('</pre>')
-                    f.write('</ul>')
-                
-                if len(group['AttachedManagedPolicies']) == 0 and len(group['GroupPolicyList']) == 0:
-                    f.write('WARN: This policy does nothing.  No attached managed policies or inline policies.')
-                
-
-                f.write('</div>')
-
-            f.write('<hr><h2>Policies</h2>')
-            for policy in json_account_auth_details['Policies']:
-                f.write('<div class="section"><a name="{}"></a>'.format(tolink(policy['Arn'])))
-                f.write('<h3>{}</h3>'.format(policy['PolicyName']))
-                if 'arn:aws:iam::aws:policy' in policy['Arn']:
-                    f.write('<i class="fab fa-amazon"></i>AWS managed policy<br>')
-                
-
-                # Attachments
-                policy_node = iam_graph[policy['Arn']]
-                if len(policy_node.parents()) > 0:
-                    f.write('<h4>Attachments</h4><ul>')
-                    for parent in policy_node.parents():
-                        f.write('<li><a href="#{}">{}</a>'.format(tolink(parent.key()), parent.name()))
-                    f.write('</ul>')
-                else:
-                    f.write('WARN: This policy is not attached to anything and can be removed.')
-
-                f.write('<h4>Policy document</h4><ul>')
-                f.write('<pre>')
-                for version in policy['PolicyVersionList']:
-                    if version['IsDefaultVersion']:
-                        f.write(json.dumps(version['Document'], indent=4))
-                f.write('</pre>')
-
-                f.write('</div>')
-
-            f.write('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>')
-
-                        
-
-    print('Report written to "{}"'.format(REPORT_OUTPUT_FILE))
+    print('Report written to {}'.format(REPORT_OUTPUT_FILE))
 
         
 
@@ -618,4 +637,4 @@ def run(arguments):
     parser.set_defaults(show_graph=False)
     args, accounts, config = parse_arguments(arguments, parser)
 
-    leastprivs(accounts, config, args)
+    iam_report(accounts, config, args)
