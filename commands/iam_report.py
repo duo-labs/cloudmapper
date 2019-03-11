@@ -589,32 +589,31 @@ def iam_report(accounts, config, args):
         
         t['groups'].append(g)
 
-    # f.write('<hr><h2>Policies</h2>')
-    # for policy in json_account_auth_details['Policies']:
-    #     f.write('<div class="section"><a name="{}"></a>'.format(tolink(policy['Arn'])))
-    #     f.write('<h3>{}</h3>'.format(policy['PolicyName']))
-    #     if 'arn:aws:iam::aws:policy' in policy['Arn']:
-    #         f.write('<i class="fab fa-amazon"></i>AWS managed policy<br>')
+    
+    t['policies'] = []
+    for policy in json_account_auth_details['Policies']:
+        p = {
+            'link_id': tolink(policy['Arn']),
+            'name': policy['PolicyName'],
+            'managed': ''}
+        
+        if 'arn:aws:iam::aws:policy' in policy['Arn']:
+            p['managed'] = '<i class="fab fa-amazon"></i>AWS managed policy<br>'
         
 
-    #     # Attachments
-    #     policy_node = iam_graph[policy['Arn']]
-    #     if len(policy_node.parents()) > 0:
-    #         f.write('<h4>Attachments</h4><ul>')
-    #         for parent in policy_node.parents():
-    #             f.write('<li><a href="#{}">{}</a>'.format(tolink(parent.key()), parent.name()))
-    #         f.write('</ul>')
-    #     else:
-    #         f.write('WARN: This policy is not attached to anything and can be removed.')
+        # Attachments
+        policy_node = iam_graph[policy['Arn']]
+        p['attachments'] = []
+        for parent in policy_node.parents():
+            p['attachments'].append({
+                'link_id': tolink(parent.key()),
+                'name': parent.name()})
 
-    #     f.write('<h4>Policy document</h4><ul>')
-    #     f.write('<pre>')
-    #     for version in policy['PolicyVersionList']:
-    #         if version['IsDefaultVersion']:
-    #             f.write(json.dumps(version['Document'], indent=4))
-    #     f.write('</pre>')
+        for version in policy['PolicyVersionList']:
+            if version['IsDefaultVersion']:
+                p['document'] = json.dumps(version['Document'], indent=4)
 
-    #     f.write('</div>')
+        t['policies'].append(p)
 
 
     # Generate report from template

@@ -168,17 +168,33 @@ Report generated: {{t.report_generated_time}}
     {% if group.managed_policies|length == 0 and group.inline_policies|length == 0 %}
         <b>WARNING: This policy does nothing and can be removed (assuming no boundary policies).</b>
     {% endif %}
-
-
-    
-
 </div>
 {% endfor %}
 
 
 
+<hr><h2>Policies</h2>
+{% for policy in t.policies %}
+<div class="section"><a name="{{policy.link_id}}"></a>
+    <h3>{{policy.name}}</h3>
+    {{policy.managed}}
+
+    {% if policy.attachments|length > 0 %}
+        <h4>Attachments</h4><ul>
+        <ul>
+            {% for attachment in policy.attachments %}
+                <li><a href="#{{attachment.link_id}}">{{attachment.name}}</a>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <b>WARNING: This policy is not attached to anything and can be removed.</b>
+    {% endif %}
+
+    <h4>Policy document</h4>
+    <pre>{{policy.document}}</pre>
 
 
-
+</div>
+{% endfor %}
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
