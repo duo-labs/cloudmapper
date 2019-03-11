@@ -417,7 +417,6 @@ table, td, th
 
 .section table.privs, .section .privs td, .privs th {
   border: 1px solid #aaa;
-  border-radius: 5px;
   padding-right: 5px;
   padding-left: 2px;
 }

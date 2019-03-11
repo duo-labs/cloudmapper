@@ -53,35 +53,83 @@ Account: {{t.account_name}} ({{t.account_id}})<br>
 Report generated: {{t.report_generated_time}}
 {{t.graph}}
 
+{% if t.users|length > 0 %}
+    <h2><i class="fas fa-user"></i>Users</h2>
+    <ul>
+    {% for user in t.users %}
+        <li><a href="#{{user.arn}}">{{user.name}}</a>: {{user.services_used}}/{{user.services_granted}}
+        <div style="width:30%"><canvas id="serviceChart{{user.arn}}" width="100" height="15"></canvas></div>
+        <script>makeServiceUnusedChart("serviceChart{{user.arn}}", {{user.services_used}}, {{user.services_granted}});</script> 
+    {% endfor %}
+    </ul>
+{% endif %}
 
-<h2><i class="fas fa-user"></i>Users</h2>
-<ul>
-{% for user in t.users %}
-    <li><a href="#{{user.arn}}">{{user.name}}</a>: {{user.services_used}}/{{user.services_granted}}
-    <div style="width:30%"><canvas id="serviceChart{{user.arn}}" width="100" height="15"></canvas></div>
-    <script>makeServiceUnusedChart("serviceChart{{user.arn}}", {{user.services_used}}, {{user.services_granted}});</script> 
-{% endfor %}
-</ul>
 
-<h2><i class="fas fa-user-astronaut"></i>Roles</h2>
-<ul>
-{% for role in t.roles %}
-    <li><a href="#{{role.arn}}">{{role.name}}</a>: {{role.services_used}}/{{role.services_granted}}
-    <div style="width:30%"><canvas id="serviceChart{{role.arn}}" width="100" height="15"></canvas></div>
-    <script>makeServiceUnusedChart("serviceChart{{role.arn}}", {{role.services_used}}, {{role.services_granted}});</script> 
-{% endfor %}
-</ul>
+{% if t.roles|length > 0 %}
+    <h2><i class="fas fa-user-astronaut"></i>Roles</h2>
+    <ul>
+    {% for role in t.roles %}
+        <li><a href="#{{role.arn}}">{{role.name}}</a>: {{role.services_used}}/{{role.services_granted}}
+        <div style="width:30%"><canvas id="serviceChart{{role.arn}}" width="100" height="15"></canvas></div>
+        <script>makeServiceUnusedChart("serviceChart{{role.arn}}", {{role.services_used}}, {{role.services_granted}});</script> 
+    {% endfor %}
+    </ul>
+{% endif %}
 
-<h2><i class="fas fa-user-clock"></i>Inactive principals</h2>
-<ul>
-{% for principal in t.inactive_principals %}
-    <li><a href="#{{principal.arn}}">{{principal.icon}}{{principal.name}}</a>
-{% endfor %}
-</ul>
+
+{% if t.inactive_principals|length > 0 %}
+    <h2><i class="fas fa-user-clock"></i>Inactive principals</h2>
+    <ul>
+    {% for principal in t.inactive_principals %}
+        <li><a href="#{{principal.arn}}">{{principal.icon}}{{principal.name}}</a>
+    {% endfor %}
+    </ul>
+{% endif %}
+
 
 <h2>In-depth analysis</h2>
+{% for principal in t.principals %}
+<div class="section"><a name="{{principal.arn}}"></a>
+    <h3><a href="#{{principal.arn}}">{{principal.icon}}{{principal.name}}</a></h3>
+    <table class="privs"><tr><th>Service<th>Days since last use<th>Privilege Source
+    {% for service in principal.services %}
+        <tr><td class="{{service.style}}">{{service.name}}<td class="{{service.style}}">{{service.last_use}}<td>{{service.source}}
+    {% endfor %}
+    </table>
+
+    {% if principal.groups|length > 0 %}
+        Groups:
+        <ul>
+            {% for group in principal.groups %}
+                <li><a href="#{{group.link_id}}">{{group.name}}</a>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
 
+    {% if principal.managed_policies|length > 0 %}
+        <h4>Managed policies</h4>
+        <ul>
+            {% for policy in principal.managed_policies %}
+                <li><a href="#{{policy.link_id}}">{{policy.name}}</a>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if principal.inline_policies|length > 0 %}
+        <h4>Inline policies</h4>
+        {% for policy in principal.inline_policies %}
+            <h5>{{policy.name}}</h5><pre>{{policy.document}}</pre>
+        {% endfor %}
+    {% endif %}
+
+    {% if principal.assume_role is defined %}
+        <h4>AssumeRolePolicyDocument</h4>
+        <pre>{{principal.assume_role}}</pre>
+    {% endif %}
+
+</div>
+{% endfor %}
 
 
 

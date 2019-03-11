@@ -478,81 +478,89 @@ def iam_report(accounts, config, args):
     
 
 
-    # for principal, stats in principal_stats.items():
-    #     if stats['is_inactive']:
-    #         continue
+    t['principals'] = []
+    for principal, stats in principal_stats.items():
+        if stats['is_inactive']:
+            continue
 
-    #     f.write('<div class="section"><a name="{}"></a>'.format(principal))
-    #     if 'RoleName' in stats['auth']:
-    #         f.write('<h3><a href="#{}"><i class="fas fa-user-astronaut"></i>{}</a></h3>'.format(stats['auth']['Arn'],stats['auth']['RoleName']))
-    #     if 'UserName' in stats['auth']:
-    #         f.write('<h3><a href="#{}"><i class="fas fa-user"></i>{}</a></h3>'.format(stats['auth']['Arn'],stats['auth']['UserName']))
+        p = {}
+        p['arn'] = principal
+
+        if 'RoleName' in stats['auth']:
+            p['icon'] = '<i class="fas fa-user-astronaut"></i>'
+            p['arn'] = stats['auth']['Arn']
+            p['name'] = stats['auth']['RoleName']
+            
+        if 'UserName' in stats['auth']:
+            p['icon'] = '<i class="fas fa-user"></i>'
+            p['arn'] = stats['auth']['Arn']
+            p['name'] = stats['auth']['UserName']
         
-    #     principal_node = iam_graph[stats['auth']['Arn']]
-    #     privilege_sources = principal_node.get_services_allowed()
+        principal_node = iam_graph[stats['auth']['Arn']]
+        privilege_sources = principal_node.get_services_allowed()
 
-    #     # Show access advisor info
-    #     f.write('<table class="privs"><tr><th>Service<th>Days since last use<th>Privilege Source')
-    #     # Get collection date
-    #     report_date = datetime.datetime.strptime(stats['last_access']['JobCompletionDate'][0:10], '%Y-%m-%d')
-    #     for service in stats['last_access']['ServicesLastAccessed']:
-    #         last_use = '-'
-    #         if service.get('LastAuthenticated', '-') != '-':
-    #             last_use = (report_date - datetime.datetime.strptime(service['LastAuthenticated'][0:10], '%Y-%m-%d')).days
+        # Show access advisor info
+        # Get collection date
+        report_date = datetime.datetime.strptime(stats['last_access']['JobCompletionDate'][0:10], '%Y-%m-%d')
 
-    #         style = ""
-    #         if last_use == '-' or last_use > 90:
-    #             style = "bad"
+        # Show services
+        p['services'] = []
+        for service in stats['last_access']['ServicesLastAccessed']:
+            last_use = '-'
+            if service.get('LastAuthenticated', '-') != '-':
+                last_use = (report_date - datetime.datetime.strptime(service['LastAuthenticated'][0:10], '%Y-%m-%d')).days
+
+            style = ""
+            if last_use == '-' or last_use > 90:
+                style = "bad"
             
 
-    #         source = privilege_sources.get(service['ServiceNamespace'], ['unknown'])
-    #         source = ';'.join(source)
+            source = privilege_sources.get(service['ServiceNamespace'], ['unknown'])
+            source = ';'.join(source)
 
-    #         f.write('<tr><td class="{}">{}<td class="{}">{}<td>{}'.format(style, service['ServiceName'], style, last_use, source))
-    #     f.write('</table>')
+            p['services'].append({
+                'style': style,
+                'name': service['ServiceName'],
+                'last_use': last_use,
+                'source': source
+            })      
 
-    #     # List groups
-    #     groups = stats['auth'].get('GroupList', [])
-    #     if len(groups) > 0:
-    #         f.write('Groups:<ul>')
-    #         arn_prefix = stats['auth']['Arn'][0:26]
-    #         for group in groups:
-    #             f.write('<li><a href="#{}">{}</a>'.format(tolink(arn_prefix+'group/'+group), group))
-    #     f.write('</ul>')
+
+        # List groups
+        groups = stats['auth'].get('GroupList', [])
+        p['groups'] = []    
+        arn_prefix = stats['auth']['Arn'][0:26]
+        for group in groups:
+            p['groups'].append({
+                'link_id': tolink(arn_prefix+'group/'+group),
+                'name': group})
         
-    #     # List attached policies
-    #     policies = stats['auth']['AttachedManagedPolicies']
-    #     if len(policies) > 0:
-    #         f.write('<h4>Managed policies</h4><ul>')
-    #         for policy in policies:
-    #             f.write('<li><a href="#{}">{}</a>'.format(tolink(policy['PolicyArn']), policy['PolicyName']))
-    #         f.write('</ul>')
-
-    #     # Show inline policies
-    #     policies = stats['auth'].get('UserPolicyList', [])
-    #     policies.extend(stats['auth'].get('RolePolicyList', []))
-    #     if len(policies) > 0:
-    #         f.write('<h4>Inline policies</h4><ul>')
-    #         for policy in policies:
-    #             f.write('<h5>{}</h5><pre>{}</pre>'.format(
-    #                 policy['PolicyName'],
-    #                 json.dumps(policy['PolicyDocument'], indent=4)))
-    #         f.write('</ul>')
         
+        # List attached policies
+        policies = stats['auth']['AttachedManagedPolicies']
+        p['managed_policies'] = []
+        for policy in policies:
+            p['managed_policies'].append({
+                'link_id': tolink(policy['PolicyArn']),
+                'name': policy['PolicyName']})
 
-    #     # Show AssumeRolePolicyDocument
-    #     if 'RoleName' in stats['auth']:
-    #         f.write('<h4>AssumeRolePolicyDocument</h4>')
-    #         f.write('<pre>{}</pre>'.format(json.dumps(stats['auth']['AssumeRolePolicyDocument'], indent=4)))
 
+        # Show inline policies
+        policies = stats['auth'].get('UserPolicyList', [])
+        policies.extend(stats['auth'].get('RolePolicyList', []))
+        p['inline_policies'] = []
+        for policy in policies:
+            p['managed_policies'].append({
+                'name': policy['PolicyName'],
+                'document': json.dumps(policy['PolicyDocument'], indent=4)})
 
-    #     f.write('</div>')
+        # Show AssumeRolePolicyDocument
+        if 'RoleName' in stats['auth']:
+            p['assume_role'] = json.dumps(stats['auth']['AssumeRolePolicyDocument'], indent=4)
+
+        t['principals'].append(p)
     
 
-
-
-
-    
     # f.write('<hr><h2>Groups</h2>')
     # for group in json_account_auth_details['GroupDetailList']:
     #     f.write('<div class="section"><a name="{}"></a>'.format(tolink(group['Arn'])))
