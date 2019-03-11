@@ -561,39 +561,33 @@ def iam_report(accounts, config, args):
         t['principals'].append(p)
     
 
-    # f.write('<hr><h2>Groups</h2>')
-    # for group in json_account_auth_details['GroupDetailList']:
-    #     f.write('<div class="section"><a name="{}"></a>'.format(tolink(group['Arn'])))
-    #     f.write('<h3>{}</h3>'.format(group['GroupName']))
+    t['groups'] = []
+    for group in json_account_auth_details['GroupDetailList']:
+        g = {
+            'link_id': tolink(group['Arn']),
+            'name': group['GroupName']}
 
-    #     # List members
-    #     group_node = iam_graph[group['Arn']]
-    #     f.write('<h4>Members</h4><ul>')
-    #     for parent in group_node.parents():
-    #         f.write('<li><a href="#{}">{}</a>'.format(tolink(parent.key()), parent.name()))
-    #     f.write('</ul>')
+        # List members
+        group_node = iam_graph[group['Arn']]
+        g['members'] = []
+        for parent in group_node.parents():
+            g['members'].append({
+                'link_id': tolink(parent.key()),
+                'name': parent.name()})
 
+        g['managed_policies'] = []
+        for policy in group['AttachedManagedPolicies']:
+            g['managed_policies'].append({
+                'link_id': tolink(policy['PolicyArn']),
+                'name': policy['PolicyName']})
 
-    #     if len(group['AttachedManagedPolicies']) > 0:
-    #         f.write('<h4>Managed policies</h4><ul>')
-    #         for policy in group['AttachedManagedPolicies']:
-    #             f.write('<li><a href="#{}">{}</a>'.format(policy['PolicyArn'], policy['PolicyName']))
-    #         f.write('</ul>')
-
-    #     if len(group['GroupPolicyList']) > 0:
-    #         f.write('<h4>Inline policies</h4>')
-    #         for policy in group['GroupPolicyList']:
-    #             f.write('<h5>{}</h5>'.format(policy['PolicyName']))
-    #             f.write('<pre>')
-    #             f.write(json.dumps(policy['PolicyDocument'], indent=4))
-    #             f.write('</pre>')
-    #         f.write('</ul>')
+        g['inline_policies'] = []
+        for policy in group['GroupPolicyList']:
+            g['inline_policies'].append({
+                'name': policy['PolicyName'],
+                'document': json.dumps(policy['PolicyDocument'], indent=4)})
         
-    #     if len(group['AttachedManagedPolicies']) == 0 and len(group['GroupPolicyList']) == 0:
-    #         f.write('WARN: This policy does nothing.  No attached managed policies or inline policies.')
-        
-
-    #     f.write('</div>')
+        t['groups'].append(g)
 
     # f.write('<hr><h2>Policies</h2>')
     # for policy in json_account_auth_details['Policies']:

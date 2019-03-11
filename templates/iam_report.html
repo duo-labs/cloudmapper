@@ -132,7 +132,48 @@ Report generated: {{t.report_generated_time}}
 {% endfor %}
 
 
+<hr><h2>Groups</h2>
+{% for group in t.groups %}
+<div class="section"><a name="{{group.link_id}}"></a>
+    <h3>{{group.name}}</h3>
 
+    {% if group.members|length > 0 %}
+    <h4>Members</h4>
+    <ul>
+        {% for member in group.members %}
+            <li><a href="#{{member.link_id}}">{{member.name}}</a>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <b>WARNING: No members, this group can be removed</b>
+    {% endif %}
+
+    {% if group.managed_policies|length > 0 %}
+        <h4>Managed policies</h4>
+        <ul>
+            {% for policy in group.managed_policies %}
+                <li><a href="#{{policy.link_id}}">{{policy.name}}</a>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if group.inline_policies|length > 0 %}
+        <h4>Inline policies</h4>
+        {% for policy in group.inline_policies %}
+            <h5>{{policy.name}}</h5>
+            <pre>{{policy.document}}</pre>
+        {% endfor %}
+    {% endif %}
+
+    {% if group.managed_policies|length == 0 and group.inline_policies|length == 0 %}
+        <b>WARNING: This policy does nothing and can be removed (assuming no boundary policies).</b>
+    {% endif %}
+
+
+    
+
+</div>
+{% endfor %}
 
 
 
