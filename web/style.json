@@ -542,6 +542,53 @@
     
     
     
+
+    {
+        "selector": "[type = \"user\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "/icons/General_user.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"role\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "/icons/SecurityIdentityCompliance_IAM_role.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"inline policy\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "/icons/inline_policy.png",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"managed policy\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "/icons/managed_policy.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"group\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "/icons/group.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    
     
     
     
