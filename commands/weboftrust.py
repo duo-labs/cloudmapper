@@ -309,7 +309,6 @@ def weboftrust(args, accounts, config):
         vendor_accounts = yaml.safe_load(f)
 
     # Add nodes
-    config = json.load(open('config.json'))
     for _, n in nodes.items():
 
         # Set up parent relationship
