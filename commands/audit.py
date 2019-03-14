@@ -200,7 +200,6 @@ def audit_root_user(findings, region):
             'ROOT_USER_HAS_ACCESS_KEYS',
             None,
             resource_details={'Number of access keys': root_user_access_keys}))
-        print('- Root user has {} access keys'.format(root_user_access_keys))
 
     root_user_mfa = json_blob.get('SummaryMap', {}).get('AccountMFAEnabled', 0)
     if root_user_mfa != 1:
@@ -382,25 +381,44 @@ def audit_rds_snapshots(findings, region):
             for attribute in file_json['DBSnapshotAttributesResult']['DBSnapshotAttributes']:
                 if attribute['AttributeName'] == 'restore':
                     if "all" in attribute['AttributeValues']:
-                        print('- RDS snapshot in {} is public: {}, entities allowed to restore: {}'.format(region.name, snapshot, attribute['AttributeValues']))
+                        findings.add(Finding(
+                            region,
+                            'RDS_PUBLIC_SNAPSHOT',
+                            snapshot,
+                            resource_details={'Entities allowed to restore': attribute['AttributeValues']}))
         except OSError:
-            print('WARNING: Could not open {}'.format(file_name))
+            findings.add(Finding(
+                region,
+                'EXCEPTION',
+                None,
+                resource_details={
+                    'location': 'Could not open RDS snapshot file', 
+                    'file_name': file_name}))
 
 
 def audit_rds(findings, region):
     json_blob = query_aws(region.account, "rds-describe-db-instances", region)
     for instance in json_blob.get('DBInstances', []):
         if instance['PubliclyAccessible']:
-            print('- RDS instance in {} has public IP: {}'.format(region.name, instance['DBInstanceIdentifier']))
+            findings.add(Finding(
+                region,
+                'RDS_PUBLIC_IP',
+                instance['DBInstanceIdentifier']))
         if instance.get('DBSubnetGroup', {}).get('VpcId', '') == '':
-            print('- RDS instance in {} is in VPC classic: {}'.format(region.name, instance['DBInstanceIdentifier']))
+            findings.add(Finding(
+                region,
+                'RDS_VPC_CLASSIC',
+                instance['DBInstanceIdentifier']))
 
 
 def audit_amis(findings, region):
     json_blob = query_aws(region.account, "ec2-describe-images", region)
     for image in json_blob.get('Images', []):
         if image['Public']:
-            print('- AMI is public: {} in {}'.format(image['ImageId'], region.name))
+            findings.add(Finding(
+                region,
+                'AMI_PUBLIC',
+                image['ImageId']))
 
 
 def audit_ecr_repos(findings, region):
@@ -421,14 +439,21 @@ def audit_ecr_repos(findings, region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible ECR repo {}: {}'.format(name, policy_string))
+            findings.add(Finding(
+                region,
+                'ECR_PUBLIC',
+                name,
+                resource_details=policy_string))
 
 
 def audit_redshift(findings, region):
     json_blob = query_aws(region.account, "redshift-describe-clusters", region)
     for cluster in json_blob.get('Clusters', []):
         if cluster['PubliclyAccessible']:
-            print('- Redshift is public: {} in {}'.format(cluster['ClusterIdentifier'], region.name))
+            findings.add(Finding(
+                region,
+                'REDSHIFT_PUBLIC_IP',
+                cluster['ClusterIdentifier']))
 
 
 def audit_es(findings, region):
@@ -448,7 +473,11 @@ def audit_es(findings, region):
         # they are VPC-only, in which case they have an "Endpoints" (plural) array containing a "vpc" element
         if policy_file_json['DomainStatus'].get('Endpoint', '') != '' or policy_file_json['DomainStatus'].get('Endpoints', {}).get('vpc', '') == '':
             if policy.is_internet_accessible():
-                print('- Internet accessible ElasticSearch cluster {}: {}'.format(name, policy_string))
+                findings.add(Finding(
+                    region,
+                    'ES_PUBLIC',
+                    name,
+                    resource_details=policy_string))
 
 
 def audit_cloudfront(findings, region):
@@ -461,8 +490,11 @@ def audit_cloudfront(findings, region):
         minimum_protocol_version = distribution.get('ViewerCertificate', {}) \
             .get('MinimumProtocolVersion', '')
         if minimum_protocol_version == 'SSLv3':
-            print('- CloudFront is using insecure minimum protocol version {} for {} in {}'.format(minimum_protocol_version, distribution['DomainName'], region.name))
-        
+            findings.add(Finding(
+                region,
+                'CLOUDFRONT_MINIMUM_PROTOCOL_SUPPORT',
+                distribution['DomainName'],
+                resource_details={'Minimum protocol version': minimum_protocol_version}))
         domain = distribution['DomainName']
 
 
@@ -470,7 +502,6 @@ def audit_ec2(findings, region):
     json_blob = query_aws(region.account, 'ec2-describe-instances', region)
     route_table_json = query_aws(region.account, 'ec2-describe-route-tables', region)
 
-    ec2_classic_count = 0
     for reservation in json_blob.get('Reservations', []):
         for instance in reservation.get('Instances', []):
             if instance.get('State', {}).get('Name', '') == 'terminated':
@@ -478,11 +509,12 @@ def audit_ec2(findings, region):
                 continue
 
             if 'vpc' not in instance.get('VpcId', ''):
-                ec2_classic_count += 1
+                findings.add(Finding(
+                    region,
+                    'EC2_CLASSIC',
+                    instance['InstanceId']))
 
             if not instance.get('SourceDestCheck', True):
-                print('- EC2 SourceDestCheck is off: {}'.format(instance['InstanceId']))
-
                 route_to_instance = None
                 for table in route_table_json['RouteTables']:
                     if table['VpcId'] == instance.get('VpcId', ''):
@@ -492,14 +524,11 @@ def audit_ec2(findings, region):
                                 break
                     if route_to_instance is not None:
                         break
-
-                if route_to_instance is None:
-                    print('  - No routes to instance, SourceDestCheck is not doing anything')
-                else:
-                    print('  -Routes: {}'.format(route_to_instance))
-
-    if ec2_classic_count != 0:
-        print('- EC2 classic instances found: {}'.format(ec2_classic_count))
+                findings.add(Finding(
+                    region,
+                    'EC2_SOURCE_DEST_CHECK_OFF',
+                    instance['InstanceId'],
+                    resource_details={'routes':route_to_instance}))
 
 
 def audit_sg(findings, region):
@@ -527,7 +556,11 @@ def audit_lambda(findings, region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible Lambda {}: {}'.format(name, policy_string))
+            findings.add(Finding(
+                region,
+                'LAMBDA_PUBLIC',
+                name,
+                resource_details=policy_string))
 
 
 def audit_glacier(findings, region):
@@ -552,7 +585,11 @@ def audit_glacier(findings, region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible Glacier vault {}: {}'.format(name, policy_string))
+            findings.add(Finding(
+                region,
+                'GLACIER_PUBLIC',
+                name,
+                resource_details=policy_string))
 
 
 def audit_kms(findings, region):
@@ -577,7 +614,11 @@ def audit_kms(findings, region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible KMS {}: {}'.format(name, policy_string))
+            findings.add(Finding(
+                region,
+                'KMS_PUBLIC',
+                name,
+                resource_details=policy_string))
 
 
 def audit_sqs(findings, region):
@@ -607,7 +648,11 @@ def audit_sqs(findings, region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible SQS {}: {}'.format(queue_name, policy_string))
+            findings.add(Finding(
+                region,
+                'SQS_PUBLIC',
+                queue_name,
+                resource_details=policy_string))
 
 
 def audit_sns(findings, region):
@@ -636,7 +681,11 @@ def audit_sns(findings, region):
         policy = json.loads(policy_string)
         policy = Policy(policy)
         if policy.is_internet_accessible():
-            print('- Internet accessible SNS {}: {}'.format(topic['TopicArn'], policy_string))
+            findings.add(Finding(
+                region,
+                'SNS_PUBLIC',
+                topic['TopicArn'],
+                resource_details=policy_string))
 
 
 def audit_lightsail(findings, region):
@@ -645,17 +694,23 @@ def audit_lightsail(findings, region):
     if json_blob is None:
         # Service not supported in the region
         return
-    
     if len(json_blob.get('instances', [])) > 0:
-        print('- Lightsail used ({} instances) in region {}'.format(json_blob['instances'], region.name))
+        findings.add(Finding(
+            region,
+            'LIGHTSAIL_IN_USE',
+            None,
+            resource_details={'instance count': len(json_blob['instances'])}))
     
     json_blob = query_aws(region.account, "lightsail-get-load-balancers", region)
     if json_blob is None:
         # Service not supported in the region
         return
-    
     if len(json_blob.get('loadBalancers', [])) > 0:
-        print('- Lightsail used ({} load balancers) in region {}'.format(json_blob['loadBalancers'], region.name))
+        findings.add(Finding(
+            region,
+            'LIGHTSAIL_IN_USE',
+            None,
+            resource_details={'load balancer count': len(json_blob['loadBalancers'])}))
 
 
 
@@ -708,11 +763,11 @@ def audit(accounts, config):
         # Print findings
         for finding in findings:
             conf = audit_config[finding.issue_id]  
-            print('{} - {}: {} ({}): {}'.format(
+            print('{} - {} ({}) - {}: {}'.format(
                 conf['severity'].upper(),
-                conf['title'],
                 finding.region.account.name,
                 finding.region.name,
+                conf['title'],
                 finding.resource_id))
 
 

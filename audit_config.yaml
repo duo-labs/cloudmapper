@@ -1,3 +1,7 @@
+EXCEPTION:
+  title: An exception occurred during the audit
+  severity: High
+  group: ERROR
 S3_PUBLIC_POLICY_GETOBJECT_ONLY:
   title: Internet accessible S3 bucket via policy (only GetObject)
   # This is the right way to make an S3 bucket public when you don't want to put CloudFront 
@@ -87,14 +91,71 @@ DOMAIN_HAS_NO_TRANSFER_LOCK:
   group: Route53
 EBS_SNAPSHOT_PUBLIC:
   title: EBS snapshot is public
-  severity: Low
-  group: EC2
-
-
-
-
-
-EXCEPTION:
-  title: An exception occurred during the audit
   severity: High
-  group: ERROR
+  group: EC2
+RDS_PUBLIC_SNAPSHOT:
+  title: RDS snapshot is public
+  severity: High
+  group: RDS
+RDS_PUBLIC_IP:
+  title: RDS has a public IP address
+  severity: Low
+  group: RDS
+RDS_VPC_CLASSIC:
+  title: RDS is using VPC classic
+  severity: Low
+  group: RDS
+AMI_PUBLIC:
+  title: AMI is public
+  severity: High
+  group: RDS
+ECR_PUBLIC:
+  title: ECR is public
+  severity: Medium
+  group: ECR
+REDSHIFT_PUBLIC_IP:
+  title: Redshift has public IP
+  severity: Medium
+  group: Redshift
+ES_PUBLIC:
+  title: ElasticSearch cluster is publicly accessible
+  severity: High
+  group: ElasticSearch
+CLOUDFRONT_MINIMUM_PROTOCOL_SUPPORT:
+  title: CloudFront is supporting an insecure minimum protocol version
+  severity: Low
+  group: CloudFront
+EC2_SOURCE_DEST_CHECK_OFF:
+  title: EC2 Source/Destination check is off
+  description: If there are no routes, this is not doing anything and should be re-enabled.
+  severity: Info
+  group: EC2
+EC2_CLASSIC:
+  title: EC2 Classic used
+  severity: Info
+  group: EC2
+LAMBDA_PUBLIC:
+  title: Lambda is internet accessible
+  severity: Info
+  group: Lambda
+GLACIER_PUBLIC:
+  title: Glacier vault is publicly accesible
+  severity: Medium
+  group: Glacier
+KMS_PUBLIC:
+  title: KMS is publicly accesible
+  severity: Medium
+  group: KMS
+SQS_PUBLIC:
+  title: SQS is publicly accesible
+  severity: Medium
+  group: SQS
+LIGHTSAIL_IN_USE:
+  title: Lightsail in use
+  description: There is nothing wrong with Lightsail, but it does not tend to be used in enterprises. The instances often were created while testing something and forgotten about.
+  severity: Info
+  group: Lightsail
+
+
+
+
