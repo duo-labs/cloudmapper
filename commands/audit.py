@@ -1,3 +1,4 @@
+import argparse
 import json
 import os.path
 import ssl
@@ -28,6 +29,17 @@ class Finding(object):
         self.issue_id = issue_id
         self.resource_id = resource_id
         self.resource_details = resource_details
+    
+    def __str__(self):
+        return json.dumps({
+            'account_id': self.region.account.local_id,
+            'account_name': self.region.account.name,
+            'region': self.region.name,
+            'issue': self.issue_id,
+            'resource': self.resource_id,
+            'details': self.resource_details
+
+        })
 
 
 class Findings(object):
@@ -714,14 +726,13 @@ def audit_lightsail(findings, region):
 
 
 
-def audit(accounts, config):
+def audit(accounts, config, args):
     """Audit the accounts"""
 
     findings = Findings()
 
     for account in accounts:
         account = Account(None, account)
-        print('Finding resources in account {} ({})'.format(account.name, account.local_id))
 
         for region_json in get_regions(account):
             region = Region(account, region_json)
@@ -762,15 +773,21 @@ def audit(accounts, config):
 
         # Print findings
         for finding in findings:
-            conf = audit_config[finding.issue_id]  
-            print('{} - {} ({}) - {}: {}'.format(
-                conf['severity'].upper(),
-                finding.region.account.name,
-                finding.region.name,
-                conf['title'],
-                finding.resource_id))
+            conf = audit_config[finding.issue_id]
+            if args.json:
+                print(finding)
+            else:
+                print('{} - {} ({}) - {}: {}'.format(
+                    conf['severity'].upper(),
+                    finding.region.account.name,
+                    finding.region.name,
+                    conf['title'],
+                    finding.resource_id))
 
 
 def run(arguments):
-    _, accounts, config = parse_arguments(arguments)
-    audit(accounts, config)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--json", help="Print the json of the issues", default=False, action='store_true')
+    args, accounts, config = parse_arguments(arguments, parser)
+
+    audit(accounts, config, args)
