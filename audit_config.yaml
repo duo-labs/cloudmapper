@@ -1,0 +1,161 @@
+EXCEPTION:
+  title: An exception occurred during the audit
+  severity: High
+  group: ERROR
+S3_PUBLIC_POLICY_GETOBJECT_ONLY:
+  title: Internet accessible S3 bucket via policy (only GetObject)
+  # This is the right way to make an S3 bucket public when you don't want to put CloudFront 
+  # in front of it. For example, maybe you are using a third-party caching service and 
+  # don't care about direct access to the S3 bucket.
+  severity: Info
+  group: S3
+S3_PUBLIC_POLICY:
+  title: Internet accessible S3 bucket via policy
+  severity: High
+  group: S3
+S3_PUBLIC_ACL:
+  title: Public grant to S3 bucket via ACL
+  severity: High
+  group: S3
+S3_ACCESS_BLOCK_OFF:
+  title: S3 Control Access Block is not on
+  severity: Low
+  group: S3
+S3_ACCESS_BLOCK_ALL_ACCESS_TYPES:
+  title: S3 Control Access Block is not blocking all access
+  severity: Low
+  group: S3
+GUARDDUTY_OFF:
+  title: GuardDuty is not enabled
+  severity: Medium
+  group: GuardDuty
+CLOUDTRAIL_OFF:
+  title: CloudTrail is off
+  severity: Low
+  group: CloudTrail
+CLOUDTRAIL_NOT_MULTIREGION:
+  title: CloudTrail is not multiregion
+  severity: Low
+  group: CloudTrail
+PASSWORD_POLICY_NOT_SET:
+  title: Password policy is not set
+  severity: Low
+  group: IAM
+PASSWORD_POLICY_CHARACTER_MINIMUM:
+  title: Password policy does not meet minimum character requirement
+  severity: Low
+  group: IAM
+PASSWORD_POLICY_CHARACTER_SET_REQUIREMENTS:
+  title: Password policy does not require all character sets
+  severity: Low
+  group: IAM
+ROOT_USER_HAS_ACCESS_KEYS:
+  title: Root user has access keys
+  severity: Low
+  group: IAM
+ROOT_USER_HAS_NO_MFA:
+  title: Root user has no MFA
+  severity: Medium
+  group: IAM
+USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA:
+  title: User has password login, but not MFA
+  severity: Medium
+  group: IAM
+USER_HAS_NEVER_LOGGED_IN:
+  title: User has never logged in
+  severity: Medium
+  group: IAM
+USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS:
+  title: User has not logged in for over 90 days
+  severity: Medium
+  group: IAM
+USER_HAS_TWO_ACCESS_KEYS:
+  title: User has two access keys
+  severity: Low
+  group: IAM
+USER_HAS_UNUSED_ACCESS_KEY:
+  title: User has unused access key
+  severity: Low
+  group: IAM
+USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS:
+  title: User has not used access key for over 90 days
+  severity: Low
+  group: IAM
+DOMAIN_NOT_SET_TO_RENEW:
+  title: Domain not set to autorenew
+  severity: High
+  group: Route53
+DOMAIN_HAS_NO_TRANSFER_LOCK:
+  title: Domain does not have a domain transfer lock set
+  severity: Low
+  group: Route53
+EBS_SNAPSHOT_PUBLIC:
+  title: EBS snapshot is public
+  severity: High
+  group: EC2
+RDS_PUBLIC_SNAPSHOT:
+  title: RDS snapshot is public
+  severity: High
+  group: RDS
+RDS_PUBLIC_IP:
+  title: RDS has a public IP address
+  severity: Low
+  group: RDS
+RDS_VPC_CLASSIC:
+  title: RDS is using VPC classic
+  severity: Low
+  group: RDS
+AMI_PUBLIC:
+  title: AMI is public
+  severity: High
+  group: RDS
+ECR_PUBLIC:
+  title: ECR is public
+  severity: Medium
+  group: ECR
+REDSHIFT_PUBLIC_IP:
+  title: Redshift has public IP
+  severity: Medium
+  group: Redshift
+ES_PUBLIC:
+  title: ElasticSearch cluster is publicly accessible
+  severity: High
+  group: ElasticSearch
+CLOUDFRONT_MINIMUM_PROTOCOL_SUPPORT:
+  title: CloudFront is supporting an insecure minimum protocol version
+  severity: Low
+  group: CloudFront
+EC2_SOURCE_DEST_CHECK_OFF:
+  title: EC2 Source/Destination check is off
+  description: If there are no routes, this is not doing anything and should be re-enabled.
+  severity: Info
+  group: EC2
+EC2_CLASSIC:
+  title: EC2 Classic used
+  severity: Info
+  group: EC2
+LAMBDA_PUBLIC:
+  title: Lambda is internet accessible
+  severity: Info
+  group: Lambda
+GLACIER_PUBLIC:
+  title: Glacier vault is publicly accesible
+  severity: Medium
+  group: Glacier
+KMS_PUBLIC:
+  title: KMS is publicly accesible
+  severity: Medium
+  group: KMS
+SQS_PUBLIC:
+  title: SQS is publicly accesible
+  severity: Medium
+  group: SQS
+LIGHTSAIL_IN_USE:
+  title: Lightsail in use
+  description: There is nothing wrong with Lightsail, but it does not tend to be used in enterprises. The instances often were created while testing something and forgotten about.
+  severity: Info
+  group: Lightsail
+
+
+
+

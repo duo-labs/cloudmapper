@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 import argparse
 import json
+import yaml
 import datetime
 import itertools
 import os.path
@@ -18,10 +19,11 @@ from policyuniverse.policy import Policy
 from shared.common import parse_arguments, query_aws, get_parameter_file, get_regions, get_account_stats, get_us_east_1, get_collection_date, get_access_advisor_active_counts
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
+from shared.audit import audit
 
 __description__ = "Create report"
 
-DASHBOARD_OUTPUT_FILE = os.path.join('web', 'account-data', 'report.html')
+REPORT_OUTPUT_FILE = os.path.join('web', 'account-data', 'report.html')
 
 COLOR_PALETTE = [
         'rgba(141,211,199,1)', 'rgba(255,255,179,1)', 'rgba(190,186,218,1)', 'rgba(251,128,114,1)', 'rgba(128,177,211,1)', 'rgba(253,180,98,1)', 'rgba(179,222,105,1)', 'rgba(252,205,229,1)', 'rgba(217,217,217,1)', 'rgba(188,128,189,1)', 'rgba(204,235,197,1)', 'rgba(255,237,111,1)']
@@ -243,6 +245,34 @@ def dashboard(accounts, config, args):
         t['public_ports_data_set'].append(port_data)
 
         color_index = (color_index + 1) % len(COLOR_PALETTE)
+    
+    print('* Auditing accounts')
+    findings = audit(accounts)
+
+    with open("audit_config.yaml", 'r') as f:
+        audit_config = yaml.safe_load(f)
+
+    t['findings'] = {}
+    for finding in findings:
+        conf = audit_config[finding.issue_id]
+        group = t['findings'].get(conf['group'], {})
+        issue = group.get(finding.issue_id, {
+            'title': conf['title'],
+            'description': conf.get('description', ''),
+            'severity': conf['severity'],
+            'hits': []})
+        issue['hits'].append({
+            'account_id': finding.region.account.local_id,
+            'account_name': finding.region.account.name,
+            'region': finding.region.name,
+            'resource': finding.resource_id,
+            'details': json.dumps(finding.resource_details, indent=4)
+        })
+
+        group[finding.issue_id] = issue
+        t['findings'][conf['group']] = group
+
+
 
     # Generate report from template
     with open(REPORT_OUTPUT_FILE,'w') as f:
