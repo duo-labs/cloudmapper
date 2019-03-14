@@ -763,8 +763,11 @@ def audit(accounts, config, args):
                 audit_sns(findings, region)
                 audit_lightsail(findings, region)
             except Exception as e:
-                print('Exception in {} in {}'.format(region.account.name, region.name), file=sys.stderr)
-                traceback.print_exc()
+                findings.add(Finding(
+                    region,
+                    'EXCEPTION',
+                    None,
+                    resource_details={'exception': e, 'traceback': sys.exc_info()}))
 
 
         with open("audit_config.yaml", 'r') as f:
