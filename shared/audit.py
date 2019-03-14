@@ -35,7 +35,6 @@ class Finding(object):
             'issue': self.issue_id,
             'resource': self.resource_id,
             'details': self.resource_details
-
         })
 
 

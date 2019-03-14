@@ -27,7 +27,7 @@ S3_ACCESS_BLOCK_ALL_ACCESS_TYPES:
   group: S3
 GUARDDUTY_OFF:
   title: GuardDuty is not enabled
-  severity: Low
+  severity: Medium
   group: GuardDuty
 CLOUDTRAIL_OFF:
   title: CloudTrail is off
