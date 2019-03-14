@@ -1,0 +1,100 @@
+S3_PUBLIC_POLICY_GETOBJECT_ONLY:
+  title: Internet accessible S3 bucket via policy (only GetObject)
+  # This is the right way to make an S3 bucket public when you don't want to put CloudFront 
+  # in front of it. For example, maybe you are using a third-party caching service and 
+  # don't care about direct access to the S3 bucket.
+  severity: Info
+  group: S3
+S3_PUBLIC_POLICY:
+  title: Internet accessible S3 bucket via policy
+  severity: High
+  group: S3
+S3_PUBLIC_ACL:
+  title: Public grant to S3 bucket via ACL
+  severity: High
+  group: S3
+S3_ACCESS_BLOCK_OFF:
+  title: S3 Control Access Block is not on
+  severity: Low
+  group: S3
+S3_ACCESS_BLOCK_ALL_ACCESS_TYPES:
+  title: S3 Control Access Block is not blocking all access
+  severity: Low
+  group: S3
+GUARDDUTY_OFF:
+  title: GuardDuty is not enabled
+  severity: Low
+  group: GuardDuty
+CLOUDTRAIL_OFF:
+  title: CloudTrail is off
+  severity: Low
+  group: CloudTrail
+CLOUDTRAIL_NOT_MULTIREGION:
+  title: CloudTrail is not multiregion
+  severity: Low
+  group: CloudTrail
+PASSWORD_POLICY_NOT_SET:
+  title: Password policy is not set
+  severity: Low
+  group: IAM
+PASSWORD_POLICY_CHARACTER_MINIMUM:
+  title: Password policy does not meet minimum character requirement
+  severity: Low
+  group: IAM
+PASSWORD_POLICY_CHARACTER_SET_REQUIREMENTS:
+  title: Password policy does not require all character sets
+  severity: Low
+  group: IAM
+ROOT_USER_HAS_ACCESS_KEYS:
+  title: Root user has access keys
+  severity: Low
+  group: IAM
+ROOT_USER_HAS_NO_MFA:
+  title: Root user has no MFA
+  severity: Medium
+  group: IAM
+USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA:
+  title: User has password login, but not MFA
+  severity: Medium
+  group: IAM
+USER_HAS_NEVER_LOGGED_IN:
+  title: User has never logged in
+  severity: Medium
+  group: IAM
+USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS:
+  title: User has not logged in for over 90 days
+  severity: Medium
+  group: IAM
+USER_HAS_TWO_ACCESS_KEYS:
+  title: User has two access keys
+  severity: Low
+  group: IAM
+USER_HAS_UNUSED_ACCESS_KEY:
+  title: User has unused access key
+  severity: Low
+  group: IAM
+USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS:
+  title: User has not used access key for over 90 days
+  severity: Low
+  group: IAM
+DOMAIN_NOT_SET_TO_RENEW:
+  title: Domain not set to autorenew
+  severity: High
+  group: Route53
+DOMAIN_HAS_NO_TRANSFER_LOCK:
+  title: Domain does not have a domain transfer lock set
+  severity: Low
+  group: Route53
+EBS_SNAPSHOT_PUBLIC:
+  title: EBS snapshot is public
+  severity: Low
+  group: EC2
+
+
+
+
+
+EXCEPTION:
+  title: An exception occurred during the audit
+  severity: High
+  group: ERROR
