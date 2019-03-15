@@ -160,6 +160,19 @@
 <div><canvas id="finding_types_chart"></canvas></div>
 <script>makeChart("finding_types_chart", {{t.account_names}}, {{ t.findings_severity_by_account_chart }}, legend=true, x_axes=true, y_axes=true)</script>
 
+<h3>Links to findings</h3>
+{% for severity in t.severities %}
+    {% if t.severities[severity]|length > 0 %}
+        <b>{{ severity }}</b>
+        <ul>
+        {% for finding in t.severities[severity] %}
+            <li> <a href="#{{ t.severities[severity][finding].id }}">{{ t.severities[severity][finding].title }}</a>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}
+
+
 <h3>Counts of findings by account</h3>
 <div><canvas id="findings_chart"></canvas></div>
 <script>makeChart("findings_chart", {{t.account_names}}, {{ t.finding_counts_by_account_chart }}, legend=true, x_axes=true, y_axes=true)</script>
