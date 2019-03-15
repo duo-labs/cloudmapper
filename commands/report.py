@@ -287,10 +287,19 @@ def report(accounts, config, args):
             'backgroundColor': severity['color'],
             'borderWidth': 1
         })
-
+    
+    # Create list by severity
+    t['severities'] = {}
+    for severity in severities:
+        t['severities'][severity['name']] = {}
+    for finding in findings:
+        conf = audit_config[finding.issue_id]
+        t['severities'][conf['severity']][finding.issue_id] = {
+            'title': conf['title'],
+            'id': finding.issue_id}
+        #t['severities'][severity['name']] = severity_issue_list
 
     # Create chart for finding counts
-    
     finding_type_set = {}
     
     for f in findings:
