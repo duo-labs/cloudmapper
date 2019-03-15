@@ -154,11 +154,23 @@
 <script>makeChart("public_ports", {{t.account_names}}, {{ t.public_ports_data_set }}, legend=true, x_axes=true, y_axes=true)</script>
 
 <hr>
+<h1>Findings Summary</h1>
+
+<h3>Counts of finding types by account</h3>
+<div><canvas id="finding_types_chart"></canvas></div>
+<script>makeChart("finding_types_chart", {{t.account_names}}, {{ t.findings_severity_by_account_chart }}, legend=true, x_axes=true, y_axes=true)</script>
+
+<h3>Counts of findings by account</h3>
+<div><canvas id="findings_chart"></canvas></div>
+<script>makeChart("findings_chart", {{t.account_names}}, {{ t.finding_counts_by_account_chart }}, legend=true, x_axes=true, y_axes=true)</script>
+
+<hr>
 <h1>Findings</h1>
 {% for finding_group in t.findings %}
-<h2>{{ finding_group }}</h3>
+<h2>{{ finding_group }}</h2>
 
 {% for issue_id in t.findings[finding_group] %}
+    <div class="section"><a name="{{issue_id}}"></a>
     <h3>{{ t.findings[finding_group][issue_id]['title'] }}</h3>
     <p>Severity: {{t.findings[finding_group][issue_id]['severity']}}
     <p>{{t.findings[finding_group][issue_id]['description']}}
@@ -170,6 +182,7 @@
       {% endif %}
     {% endfor %}
     </ul>
+    </div>
 {% endfor %}
 {% endfor %}
 
