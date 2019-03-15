@@ -33,8 +33,8 @@ BAD_COLOR = 'rgb(204, 120, 120)'
 INACTIVE_COLOR = 'rgb(244, 178, 178)'
 
 
-def dashboard(accounts, config, args):
-    '''Create dashboard'''
+def report(accounts, config, args):
+    '''Create report'''
 
     # Create directory for output file if it doesn't already exists
     try:
@@ -44,8 +44,8 @@ def dashboard(accounts, config, args):
         pass
 
     # Read template
-    with open(os.path.join('templates', 'report.html'),'r') as dashboard_template:
-        template = Template(dashboard_template.read())
+    with open(os.path.join('templates', 'report.html'),'r') as report_template:
+        template = Template(report_template.read())
     
     # Data to be passed to the template
     t = {}
@@ -251,6 +251,69 @@ def dashboard(accounts, config, args):
 
     with open("audit_config.yaml", 'r') as f:
         audit_config = yaml.safe_load(f)
+    
+    t['findings_severity_by_account_chart'] = []
+
+
+    # Figure out the counts of findings for each account
+    severities = [
+        {'name': 'High', 'color': 'rgba(255,80,80,1)'},
+        {'name': 'Medium', 'color': 'rgba(255,204,0,1)'},
+        {'name': 'Low', 'color': 'rgba(255,255,102,1)'},
+        {'name': 'Info', 'color': 'rgba(153,255,102,1)'},
+        {'name': 'Verbose', 'color': 'rgba(153,221,255,1)'}]
+    
+    # Create chart for finding type counts
+    findings_severity_by_account = {}
+    for account in accounts:
+        findings_severity_by_account[account['name']] = {}
+        for severity in severities:
+            findings_severity_by_account[account['name']][severity['name']] = {}
+
+        for finding in findings:
+            conf = audit_config[finding.issue_id]
+            count = findings_severity_by_account[finding.account_name][conf['severity']].get(finding.issue_id, 0)
+            findings_severity_by_account[finding.account_name][conf['severity']][finding.issue_id] = count + 1
+
+    t['findings_severity_by_account_chart'] = []
+    for severity in severities:
+        severity_counts_by_account = []
+        for account in accounts:
+            severity_counts_by_account.append(len(findings_severity_by_account[finding.account_name][severity['name']]))
+
+        t['findings_severity_by_account_chart'].append({
+            'label': severity['name'],
+            'data': severity_counts_by_account,
+            'backgroundColor': severity['color'],
+            'borderWidth': 1
+        })
+
+
+    # Create chart for finding counts
+    
+    finding_type_set = {}
+    
+    for f in findings:
+        finding_type_set[f.issue_id] = 1
+    
+    t['finding_counts_by_account_chart'] = []
+    for finding_type in finding_type_set:
+        finding_counts = []
+        for account in accounts:
+            count = 0
+            for severity in findings_severity_by_account[account['name']]:
+                count += findings_severity_by_account[account['name']][severity].get(finding_type, 0)
+            finding_counts.append(count)
+            
+        t['finding_counts_by_account_chart'].append({
+            'label': finding_type,
+            'data': finding_counts,
+            'backgroundColor': COLOR_PALETTE[color_index],
+            'borderWidth': 1
+        })
+
+        color_index = (color_index + 1) % len(COLOR_PALETTE)
+    
 
     t['findings'] = {}
     for finding in findings:
@@ -289,4 +352,4 @@ def run(arguments):
         type=int)
     args, accounts, config = parse_arguments(arguments, parser)
 
-    dashboard(accounts, config, args)
+    report(accounts, config, args)

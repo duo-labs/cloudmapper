@@ -36,6 +36,10 @@ class Finding(object):
             'resource': self.resource_id,
             'details': self.resource_details
         })
+    
+    @property
+    def account_name(self):
+        return self.region.account.name
 
 
 class Findings(object):
