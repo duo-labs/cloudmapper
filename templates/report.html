@@ -184,11 +184,12 @@
 
 {% for issue_id in t.findings[finding_group] %}
     <div class="section"><a name="{{issue_id}}"></a>
-    <h3>{{ t.findings[finding_group][issue_id]['title'] }}</h3>
-    <p>Severity: {{t.findings[finding_group][issue_id]['severity']}}
-    <p>{{t.findings[finding_group][issue_id]['description']}}
+    {% set finding = t.findings[finding_group][issue_id] %} 
+    <h3>{{ finding['title'] }}</h3>
+    <p>Severity: <b style="background-color: {{finding['severity_color']}}">{{finding['severity']}}</b>
+    <p>{{finding['description']}}
     <ul>
-    {% for hit in t.findings[finding_group][issue_id]['hits'] %}
+    {% for hit in finding['hits'] %}
       <li>{{hit['account_name']}} ({{hit['account_id']}}) - {{hit['region']}}{% if hit['resource'] is not none%}: {{hit['resource']}}{% endif %}
       {% if hit['details'] != 'null'%}
         <pre>{{hit['details']}}</pre>
