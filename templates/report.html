@@ -186,7 +186,8 @@
     <div class="section"><a name="{{issue_id}}"></a>
     {% set finding = t.findings[finding_group][issue_id] %} 
     <h3>{{ finding['title'] }}</h3>
-    <b style="background-color: {{finding['severity_color']}}">Severity: {{finding['severity']}}</b>
+    <p><b style="background-color: {{finding['severity_color']}}">Severity: {{finding['severity']}}</b><br>
+    <b>Issue ID:</b> {{issue_id}}</p>
     <p>{{finding['description']}}
     <hr>
     <ul>
