@@ -28,6 +28,13 @@ REPORT_OUTPUT_FILE = os.path.join('web', 'account-data', 'report.html')
 COLOR_PALETTE = [
         'rgba(141,211,199,1)', 'rgba(255,255,179,1)', 'rgba(190,186,218,1)', 'rgba(251,128,114,1)', 'rgba(128,177,211,1)', 'rgba(253,180,98,1)', 'rgba(179,222,105,1)', 'rgba(252,205,229,1)', 'rgba(217,217,217,1)', 'rgba(188,128,189,1)', 'rgba(204,235,197,1)', 'rgba(255,237,111,1)']
 
+SEVERITIES = [
+        {'name': 'High', 'color': 'rgba(216, 91, 84, 1)'}, # Red
+        {'name': 'Medium', 'color': 'rgba(252, 209, 83, 1)'}, # Orange
+        {'name': 'Low', 'color': 'rgba(255, 255, 102, 1)'}, # Yellow
+        {'name': 'Info', 'color': 'rgba(154, 214, 156, 1)'}, # Green
+        {'name': 'Verbose', 'color': 'rgba(133, 163, 198, 1)'}] # Blue
+
 ACTIVE_COLOR = 'rgb(139, 214, 140)'
 BAD_COLOR = 'rgb(204, 120, 120)'
 INACTIVE_COLOR = 'rgb(244, 178, 178)'
@@ -256,18 +263,12 @@ def report(accounts, config, args):
 
 
     # Figure out the counts of findings for each account
-    severities = [
-        {'name': 'High', 'color': 'rgba(216, 91, 84, 1)'}, # Red
-        {'name': 'Medium', 'color': 'rgba(252, 209, 83, 1)'}, # Orange
-        {'name': 'Low', 'color': 'rgba(255, 255, 102, 1)'}, # Yellow
-        {'name': 'Info', 'color': 'rgba(154, 214, 156, 1)'}, # Green
-        {'name': 'Verbose', 'color': 'rgba(133, 163, 198, 1)'}] # Blue
     
     # Create chart for finding type counts
     findings_severity_by_account = {}
     for account in accounts:
         findings_severity_by_account[account['name']] = {}
-        for severity in severities:
+        for severity in SEVERITIES:
             findings_severity_by_account[account['name']][severity['name']] = {}
 
         for finding in findings:
@@ -276,7 +277,7 @@ def report(accounts, config, args):
             findings_severity_by_account[finding.account_name][conf['severity']][finding.issue_id] = count + 1
 
     t['findings_severity_by_account_chart'] = []
-    for severity in severities:
+    for severity in SEVERITIES:
         severity_counts_by_account = []
         for account in accounts:
             severity_counts_by_account.append(len(findings_severity_by_account[finding.account_name][severity['name']]))
@@ -290,7 +291,7 @@ def report(accounts, config, args):
     
     # Create list by severity
     t['severities'] = {}
-    for severity in severities:
+    for severity in SEVERITIES:
         t['severities'][severity['name']] = {}
     for finding in findings:
         conf = audit_config[finding.issue_id]
@@ -330,7 +331,7 @@ def report(accounts, config, args):
         group = t['findings'].get(conf['group'], {})
 
         # Get the severity struct
-        for severity in severities:
+        for severity in SEVERITIES:
             if severity['name'] == conf['severity']:
                 break
 
@@ -339,14 +340,25 @@ def report(accounts, config, args):
             'description': conf.get('description', ''),
             'severity': conf['severity'],
             'severity_color': severity['color'],
+            'is_global': conf.get('is_global', False),
+            'accounts': {}})
+        
+        account_hits = issue['accounts'].get(finding.region.account.local_id, 
+            {
+                'account_name': finding.region.account.name,
+                'regions': {}
+            })
+        
+        region_hits = account_hits['regions'].get(finding.region.name, {
             'hits': []})
-        issue['hits'].append({
-            'account_id': finding.region.account.local_id,
-            'account_name': finding.region.account.name,
-            'region': finding.region.name,
+          
+        region_hits['hits'].append({
             'resource': finding.resource_id,
             'details': json.dumps(finding.resource_details, indent=4)
         })
+
+        account_hits['regions'][finding.region.name] = region_hits
+        issue['accounts'][finding.region.account.local_id] = account_hits
 
         group[finding.issue_id] = issue
         t['findings'][conf['group']] = group
