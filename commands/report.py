@@ -340,14 +340,25 @@ def report(accounts, config, args):
             'description': conf.get('description', ''),
             'severity': conf['severity'],
             'severity_color': severity['color'],
+            'is_global': conf.get('is_global', False),
+            'accounts': {}})
+        
+        account_hits = issue['accounts'].get(finding.region.account.local_id, 
+            {
+                'account_name': finding.region.account.name,
+                'regions': {}
+            })
+        
+        region_hits = account_hits['regions'].get(finding.region.name, {
             'hits': []})
-        issue['hits'].append({
-            'account_id': finding.region.account.local_id,
-            'account_name': finding.region.account.name,
-            'region': finding.region.name,
+          
+        region_hits['hits'].append({
             'resource': finding.resource_id,
             'details': json.dumps(finding.resource_details, indent=4)
         })
+
+        account_hits['regions'][finding.region.name] = region_hits
+        issue['accounts'][finding.region.account.local_id] = account_hits
 
         group[finding.issue_id] = issue
         t['findings'][conf['group']] = group

@@ -190,12 +190,28 @@
     <b>Issue ID:</b> {{issue_id}}</p>
     <p>{{finding['description']}}
     <hr>
+
+
     <ul>
-    {% for hit in finding['hits'] %}
-      <li>{{hit['account_name']}} ({{hit['account_id']}}) - {{hit['region']}}{% if hit['resource'] is not none%}: {{hit['resource']}}{% endif %}
-      {% if hit['details'] != 'null'%}
-        <pre>{{hit['details']}}</pre>
-      {% endif %}
+    {% set account_hits = t.findings[finding_group][issue_id]['accounts'] %}
+    {% for account in account_hits %}
+    <li>{{account_hits[account]['account_name']}} ({{account}})
+        <ul>
+        {% for region in account_hits[account]['regions'] %}
+
+        
+            {% if not t.findings[finding_group][issue_id]['is_global'] %}<li>{{region}} {% endif %}
+            <ol>
+                {% set hits = account_hits[account]['regions'][region]['hits'] %}
+                {% for hit in hits %}
+                    {% if hit['resource'] is not none%}<li> {{hit['resource']}}{% endif %}
+                    {% if hit['details'] != 'null'%}
+                    <pre>{{hit['details']}}</pre>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        {% endfor %}
+        </ul>
     {% endfor %}
     </ul>
     </div>
