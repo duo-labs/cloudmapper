@@ -4,150 +4,182 @@ EXCEPTION:
   group: ERROR
 S3_PUBLIC_POLICY_GETOBJECT_ONLY:
   title: Internet accessible S3 bucket via policy (only GetObject)
-  # This is the right way to make an S3 bucket public when you don't want to put CloudFront 
-  # in front of it. For example, maybe you are using a third-party caching service and 
-  # don't care about direct access to the S3 bucket.
+  description: This is the right way to make an S3 bucket public when you don't want to put CloudFront in front of it. This may be done when a third-party caching service is being used and you don't care about direct access to the S3 bucket.
   severity: Info
   group: S3
 S3_PUBLIC_POLICY:
   title: Internet accessible S3 bucket via policy
+  description: This S3 bucket allows more public access than simply GetObject. These public privileges should be reduced.
   severity: High
   group: S3
 S3_PUBLIC_ACL:
   title: Public grant to S3 bucket via ACL
+  description: Access to S3 buckets should be controlled by policies, not ACL. ACLs result in overly permissive privileges to list the contents of the bucket.
   severity: High
   group: S3
 S3_ACCESS_BLOCK_OFF:
   title: S3 Control Access Block is not on
+  description: This control prevents S3 buckets from being made public.  If there are no public S3 buckets in the account this should be turned on.
   severity: Low
   group: S3
 S3_ACCESS_BLOCK_ALL_ACCESS_TYPES:
   title: S3 Control Access Block is not blocking all access
+  description: This control prevents S3 buckets from being made public.  Confirm that the exception that has been made is necessary.
   severity: Low
   group: S3
 GUARDDUTY_OFF:
   title: GuardDuty is not enabled
+  description: GuardDuty is an AWS threat detection service that detects compromised access keys, EC2 instances, and more. It should be enabled in all regions.
   severity: Medium
   group: GuardDuty
 CLOUDTRAIL_OFF:
   title: CloudTrail is off
+  description: CloudTrail provides audit logs for an account and should be enabled. Preferably, this should be done at the Organization level.
   severity: Low
   group: CloudTrail
 CLOUDTRAIL_NOT_MULTIREGION:
   title: CloudTrail is not multiregion
+  description: When CloudTrail was first released, you had to specify which regions to enable it in.  It now defaults to recording audit logs for all regions.  It should be configured for multiregion.
   severity: Low
   group: CloudTrail
 PASSWORD_POLICY_NOT_SET:
   title: Password policy is not set
+  description: A password policy helps ensure strong passwords are used by IAM Users. Setting a password policy does not impact existing users, so after setting this, you should ensure users reset their passwords so that they are in compliance.
   severity: Low
   group: IAM
 PASSWORD_POLICY_CHARACTER_MINIMUM:
   title: Password policy does not meet minimum character requirement
+  description: A password length requirement helps ensure strong passwords are used by IAM Users. Setting a password policy does not impact existing users, so after setting this, you should ensure users reset their passwords so that they are in compliance.
   severity: Low
   group: IAM
 PASSWORD_POLICY_CHARACTER_SET_REQUIREMENTS:
   title: Password policy does not require all character sets
+  description: A password character set requirement help ensure strong passwords are used by IAM Users. Setting a password policy does not impact existing users, so after setting this, you should ensure users reset their passwords so that they are in compliance.
   severity: Low
   group: IAM
 ROOT_USER_HAS_ACCESS_KEYS:
   title: Root user has access keys
+  description: The root user should be used only in exceptional cases, and should therefore not use access keys. IAM Users or Roles should be used instead.
   severity: Low
   group: IAM
 ROOT_USER_HAS_NO_MFA:
   title: Root user has no MFA
+  description: MFA (multi-factor authentication) helps mitigate account take-overs. If this root user does not have an MFA associated with them, the account can more easily be compromised, especially through email account compromises, even if you do not know the password (as happens with Organization created accounts).
   severity: Medium
   group: IAM
 USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA:
   title: User has password login, but not MFA
+  description: MFA (multi-factor authentication) helps mitigate user account take-over.
   severity: Medium
   group: IAM
 USER_HAS_NEVER_LOGGED_IN:
   title: User has never logged in
+  description: The password for these users should be removed. If the user has no access keys, the user should be removed.  The password may be a default password or may have been transmitted to the user insecurely, such that the user account may be compromised.
   severity: Medium
   group: IAM
 USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS:
   title: User has not logged in for over 90 days
+  description: The user has not used their password login for over 90 days.  The password login should be removed from this user, or the user entirely.
   severity: Medium
   group: IAM
 USER_HAS_TWO_ACCESS_KEYS:
   title: User has two access keys
+  description: A user should only have one access key.  The ability to have multiple access keys is only for when an access key is being rolled, and the old one should be removed. The user should identify one access key to use and the other should be removed.
   severity: Low
   group: IAM
 USER_HAS_UNUSED_ACCESS_KEY:
   title: User has unused access key
+  description: These users have access keys that have never been used. These access keys may have been communicated to the user insecurely, or otherwise may not be as well protected as they should.
   severity: Low
   group: IAM
 USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS:
   title: User has not used access key for over 90 days
+  description: Access keys that have not been used for a while should be removed as they may have been lost, but still grant access to the account.
   severity: Low
   group: IAM
 DOMAIN_NOT_SET_TO_RENEW:
   title: Domain not set to autorenew
+  description: This domain will no longer be under your control once it expires and may be taken over by someone else.
   severity: High
   group: Route53
 DOMAIN_HAS_NO_TRANSFER_LOCK:
   title: Domain does not have a domain transfer lock set
+  description: A domain transfer lock mitigates the possibility of someone else taking ownership of your domain. Not all TLD's support this, for example, the .io domain does not support this.
   severity: Low
   group: Route53
 EBS_SNAPSHOT_PUBLIC:
   title: EBS snapshot is public
+  description: This is essentially a copy of a hard-drive and may contain sensitive information. These are very easy for attackers to find.
   severity: High
   group: EC2
 RDS_PUBLIC_SNAPSHOT:
   title: RDS snapshot is public
+  description: This is a copy of the contents of a database and may contain sensitive information. These are very easy for attackers to find.
   severity: High
   group: RDS
 RDS_PUBLIC_IP:
   title: RDS has a public IP address
+  description: Check whether this RDS instance is publicly accessible. Best practice is to put RDS instances in private subnets and not give them public IPs.
   severity: Low
   group: RDS
 RDS_VPC_CLASSIC:
   title: RDS is using VPC classic
+  description: At one point AWS did not have the concept of VPCs so all network resources had public IPs.  Workloads not in VPCs cannot take advantage of certain security benefits and should be migrated.  Databases should be in private subnets.
   severity: Low
   group: RDS
 AMI_PUBLIC:
   title: AMI is public
+  description: An AMI is used to install the OS for an EC2 instance. These may contain sensitive information. These are very easy for attackers to find.
   severity: High
   group: RDS
 ECR_PUBLIC:
   title: ECR is public
+  description: The Amazon Elastic Container Registry (ECR) stores docker images. These may contain sensitive information. These are somewhat hard for an attacker to find, but should not be made public.
   severity: Medium
   group: ECR
 REDSHIFT_PUBLIC_IP:
   title: Redshift has public IP
+  description: Redshift databases should be in private subnets. Databases should not have public IPs. You should additionally check if the Security Groups associated with this are allowing it to be publicly accessible.
   severity: Medium
   group: Redshift
 ES_PUBLIC:
   title: ElasticSearch cluster is publicly accessible
+  description: ElasticSearch databases should be public. Change the resource policy to fix this.
   severity: High
   group: ElasticSearch
 CLOUDFRONT_MINIMUM_PROTOCOL_SUPPORT:
   title: CloudFront is supporting an insecure minimum protocol version
+  description: An advanced attacker with a privileged position in a network could obtain access to the encrypted traffic coming to this CloudFront distribution because this is supported an older, weaker, protocol version.
   severity: Low
   group: CloudFront
 EC2_SOURCE_DEST_CHECK_OFF:
   title: EC2 Source/Destination check is off
-  description: If there are no routes, this is not doing anything and should be re-enabled.
+  description: If there are no routes, this is not doing anything and the Source/Destination check should be re-enabled.
   severity: Info
   group: EC2
 EC2_CLASSIC:
   title: EC2 Classic used
+  description: EC2 Classic does not use VPCs. Some security benefits are therefore not possible. These workloads should be migrated to modern EC2 instances.
   severity: Info
   group: EC2
 LAMBDA_PUBLIC:
   title: Lambda is internet accessible
-  severity: Info
+  description: Lambdas should not be publicly callable. Other resources, such as an API Gateway should be used to call the Lambda.
+  severity: Medium
   group: Lambda
 GLACIER_PUBLIC:
   title: Glacier vault is publicly accesible
+  description: Glacier is a storage service like S3. These vaults are harder to find, but may still contain sensitive information. The resource policy should be locked down to allow access only by certain accounts.
   severity: Medium
   group: Glacier
 KMS_PUBLIC:
   title: KMS is publicly accesible
+  description: This may allow an attacker to decrypt data using the KMS key.
   severity: Medium
   group: KMS
 SQS_PUBLIC:
   title: SQS is publicly accesible
+  description: This may allow an attacker to read or write messages to this queue.
   severity: Medium
   group: SQS
 LIGHTSAIL_IN_USE:
