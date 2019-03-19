@@ -257,11 +257,11 @@ def report(accounts, config, args):
 
     # Figure out the counts of findings for each account
     severities = [
-        {'name': 'High', 'color': 'rgba(255,80,80,1)'},
-        {'name': 'Medium', 'color': 'rgba(255,204,0,1)'},
-        {'name': 'Low', 'color': 'rgba(255,255,102,1)'},
-        {'name': 'Info', 'color': 'rgba(153,255,102,1)'},
-        {'name': 'Verbose', 'color': 'rgba(153,221,255,1)'}]
+        {'name': 'High', 'color': 'rgba(216, 91, 84, 1)'}, # Red
+        {'name': 'Medium', 'color': 'rgba(252, 209, 83, 1)'}, # Orange
+        {'name': 'Low', 'color': 'rgba(255, 255, 102, 1)'}, # Yellow
+        {'name': 'Info', 'color': 'rgba(154, 214, 156, 1)'}, # Green
+        {'name': 'Verbose', 'color': 'rgba(133, 163, 198, 1)'}] # Blue
     
     # Create chart for finding type counts
     findings_severity_by_account = {}
@@ -328,10 +328,17 @@ def report(accounts, config, args):
     for finding in findings:
         conf = audit_config[finding.issue_id]
         group = t['findings'].get(conf['group'], {})
+
+        # Get the severity struct
+        for severity in severities:
+            if severity['name'] == conf['severity']:
+                break
+
         issue = group.get(finding.issue_id, {
             'title': conf['title'],
             'description': conf.get('description', ''),
             'severity': conf['severity'],
+            'severity_color': severity['color'],
             'hits': []})
         issue['hits'].append({
             'account_id': finding.region.account.local_id,
