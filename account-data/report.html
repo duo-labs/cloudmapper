@@ -20,7 +20,7 @@
     <script src="../js/chart.js"></script>
     <script src="../js/report.js"></script>
 
-    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 64x64" type="image/vnd.microsoft.icon">
+    <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 64x64" type="image/vnd.microsoft.icon">
 </head>
 
 <body>
@@ -408,5 +408,420 @@
 <h3>Counts of public resources by port ranges</h3>
 <div><canvas id="public_ports"></canvas></div>
 <script>makeChart("public_ports", ['test'], [{'label': '22,80,443', 'data': [1], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': '22', 'data': [3], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': '22,3306', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': '80,443', 'data': [2], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+
+<hr>
+<h1>Findings Summary</h1>
+
+<h3>Counts of finding types by account</h3>
+<div><canvas id="finding_types_chart"></canvas></div>
+<script>makeChart("finding_types_chart", ['test'], [{'label': 'High', 'data': [0], 'backgroundColor': 'rgba(216, 91, 84, 1)', 'borderWidth': 1}, {'label': 'Medium', 'data': [1], 'backgroundColor': 'rgba(252, 209, 83, 1)', 'borderWidth': 1}, {'label': 'Low', 'data': [4], 'backgroundColor': 'rgba(255, 255, 102, 1)', 'borderWidth': 1}, {'label': 'Info', 'data': [1], 'backgroundColor': 'rgba(154, 214, 156, 1)', 'borderWidth': 1}, {'label': 'Verbose', 'data': [0], 'backgroundColor': 'rgba(133, 163, 198, 1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+
+<h3>Links to findings</h3>
+
+    
+
+    
+        <b>Medium</b>
+        <ul>
+        
+            <li> <a href="#GUARDDUTY_OFF">GuardDuty is not enabled</a>
+        
+        </ul>
+    
+
+    
+        <b>Low</b>
+        <ul>
+        
+            <li> <a href="#PASSWORD_POLICY_NOT_SET">Password policy is not set</a>
+        
+            <li> <a href="#USER_HAS_UNUSED_ACCESS_KEY">User has unused access key</a>
+        
+            <li> <a href="#S3_ACCESS_BLOCK_ALL_ACCESS_TYPES">S3 Control Access Block is not blocking all access</a>
+        
+            <li> <a href="#RDS_PUBLIC_IP">RDS has a public IP address</a>
+        
+        </ul>
+    
+
+    
+        <b>Info</b>
+        <ul>
+        
+            <li> <a href="#S3_PUBLIC_POLICY_GETOBJECT_ONLY">Internet accessible S3 bucket via policy (only GetObject)</a>
+        
+        </ul>
+    
+
+    
+
+
+
+<h3>Counts of findings by account</h3>
+<div><canvas id="findings_chart"></canvas></div>
+<script>makeChart("findings_chart", ['test'], [{'label': 'S3_PUBLIC_POLICY_GETOBJECT_ONLY', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'PASSWORD_POLICY_NOT_SET', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'USER_HAS_UNUSED_ACCESS_KEY', 'data': [2], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'S3_ACCESS_BLOCK_ALL_ACCESS_TYPES', 'data': [1], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'GUARDDUTY_OFF', 'data': [13], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'RDS_PUBLIC_IP', 'data': [2], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+
+<hr>
+<h1>Findings</h1>
+
+<h2>S3</h2>
+
+
+    <div class="section"><a name="S3_PUBLIC_POLICY_GETOBJECT_ONLY"></a>
+     
+    <h3>Internet accessible S3 bucket via policy (only GetObject)</h3>
+    <p><b style="background-color: rgba(154, 214, 156, 1)">Severity: Info</b><br>
+    <b>Issue ID:</b> S3_PUBLIC_POLICY_GETOBJECT_ONLY</p>
+    <p>This is the right way to make an S3 bucket public when you don't want to put CloudFront in front of it. This may be done when a third-party caching service is being used and you don't care about direct access to the S3 bucket.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>test (954574370272)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> publicbuckettest-summitroute
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="S3_ACCESS_BLOCK_ALL_ACCESS_TYPES"></a>
+     
+    <h3>S3 Control Access Block is not blocking all access</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> S3_ACCESS_BLOCK_ALL_ACCESS_TYPES</p>
+    <p>This control prevents S3 buckets from being made public.  Confirm that the exception that has been made is necessary.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>test (954574370272)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    
+                    
+                    <pre>{
+    "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "BlockPublicPolicy": false,
+        "IgnorePublicAcls": true,
+        "RestrictPublicBuckets": false
+    }
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>IAM</h2>
+
+
+    <div class="section"><a name="PASSWORD_POLICY_NOT_SET"></a>
+     
+    <h3>Password policy is not set</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> PASSWORD_POLICY_NOT_SET</p>
+    <p>A password policy helps ensure strong passwords are used by IAM Users. Setting a password policy does not impact existing users, so after setting this, you should ensure users reset their passwords so that they are in compliance.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>test (954574370272)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="USER_HAS_UNUSED_ACCESS_KEY"></a>
+     
+    <h3>User has unused access key</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> USER_HAS_UNUSED_ACCESS_KEY</p>
+    <p>These users have access keys that have never been used. These access keys may have been communicated to the user insecurely, or otherwise may not be as well protected as they should.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>test (954574370272)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> bobby
+                    
+                    <pre>{
+    "Unused key": 1
+}</pre>
+                    
+                
+                    <li> peter
+                    
+                    <pre>{
+    "Unused key": 1
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>GuardDuty</h2>
+
+
+    <div class="section"><a name="GUARDDUTY_OFF"></a>
+     
+    <h3>GuardDuty is not enabled</h3>
+    <p><b style="background-color: rgba(252, 209, 83, 1)">Severity: Medium</b><br>
+    <b>Issue ID:</b> GUARDDUTY_OFF</p>
+    <p>GuardDuty is an AWS threat detection service that detects compromised access keys, EC2 instances, and more. It should be enabled in all regions.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>test (954574370272)
+        <ul>
+        
+
+        
+            <li>ap-south-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>eu-west-3 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>eu-west-2 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>eu-west-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>ap-northeast-2 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>ap-northeast-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>sa-east-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>ca-central-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>ap-southeast-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>ap-southeast-2 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>eu-central-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>us-east-2 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+
+        
+            <li>us-west-1 
+            <ol>
+                
+                
+                    
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>RDS</h2>
+
+
+    <div class="section"><a name="RDS_PUBLIC_IP"></a>
+     
+    <h3>RDS has a public IP address</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> RDS_PUBLIC_IP</p>
+    <p>Check whether this RDS instance is publicly accessible. Best practice is to put RDS instances in private subnets and not give them public IPs.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>test (954574370272)
+        <ul>
+        
+
+        
+            <li>us-west-2 
+            <ol>
+                
+                
+                    <li> rm1hm5h4o2wq3b0
+                    
+                
+                    <li> wd1ea7jukk13ger
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+
+
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
