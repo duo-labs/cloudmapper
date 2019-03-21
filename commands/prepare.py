@@ -28,8 +28,9 @@ import itertools
 import argparse
 import pyjq
 from netaddr import IPNetwork, IPAddress
-from shared.common import get_account, query_aws, get_regions, is_external_cidr
+from shared.common import get_account, query_aws, get_parameter_file, get_regions, is_external_cidr
 from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
+import urllib.parse
 
 __description__ = "Generate network connection information file"
 
@@ -99,6 +100,16 @@ def get_sgs(vpc):
     sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
     return pyjq.all('.SecurityGroups[] | select(.VpcId == "{}")'.format(vpc.local_id), sgs)
 
+def get_target_health_descriptions(elb):
+    target_groups = get_parameter_file(elb.region, "elbv2", "describe-target-groups", elb.arn)
+    if target_groups is None:
+        return {}
+    tg_arns = pyjq.all(".TargetGroups[].TargetGroupArn", target_groups)
+    targets = []
+    for tg_arn in tg_arns:
+        pf = get_parameter_file(elb.region, "elbv2", "describe-target-health", tg_arn)
+        targets.append(pf)
+    return targets
 
 def get_external_cidrs(account, config):
     external_cidrs = []
@@ -144,6 +155,23 @@ def get_connections(cidrs, vpc, outputfilter):
     for instance in vpc.leaves:
         for sg in instance.security_groups():
             sg_to_instance_mapping.setdefault(sg, {})[instance] = True
+
+    # Connect ELBs to their instances
+    for elb in vpc.leaves:
+        if elb.node_type != "elb":
+            continue
+        target_health_descriptions = get_target_health_descriptions(elb)
+        for thd in target_health_descriptions:
+            target_ids = pyjq.all('.TargetHealthDescriptions[].Target.Id', thd)
+            for target_id in target_ids:
+                # Find target by EC2 ID or EC2 IP
+                ec2 = None
+                for leaf in vpc.leaves:
+                    if leaf.node_type == "elb":
+                        continue
+                    if target_id == leaf.name or target_id in leaf.ips or target_id == leaf.local_id:
+                        ec2 = leaf
+                        add_connection(connections, elb, ec2, thd)
 
     # For each security group, find all the instances that are allowed to connect to instances
     # within that group.
@@ -346,6 +374,7 @@ def prepare(account, config, outputfilter):
 
     with open('web/data.json', 'w') as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
+
 def run(arguments):
     # Parse arguments
     parser = argparse.ArgumentParser()
