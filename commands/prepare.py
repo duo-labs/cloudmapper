@@ -65,7 +65,7 @@ def get_vpc_peerings(region):
 
 def get_subnets(az):
     subnets = query_aws(az.account, "ec2-describe-subnets", az.region)
-    resource_filter = '.Subnets[] | select(.VpcId == "{}") | select(.AvailabilityZone == "{}")'
+    resource_filter = '.Subnets[] | select(.VpcId == "{}") | select(.AvailabilityZone == "us-east-1d")'
     return pyjq.all(resource_filter.format(az.vpc.local_id, az.local_id), subnets)
 
 
