@@ -69,9 +69,16 @@ def get_subnets(az):
     return pyjq.all(resource_filter.format(az.vpc.local_id, az.local_id), subnets)
 
 
-def get_ec2s(subnet):
+def get_ec2s(subnet, outputfilter):
+    ec2s_filter = ""
+    if "ec2_tags" in outputfilter:
+        conditions = [c.split("=") for c in outputfilter["ec2_tags"].split(",")]
+        for pair in conditions:
+            if len(pair) == 2:
+                ec2s_filter += '| select(.Tags | from_entries | .{} == "{}")'.format(pair[0], pair[1])
+
     instances = query_aws(subnet.account, "ec2-describe-instances", subnet.region)
-    resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")'
+    resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")' + ec2s_filter
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
@@ -234,7 +241,7 @@ def build_data_structure(account_data, config, outputfilter):
                     subnet = Subnet(parent, subnet_json)
 
                     # Get EC2's
-                    for ec2_json in get_ec2s(subnet):
+                    for ec2_json in get_ec2s(subnet, outputfilter):
                         ec2 = Ec2(subnet, ec2_json,
                                   outputfilter["collapse_by_tag"],
                                   outputfilter["collapse_asgs"])
@@ -359,6 +366,8 @@ def run(arguments):
                         default=None, type=str)
     parser.add_argument("--vpc-names", help="VPC names to restrict to (ex. prod,dev)",
                         default=None, type=str)
+    parser.add_argument("--ec2-tags", help="Filter nodes have matched tags(ex. Name=batch,Env=prod)",
+                        dest='ec2_tags', default=None, type=str)
     parser.add_argument("--internal-edges", help="Show all connections (default)",
                         dest='internal_edges', action='store_true')
     parser.add_argument("--no-internal-edges", help="Only show connections to external CIDRs",
@@ -399,6 +408,8 @@ def run(arguments):
         outputfilter["vpc-ids"] = ','.join(['"' + r + '"' for r in args.vpc_ids.split(',')])
     if args.vpc_names:
         outputfilter["vpc-names"] = ','.join(['"' + r + '"' for r in args.vpc_names.split(',')])
+    if args.ec2_tags:
+        outputfilter["ec2_tags"] = args.ec2_tags
 
     outputfilter["internal_edges"] = args.internal_edges
     outputfilter["read_replicas"] = args.read_replicas
