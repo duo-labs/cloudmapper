@@ -11,7 +11,7 @@ import yaml
 
 from policyuniverse.policy import Policy
 
-from shared.common import parse_arguments, query_aws, get_parameter_file, get_regions
+from shared.common import parse_arguments, query_aws, make_list, get_parameter_file, get_regions
 from shared.nodes import Account, Region
 
 
@@ -146,6 +146,34 @@ def audit_guardduty(findings, region):
                 'GUARDDUTY_OFF',
                 None,
                 None))
+
+def check_for_bad_policy(findings, region, arn, policy_text):    
+    for statement in make_list(policy_text['Statement']):
+        # Checking for signatures of the bad MFA policy from https://web.archive.org/web/20170602002425/https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_users-self-manage-mfa-and-creds.html and https://github.com/awsdocs/iam-user-guide/blob/cfe14c674c494d07ba0ab952fe546fdd587da65d/doc_source/id_credentials_mfa_enable_virtual.md#permissions-required
+        if statement.get('Sid', '') == 'AllowIndividualUserToManageTheirOwnMFA' or statement.get('Sid', '') == 'AllowIndividualUserToViewAndManageTheirOwnMFA':
+            if 'iam:DeactivateMFADevice' in make_list(statement.get('Action', [])):
+                findings.add(Finding(
+                    region,
+                    'BAD_MFA_POLICY',
+                    arn,
+                    policy_text))
+                return
+        elif statement.get('Sid', '') == 'BlockAnyAccessOtherThanAboveUnlessSignedInWithMFA':
+            if 'iam:*' in make_list(statement.get('NotAction', [])):
+                findings.add(Finding(
+                    region,
+                    'BAD_MFA_POLICY',
+                    arn,
+                    policy_text))
+                return
+
+def audit_iam_policies(findings, region):
+    json_blob = query_aws(region.account, "iam-get-account-authorization-details", region)
+    for policy in json_blob['Policies']:
+        for policy_version in policy['PolicyVersionList']:
+            if policy_version['IsDefaultVersion']:
+                check_for_bad_policy(findings, region, policy['Arn'], policy_version['Document'])
+
 
 def audit_cloudtrail(findings, region):
     json_blob = query_aws(region.account, "cloudtrail-describe-trails", region)
@@ -738,6 +766,7 @@ def audit(accounts):
                 if region.name == 'us-east-1':
                     audit_s3_buckets(findings, region)
                     audit_cloudtrail(findings, region)
+                    audit_iam_policies(findings, region)
                     audit_password_policy(findings, region)
                     audit_root_user(findings, region)
                     audit_users(findings, region)
@@ -764,6 +793,6 @@ def audit(accounts):
                 findings.add(Finding(
                     region,
                     'EXCEPTION',
-                    None,
+                    e,
                     resource_details={'exception': e, 'traceback': sys.exc_info()}))
     return findings
