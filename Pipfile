@@ -15,7 +15,7 @@ matplotlib = "==2.2.2"
 "geoip2" = "==2.8.0"
 policyuniverse = "==1.1.0.1"
 PyYAML = "==4.2b4"
-Jinja2 = "==2.10"
+Jinja2 = "==2.10.1"
 
 [dev-packages]
 autoflake = "==0.7"
