@@ -11,7 +11,6 @@ from shared.common import parse_arguments, query_aws, make_list, get_regions
 from collections import OrderedDict
 from os import listdir
 from datetime import datetime
-from numpy import median
 
 __description__ = "Cross-reference EC2 instances with AMI information"
 
