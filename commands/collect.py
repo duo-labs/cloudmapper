@@ -93,11 +93,23 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
 
         
     except ClientError as e:
-        if "NoSuchBucketPolicy" in str(e):
+        if 'NoSuchBucketPolicy' in str(e):
             # This error occurs when you try to get the bucket policy for a bucket that has no bucket policy, so this can be ignored.
             pass
-        elif "NoSuchPublicAccessBlockConfiguration" in str(e):
+        elif 'NoSuchPublicAccessBlockConfiguration' in str(e):
             # This error occurs when you try to get the account Public Access Block policy for an account that has none, so this can be ignored.
+            pass
+        elif 'NoSuchEntity' in str(e) and call_summary['action'] == 'get_account_password_policy':
+            print("  - No password policy set")
+            pass
+        elif 'AccessDeniedException' in str(e) and call_summary['service'] == 'organizations' and call_summary['action'] == 'list_accounts':
+            print("  - Denied, which likely means this is not the organization root")
+            pass
+        elif 'RepositoryPolicyNotFoundException' in str(e) and call_summary['service'] == 'ecr' and call_summary['action'] == 'get_repository_policy':
+            print("  - No policy exists")
+            pass
+        elif 'ResourceNotFoundException' in str(e) and call_summary['service'] == 'lambda' and call_summary['action'] == 'get_policy':
+            print("  - No policy exists")
             pass
         else:
             print("ClientError: {}".format(e), flush=True)
@@ -188,7 +200,7 @@ def collect(arguments):
 
     # Services that will only be queried in the default_
     # TODO: Identify these from boto
-    universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 's3control', 'cloudfront']
+    universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 's3control', 'cloudfront', 'organizations']
 
     with open("collect_commands.yaml", 'r') as f:
         collect_commands = yaml.safe_load(f)
