@@ -279,6 +279,13 @@
   Parameters:
   - Name: FunctionName
     Value: lambda-list-functions.json|.Functions[]?|.FunctionName
+- Service: lambda
+  Request: list-layers
+- Service: lambda
+  Request: list-layer-versions
+  Parameters:
+  - Name: LayerName
+    Value: lambda-list-layers.json|.Layers[]?|.LayerName
 - Service: logs
   Request: describe-destinations
 - Service: logs
@@ -313,3 +320,7 @@
   Parameters:
   - Name: DetectorId
     Value: guardduty-list-detectors.json|.DetectorIds[]?|.
+- Service: organizations
+  Request: describe-organization
+- Service: organizations
+  Request: list-accounts
