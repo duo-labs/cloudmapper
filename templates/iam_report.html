@@ -58,8 +58,8 @@ Report generated: {{t.report_generated_time}}
     <ul>
     {% for user in t.users %}
         <li><a href="#{{user.arn}}">{{user.name}}</a>: {{user.services_used}}/{{user.services_granted}}
-        <div style="width:30%"><canvas id="serviceChart{{user.arn}}" width="100" height="15"></canvas></div>
-        <script>makeServiceUnusedChart("serviceChart{{user.arn}}", {{user.services_used}}, {{user.services_granted}});</script> 
+        <div style="width:50%"><canvas id="serviceChart{{user.arn}}" width="200" height="15"></canvas></div>
+        <script>makeServiceUnusedChart("serviceChart{{user.arn}}", {{user.services_used}}, {{user.services_granted}} - {{user.services_used}});</script> 
     {% endfor %}
     </ul>
 {% endif %}
@@ -70,8 +70,8 @@ Report generated: {{t.report_generated_time}}
     <ul>
     {% for role in t.roles %}
         <li><a href="#{{role.arn}}">{{role.name}}</a>: {{role.services_used}}/{{role.services_granted}}
-        <div style="width:30%"><canvas id="serviceChart{{role.arn}}" width="100" height="15"></canvas></div>
-        <script>makeServiceUnusedChart("serviceChart{{role.arn}}", {{role.services_used}}, {{role.services_granted}});</script> 
+        <div style="width:50%"><canvas id="serviceChart{{role.arn}}" width="200" height="15"></canvas></div>
+        <script>makeServiceUnusedChart("serviceChart{{role.arn}}", {{role.services_used}}, {{role.services_granted}} - {{role.services_used}});</script> 
     {% endfor %}
     </ul>
 {% endif %}
