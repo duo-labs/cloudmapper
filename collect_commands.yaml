@@ -115,6 +115,16 @@
   Request: describe-load-balancer-policies
 - Service: elbv2
   Request: describe-load-balancers
+- Service: elbv2
+  Request: describe-target-groups
+  Parameters:
+  - Name: LoadBalancerArn
+    Value: elbv2-describe-load-balancers.json|.LoadBalancers[].LoadBalancerArn
+- Service: elbv2
+  Request: describe-target-health
+  Parameters:
+  - Name: TargetGroupArn
+    Value: elbv2-describe-target-groups/*|.TargetGroups[].TargetGroupArn
 - Service: redshift
   Request: describe-clusters
 - Service: sqs

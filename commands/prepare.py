@@ -359,6 +359,7 @@ def prepare(account, config, outputfilter):
 
     with open('web/data.json', 'w') as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
+
 def run(arguments):
     # Parse arguments
     parser = argparse.ArgumentParser()
