@@ -28,9 +28,8 @@ import itertools
 import argparse
 import pyjq
 from netaddr import IPNetwork, IPAddress
-from shared.common import get_account, query_aws, get_parameter_file, get_regions, is_external_cidr
+from shared.common import get_account, query_aws, get_regions, is_external_cidr
 from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
-import urllib.parse
 
 __description__ = "Generate network connection information file"
 
