@@ -79,7 +79,8 @@ def get_ec2s(subnet, outputfilter):
             if len(pair) == 2:
                 condition_queries.append('.{} == "{}"'.format(pair[0], pair[1]))
         tag_set_conditions.append('(' + ' and '.join(condition_queries) + ')')
-    tag_filter = '| select(.Tags | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
+    if 'tags' in outputfilter:
+        tag_filter = '| select(.Tags | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
 
     instances = query_aws(subnet.account, "ec2-describe-instances", subnet.region)
     resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")' + tag_filter
