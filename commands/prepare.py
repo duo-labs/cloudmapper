@@ -70,15 +70,20 @@ def get_subnets(az):
 
 
 def get_ec2s(subnet, outputfilter):
-    ec2s_filter = ""
-    if "ec2_tags" in outputfilter:
-        conditions = [c.split("=") for c in outputfilter["ec2_tags"].split(",")]
+    tag_filter = ""
+    tag_set_conditions = []
+    for tag_set in outputfilter.get("tags", []):
+        conditions = [c.split("=") for c in tag_set.split(",")]
+        condition_queries = []
         for pair in conditions:
             if len(pair) == 2:
-                ec2s_filter += '| select(.Tags | from_entries | .{} == "{}")'.format(pair[0], pair[1])
+                condition_queries.append('.{} == "{}"'.format(pair[0], pair[1]))
+        tag_set_conditions.append('(' + ' and '.join(condition_queries) + ')')
+    tag_filter = '| select(.Tags | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
 
     instances = query_aws(subnet.account, "ec2-describe-instances", subnet.region)
-    resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")' + ec2s_filter
+    resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")' + tag_filter
+    
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
@@ -366,8 +371,8 @@ def run(arguments):
                         default=None, type=str)
     parser.add_argument("--vpc-names", help="VPC names to restrict to (ex. prod,dev)",
                         default=None, type=str)
-    parser.add_argument("--ec2-tags", help="Filter nodes have matched tags(ex. Name=batch,Env=prod)",
-                        dest='ec2_tags', default=None, type=str)
+    parser.add_argument("--tags", help="Filter nodes matching tags (ex. Name=batch,Env=prod), where the tag matches are AND'd together. Use this tag multiple times to OR sets (ex. --tags Env=prod --tags Env=Dev)",
+                        dest='tags', default=None, type=str, action='append')
     parser.add_argument("--internal-edges", help="Show all connections (default)",
                         dest='internal_edges', action='store_true')
     parser.add_argument("--no-internal-edges", help="Only show connections to external CIDRs",
@@ -408,8 +413,8 @@ def run(arguments):
         outputfilter["vpc-ids"] = ','.join(['"' + r + '"' for r in args.vpc_ids.split(',')])
     if args.vpc_names:
         outputfilter["vpc-names"] = ','.join(['"' + r + '"' for r in args.vpc_names.split(',')])
-    if args.ec2_tags:
-        outputfilter["ec2_tags"] = args.ec2_tags
+    if args.tags:
+        outputfilter["tags"] = args.tags
 
     outputfilter["internal_edges"] = args.internal_edges
     outputfilter["read_replicas"] = args.read_replicas
