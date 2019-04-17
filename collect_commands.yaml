@@ -109,10 +109,20 @@
   Parameters:
   - Name: DBSnapshotIdentifier
     Value: rds-describe-db-snapshots.json|.DBSnapshots[]?|.DBSnapshotIdentifier
+- Service: rds
+  Request: list-tags-for-resource
+  Parameters:
+  - Name: ResourceName
+    Value: rds-describe-db-instances.json|.DBInstances[]?|.DBInstanceArn
 - Service: elb
   Request: describe-load-balancers
 - Service: elb
   Request: describe-load-balancer-policies
+- Service: elb
+  Request: describe-tags
+  Parameters:
+  - Name: LoadBalancerNames
+    Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[]?|.LoadBalancerName
 - Service: elbv2
   Request: describe-load-balancers
 - Service: elbv2
@@ -125,6 +135,11 @@
   Parameters:
   - Name: TargetGroupArn
     Value: elbv2-describe-target-groups/*|.TargetGroups[].TargetGroupArn
+- Service: elbv2
+  Request: describe-tags
+  Parameters:
+  - Name: ResourceArns
+    Value: elbv2-describe-load-balancers.json|.LoadBalancers[]?|[[.LoadBalancerArn]]
 - Service: redshift
   Request: describe-clusters
 - Service: sqs
