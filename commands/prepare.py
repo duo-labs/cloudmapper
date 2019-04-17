@@ -100,7 +100,39 @@ def get_elbs(subnet, outputfilter):
     alb_resource_filter = '.LoadBalancers[] | select(.VpcId == "{}") | select(.AvailabilityZones[].SubnetId == "{}")'
     albs = pyjq.all(alb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), alb_instances)
 
-    return elbs + albs
+    if 'tags' not in outputfilter:
+        return elbs + albs
+
+    # There are tags requested, so we need to filter these
+    tag_filter = ""
+    tag_set_conditions = []
+    for tag_set in outputfilter.get("tags", []):
+        conditions = [c.split("=") for c in tag_set.split(",")]
+        condition_queries = []
+        for pair in conditions:
+            if len(pair) == 2:
+                condition_queries.append('.{} == "{}"'.format(pair[0], pair[1]))
+        tag_set_conditions.append('(' + ' and '.join(condition_queries) + ')')
+    tag_filter = 'select(.TagDescriptions[0].Tags | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
+
+    filtered_elbs = []
+    for elb in elbs:
+        tags = get_parameter_file(subnet.region, 'elb', 'describe-tags', elb['LoadBalancerName'])
+        if tags is None:
+            continue
+
+        if pyjq.first(tag_filter, tags) is not None:
+            filtered_elbs.append(elb)
+
+    for elb in albs:
+        tags = get_parameter_file(subnet.region, 'elbv2', 'describe-tags', elb['LoadBalancerArn'])
+        if tags is None:
+            continue
+
+        if pyjq.first(tag_filter, tags) is not None:
+            filtered_elbs.append(elb)
+
+    return filtered_elbs
 
 
 def get_rds_instances(subnet, outputfilter):
