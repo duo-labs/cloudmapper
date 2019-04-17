@@ -31,7 +31,14 @@ def get_identifier_from_parameter(parameter):
 
 def get_filename_from_parameter(parameter):
     if isinstance(parameter, list):
-        filename = parameter[1]
+        if len(parameter) > 1:
+            filename = parameter[1]
+        elif isinstance(parameter[0], list):
+            # For elbv2:describe-tags we need ResourceArns as a list like `[Arn]`
+            # the yaml file specifies `[[.LoadBalancerArn]]` because just doing 
+            # `[.LoadBalancerArn]` presents other issues, so this extracts out the inner, inner value.
+            # Similar issue for elb:describe-tags
+            filename = parameter[0][0]
     else:
         filename = parameter
 
