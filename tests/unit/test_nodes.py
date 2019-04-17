@@ -34,7 +34,7 @@ class TestNodes(unittest.TestCase):
 
     def test_truncate(self):
         assert_equal("hello", truncate("hello"))
-        assert_equal("0123456789012345678..", truncate("012345678901234567890123456789"))
+        assert_equal("012345678900123456789001234567890012345..", truncate("0123456789001234567890012345678900123456789001234567890"))
 
     def test_is_public_ip(self):
         assert_true(is_public_ip("1.1.1.1"))

@@ -52,7 +52,7 @@ class TestPrepare(unittest.TestCase):
         account = Account(None, json_blob)
         region = Region(account, {"Endpoint": "ec2.us-east-1.amazonaws.com", "RegionName": "us-east-1"})
         vpc = Vpc(region, get_vpcs(region, {})[0])
-        subnet = Subnet(vpc, {"SubnetId": "subnet-00000001", "Tags": [{"Value": "Public a1", "Key": "Name"}]})
+        subnet = Subnet(vpc, {"SubnetId": "subnet-00000001", "CidrBlock": "10.0.0.0/24", "Tags": [{"Value": "Public a1", "Key": "Name"}]})
 
         instances_passed = get_ec2s(subnet, {"tags": ["Name=Bastion"]})
         assert_equal(len(instances_passed), 1)
