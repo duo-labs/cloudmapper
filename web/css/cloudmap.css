@@ -82,7 +82,7 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 }
 
 .nodeHeader::before {
-    font: normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 14px/1 'Font Awesome 5 Free';
     padding-right: 4px;
     content: "\f152";
 }
@@ -92,7 +92,7 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 }
 
 .nodeHeader[data-akkordion-active='true']::before { 
-    font: normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 14px/1 'Font Awesome 5 Free';
     padding-right: 4px;
     content: "\f150";
 }
