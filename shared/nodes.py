@@ -322,12 +322,12 @@ class Elb(Leaf):
     def __init__(self, parent, json_blob):
         self._type = "elb"
         self._local_id = json_blob["LoadBalancerName"]
-        if "LoadBalancerArn" in json_blob:
-            self._arn = json_blob["LoadBalancerArn"]
-        else:
-            # Classic ELB - no ARN available via CLI
-            # https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-elb
-            self._arn = "arn:aws:elasticloadbalancing:{}:{}:loadbalancer/{}".format(parent.region.name, parent.account.local_id, self._local_id)
+        self._arn = "arn:aws:elasticloadbalancing:{}:{}:instance/{}/{}".format(
+            parent.region.name,
+            parent.account.local_id,
+            self._local_id,
+            parent.local_id)
+
         self._name = json_blob["LoadBalancerName"]
         super(Elb, self).__init__(parent, json_blob)
 
