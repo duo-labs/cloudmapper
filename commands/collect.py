@@ -18,8 +18,10 @@ __description__ = "Run AWS API calls to collect data from the account"
 
 MAX_RETRIES = 3
 
+
 def snakecase(s):
     return s.replace('-', '_')
+
 
 def get_identifier_from_parameter(parameter):
     if isinstance(parameter, list):
@@ -29,13 +31,14 @@ def get_identifier_from_parameter(parameter):
 
     return identifier
 
+
 def get_filename_from_parameter(parameter):
     if isinstance(parameter, list):
         if len(parameter) > 1:
             filename = parameter[1]
         elif isinstance(parameter[0], list):
             # For elbv2:describe-tags we need ResourceArns as a list like `[Arn]`
-            # the yaml file specifies `[[.LoadBalancerArn]]` because just doing 
+            # the yaml file specifies `[[.LoadBalancerArn]]` because just doing
             # `[.LoadBalancerArn]` presents other issues, so this extracts out the inner, inner value.
             # Similar issue for elb:describe-tags
             filename = parameter[0][0]
@@ -44,12 +47,14 @@ def get_filename_from_parameter(parameter):
 
     return urllib.parse.quote_plus(filename)
 
+
 def make_directory(path):
     try:
         os.mkdir(path)
     except OSError:
         # Already exists
         pass
+
 
 def call_function(outputfile, handler, method_to_call, parameters, check, summary):
     """
@@ -66,7 +71,7 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
         # Data already collected, so skip
         print("  Response already collected at {}".format(outputfile), flush=True)
         return
-    
+
     call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters}
 
     print("  Making call for {}".format(outputfile), flush=True)
@@ -98,7 +103,6 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
             else:
                 break
 
-        
     except ClientError as e:
         if 'NoSuchBucketPolicy' in str(e):
             # This error occurs when you try to get the bucket policy for a bucket that has no bucket policy, so this can be ignored.
@@ -139,7 +143,7 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
     if data is not None:
         with open(outputfile, 'w+') as f:
             f.write(json.dumps(data, indent=4, sort_keys=True, default=custom_serializer))
-    
+
     summary.append(call_summary)
 
 
@@ -163,7 +167,6 @@ def collect(arguments):
         session_data['profile_name'] = arguments.profile_name
 
     session = boto3.Session(**session_data)
-
 
     sts = session.client('sts')
     try:
@@ -260,7 +263,8 @@ def collect(arguments):
                         # The file where parameters are obtained from does not exist
                         # Need to manually add the failure to our list of calls made as this failure
                         # occurs before the call is attempted.
-                        call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters, 'exception': 'Parameter file does not exist: {}'.format(parameter_file)}
+                        call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call,
+                                        'parameters': parameters, 'exception': 'Parameter file does not exist: {}'.format(parameter_file)}
                         summary.append(call_summary)
                         print("  The file where parameters are obtained from does not exist: {}".format(parameter_file), flush=True)
                         continue
@@ -286,7 +290,7 @@ def collect(arguments):
                                 runner.get('Check', None),
                                 summary)
             else:
-                filepath = filepath+".json"
+                filepath = filepath + ".json"
                 call_function(
                     filepath,
                     handler,

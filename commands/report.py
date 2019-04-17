@@ -26,14 +26,14 @@ __description__ = "Create report"
 REPORT_OUTPUT_FILE = os.path.join('web', 'account-data', 'report.html')
 
 COLOR_PALETTE = [
-        'rgba(141,211,199,1)', 'rgba(255,255,179,1)', 'rgba(190,186,218,1)', 'rgba(251,128,114,1)', 'rgba(128,177,211,1)', 'rgba(253,180,98,1)', 'rgba(179,222,105,1)', 'rgba(252,205,229,1)', 'rgba(217,217,217,1)', 'rgba(188,128,189,1)', 'rgba(204,235,197,1)', 'rgba(255,237,111,1)']
+    'rgba(141,211,199,1)', 'rgba(255,255,179,1)', 'rgba(190,186,218,1)', 'rgba(251,128,114,1)', 'rgba(128,177,211,1)', 'rgba(253,180,98,1)', 'rgba(179,222,105,1)', 'rgba(252,205,229,1)', 'rgba(217,217,217,1)', 'rgba(188,128,189,1)', 'rgba(204,235,197,1)', 'rgba(255,237,111,1)']
 
 SEVERITIES = [
-        {'name': 'High', 'color': 'rgba(216, 91, 84, 1)'}, # Red
-        {'name': 'Medium', 'color': 'rgba(252, 209, 83, 1)'}, # Orange
-        {'name': 'Low', 'color': 'rgba(255, 255, 102, 1)'}, # Yellow
-        {'name': 'Info', 'color': 'rgba(154, 214, 156, 1)'}, # Green
-        {'name': 'Verbose', 'color': 'rgba(133, 163, 198, 1)'}] # Blue
+    {'name': 'High', 'color': 'rgba(216, 91, 84, 1)'},  # Red
+    {'name': 'Medium', 'color': 'rgba(252, 209, 83, 1)'},  # Orange
+    {'name': 'Low', 'color': 'rgba(255, 255, 102, 1)'},  # Yellow
+    {'name': 'Info', 'color': 'rgba(154, 214, 156, 1)'},  # Green
+    {'name': 'Verbose', 'color': 'rgba(133, 163, 198, 1)'}]  # Blue
 
 ACTIVE_COLOR = 'rgb(139, 214, 140)'
 BAD_COLOR = 'rgb(204, 120, 120)'
@@ -51,9 +51,9 @@ def report(accounts, config, args):
         pass
 
     # Read template
-    with open(os.path.join('templates', 'report.html'),'r') as report_template:
+    with open(os.path.join('templates', 'report.html'), 'r') as report_template:
         template = Template(report_template.read())
-    
+
     # Data to be passed to the template
     t = {}
 
@@ -61,10 +61,10 @@ def report(accounts, config, args):
     t['accounts'] = []
     for account in accounts:
         t['accounts'].append({
-            'name':account['name'], 
-            'id': account['id'], 
+            'name': account['name'],
+            'id': account['id'],
             'collection_date': get_collection_date(account)})
-    
+
     # Get resource count info
     # Collect counts
     account_stats = {}
@@ -72,7 +72,7 @@ def report(accounts, config, args):
     for account in accounts:
         account_stats[account['name']] = get_account_stats(account)
         print('  - {}'.format(account['name']))
-    
+
     # Get names of resources
     # TODO: Change the structure passed through here to be a dict of dict's like I do for the regions
     t['resource_names'] = ['']
@@ -80,7 +80,7 @@ def report(accounts, config, args):
     first_account = list(account_stats.keys())[0]
     for name in account_stats[first_account]['keys']:
         t['resource_names'].append(name)
-    
+
     # Create jinja data for the resource stats per account
     t['resource_stats'] = []
     for account in accounts:
@@ -90,9 +90,9 @@ def report(accounts, config, args):
             else:
                 count = sum(account_stats[account['name']][resource_name].values())
                 resource_row.append(count)
-        
+
         t['resource_stats'].append(resource_row)
-    
+
     t['resource_names'].pop(0)
 
     # Get region names
@@ -119,7 +119,7 @@ def report(accounts, config, args):
 
                 if n > 0:
                     if region.name not in region_stats_tooltip[account.name]:
-                        region_stats_tooltip[account.name][region.name] = ''    
+                        region_stats_tooltip[account.name][region.name] = ''
                     region_stats_tooltip[account.name][region.name] += '{}:{}<br>'.format(resource_name, n)
 
             if count > 0:
@@ -127,7 +127,7 @@ def report(accounts, config, args):
             else:
                 has_resources = 'N'
             region_stats[account.name][region.name] = has_resources
-        
+
     t['region_stats'] = region_stats
     t['region_stats_tooltip'] = region_stats_tooltip
 
@@ -144,7 +144,7 @@ def report(accounts, config, args):
         resource_counts = []
         for account_name in t['account_names']:
             resource_counts.append(sum(account_stats[account_name][resource_name].values()))
-        
+
         resource_data = {
             'label': resource_name,
             'data': resource_counts,
@@ -154,7 +154,6 @@ def report(accounts, config, args):
         t['resource_data_set'].append(resource_data)
 
         color_index = (color_index + 1) % len(COLOR_PALETTE)
-    
 
     # Get IAM access dat
     print('* Getting IAM data')
@@ -225,10 +224,10 @@ def report(accounts, config, args):
                 t['public_network_resource_types'][account['name']][public_node['type']] += 1
             else:
                 raise Exception('Unknown type {} of public node'.format(public_node['type']))
-            
+
             if public_node['ports'] not in t['public_ports']:
                 t['public_ports'].append(public_node['ports'])
-            
+
             t['account_public_ports'][account['name']][public_node['ports']] = t['account_public_ports'][account['name']].get(public_node['ports'], 0) + 1
 
     # Pass data for the public port chart
@@ -252,18 +251,17 @@ def report(accounts, config, args):
         t['public_ports_data_set'].append(port_data)
 
         color_index = (color_index + 1) % len(COLOR_PALETTE)
-    
+
     print('* Auditing accounts')
     findings = audit(accounts)
 
     with open("audit_config.yaml", 'r') as f:
         audit_config = yaml.safe_load(f)
-    
+
     t['findings_severity_by_account_chart'] = []
 
-
     # Figure out the counts of findings for each account
-    
+
     # Create chart for finding type counts
     findings_severity_by_account = {}
     for account in accounts:
@@ -288,7 +286,7 @@ def report(accounts, config, args):
             'backgroundColor': severity['color'],
             'borderWidth': 1
         })
-    
+
     # Create list by severity
     t['severities'] = {}
     for severity in SEVERITIES:
@@ -302,10 +300,10 @@ def report(accounts, config, args):
 
     # Create chart for finding counts
     finding_type_set = {}
-    
+
     for f in findings:
         finding_type_set[f.issue_id] = 1
-    
+
     t['finding_counts_by_account_chart'] = []
     for finding_type in finding_type_set:
         finding_counts = []
@@ -314,7 +312,7 @@ def report(accounts, config, args):
             for severity in findings_severity_by_account[account['name']]:
                 count += findings_severity_by_account[account['name']][severity].get(finding_type, 0)
             finding_counts.append(count)
-            
+
         t['finding_counts_by_account_chart'].append({
             'label': finding_type,
             'data': finding_counts,
@@ -323,7 +321,6 @@ def report(accounts, config, args):
         })
 
         color_index = (color_index + 1) % len(COLOR_PALETTE)
-    
 
     t['findings'] = {}
     for finding in findings:
@@ -342,16 +339,16 @@ def report(accounts, config, args):
             'severity_color': severity['color'],
             'is_global': conf.get('is_global', False),
             'accounts': {}})
-        
-        account_hits = issue['accounts'].get(finding.region.account.local_id, 
-            {
-                'account_name': finding.region.account.name,
-                'regions': {}
-            })
-        
+
+        account_hits = issue['accounts'].get(finding.region.account.local_id,
+                                             {
+                                                 'account_name': finding.region.account.name,
+                                                 'regions': {}
+                                             })
+
         region_hits = account_hits['regions'].get(finding.region.name, {
             'hits': []})
-          
+
         region_hits['hits'].append({
             'resource': finding.resource_id,
             'details': json.dumps(finding.resource_details, indent=4)
@@ -363,13 +360,12 @@ def report(accounts, config, args):
         group[finding.issue_id] = issue
         t['findings'][conf['group']] = group
 
-
-
     # Generate report from template
-    with open(REPORT_OUTPUT_FILE,'w') as f:
+    with open(REPORT_OUTPUT_FILE, 'w') as f:
         f.write(template.render(t=t))
-    
+
     print('Report written to {}'.format(REPORT_OUTPUT_FILE))
+
 
 def run(arguments):
     parser = argparse.ArgumentParser()

@@ -31,15 +31,19 @@ from six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
 
 __description__ = "Run a webserver to display network or web of trust map"
 
+
 class RootedHTTPServer(HTTPServer):
     def __init__(self, base_path, *args, **kwargs):
         HTTPServer.__init__(self, *args, **kwargs)
         self.RequestHandlerClass.base_path = base_path
 
+
 class RootedHTTPServerV6(RootedHTTPServer, object):
     address_family = socket.AF_INET6
+
     def __init__(self, *args, **kwargs):
         super(RootedHTTPServerV6, self).__init__(*args, **kwargs)
+
 
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):

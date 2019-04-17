@@ -421,4 +421,3 @@ class Connection(object):
             "target": self._target.arn,
             "type": "edge",
             "node_data": self._json}}
-

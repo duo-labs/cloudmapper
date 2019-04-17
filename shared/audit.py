@@ -26,7 +26,7 @@ class Finding(object):
         self.issue_id = issue_id
         self.resource_id = resource_id
         self.resource_details = resource_details
-    
+
     def __str__(self):
         return json.dumps({
             'account_id': self.region.account.local_id,
@@ -36,7 +36,7 @@ class Finding(object):
             'resource': self.resource_id,
             'details': self.resource_details
         })
-    
+
     @property
     def account_name(self):
         return self.region.account.name
@@ -51,11 +51,10 @@ class Findings(object):
 
     def add(self, finding):
         self.findings.append(finding)
-    
+
     def __iter__(self):
         for finding in self.findings:
             yield finding
-
 
 
 def audit_s3_buckets(findings, region):
@@ -96,12 +95,12 @@ def audit_s3_buckets(findings, region):
             for grant in file_json['Grants']:
                 uri = grant['Grantee'].get('URI', "")
                 if (uri == 'http://acs.amazonaws.com/groups/global/AllUsers' or
-                    uri == 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'):
+                        uri == 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'):
                     findings.add(Finding(
-                            region,
-                            'S3_PUBLIC_ACL',
-                            bucket,
-                            resource_details=grant))
+                        region,
+                        'S3_PUBLIC_ACL',
+                        bucket,
+                        resource_details=grant))
         except Exception as e:
             findings.add(Finding(
                 region,
@@ -122,10 +121,10 @@ def audit_s3_block_policy(findings, region):
         conf = block_policy_json['PublicAccessBlockConfiguration']
         if not conf['BlockPublicAcls'] or not conf['BlockPublicPolicy'] or not conf['IgnorePublicAcls'] or not conf['RestrictPublicBuckets']:
             findings.add(Finding(
-            region,
-            'S3_ACCESS_BLOCK_ALL_ACCESS_TYPES',
-            None,
-            resource_details=block_policy_json))
+                region,
+                'S3_ACCESS_BLOCK_ALL_ACCESS_TYPES',
+                None,
+                resource_details=block_policy_json))
 
 
 def audit_guardduty(findings, region):
@@ -147,9 +146,13 @@ def audit_guardduty(findings, region):
                 None,
                 None))
 
-def check_for_bad_policy(findings, region, arn, policy_text):    
+
+def check_for_bad_policy(findings, region, arn, policy_text):
     for statement in make_list(policy_text['Statement']):
-        # Checking for signatures of the bad MFA policy from https://web.archive.org/web/20170602002425/https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_users-self-manage-mfa-and-creds.html and https://github.com/awsdocs/iam-user-guide/blob/cfe14c674c494d07ba0ab952fe546fdd587da65d/doc_source/id_credentials_mfa_enable_virtual.md#permissions-required
+        # Checking for signatures of the bad MFA policy from
+        # https://web.archive.org/web/20170602002425/https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_users-self-manage-mfa-and-creds.html
+        # and
+        # https://github.com/awsdocs/iam-user-guide/blob/cfe14c674c494d07ba0ab952fe546fdd587da65d/doc_source/id_credentials_mfa_enable_virtual.md#permissions-required
         if statement.get('Sid', '') == 'AllowIndividualUserToManageTheirOwnMFA' or statement.get('Sid', '') == 'AllowIndividualUserToViewAndManageTheirOwnMFA':
             if 'iam:DeactivateMFADevice' in make_list(statement.get('Action', [])):
                 findings.add(Finding(
@@ -166,6 +169,7 @@ def check_for_bad_policy(findings, region, arn, policy_text):
                     arn,
                     policy_text))
                 return
+
 
 def audit_iam_policies(findings, region):
     json_blob = query_aws(region.account, "iam-get-account-authorization-details", region)
@@ -259,7 +263,7 @@ def audit_users(findings, region):
 
         d1 = datetime.strptime(s1.split("+")[0], time_format)
         d2 = datetime.strptime(s2.split("+")[0], time_format)
-        return abs((d1-d2).days)
+        return abs((d1 - d2).days)
 
     # TODO: Convert all of this into a table
 
@@ -329,10 +333,10 @@ def audit_users(findings, region):
 
         if user['access_key_1_active'] == "true" and user['access_key_2_active'] == "true":
             findings.add(Finding(
-                    region,
-                    'USER_HAS_TWO_ACCESS_KEYS',
-                    user['user'],
-                    None))
+                region,
+                'USER_HAS_TWO_ACCESS_KEYS',
+                user['user'],
+                None))
 
         if user['access_key_1_active'] == "true":
             if user['access_key_1_last_used_date'] == "N/A":
@@ -409,7 +413,7 @@ def audit_ebs_snapshots(findings, region):
                 'EXCEPTION',
                 None,
                 resource_details={
-                    'location': 'Could not open EBS snapshot file', 
+                    'location': 'Could not open EBS snapshot file',
                     'file_name': file_name}))
 
 
@@ -432,7 +436,7 @@ def audit_rds_snapshots(findings, region):
                 'EXCEPTION',
                 None,
                 resource_details={
-                    'location': 'Could not open RDS snapshot file', 
+                    'location': 'Could not open RDS snapshot file',
                     'file_name': file_name}))
 
 
@@ -470,7 +474,7 @@ def audit_ecr_repos(findings, region):
         policy_file_json = get_parameter_file(region, 'ecr', 'get-repository-policy', name)
         if policy_file_json is None:
             # This means only the owner can access the repo, so this is fine.
-            # The collect command would have received the exception 
+            # The collect command would have received the exception
             # `RepositoryPolicyNotFoundException` for this to happen.
             continue
         # Find the entity we need
@@ -568,7 +572,7 @@ def audit_ec2(findings, region):
                     region,
                     'EC2_SOURCE_DEST_CHECK_OFF',
                     instance['InstanceId'],
-                    resource_details={'routes':route_to_instance}))
+                    resource_details={'routes': route_to_instance}))
 
 
 def audit_sg(findings, region):
@@ -740,7 +744,7 @@ def audit_lightsail(findings, region):
             'LIGHTSAIL_IN_USE',
             None,
             resource_details={'instance count': len(json_blob['instances'])}))
-    
+
     json_blob = query_aws(region.account, "lightsail-get-load-balancers", region)
     if json_blob is None:
         # Service not supported in the region
@@ -751,7 +755,6 @@ def audit_lightsail(findings, region):
             'LIGHTSAIL_IN_USE',
             None,
             resource_details={'load balancer count': len(json_blob['loadBalancers'])}))
-
 
 
 def audit(accounts):

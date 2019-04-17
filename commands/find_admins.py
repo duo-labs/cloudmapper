@@ -6,6 +6,7 @@ from shared.common import parse_arguments, make_list, log_info, log_warning
 
 __description__ = "Find admins in accounts"
 
+
 def get_current_policy_doc(policy):
     for doc in policy['PolicyVersionList']:
         if doc['IsDefaultVersion']:
@@ -85,6 +86,7 @@ def is_admin_policy(policy_doc, location):
 def record_admin(admins, account_name, actor_type, actor_name):
     admins.append({'account': account_name, 'type': actor_type, 'name': actor_name})
 
+
 def find_admins(accounts, config):
     admins = []
     for account in accounts:
@@ -92,9 +94,9 @@ def find_admins(accounts, config):
 
         try:
             file_name = 'account-data/{}/{}/{}'.format(
-                    account['name'],
-                    'us-east-1',
-                    'iam-get-account-authorization-details.json')
+                account['name'],
+                'us-east-1',
+                'iam-get-account-authorization-details.json')
             iam = json.load(open(file_name))
         except:
             if not os.path.exists('account-data/{}/'.format(account['name'])):
@@ -113,7 +115,7 @@ def find_admins(accounts, config):
             if is_admin_policy(policy_doc, location):
                 admin_policies.append(policy['Arn'])
                 if ('arn:aws:iam::aws:policy/AdministratorAccess' in policy['Arn'] or
-                    'arn:aws:iam::aws:policy/IAMFullAccess' in policy['Arn']):
+                        'arn:aws:iam::aws:policy/IAMFullAccess' in policy['Arn']):
                     # Ignore the admin policies that are obviously admin
                     continue
                 if 'arn:aws:iam::aws:policy' in policy['Arn']:

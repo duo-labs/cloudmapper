@@ -55,18 +55,18 @@ class Account(object):
         else:
             raise Exception("No init value provided to Account")
 
-
     def cytoscape_data(self):
         response = {'data': {
             'id': self.id,
             'name': self.name,
             'type': self.type,
-            'weight': len(self.name)*10
+            'weight': len(self.name) * 10
         }}
         if self.parent:
             response["data"]["parent"] = self.parent
 
         return response
+
 
 class Region(object):
     def __init__(self, parent, json_blob):
@@ -161,7 +161,7 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
     iam = query_aws(
         account,
         "iam-get-account-authorization-details",
-        Region(account, {'RegionName':'us-east-1'}))
+        Region(account, {'RegionName': 'us-east-1'}))
 
     for role in pyjq.all('.RoleDetailList[]', iam):
         principals = pyjq.all('.AssumeRolePolicyDocument.Statement[].Principal', role)
@@ -170,16 +170,16 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
             if principal.get('Federated', None):
                 # TODO I should be using get-saml-provider to confirm this is really okta
                 if "saml-provider/okta" in principal['Federated'].lower():
-                    node = Account(json_blob={'id':'okta', 'name':'okta', 'type':'Okta'})
+                    node = Account(json_blob={'id': 'okta', 'name': 'okta', 'type': 'Okta'})
                     assume_role_nodes.add(node)
                 elif "saml-provider/adfs" in principal['Federated'].lower():
-                    node = Account(json_blob={'id':'adfs', 'name':'adfs', 'type':'ADFS'})
+                    node = Account(json_blob={'id': 'adfs', 'name': 'adfs', 'type': 'ADFS'})
                     assume_role_nodes.add(node)
                 elif principal['Federated'] == 'cognito-identity.amazonaws.com':
                     # TODO: Should show this somehow
                     continue
                 elif principal['Federated'] == 'www.amazon.com':
-                    node = Account(json_blob={'id':'Amazon.com', 'name':'Amazon.com', 'type':'Amazon'})
+                    node = Account(json_blob={'id': 'Amazon.com', 'name': 'Amazon.com', 'type': 'Amazon'})
                     continue
                 else:
                     raise Exception('Unknown federation provider: {}'.format(principal['Federated']))
@@ -361,7 +361,6 @@ def weboftrust(args, accounts, config):
         n = Account(account_id=p)
         n.type = 'account_grouping'
         cytoscape_json.append(n.cytoscape_data())
-
 
     num_connections = 0
     # Add the mapping to our graph

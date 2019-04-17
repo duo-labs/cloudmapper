@@ -8,18 +8,19 @@ from shared.nodes import Account, Region
 
 __description__ = "Find all IPs are that are given trusted access via Security Groups"
 
+
 def is_unneeded_cidr(cidr):
     ipnetwork = IPNetwork(cidr)
     if (
-            ipnetwork in IPNetwork('169.254.0.0/16') or # link local
-            ipnetwork in IPNetwork('127.0.0.0/8') or # loopback
-            ipnetwork in IPNetwork('192.0.2.0/24') or # Test network from RFC 5737
-            ipnetwork in IPNetwork('198.51.100.0/24') or # Test network
-            ipnetwork in IPNetwork('203.0.113.0/24') or # Test network
-            ipnetwork in IPNetwork('224.0.0.0/4') or # class D multicast
-            ipnetwork in IPNetwork('240.0.0.0/5') or # class E reserved
-            ipnetwork in IPNetwork('248.0.0.0/5') or # reserved
-            ipnetwork in IPNetwork('255.255.255.255/32') # broadcast
+            ipnetwork in IPNetwork('169.254.0.0/16') or  # link local
+            ipnetwork in IPNetwork('127.0.0.0/8') or  # loopback
+            ipnetwork in IPNetwork('192.0.2.0/24') or  # Test network from RFC 5737
+            ipnetwork in IPNetwork('198.51.100.0/24') or  # Test network
+            ipnetwork in IPNetwork('203.0.113.0/24') or  # Test network
+            ipnetwork in IPNetwork('224.0.0.0/4') or  # class D multicast
+            ipnetwork in IPNetwork('240.0.0.0/5') or  # class E reserved
+            ipnetwork in IPNetwork('248.0.0.0/5') or  # reserved
+            ipnetwork in IPNetwork('255.255.255.255/32')  # broadcast
     ):
         return True
     return False
@@ -53,7 +54,7 @@ def get_cidrs_for_account(account, cidrs):
                 cidrs[cidr] = cidrs.get(cidr, set())
                 if name is not None:
                     cidrs[cidr].add(name)
-            
+
             for ip_permissions in sg['IpPermissions']:
                 cidrs_seen = set()
                 for ip_ranges in ip_permissions['IpRanges']:
@@ -61,9 +62,9 @@ def get_cidrs_for_account(account, cidrs):
                         continue
                     cidr = ip_ranges['CidrIp']
                     for cidr_seen in cidrs_seen:
-                            if (IPNetwork(cidr_seen) in IPNetwork(cidr) or
-                                        IPNetwork(cidr) in IPNetwork(cidr_seen)):
-                                print('WARNING: Overlapping CIDRs in {}, {} and {}'.format(sg['GroupId'], cidr, cidr_seen))
+                        if (IPNetwork(cidr_seen) in IPNetwork(cidr) or
+                                IPNetwork(cidr) in IPNetwork(cidr_seen)):
+                            print('WARNING: Overlapping CIDRs in {}, {} and {}'.format(sg['GroupId'], cidr, cidr_seen))
                     cidrs_seen.add(cidr)
 
 
@@ -90,7 +91,6 @@ def sg_ips(accounts):
     import matplotlib as mpl
     mpl.use('TkAgg')
     import matplotlib.pyplot as plt
-
 
     # Used to sort by country
     cidr_dict = {}
@@ -217,7 +217,7 @@ def sg_ips(accounts):
     earth = Basemap(ax=ax)
     earth.drawcoastlines(color='#778877', linewidth=0.5)
     ax.scatter(latlong['longitude'], latlong['latitude'],
-               15, # size
+               15,  # size
                c='red', alpha=1, zorder=10)
     ax.set_xlabel("Trusted IP locations")
     fig.set_size_inches(8, 6)

@@ -31,17 +31,17 @@ def configure(action, arguments):
         }
     elif action == 'remove-account':
         if arguments.name is None or arguments.id is None:
-            condition = lambda x, y: x or y
+            def condition(x, y): return x or y
         else:
-            condition = lambda x, y: x and y
+            def condition(x, y): return x and y
         for account in config['accounts']:
             if condition(account['id'] == arguments.id, account['name'] == arguments.name):
                 config['accounts'].remove(account)
     elif action == 'remove-cidr':
         if arguments.name is None or arguments.cidr is None:
-            condition = lambda x, y: x or y
+            def condition(x, y): return x or y
         else:
-            condition = lambda x, y: x and y
+            def condition(x, y): return x and y
 
         # Force it to be a complete set so that deleting the key later on doesn't raise an error because the dictionary Size changed during iteration
         for cidr in set(config['cidrs'].keys()):

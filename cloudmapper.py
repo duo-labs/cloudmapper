@@ -28,14 +28,16 @@ This script manages CloudMapper, a tool for analyzing AWS environments.
 from __future__ import (absolute_import, division, print_function)
 import sys
 import pkgutil
-import importlib 
+import importlib
 import commands
 
 __version__ = "2.5.3"
 
+
 def show_help(commands):
     print("CloudMapper {}".format(__version__))
-    print("usage: {} [{}] [...]".format(sys.argv[0], "|".join(sorted(commands.keys()))))
+    print("usage: {} [{}] [...]".format(
+        sys.argv[0], "|".join(sorted(commands.keys()))))
     for command, module in sorted(commands.items()):
         print("  {}: {}".format(command, module.__description__))
     exit(-1)
@@ -45,7 +47,8 @@ def main():
     """Entry point for the CLI."""
 
     # Load commands
-    # TODO: This adds half a second to the start time. Is there a smarter way to do this?
+    # TODO: This adds half a second to the start time. Is there a smarter way
+    # to do this?
     commands = {}
     commands_paths = ['commands', 'private_commands']
     for commands_path in commands_paths:
@@ -65,6 +68,7 @@ def main():
         commands[command].run(arguments)
     else:
         show_help(commands)
+
 
 if __name__ == "__main__":
     main()

@@ -22,6 +22,7 @@ __description__ = "Create IAM report"
 
 REPORT_OUTPUT_FILE = os.path.join('web', 'account-data', 'iam_report.html')
 
+
 def tolink(s):
     # TODO sanitize
     return s
@@ -36,7 +37,7 @@ def get_cred_usage():
 
         d1 = datetime.strptime(s1.split("+")[0], time_format)
         d2 = datetime.strptime(s2.split("+")[0], time_format)
-        return abs((d1-d2).days)
+        return abs((d1 - d2).days)
 
 
 def load_credential_report():
@@ -120,10 +121,10 @@ def get_service_count_and_used(service_last_accessed):
 
 
 def html_service_chart(principal, services_used, services_granted):
-    chartid = 'serviceChart'+principal
+    chartid = 'serviceChart' + principal
     return ('<div style="width:30%"><canvas id="{}" width="100" height="15"></canvas></div>'
-    + '<script>makeServiceUnusedChart("{}", {}, {});</script>').format(
-        chartid, chartid, services_used, services_granted-services_used)
+            + '<script>makeServiceUnusedChart("{}", {}, {});</script>').format(
+        chartid, chartid, services_used, services_granted - services_used)
 
 
 @add_metaclass(ABCMeta)
@@ -142,56 +143,45 @@ class graph_node(object):
 
         return response
 
-
     def key(self):
         return self.__key
-
 
     def set_key(self, key):
         self.__key = key
 
-
     def set_name(self, name):
         self.__name = name
-
 
     def name(self):
         if self.__name == "":
             return self.key()
         return self.__name
 
-
     def is_principal(self):
         pass
-
 
     def get_type(self):
         pass
 
-
     def add_child(self, node):
         self.__children.append(node)
-
 
     def add_parent(self, node):
         self.__parents.append(node)
 
-
     def children(self):
         return self.__children
-
 
     def parents(self):
         return self.__parents
 
-    
     def get_services_allowed(self):
         services = {}
         for child in self.children():
             for service, source in child.get_services_allowed().items():
                 source_list = services.get(service, [])
                 if self.is_principal():
-                    source_path = source    
+                    source_path = source
                 else:
                     source_path = []
                     for s in source:
@@ -200,12 +190,9 @@ class graph_node(object):
                 services[service] = source_list
         return services
 
-
     def __init__(self):
         self.__children = []
         self.__parents = []
-
-    
 
 
 class user_node(graph_node):
@@ -213,10 +200,10 @@ class user_node(graph_node):
 
     def is_principal(self):
         return True
-    
+
     def get_type(self):
         return "user"
-    
+
     def __init__(self, auth, auth_graph):
         super().__init__()
         self.set_key(auth['Arn'])
@@ -227,13 +214,13 @@ class user_node(graph_node):
             policy_node = auth_graph[policy['PolicyArn']]
             self.add_child(policy_node)
             policy_node.add_parent(self)
-        
+
         for policy in auth.get('UserPolicyList', []):
             policy_node = inline_policy_node(self, policy)
             auth_graph[policy_node.key()] = policy_node
-        
+
         for group_name in auth.get('GroupList', []):
-            group_key = self.key()[0:26]+'group/'+group_name
+            group_key = self.key()[0:26] + 'group/' + group_name
             group_node = auth_graph[group_key]
             group_node.add_parent(self)
             self.add_child(group_node)
@@ -242,10 +229,10 @@ class user_node(graph_node):
 class role_node(graph_node):
     def is_principal(self):
         return True
-    
+
     def get_type(self):
         return "role"
-    
+
     def __init__(self, auth, auth_graph):
         super().__init__()
         self.set_key(auth['Arn'])
@@ -255,7 +242,7 @@ class role_node(graph_node):
             policy_node = auth_graph[policy['PolicyArn']]
             self.add_child(policy_node)
             policy_node.add_parent(self)
-        
+
         for policy in auth.get('RolePolicyList', []):
             policy_node = inline_policy_node(self, policy)
             auth_graph[policy_node.key()] = policy_node
@@ -264,10 +251,10 @@ class role_node(graph_node):
 class group_node(graph_node):
     def is_principal(self):
         return False
-    
+
     def get_type(self):
         return "group"
-    
+
     def __init__(self, auth, auth_graph):
         super().__init__()
         self.set_key(auth['Arn'])
@@ -277,7 +264,7 @@ class group_node(graph_node):
             policy_node = auth_graph[policy['PolicyArn']]
             self.add_child(policy_node)
             policy_node.add_parent(self)
-        
+
         for policy in auth.get('GroupPolicyList', []):
             policy_node = inline_policy_node(self, policy)
             auth_graph[policy_node.key()] = policy_node
@@ -289,14 +276,14 @@ class policy_node(graph_node):
 
     def is_principal(self):
         return False
-    
+
     def get_services_allowed(self):
         response = {}
         services = self.__policy_summary.action_summary().keys()
         for service in services:
             response[service] = [self.name()]
         return response
-    
+
     def set_policy_document(self, doc):
         self.__policy_document = doc
         self.__policy_summary = Policy(doc)
@@ -305,7 +292,7 @@ class policy_node(graph_node):
 class managed_policy_node(policy_node):
     def get_type(self):
         return "managed policy"
-    
+
     def __init__(self, auth):
         super().__init__()
         self.set_key(auth['Arn'])
@@ -318,7 +305,7 @@ class managed_policy_node(policy_node):
 class inline_policy_node(policy_node):
     def get_type(self):
         return "inline policy"
-    
+
     def __init__(self, parent, auth):
         super().__init__()
         self.set_key(parent.key() + '/policy/' + auth['PolicyName'])
@@ -326,7 +313,6 @@ class inline_policy_node(policy_node):
         parent.add_child(self)
         self.add_parent(parent)
         self.set_policy_document(auth['PolicyDocument'])
-        
 
 
 def get_iam_graph(auth):
@@ -343,10 +329,10 @@ def get_iam_graph(auth):
 
     for user in auth['UserDetailList']:
         iam_graph[user['Arn']] = user_node(user, iam_graph)
-    
+
     for role in auth['RoleDetailList']:
         iam_graph[role['Arn']] = role_node(role, iam_graph)
-    
+
     return iam_graph
 
 
@@ -356,7 +342,7 @@ def build_cytoscape_graph(iam_graph):
         node = iam_graph[k]
         if len(node.children()) > 0 or len(node.parents()) > 0:
             cytoscape_json.append(iam_graph[k].cytoscape_data())
-    
+
     for k in iam_graph:
         node = iam_graph[k]
         for child in node.children():
@@ -387,12 +373,12 @@ def iam_report(accounts, config, args):
         pass
 
     # Read template
-    with open(os.path.join('templates', 'iam_report.html'),'r') as report_template:
+    with open(os.path.join('templates', 'iam_report.html'), 'r') as report_template:
         template = Template(report_template.read())
-    
+
     # Data to be passed to the template
     t = {}
-    
+
     account = Account(None, account)
     principal_stats = {}
 
@@ -404,15 +390,14 @@ def iam_report(accounts, config, args):
 
     t['graph'] = ''
     if args.show_graph:
-         t['graph'] = '<br><iframe width=700 height=700 src="./map.html"></iframe>'
+        t['graph'] = '<br><iframe width=700 height=700 src="./map.html"></iframe>'
 
     for region_json in get_regions(account):
         region = Region(account, region_json)
         if region.name == 'us-east-1':
             json_account_auth_details = query_aws(region.account, "iam-get-account-authorization-details", region)
             get_access_advisor(region, principal_stats, json_account_auth_details, args)
-    
-    
+
     users = []
     roles = []
     inactive_principals = []
@@ -431,7 +416,7 @@ def iam_report(accounts, config, args):
                 inactive_principals.append(principal)
                 continue
             users.append(principal)
-    
+
     print("* Generating IAM graph")
     # This needs to be generated even if we don't show the graph,
     # because this data is needed for other functionality in this command
@@ -440,7 +425,7 @@ def iam_report(accounts, config, args):
 
     with open(os.path.join('web', 'account-data', 'data.json'), 'w') as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
-    
+
     print("* Generating the rest of the report")
 
     t['users'] = []
@@ -462,7 +447,6 @@ def iam_report(accounts, config, args):
             'name': principal_stats[principal]['auth']['RoleName'],
             'services_used': service_counts['service_used_count'],
             'services_granted': service_counts['service_count']})
-    
 
     t['inactive_principals'] = []
     for principal in sorted(inactive_principals):
@@ -470,13 +454,11 @@ def iam_report(accounts, config, args):
         icon = '<i class="fas fa-user-astronaut"></i>'
         if principal_stats[principal]['type'] == 'user':
             icon = '<i class="fas fa-user"></i>'
-        
+
         t['inactive_principals'].append({
             'arn': principal,
             'icon': icon,
             'name': principal_stats[principal]['short_name']})
-    
-
 
     t['principals'] = []
     for principal, stats in principal_stats.items():
@@ -490,12 +472,12 @@ def iam_report(accounts, config, args):
             p['icon'] = '<i class="fas fa-user-astronaut"></i>'
             p['arn'] = stats['auth']['Arn']
             p['name'] = stats['auth']['RoleName']
-            
+
         if 'UserName' in stats['auth']:
             p['icon'] = '<i class="fas fa-user"></i>'
             p['arn'] = stats['auth']['Arn']
             p['name'] = stats['auth']['UserName']
-        
+
         principal_node = iam_graph[stats['auth']['Arn']]
         privilege_sources = principal_node.get_services_allowed()
 
@@ -513,7 +495,6 @@ def iam_report(accounts, config, args):
             style = ""
             if last_use == '-' or last_use > 90:
                 style = "bad"
-            
 
             source = privilege_sources.get(service['ServiceNamespace'], ['unknown'])
             source = ';'.join(source)
@@ -523,19 +504,17 @@ def iam_report(accounts, config, args):
                 'name': service['ServiceName'],
                 'last_use': last_use,
                 'source': source
-            })      
-
+            })
 
         # List groups
         groups = stats['auth'].get('GroupList', [])
-        p['groups'] = []    
+        p['groups'] = []
         arn_prefix = stats['auth']['Arn'][0:26]
         for group in groups:
             p['groups'].append({
-                'link_id': tolink(arn_prefix+'group/'+group),
+                'link_id': tolink(arn_prefix + 'group/' + group),
                 'name': group})
-        
-        
+
         # List attached policies
         policies = stats['auth']['AttachedManagedPolicies']
         p['managed_policies'] = []
@@ -543,7 +522,6 @@ def iam_report(accounts, config, args):
             p['managed_policies'].append({
                 'link_id': tolink(policy['PolicyArn']),
                 'name': policy['PolicyName']})
-
 
         # Show inline policies
         policies = stats['auth'].get('UserPolicyList', [])
@@ -559,7 +537,6 @@ def iam_report(accounts, config, args):
             p['assume_role'] = json.dumps(stats['auth']['AssumeRolePolicyDocument'], indent=4)
 
         t['principals'].append(p)
-    
 
     t['groups'] = []
     for group in json_account_auth_details['GroupDetailList']:
@@ -586,20 +563,18 @@ def iam_report(accounts, config, args):
             g['inline_policies'].append({
                 'name': policy['PolicyName'],
                 'document': json.dumps(policy['PolicyDocument'], indent=4)})
-        
+
         t['groups'].append(g)
 
-    
     t['policies'] = []
     for policy in json_account_auth_details['Policies']:
         p = {
             'link_id': tolink(policy['Arn']),
             'name': policy['PolicyName'],
             'managed': ''}
-        
+
         if 'arn:aws:iam::aws:policy' in policy['Arn']:
             p['managed'] = '<i class="fab fa-amazon"></i>AWS managed policy<br>'
-        
 
         # Attachments
         policy_node = iam_graph[policy['Arn']]
@@ -615,14 +590,12 @@ def iam_report(accounts, config, args):
 
         t['policies'].append(p)
 
-
     # Generate report from template
-    with open(REPORT_OUTPUT_FILE,'w') as f:
+    with open(REPORT_OUTPUT_FILE, 'w') as f:
         f.write(template.render(t=t))
 
     print('Report written to {}'.format(REPORT_OUTPUT_FILE))
 
-        
 
 def run(arguments):
     parser = argparse.ArgumentParser()

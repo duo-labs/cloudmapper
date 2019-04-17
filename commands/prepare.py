@@ -35,6 +35,7 @@ __description__ = "Generate network connection information file"
 
 MUTE = False
 
+
 def log(msg):
     if MUTE:
         return
@@ -85,7 +86,7 @@ def get_ec2s(subnet, outputfilter):
 
     instances = query_aws(subnet.account, "ec2-describe-instances", subnet.region)
     resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")' + tag_filter
-    
+
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
@@ -418,6 +419,7 @@ def prepare(account, config, outputfilter):
 
     with open('web/data.json', 'w') as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
+
 
 def run(arguments):
     # Parse arguments
