@@ -37,6 +37,7 @@ def get_filename_from_parameter(parameter):
             # For elbv2:describe-tags we need ResourceArns as a list like `[Arn]`
             # the yaml file specifies `[[.LoadBalancerArn]]` because just doing 
             # `[.LoadBalancerArn]` presents other issues, so this extracts out the inner, inner value.
+            # Similar issue for elb:describe-tags
             filename = parameter[0][0]
     else:
         filename = parameter
