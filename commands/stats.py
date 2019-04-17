@@ -13,6 +13,7 @@ from shared.common import parse_arguments, query_aws, get_regions, log_debug, ge
 
 __description__ = "Print counts of resources for accounts"
 
+
 def output_image(accounts, account_stats, resource_names, output_image_file):
     # Display graph
     import matplotlib
@@ -42,7 +43,7 @@ def output_image(accounts, account_stats, resource_names, output_image_file):
         data=data)
 
     sns.set()
-    plot = df.set_index('Resource').T.plot(kind='barh', stacked=True, fontsize=10, figsize=[8,0.3*len(accounts)])
+    plot = df.set_index('Resource').T.plot(kind='barh', stacked=True, fontsize=10, figsize=[8, 0.3 * len(accounts)])
     plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
     fig = plot.get_figure()
     # TODO: Set color cycle as explained here https://stackoverflow.com/questions/8389636/creating-over-20-unique-legend-colors-using-matplotlib
@@ -76,13 +77,14 @@ def stats(accounts, config, args):
     if not args.no_output_image:
         output_image(accounts, account_stats, resource_names, args.output_image)
 
+
 def run(arguments):
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--output_image',
-        help='Name of output image', default='resource_stats.png', type=str)
+                        help='Name of output image', default='resource_stats.png', type=str)
     parser.add_argument("--no_output_image", help="Don't create output image",
-        default=False, action='store_true')
+                        default=False, action='store_true')
 
     args, accounts, config = parse_arguments(arguments, parser)
 

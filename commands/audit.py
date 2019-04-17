@@ -8,6 +8,7 @@ from shared.audit import audit
 
 __description__ = "Identify potential issues such as public S3 buckets"
 
+
 def audit_command(accounts, config, args):
     """Audit the accounts"""
 

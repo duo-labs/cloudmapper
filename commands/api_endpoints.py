@@ -14,7 +14,7 @@ def api_endpoints(accounts, config):
         account = Account(None, account)
         for region_json in get_regions(account):
             region = Region(account, region_json)
-            
+
             # Look for API Gateway
             json_blob = query_aws(region.account, 'apigateway-get-rest-apis', region)
             if json_blob is None:

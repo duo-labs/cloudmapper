@@ -45,19 +45,25 @@ class Severity:
         else:
             raise Exception("Unknown severity level")
 
+
 LOG_LEVEL = Severity.INFO
+
 
 def log_debug(msg, location=None, reasons=[]):
     log_issue(Severity.DEBUG, msg, location, reasons)
 
+
 def log_info(msg, location=None, reasons=[]):
     log_issue(Severity.INFO, msg, location, reasons)
+
 
 def log_warning(msg, location=None, reasons=[]):
     log_issue(Severity.WARN, msg, location, reasons)
 
+
 def log_error(msg, location=None, reasons=[]):
     log_issue(Severity.ERROR, msg, location, reasons)
+
 
 def log_issue(severity, msg, location=None, reasons=[]):
     if severity >= LOG_LEVEL:
@@ -199,7 +205,6 @@ def get_account_stats(account):
         stats['keys'].append(resource['name'])
         stats[resource['name']] = {}
 
-
     for region_json in get_regions(account):
         region = Region(account, region_json)
 
@@ -209,8 +214,8 @@ def get_account_stats(account):
                 continue
 
             # Normal path
-            stats[resource['name']][region.name] = sum(pyjq.all(resource['query'], 
-                query_aws(region.account, resource['source'], region)))
+            stats[resource['name']][region.name] = sum(pyjq.all(resource['query'],
+                                                                query_aws(region.account, resource['source'], region)))
 
     return stats
 
@@ -220,7 +225,7 @@ def get_us_east_1(account):
         region = Region(account, region_json)
         if region.name == 'us-east-1':
             return region
-    
+
     raise Exception('us-east-1 not found')
 
 
@@ -233,9 +238,9 @@ def get_collection_date(account):
 
 def get_access_advisor_active_counts(account, max_age=90):
     region = get_us_east_1(account)
-    
+
     json_account_auth_details = query_aws(region.account, "iam-get-account-authorization-details", region)
-    
+
     account_stats = {'users': {'active': 0, 'inactive': 0}, 'roles': {'active': 0, 'inactive': 0}}
     for principal_auth in [*json_account_auth_details['UserDetailList'], *json_account_auth_details['RoleDetailList']]:
         stats = {}
@@ -244,7 +249,7 @@ def get_access_advisor_active_counts(account, max_age=90):
         principal_type = 'roles'
         if 'UserName' in principal_auth:
             principal_type = 'users'
-        
+
         job_id = get_parameter_file(region, 'iam', 'generate-service-last-accessed-details', principal_auth['Arn'])['JobId']
         json_last_access_details = get_parameter_file(region, 'iam', 'get-service-last-accessed-details', job_id)
         stats['last_access'] = json_last_access_details
@@ -259,10 +264,10 @@ def get_access_advisor_active_counts(account, max_age=90):
                 if (job_completion_date - last_access_date).days < max_age:
                     stats['is_inactive'] = False
                     break
-        
+
         if stats['is_inactive']:
             account_stats[principal_type]['inactive'] += 1
         else:
             account_stats[principal_type]['active'] += 1
-        
+
     return account_stats
