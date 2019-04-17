@@ -14,6 +14,7 @@ There are a number of filtering options that can be applied here to reduce the n
 The most useful filtering options:
 * `--regions`: Restrict the diagram to a set regions, ex. `us-east-1,us-east-2`
 * `--vpc-ids` and `--vpc-names`: Restrict the diagram to a set of VPCs.
+* `--tags`: Filter by tags, for exmaple `--tags Env=Prod --tags Env=Test,Name=Bastion` will filter to all resources tagged with a key `Env` that has value `Prod`, or where `Env=Test` and `Name=Bastion`. In this way, a the tags in a set are AND'd, and the tag sets are OR'd.
 * `--collapse-by-tag`: This is very useful to provide a tag name, and all nodes with that tag will be reduced to a single displayed node.
 
 The other filtering options are:
