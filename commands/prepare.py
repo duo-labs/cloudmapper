@@ -28,7 +28,7 @@ import itertools
 import argparse
 import pyjq
 from netaddr import IPNetwork, IPAddress
-from shared.common import get_account, query_aws, get_regions, is_external_cidr
+from shared.common import get_account, query_aws, get_parameter_file, get_regions, is_external_cidr
 from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
 
 __description__ = "Generate network connection information file"
@@ -70,6 +70,7 @@ def get_subnets(az):
 
 
 def get_ec2s(subnet, outputfilter):
+    # Filter the EC2s by the `tags`
     tag_filter = ""
     tag_set_conditions = []
     for tag_set in outputfilter.get("tags", []):
@@ -88,7 +89,7 @@ def get_ec2s(subnet, outputfilter):
     return pyjq.all(resource_filter.format(subnet.local_id), instances)
 
 
-def get_elbs(subnet):
+def get_elbs(subnet, outputfilter):
     # ELBs
     elb_instances = query_aws(subnet.account, "elb-describe-load-balancers", subnet.region)
     elb_resource_filter = '.LoadBalancerDescriptions[] | select(.VPCId == "{}") | select(.Subnets[] == "{}")'
@@ -102,10 +103,36 @@ def get_elbs(subnet):
     return elbs + albs
 
 
-def get_rds_instances(subnet):
+def get_rds_instances(subnet, outputfilter):
     instances = query_aws(subnet.account, "rds-describe-db-instances", subnet.region)
     resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets != null and .DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
-    return pyjq.all(resource_filter.format(subnet.local_id), instances)
+    rds_instances = pyjq.all(resource_filter.format(subnet.local_id), instances)
+
+    if 'tags' not in outputfilter:
+        return rds_instances
+
+    # There are tags requested, so we need to filter these
+    tag_filter = ""
+    tag_set_conditions = []
+    for tag_set in outputfilter.get("tags", []):
+        conditions = [c.split("=") for c in tag_set.split(",")]
+        condition_queries = []
+        for pair in conditions:
+            if len(pair) == 2:
+                condition_queries.append('.{} == "{}"'.format(pair[0], pair[1]))
+        tag_set_conditions.append('(' + ' and '.join(condition_queries) + ')')
+    tag_filter = 'select(.TagList | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
+
+    filtered_instances = []
+    for rds in rds_instances:
+        tags = get_parameter_file(subnet.region, 'rds', 'list-tags-for-resource', rds['DBInstanceArn'])
+        if tags is None:
+            continue
+
+        if pyjq.first(tag_filter, tags) is not None:
+            filtered_instances.append(rds)
+
+    return filtered_instances
 
 
 def get_sgs(vpc):
@@ -254,14 +281,14 @@ def build_data_structure(account_data, config, outputfilter):
                         subnet.addChild(ec2)
 
                     # Get RDS's
-                    for rds_json in get_rds_instances(subnet):
+                    for rds_json in get_rds_instances(subnet, outputfilter):
                         rds = Rds(subnet, rds_json)
                         if not outputfilter["read_replicas"] and rds.node_type == "rds_rr":
                             continue
                         subnet.addChild(rds)
 
                     # Get ELB's
-                    for elb_json in get_elbs(subnet):
+                    for elb_json in get_elbs(subnet, outputfilter):
                         elb = Elb(subnet, elb_json)
                         subnet.addChild(elb)
 
