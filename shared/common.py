@@ -190,7 +190,7 @@ def parse_arguments(arguments, parser=None):
     return (args, accounts, config)
 
 
-def get_account_stats(account):
+def get_account_stats(account, all_resources=False):
     """Returns stats for an account"""
 
     with open("stats_config.yaml", 'r') as f:
@@ -202,6 +202,9 @@ def get_account_stats(account):
     stats = {}
     stats['keys'] = []
     for resource in resources:
+        # If the resource is marked as verbose, and we're not showing all resources, skip it.
+        if resource.get('verbose',False) and not all_resources:
+            continue
         stats['keys'].append(resource['name'])
         stats[resource['name']] = {}
 
@@ -209,6 +212,9 @@ def get_account_stats(account):
         region = Region(account, region_json)
 
         for resource in resources:
+            if resource.get('verbose',False) and not all_resources:
+                continue
+
             # Skip global services (just CloudFront)
             if ('region' in resource) and (resource['region'] != region.name):
                 continue

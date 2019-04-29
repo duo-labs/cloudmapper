@@ -26,7 +26,7 @@ __description__ = "Create report"
 REPORT_OUTPUT_FILE = os.path.join('web', 'account-data', 'report.html')
 
 COLOR_PALETTE = [
-    'rgba(141,211,199,1)', 'rgba(255,255,179,1)', 'rgba(190,186,218,1)', 'rgba(251,128,114,1)', 'rgba(128,177,211,1)', 'rgba(253,180,98,1)', 'rgba(179,222,105,1)', 'rgba(252,205,229,1)', 'rgba(217,217,217,1)', 'rgba(188,128,189,1)', 'rgba(204,235,197,1)', 'rgba(255,237,111,1)']
+    'rgba(141,211,199,1)', 'rgba(255,255,179,1)', 'rgba(190,186,218,1)', 'rgba(251,128,114,1)', 'rgba(128,177,211,1)', 'rgba(253,180,98,1)', 'rgba(179,222,105,1)', 'rgba(252,205,229,1)', 'rgba(217,217,217,1)', 'rgba(188,128,189,1)', 'rgba(204,235,197,1)', 'rgba(255,237,111,1)', 'rgba(191,67,66,1)', 'rgba(231,215,193,1)', 'rgba(167,138,127,1)', 'rgba(201,213,181,1)', 'rgba(115,87,81,1)', 'rgba(140,28,19,1)', 'rgba(109,100,102,1)','rgba(244,146,146,1)','rgba(249,189,154,1)','rgba(136,132,255,1)','rgba(88,106,106,1)']
 
 SEVERITIES = [
     {'name': 'High', 'color': 'rgba(216, 91, 84, 1)'},  # Red
@@ -70,7 +70,7 @@ def report(accounts, config, args):
     account_stats = {}
     print('* Getting resource counts')
     for account in accounts:
-        account_stats[account['name']] = get_account_stats(account)
+        account_stats[account['name']] = get_account_stats(account,args.stats_all_resources)
         print('  - {}'.format(account['name']))
 
     # Get names of resources
@@ -374,6 +374,12 @@ def run(arguments):
         help="Number of days a user or role hasn't been used before it's marked inactive",
         default=90,
         type=int)
+    parser.add_argument(
+        "--stats_all_resources",
+        help="Show stats for all resource types",
+        action='store_true',
+        default=False,
+        dest='stats_all_resources')
     args, accounts, config = parse_arguments(arguments, parser)
 
     report(accounts, config, args)

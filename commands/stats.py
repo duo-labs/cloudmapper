@@ -61,7 +61,7 @@ def stats(accounts, config, args):
     # Collect counts
     account_stats = {}
     for account in accounts:
-        account_stats[account['name']] = get_account_stats(account)
+        account_stats[account['name']] = get_account_stats(account,args.stats_all_resources)
         resource_names = account_stats[account['name']]['keys']
 
     # Print header
@@ -81,10 +81,22 @@ def stats(accounts, config, args):
 def run(arguments):
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--output_image',
-                        help='Name of output image', default='resource_stats.png', type=str)
-    parser.add_argument("--no_output_image", help="Don't create output image",
-                        default=False, action='store_true')
+    parser.add_argument(
+        '--output_image',
+        help='Name of output image',
+        default='resource_stats.png',
+        type=str)
+    parser.add_argument(
+        "--no_output_image",
+        help="Don't create output image",
+        default=False,
+        action='store_true')
+    parser.add_argument(
+        "--stats_all_resources",
+        help="Show stats for all resource types",
+        action='store_true',
+        default=False,
+        dest='stats_all_resources')
 
     args, accounts, config = parse_arguments(arguments, parser)
 
