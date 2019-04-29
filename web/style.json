@@ -150,7 +150,7 @@
             "selector": "[type = \"ec2\"]",
             "css": {
             "background-opacity": 0,
-            "background-image": "./icons/aws/Compute/Compute_AmazonEC2.svg",
+            "background-image": "./icons/aws/ec2.svg",
             "background-fit": "contain",
             "background-clip": "none"
             }
@@ -159,7 +159,7 @@
         "selector": "[type = \"grouped_ec2\"]",
         "css": {
         "background-opacity": 0,
-        "background-image": "./icons/aws/Compute/Compute_AmazonEC2_instances.svg",
+        "background-image": "./icons/aws/grouped_ec2s.svg",
         "background-fit": "contain",
         "background-clip": "none"
         }
@@ -168,7 +168,7 @@
         "selector": "[type = \"autoscaling\"]",
         "css": {
         "background-opacity": 0,
-        "background-image": "./icons/aws/Compute/Compute_AmazonEC2_AutoScaling.svg",
+        "background-image": "./icons/aws/autoscaling.svg",
         "background-fit": "contain",
         "background-clip": "none"
         }
@@ -177,16 +177,7 @@
             "selector": "[type = \"elb\"]",
             "css": {
             "background-opacity": 0,
-            "background-image": "./icons/aws/Compute/Compute_ElasticLoadBalancing.svg",
-            "background-fit": "contain",
-            "background-clip": "none"
-            }
-    },
-    {
-            "selector": "[type = \"s3\"]",
-            "css": {
-            "background-opacity": 0,
-            "background-image": "./icons/aws/Storage/Storage_AmazonS3.svg",
+            "background-image": "./icons/aws/elb.svg",
             "background-fit": "contain",
             "background-clip": "none"
             }
@@ -195,7 +186,7 @@
             "selector": "[type = \"rds\"]",
             "css": {
             "background-opacity": 0,
-            "background-image": "./icons/aws/Database/Database_AmazonRDS.svg",
+            "background-image": "./icons/aws/rds.svg",
             "background-fit": "contain",
             "background-clip": "none"
             }
@@ -204,7 +195,7 @@
         "selector": "[type = \"rds_rr\"]",
         "css": {
         "background-opacity": 0,
-        "background-image": "./icons/aws/Database/Database_AmazonRDS_instancereadreplica.svg",
+        "background-image": "./icons/aws/rds.svg",
         "background-fit": "contain",
         "background-clip": "none"
         }
@@ -213,7 +204,7 @@
             "selector": "[type = \"ip\"]",
             "css": {
             "background-opacity": 0,
-            "background-image": "./icons/aws/General/General_officebuilding.svg",
+            "background-image": "./icons/aws/ip.svg",
             "background-fit": "contain",
             "background-clip": "none"
             }
@@ -222,7 +213,7 @@
             "selector": "[type = \"cloud\"]",
             "css": {
             "background-opacity": 0,
-            "background-image": "./icons/aws/General/General_Internet.svg",
+            "background-image": "./icons/aws/internet.svg",
             "background-fit": "contain",
             "background-clip": "none",
             "width": 200,
@@ -282,7 +273,7 @@
             "selector": "[type = \"directconnect\"]",
             "css": {
             "background-opacity": 0,
-            "background-image": "./icons/aws/General/General_corporatedatacenter.svg",
+            "background-image": "./icons/aws/directconnect.svg",
             "background-fit": "contain",
             "background-clip": "none"
             }
@@ -353,7 +344,7 @@
         "selector": "[type = \"aws\"]",
         "css": {
             "background-opacity": 0,
-            "background-image": "./icons/aws/General/General_AWScloud.svg",
+            "background-image": "./icons/aws/aws.svg",
             "background-fit": "contain",
             "background-clip": "none",
             "width": 150,
