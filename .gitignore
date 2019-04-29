@@ -9,6 +9,7 @@ htmlcov/
 account-data/
 tmp/
 trusted_ips.png
+resource_stats.png
 data/
 private_commands/
 output/

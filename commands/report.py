@@ -70,7 +70,7 @@ def report(accounts, config, args):
     account_stats = {}
     print('* Getting resource counts')
     for account in accounts:
-        account_stats[account['name']] = get_account_stats(account)
+        account_stats[account['name']] = get_account_stats(account,args.stats_all_resources)
         print('  - {}'.format(account['name']))
 
     # Get names of resources
@@ -374,6 +374,12 @@ def run(arguments):
         help="Number of days a user or role hasn't been used before it's marked inactive",
         default=90,
         type=int)
+    parser.add_argument(
+        "--stats_all_resources",
+        help="Show stats for all resource types",
+        action='store_true',
+        default=False,
+        dest='stats_all_resources')
     args, accounts, config = parse_arguments(arguments, parser)
 
     report(accounts, config, args)
