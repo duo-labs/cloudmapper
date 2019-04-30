@@ -220,6 +220,24 @@
             "height": 200
             }
     },
+    {
+        "selector": "[type = \"s3\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/s3.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"dynamodb\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/dynamodb.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
     
     
     
