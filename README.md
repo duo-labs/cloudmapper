@@ -92,38 +92,6 @@ You must have the following privileges (these grant various read access of metad
 - `arn:aws:iam::aws:policy/SecurityAudit`
 - `arn:aws:iam::aws:policy/job-function/ViewOnlyAccess`
 
-And also:
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "elasticfilesystem:DescribeMountTargetSecurityGroups",
-                "elasticfilesystem:DescribeMountTargets",
-                "fms:ListComplianceStatus",
-                "fms:ListPolicies",
-                "iot:GetPolicy",
-                "iot:GetPolicyVersion",
-                "lambda:GetFunctionConfiguration",
-                "lambda:GetLayerVersionPolicy",
-                "sso:DescribePermissionsPolicies",
-                "sso:ListApplicationInstanceCertificates",
-                "sso:ListApplicationInstances",
-                "sso:ListApplicationTemplates",
-                "sso:ListApplications",
-                "sso:ListDirectoryAssociations",
-                "sso:ListPermissionSets",
-                "sso:ListProfileAssociations",
-                "sso:ListProfiles"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
-        }
-    ]
-}
-```
-
 ### Collect the data
 
 Collecting the data is done as follows:
