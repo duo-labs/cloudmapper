@@ -227,6 +227,8 @@
 - Service: ec2
   Request: describe-vpc-endpoint-connections
 - Service: ec2
+  Request: describe-vpc-endpoints
+- Service: ec2
   Request: describe-vpn-connections
 - Service: ec2
   Request: describe-vpn-gateways
@@ -311,6 +313,15 @@
   Parameters:
   - Name: LayerName
     Value: lambda-list-layers.json|.Layers[]?|.LayerName
+- Service: ecs
+  Request: list-clusters
+- Service: ecs
+  Request: list-container-instances
+  Parameters:
+  - Name: Cluster
+    Value: ecs-list-clusters.json|.clusterArns[]
+- Service: eks
+  Request: describe-cluster
 - Service: logs
   Request: describe-destinations
 - Service: logs
