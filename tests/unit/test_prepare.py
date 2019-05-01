@@ -55,11 +55,6 @@ class TestPrepare(unittest.TestCase):
         vpc = Vpc(region, get_vpcs(region, {})[0])
         subnet = Subnet(vpc, {"SubnetId": "subnet-00000001", "CidrBlock": "10.0.0.0/24", "Tags": [{"Value": "Public a1", "Key": "Name"}]})
 
-        instances_passed = get_ec2s(subnet, {"tags": ["Name=Bastion"]})
-        assert_equal(len(instances_passed), 1)
-        instances_filtered = get_ec2s(subnet, {"tags": ["NonexistentTagName=NonexistentTagValue"]})
-        assert_equal(len(instances_filtered), 0)
-
     def test_build_data_structure(self):
         # Build the entire demo data set
         json_blob = {u'id': 111111111111, u'name': u'demo'}
@@ -84,7 +79,8 @@ class TestPrepare(unittest.TestCase):
         assert_equal(2, len(pyjq.all('.[].data|select(.type == "ip")|keys', cytoscape_json)))
         assert_equal(2, len(pyjq.all('.[].data|select(.type == "rds")|keys', cytoscape_json)))
         assert_equal(3, len(pyjq.all('.[].data|select(.type == "ec2")|keys', cytoscape_json)))
-        assert_equal(3, len(pyjq.all('.[].data|select(.type == "elb")|keys', cytoscape_json)))
+        assert_equal(2, len(pyjq.all('.[].data|select(.type == "elb")|keys', cytoscape_json)))
+        assert_equal(1, len(pyjq.all('.[].data|select(.type == "elbv2")|keys', cytoscape_json)))
         assert_equal(4, len(pyjq.all('.[].data|select(.type == "subnet")|keys', cytoscape_json)))
         assert_equal(1, len(pyjq.all('.[].data|select(.type == "region")|keys', cytoscape_json)))
         assert_equal(1, len(pyjq.all('.[].data|select(.type == "vpc")|keys', cytoscape_json)))
