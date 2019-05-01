@@ -27,25 +27,8 @@ import pyjq
 from abc import ABCMeta
 from netaddr import IPNetwork, IPAddress
 from six import add_metaclass
+from shared.query import get_parameter_file
 
-import urllib
-import os
-import json
-
-# TODO This is copied from shared.common to avoid import loops
-def get_parameter_file(region, service, function, parameter_value):
-    file_name = 'account-data/{}/{}/{}/{}'.format(
-        region.account.name,
-        region.name,
-        '{}-{}'.format(service, function),
-        urllib.parse.quote_plus(parameter_value))
-    if not os.path.isfile(file_name):
-        return None
-    if os.path.getsize(file_name) <= 4:
-        return None
-
-    # Load the json data from the file
-    return json.load(open(file_name))
 
 def truncate(string):
     return (string[:39] + '..') if len(string) > 40 else string
