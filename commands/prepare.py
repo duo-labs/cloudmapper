@@ -27,9 +27,10 @@ import json
 import itertools
 import argparse
 import pyjq
+import copy
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, query_aws, get_parameter_file, get_regions, is_external_cidr
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Rds, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, Cidr, Connection
 
 __description__ = "Generate network connection information file"
 
@@ -70,102 +71,28 @@ def get_subnets(az):
     return pyjq.all(resource_filter.format(az.vpc.local_id, az.local_id), subnets)
 
 
-def get_ec2s(subnet, outputfilter):
-    # Filter the EC2s by the `tags`
-    tag_filter = ""
-    tag_set_conditions = []
-    for tag_set in outputfilter.get("tags", []):
-        conditions = [c.split("=") for c in tag_set.split(",")]
-        condition_queries = []
-        for pair in conditions:
-            if len(pair) == 2:
-                condition_queries.append('.{} == "{}"'.format(pair[0], pair[1]))
-        tag_set_conditions.append('(' + ' and '.join(condition_queries) + ')')
-    if 'tags' in outputfilter:
-        tag_filter = '| select(.Tags | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
+def get_ec2s(region, outputfilter):
+    instances = query_aws(region.account, "ec2-describe-instances", region.region)
+    resource_filter = '.Reservations[].Instances[] | select(.State.Name == "running")'
 
-    instances = query_aws(subnet.account, "ec2-describe-instances", subnet.region)
-    resource_filter = '.Reservations[].Instances[] | select(.SubnetId == "{}") | select(.State.Name == "running")' + tag_filter
-
-    return pyjq.all(resource_filter.format(subnet.local_id), instances)
+    return pyjq.all(resource_filter, instances)
 
 
-def get_elbs(subnet, outputfilter):
-    # ELBs
-    elb_instances = query_aws(subnet.account, "elb-describe-load-balancers", subnet.region)
-    elb_resource_filter = '.LoadBalancerDescriptions[] | select(.VPCId == "{}") | select(.Subnets[] == "{}")'
-    elbs = pyjq.all(elb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), elb_instances)
+def get_elbs(region, outputfilter):
+    load_balancers = query_aws(region.account, "elb-describe-load-balancers", region.region)
+    return pyjq.all('.LoadBalancerDescriptions[]', load_balancers)
 
+def get_elbv2s(region, outputfilter):
     # ALBs and NLBs
-    alb_instances = query_aws(subnet.account, "elbv2-describe-load-balancers", subnet.region)
-    alb_resource_filter = '.LoadBalancers[] | select(.VpcId == "{}") | select(.AvailabilityZones[].SubnetId == "{}")'
-    albs = pyjq.all(alb_resource_filter.format(subnet.vpc.local_id, subnet.local_id), alb_instances)
+    load_balancers = query_aws(region.account, "elbv2-describe-load-balancers", region.region)
+    return pyjq.all('.LoadBalancers[]', load_balancers)
 
-    if 'tags' not in outputfilter:
-        return elbs + albs
+    
 
-    # There are tags requested, so we need to filter these
-    tag_filter = ""
-    tag_set_conditions = []
-    for tag_set in outputfilter.get("tags", []):
-        conditions = [c.split("=") for c in tag_set.split(",")]
-        condition_queries = []
-        for pair in conditions:
-            if len(pair) == 2:
-                condition_queries.append('.{} == "{}"'.format(pair[0], pair[1]))
-        tag_set_conditions.append('(' + ' and '.join(condition_queries) + ')')
-    tag_filter = 'select(.TagDescriptions[0].Tags | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
-
-    filtered_elbs = []
-    for elb in elbs:
-        tags = get_parameter_file(subnet.region, 'elb', 'describe-tags', elb['LoadBalancerName'])
-        if tags is None:
-            continue
-
-        if pyjq.first(tag_filter, tags) is not None:
-            filtered_elbs.append(elb)
-
-    for elb in albs:
-        tags = get_parameter_file(subnet.region, 'elbv2', 'describe-tags', elb['LoadBalancerArn'])
-        if tags is None:
-            continue
-
-        if pyjq.first(tag_filter, tags) is not None:
-            filtered_elbs.append(elb)
-
-    return filtered_elbs
-
-
-def get_rds_instances(subnet, outputfilter):
-    instances = query_aws(subnet.account, "rds-describe-db-instances", subnet.region)
-    resource_filter = '.DBInstances[] | select(.DBSubnetGroup.Subnets != null and .DBSubnetGroup.Subnets[].SubnetIdentifier  == "{}")'
-    rds_instances = pyjq.all(resource_filter.format(subnet.local_id), instances)
-
-    if 'tags' not in outputfilter:
-        return rds_instances
-
-    # There are tags requested, so we need to filter these
-    tag_filter = ""
-    tag_set_conditions = []
-    for tag_set in outputfilter.get("tags", []):
-        conditions = [c.split("=") for c in tag_set.split(",")]
-        condition_queries = []
-        for pair in conditions:
-            if len(pair) == 2:
-                condition_queries.append('.{} == "{}"'.format(pair[0], pair[1]))
-        tag_set_conditions.append('(' + ' and '.join(condition_queries) + ')')
-    tag_filter = 'select(.TagList | from_entries | ' + ' or '.join(tag_set_conditions) + ')'
-
-    filtered_instances = []
-    for rds in rds_instances:
-        tags = get_parameter_file(subnet.region, 'rds', 'list-tags-for-resource', rds['DBInstanceArn'])
-        if tags is None:
-            continue
-
-        if pyjq.first(tag_filter, tags) is not None:
-            filtered_instances.append(rds)
-
-    return filtered_instances
+def get_rds_instances(region, outputfilter):
+    instances = query_aws(region.account, "rds-describe-db-instances", region.region)
+    resource_filter = '.DBInstances[]'
+    return pyjq.all(resource_filter, instances)
 
 
 def get_sgs(vpc):
@@ -215,7 +142,7 @@ def get_connections(cidrs, vpc, outputfilter):
     # Get mapping of security group names to nodes that have that security group
     sg_to_instance_mapping = {}
     for instance in vpc.leaves:
-        for sg in instance.security_groups():
+        for sg in instance.security_groups:
             sg_to_instance_mapping.setdefault(sg, {})[instance] = True
 
     # For each security group, find all the instances that are allowed to connect to instances
@@ -274,6 +201,26 @@ def get_connections(cidrs, vpc, outputfilter):
     return connections
 
 
+def add_node_to_subnets(region, node, nodes):
+    # Remove node from dictionary
+    del nodes[node.arn]
+
+    # Add a new node (potentially the same one) back to the dictionary
+    for vpc in region.children:
+        for az in vpc.children:
+            for subnet in az.children:
+                for node_subnet in node.subnets:
+                    if node_subnet == subnet.local_id:
+                        # Copy the node
+                        subnet_node = copy.copy(node)
+                        # Set the subnet name on the copy, and potentially a new arn
+                        subnet_node.set_subnet(subnet)
+
+                        # Add to the set
+                        nodes[subnet_node.arn] = subnet_node
+
+                        subnet.addChild(subnet_node)
+
 def build_data_structure(account_data, config, outputfilter):
     cytoscape_json = []
 
@@ -285,8 +232,10 @@ def build_data_structure(account_data, config, outputfilter):
     log("Building data for account {} ({})".format(account.name, account.local_id))
 
     cytoscape_json.append(account.cytoscape_data())
+    
+    # Iterate through each region and add all the VPCs, AZs, and Subnets
     for region_json in get_regions(account, outputfilter):
-        node_count_per_region = 0
+        nodes = {}
         region = Region(account, region_json)
 
         for vpc_json in get_vpcs(region, outputfilter):
@@ -305,48 +254,86 @@ def build_data_structure(account_data, config, outputfilter):
                         parent = vpc
 
                     subnet = Subnet(parent, subnet_json)
+                    az.addChild(subnet)
+                vpc.addChild(az)
+            region.addChild(vpc)
+        account.addChild(region)
 
-                    # Get EC2's
-                    for ec2_json in get_ec2s(subnet, outputfilter):
-                        ec2 = Ec2(subnet, ec2_json,
-                                  outputfilter["collapse_by_tag"],
-                                  outputfilter["collapse_asgs"])
-                        subnet.addChild(ec2)
+        #
+        # In each region, iterate through all the resource types
+        #
 
-                    # Get RDS's
-                    for rds_json in get_rds_instances(subnet, outputfilter):
-                        rds = Rds(subnet, rds_json)
-                        if not outputfilter["read_replicas"] and rds.node_type == "rds_rr":
-                            continue
-                        subnet.addChild(rds)
+        # EC2 nodes
+        for ec2_json in get_ec2s(region, outputfilter):
+            node = Ec2(region, ec2_json, outputfilter["collapse_by_tag"], outputfilter["collapse_asgs"])
+            nodes[node.arn] = node
+        
+        # RDS nodes
+        for rds_json in get_rds_instances(region, outputfilter):
+            node = Rds(region, rds_json)
+            if not outputfilter["read_replicas"] and node.node_type == "rds_rr":
+                continue
+            nodes[node.arn] = node
 
-                    # Get ELB's
-                    for elb_json in get_elbs(subnet, outputfilter):
-                        elb = Elb(subnet, elb_json)
-                        subnet.addChild(elb)
+        # ELB nodes
+        for elb_json in get_elbs(region, outputfilter):
+            node = Elb(region, elb_json)
+            nodes[node.arn] = node
+        
+        for elb_json in get_elbv2s(region, outputfilter):
+            node = Elbv2(region, elb_json)
+            nodes[node.arn] = node
+        
+        # Filter out nodes based on tags
+        if len(outputfilter.get("tags", [])) > 0:
+            for node_id in list(nodes):
+                has_match = False
+                node = nodes[node_id]
+                # For each node, look to see if its tags match one of the tag sets
+                # Ex. --tags Env=Prod --tags Team=Dev,Name=Bastion
+                for tag_set in outputfilter.get("tags", []):
+                    conditions = [c.split("=") for c in tag_set.split(",")]
+                    condition_matches = 0
+                    # For a tag set, see if all conditions match, ex. [["Team","Dev"],["Name","Bastion"]]
+                    for pair in conditions:
+                        # Given ["Team","Dev"], see if it matches one of the tags in the node
+                        for tag in node.tags:
+                            if tag.get('Key','') == pair[0] and tag.get('Value','') == pair[1]:
+                                condition_matches += 1
+                    # We have a match if all of the conditions matched
+                    if condition_matches == len(conditions):
+                        has_match = True
+                
+                # If there were no matches, remove the node
+                if not has_match:
+                    del nodes[node_id]
+        
+        # Add the nodes to their respective subnets
+        for node_arn in list(nodes):
+            node = nodes[node_arn]
+            add_node_to_subnets(region, node, nodes)
 
-                    # If there are leaves, then add this subnet to the final graph
-                    if len(subnet.leaves) > 0:
-                        node_count_per_region += len(subnet.leaves)
-                        for leaf in subnet.leaves:
-                            cytoscape_json.append(leaf.cytoscape_data())
-                        cytoscape_json.append(subnet.cytoscape_data())
-                        az.addChild(subnet)
-
-                if az.has_leaves:
-                    if outputfilter["azs"]:
-                        cytoscape_json.append(az.cytoscape_data())
-                    vpc.addChild(az)
-
-            if vpc.has_leaves:
-                cytoscape_json.append(vpc.cytoscape_data())
-                region.addChild(vpc)
-
+        # From the root of the tree (the account), add in the children if there are leaves
         if region.has_leaves:
             cytoscape_json.append(region.cytoscape_data())
-            account.addChild(region)
 
-        log("- {} nodes built in region {}".format(node_count_per_region, region.local_id))
+            for vpc in region.children:
+                if vpc.has_leaves:
+                    cytoscape_json.append(vpc.cytoscape_data())
+                
+                    for az in vpc.children:
+                        if az.has_leaves:
+                            if outputfilter["azs"]:
+                                cytoscape_json.append(az.cytoscape_data())
+                        
+                            for subnet in az.children:
+                                if subnet.has_leaves:
+                                    cytoscape_json.append(subnet.cytoscape_data())
+
+                                    for leaf in subnet.leaves:
+                                        cytoscape_json.append(leaf.cytoscape_data(subnet.arn))
+
+        log("- {} nodes built in region {}".format(len(nodes), region.local_id))
 
     # Get VPC peerings
     for region in account.children:

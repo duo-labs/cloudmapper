@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Product_Icon"
+   data-name="Product Icon"
+   viewBox="0 0 75 75"
+   version="1.1"
+   sodipodi:docname="Amazon-DynamoDB_light-bg.svg"
+   width="75"
+   height="75"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata21">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Amazon-DynamoDB_light-bg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs19" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="960"
+     inkscape:window-height="704"
+     id="namedview17"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.1466667"
+     inkscape:cx="37.5"
+     inkscape:cy="37.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Product_Icon" />
+  <title
+     id="title2">Amazon-DynamoDB_light-bg</title>
+  <rect
+     id="Blue_Light_BG"
+     data-name="Blue Light BG"
+     width="75"
+     height="75"
+     style="fill:#3b48cc"
+     x="0"
+     y="0" />
+  <g
+     id="Product_Icon-2"
+     data-name="Product Icon">
+    <path
+       d="m 50.25,40.48 -6.61,6.6 a 16.23,16.23 0 0 0 3.42,-1.39 2.58,2.58 0 0 1 1.19,1.8 c 0,1.83 -3.88,3.82 -9.64,4.63 a 42.23,42.23 0 0 1 -5.36,0.38 h -1 c -8.08,-0.19 -14,-2.74 -14,-5 a 2.58,2.58 0 0 1 1.19,-1.8 c 3.14,1.75 8.23,2.79 13.81,2.79 h 0.11 l 0.56,-2 c -0.22,0 -0.44,0 -0.67,0 -5.5,0 -10.6,-1.09 -13.31,-2.81 -1.08,-0.71 -1.68,-1.48 -1.69,-2.15 V 36.9 c 3.06,2.34 9.16,3.56 15,3.56 0.79,0 1.58,0 2.35,-0.07 l 0.57,-2 c -1,0.07 -1.93,0.1 -2.92,0.1 -8.58,0 -15,-2.63 -15,-5 a 2.58,2.58 0 0 1 1.19,-1.8 c 2.76,1.55 7,2.52 11.81,2.74 l 0.05,-2 C 26.57,32.2 22.3,31.18 19.94,29.67 18.87,28.98 18.27,28.2 18.25,27.52 V 22.9 c 3.06,2.34 9.16,3.56 15,3.56 h 0.22 l 1.06,-2 h -1.28 c -8.58,0 -15,-2.63 -15,-5 0,-2.37 6.42,-5 15,-5 a 36,36 0 0 1 8.58,1 h 5.49 c -3,-1.83 -8.18,-3 -14.07,-3 -8.24,0 -17,2.44 -17,7 v 8.05 a 4.06,4.06 0 0 0 1.51,2.95 4.07,4.07 0 0 0 -1.51,3 v 8 a 4.06,4.06 0 0 0 1.51,3 4.07,4.07 0 0 0 -1.51,3 v 8 a 1.25,1.25 0 0 0 0,0.21 c 0.27,4.39 8.87,6.75 17,6.75 8.13,0 16.73,-2.36 17,-6.77 a 0.75,0.75 0 0 0 0,-0.21 v -8 a 4,4 0 0 0 -1.51,-3 4.06,4.06 0 0 0 1.51,-3 z m -2,15 c 0,2.36 -6.42,5 -15,5 -8.58,0 -15,-2.61 -15,-5 v -4.6 c 3.06,2.32 9.16,3.54 15,3.54 5.84,0 11.94,-1.22 15,-3.54 z"
+       style="fill:#ffffff"
+       id="path5"
+       inkscape:connector-curvature="0" />
+    <circle
+       cx="21.25"
+       cy="27.52"
+       r="1.25"
+       style="fill:#ffffff"
+       id="circle7" />
+    <circle
+       cx="21.25"
+       cy="41.52"
+       r="1.25"
+       style="fill:#ffffff"
+       id="circle9" />
+    <circle
+       cx="21.25"
+       cy="55.52"
+       r="1.25"
+       style="fill:#ffffff"
+       id="circle11" />
+    <path
+       d="m 35.75,51.48 a 1,1 0 0 1 -0.5,-0.14 1,1 0 0 1 -0.46,-1.15 L 40.41,31.48 H 34.75 A 1,1 0 0 1 33.86,30 l 6,-12 a 1,1 0 0 1 0.89,-0.55 h 13 a 1,1 0 0 1 1,1.31 l -2.56,7.69 h 5.61 a 1,1 0 0 1 0.72,1.69 l -22,23 a 1,1 0 0 1 -0.77,0.34 z m 0.62,-22 h 5.38 a 1,1 0 0 1 0.8,0.4 1,1 0 0 1 0.16,0.88 l -4.81,16 17.51,-18.3 h -4.66 a 1,1 0 0 1 -1,-1.32 l 2.56,-7.68 h -11 z"
+       style="fill:#ffffff"
+       id="path13"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

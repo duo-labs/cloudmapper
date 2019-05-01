@@ -183,6 +183,15 @@
             }
     },
     {
+        "selector": "[type = \"elbv2\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/elb.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
             "selector": "[type = \"rds\"]",
             "css": {
             "background-opacity": 0,
@@ -219,6 +228,24 @@
             "width": 200,
             "height": 200
             }
+    },
+    {
+        "selector": "[type = \"s3\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/s3.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"dynamodb\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/dynamodb.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
     },
     
     
