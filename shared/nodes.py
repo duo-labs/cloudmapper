@@ -28,6 +28,24 @@ from abc import ABCMeta
 from netaddr import IPNetwork, IPAddress
 from six import add_metaclass
 
+import urllib
+import os
+import json
+
+# TODO This is copied from shared.common to avoid import loops
+def get_parameter_file(region, service, function, parameter_value):
+    file_name = 'account-data/{}/{}/{}/{}'.format(
+        region.account.name,
+        region.name,
+        '{}-{}'.format(service, function),
+        urllib.parse.quote_plus(parameter_value))
+    if not os.path.isfile(file_name):
+        return None
+    if os.path.getsize(file_name) <= 4:
+        return None
+
+    # Load the json data from the file
+    return json.load(open(file_name))
 
 def truncate(string):
     return (string[:39] + '..') if len(string) > 40 else string
@@ -77,6 +95,10 @@ class Node(object):
         self._json_blob = json_blob
         self._children = {}
 
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+
     @property
     def arn(self):
         return self._arn
@@ -96,6 +118,14 @@ class Node(object):
     @property
     def isLeaf(self):
         return self._isLeaf
+
+    @property
+    def tags(self):
+        raise NotImplementedError('tags not implemented for type {}'.format(self.node_type))
+
+    @property
+    def subnets(self):
+        raise NotImplementedError('subnets not implemented for type {}'.format(self.node_type))
 
     @property
     def account(self):
@@ -169,15 +199,18 @@ class Node(object):
                 leaves.extend(child.leaves)
             return leaves
 
-    def cytoscape_data(self):
+    def cytoscape_data(self, parent_arn=''):
         response = {"data": {
             "id": self.arn,
             "name": self.name,
             "type": self.node_type,
             "local_id": self.local_id,
-            "node_data": self.json
+            "node_data": {} #self.json
         }}
-        if self.parent:
+
+        if parent_arn != '':
+            response["data"]["parent"] = parent_arn
+        elif self.parent:
             response["data"]["parent"] = self.parent.arn
 
         return response
@@ -275,7 +308,16 @@ class Ec2(Leaf):
             public_ips = pyjq.all('.NetworkInterfaces[].PrivateIpAddresses[].Association.PublicIp', self._json_blob)
             self._ips.extend([x for x in public_ips if x is not None])
         return self._ips
+    
+    @property
+    def tags(self):
+        return pyjq.all('.Tags[]', self._json_blob)
 
+    @property
+    def subnets(self):
+        return pyjq.all('.NetworkInterfaces[].SubnetId', self._json_blob)
+
+    @property
     def security_groups(self):
         return pyjq.all('.SecurityGroups[].GroupId', self._json_blob)
 
@@ -304,10 +346,31 @@ class Ec2(Leaf):
 
 
 class Elb(Leaf):
+    _subnet = None
+
     @property
     def ips(self):
         # ELB's don't have IPs
         return []
+
+    @property
+    def tags(self):
+        tags = get_parameter_file(self.region, 'elb', 'describe-tags', self._json_blob['LoadBalancerName']) 
+        if tags is None:
+            return []
+        return tags['TagDescriptions']['Tags']
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
+    @property
+    def subnets(self):
+        if self._subnet:
+            return self._subnet
+        else:
+            return pyjq.all('.Subnets[]', self._json_blob)
+
 
     @property
     def is_public(self):
@@ -316,6 +379,7 @@ class Elb(Leaf):
             return True
         return False
 
+    @property
     def security_groups(self):
         return pyjq.all('.SecurityGroups[]', self._json_blob)
 
@@ -332,16 +396,87 @@ class Elb(Leaf):
         super(Elb, self).__init__(parent, json_blob)
 
 
+class Elbv2(Leaf):
+    _subnet = None
+
+    @property
+    def ips(self):
+        # ELB's don't have IPs
+        return []
+
+    @property
+    def tags(self):
+        tags = get_parameter_file(self.region, 'elbv2', 'describe-tags', self._json_blob['LoadBalancerName']) 
+        if tags is None:
+            return []
+        return tags['TagDescriptions']['Tags']
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
+    @property
+    def subnets(self):
+        if self._subnet:
+            return self._subnet
+        else:
+            return pyjq.all('.AvailabilityZones[].SubnetId', self._json_blob)
+
+    @property
+    def is_public(self):
+        scheme = pyjq.all('.Scheme', self._json_blob)[0]
+        if scheme == "internet-facing":
+            return True
+        return False
+
+    @property
+    def security_groups(self):
+        return pyjq.all('.SecurityGroups[]', self._json_blob)
+
+    def __init__(self, parent, json_blob):
+        self._type = "elbv2"
+        self._local_id = json_blob["LoadBalancerName"]
+        self._arn = "arn:aws:elasticloadbalancingv2:{}:{}:instance/{}/{}".format(
+            parent.region.name,
+            parent.account.local_id,
+            self._local_id,
+            parent.local_id)
+
+        self._name = json_blob["LoadBalancerName"]
+        super(Elbv2, self).__init__(parent, json_blob)
+
+
 class Rds(Leaf):
+    _subnet = None
+
     @property
     def ips(self):
         # RDS instances don't have IPs
         return []
 
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
+    @property
+    def subnets(self):
+        if self._subnet:
+            return self._subnet
+        else:
+            return pyjq.all('.DBSubnetGroup.Subnets[].SubnetIdentifier', self._json_blob)
+    
+    @property
+    def tags(self):
+        tags = get_parameter_file(self.region, 'rds', 'list-tags-for-resource', self._json_blob['DBInstanceArn'])
+        if tags is None:
+            return []
+        return tags['TagList']
+
     @property
     def is_public(self):
         return pyjq.all('.PubliclyAccessible', self._json_blob)[0]
 
+    @property
     def security_groups(self):
         return pyjq.all('.VpcSecurityGroups[].VpcSecurityGroupId', self._json_blob)
 
@@ -352,15 +487,8 @@ class Rds(Leaf):
         if pyjq.all('.ReadReplicaSourceDBInstanceIdentifier', json_blob) != [None]:
             self._type = "rds_rr"
 
-        # I am making up this ARN, because RDS uses "arn:aws:rds:region:account-id:db:db-instance-name",
-        # but that doesn't tell the subnet
         self._local_id = json_blob["DBInstanceIdentifier"]
-        self._arn = "arn:aws:rds:{}:{}:db-instance/{}/{}".format(
-            parent.region.name,
-            parent.account.local_id,
-            self._local_id,
-            parent.local_id
-        )
+        self._arn = json_blob['DBInstanceArn']
         self._name = truncate(json_blob["DBInstanceIdentifier"])
         super(Rds, self).__init__(parent, json_blob)
 

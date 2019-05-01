@@ -183,6 +183,15 @@
             }
     },
     {
+        "selector": "[type = \"elbv2\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/elb.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
             "selector": "[type = \"rds\"]",
             "css": {
             "background-opacity": 0,
