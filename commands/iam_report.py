@@ -14,7 +14,8 @@ import pyjq
 from jinja2 import Template
 
 from policyuniverse.policy import Policy
-from shared.common import parse_arguments, query_aws, get_parameter_file, get_regions
+from shared.common import parse_arguments, get_regions
+from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
 __description__ = "Create IAM report"

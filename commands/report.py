@@ -16,7 +16,8 @@ import pyjq
 from jinja2 import Template
 
 from policyuniverse.policy import Policy
-from shared.common import parse_arguments, query_aws, get_parameter_file, get_regions, get_account_stats, get_us_east_1, get_collection_date, get_access_advisor_active_counts
+from shared.common import parse_arguments, get_regions, get_account_stats, get_us_east_1, get_collection_date, get_access_advisor_active_counts
+from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
 from shared.audit import audit

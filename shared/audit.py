@@ -11,7 +11,8 @@ import yaml
 
 from policyuniverse.policy import Policy
 
-from shared.common import parse_arguments, query_aws, make_list, get_parameter_file, get_regions
+from shared.common import parse_arguments, make_list, get_regions
+from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
 
