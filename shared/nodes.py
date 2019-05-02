@@ -443,6 +443,10 @@ class Rds(Leaf):
     def ips(self):
         # RDS instances don't have IPs
         return []
+    
+    @property
+    def can_egress(self):
+        return False
 
     def set_subnet(self, subnet):
         self._subnet = subnet
