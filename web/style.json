@@ -256,9 +256,141 @@
         "background-clip": "none"
         }
     },
-    
-    
-    
+    {
+        "selector": "[type = \"redshift\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/redshift.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"kinesis\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/kinesis.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"sqs\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/sqs.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"sns\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/sns.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"ecs\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/ecs.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"ecr\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/ecr.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"fargate\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/fargate.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"lambda\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/lambda.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"codebuild\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/codebuild.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"codecommit\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/codecommit.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"codepipeline\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/codepipeline.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"ssm\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/ssm.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"secretsmanager\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/secretsmanager.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"kms\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/kms.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
+    {
+        "selector": "[type = \"apigateway\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/apigateway.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
     
     
     

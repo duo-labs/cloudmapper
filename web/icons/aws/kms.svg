@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Product_Icon"
+   data-name="Product Icon"
+   width="75"
+   height="75"
+   viewBox="0 0 75 75"
+   version="1.1"
+   sodipodi:docname="AWS-Key-Management-Service_light-bg.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata25">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>AWS-Key-Management-Service_light-bg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs23" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview21"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.1466667"
+     inkscape:cx="37.5"
+     inkscape:cy="37.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Product_Icon" />
+  <title
+     id="title2">AWS-Key-Management-Service_light-bg</title>
+  <rect
+     id="Red_Light_BG"
+     data-name="Red Light BG"
+     width="75"
+     height="75"
+     style="fill:#d6242d"
+     x="0"
+     y="0" />
+  <g
+     id="Product_Icon-2"
+     data-name="Product Icon">
+    <path
+       d="m 24.5,62 a 1,1 0 0 1 -0.75,-0.34 l -3.5,-4 A 1,1 0 0 1 20,57 v -2.58 l -2.71,-2.71 a 1,1 0 0 1 0,-1.42 L 20,47.59 v -1.17 l -2.71,-2.71 a 1,1 0 0 1 0,-1.42 L 20,39.59 V 37.17 A 12.45,12.45 0 0 1 12,25.35 12.500225,12.500225 0 0 1 37,25.5 12.43,12.43 0 0 1 29,37.16 V 58 a 1,1 0 0 1 -0.35,0.76 l -3.5,3 A 1,1 0 0 1 24.5,62 Z m -2.5,-5.38 2.6,3 2.4,-2.08 V 36.45 a 1,1 0 0 1 0.7,-1 10.49,10.49 0 1 0 -6.43,0 1,1 0 0 1 0.73,1 V 40 a 1,1 0 0 1 -0.29,0.71 L 19.42,43 21.71,45.29 A 1,1 0 0 1 22,46 v 2 a 1,1 0 0 1 -0.29,0.7 l -2.29,2.3 2.29,2.29 A 1,1 0 0 1 22,54 Z M 24.5,26.5 A 4.5,4.5 0 1 1 29,22 4.51,4.51 0 0 1 24.5,26.5 Z m 0,-7 A 2.5,2.5 0 1 0 27,22 2.5,2.5 0 0 0 24.5,19.5 Z"
+       style="fill:#ffffff"
+       id="path5"
+       inkscape:connector-curvature="0" />
+    <path
+       d="M 61.09,55 H 31 V 53 H 61 V 31 H 39 V 29 H 61.09 A 1.9,1.9 0 0 1 63,30.87 V 53.13 A 1.9,1.9 0 0 1 61.09,55 Z"
+       style="fill:#ffffff"
+       id="path7"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 34.5,45.5 a 4,4 0 1 1 4,-4 4,4 0 0 1 -4,4 z m 0,-6 a 2,2 0 1 0 2,2 2,2 0 0 0 -2,-2 z"
+       style="fill:#ffffff"
+       id="path9"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 44.5,45.5 a 4,4 0 1 1 4,-4 4,4 0 0 1 -4,4 z m 0,-6 a 2,2 0 1 0 2,2 2,2 0 0 0 -2,-2 z"
+       style="fill:#ffffff"
+       id="path11"
+       inkscape:connector-curvature="0" />
+    <rect
+       x="31"
+       y="48"
+       width="7"
+       height="2"
+       style="fill:#ffffff"
+       id="rect13" />
+    <rect
+       x="41"
+       y="48"
+       width="7"
+       height="2"
+       style="fill:#ffffff"
+       id="rect15" />
+    <rect
+       x="51"
+       y="48"
+       width="7"
+       height="2"
+       style="fill:#ffffff"
+       id="rect17" />
+  </g>
+</svg>
