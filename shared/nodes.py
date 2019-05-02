@@ -95,6 +95,10 @@ class Node(object):
         return self._name
 
     @property
+    def can_egress(self):
+        return True
+
+    @property
     def node_type(self):
         return self._type
 
@@ -159,6 +163,9 @@ class Node(object):
     @property
     def children(self):
         return self._children.values()
+    
+    def removeChild(self, child):
+        del self._children[child.local_id]
 
     @property
     def has_leaves(self):
@@ -481,6 +488,10 @@ class VpcEndpoint(Leaf):
     _subnet = None
 
     @property
+    def can_egress(self):
+        return False
+
+    @property
     def ips(self):
         return []
 
@@ -517,6 +528,12 @@ class VpcEndpoint(Leaf):
             parent.account.local_id,
             self._local_id)
 
+        # Need to set the parent, but what was passed in was the region
+        assert(parent._type == "region")
+        for vpc in parent.children:
+            if vpc.local_id == json_blob['VpcId']:
+                self._parent = vpc
+
         # The ServiceName looks like com.amazonaws.us-east-1.sqs
         # So I want the last section, "sqs"
         self._name = json_blob["ServiceName"][json_blob["ServiceName"].rfind('.')+1:]
@@ -526,7 +543,7 @@ class VpcEndpoint(Leaf):
         elif self._name == 'dynamodb':
             self._type = 'dynamodb'
 
-        super(VpcEndpoint, self).__init__(parent, json_blob)
+        super(VpcEndpoint, self).__init__(self._parent, json_blob)
 
 
 class Cidr(Leaf):

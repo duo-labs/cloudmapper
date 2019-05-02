@@ -188,6 +188,12 @@ def get_connections(cidrs, vpc, outputfilter):
                     if instance.is_public:
                         cidrs[cidr].is_used = True
                         add_connection(connections, cidrs[cidr], instance, sg)
+                    else:
+                        if cidr == '0.0.0.0/0':
+                            # Resource is not public, but allows anything to access it,
+                            # so mark set all the resources in the VPC as allowing access to it.
+                            for source_instance in vpc.leaves:
+                                add_connection(connections, source_instance, instance, sg)
 
         if outputfilter["internal_edges"]:
             # Connect allowed in Security Groups
@@ -202,6 +208,11 @@ def get_connections(cidrs, vpc, outputfilter):
                             continue
                         add_connection(connections, source, target, sg)
 
+    # Remove connections for source nodes that cannot initiate traffic (ex. VPC endpoints)
+    for connection in list(connections):
+        if not connection.source.can_egress:
+            del connections[connection]
+
     return connections
 
 
@@ -211,12 +222,12 @@ def add_node_to_subnets(region, node, nodes):
 
     # Add a new node (potentially the same one) back to the dictionary
     for vpc in region.children:
-        if len(node.subnets) == 0:
+        if len(node.subnets) == 0 and vpc.local_id == node._parent.local_id:
             # VPC Gateway Endpoints (S3 and DynamoDB) reside in a VPC, not a subnet
-            # Set the subnet name on the copy, and potentially a new arn
-            node._parent = vpc
+            # So set the relationship between the VPC and the node
             nodes[node.arn] = node
             vpc.addChild(node)
+            break
 
         for az in vpc.children:
             for subnet in az.children:
@@ -231,6 +242,7 @@ def add_node_to_subnets(region, node, nodes):
                         nodes[subnet_node.arn] = subnet_node
 
                         subnet.addChild(subnet_node)
+
 
 def build_data_structure(account_data, config, outputfilter):
     cytoscape_json = []
@@ -299,7 +311,6 @@ def build_data_structure(account_data, config, outputfilter):
         for vpc_endpoint_json in get_vpc_endpoints(region):
             node = VpcEndpoint(region, vpc_endpoint_json)
             nodes[node.arn] = node
-
         
         # Filter out nodes based on tags
         if len(outputfilter.get("tags", [])) > 0:
@@ -331,24 +342,42 @@ def build_data_structure(account_data, config, outputfilter):
             add_node_to_subnets(region, node, nodes)
 
         # From the root of the tree (the account), add in the children if there are leaves
+        # If not, mark the item for removal
         if region.has_leaves:
             cytoscape_json.append(region.cytoscape_data())
 
+            region_children_to_remove = set()
             for vpc in region.children:
                 if vpc.has_leaves:
                     cytoscape_json.append(vpc.cytoscape_data())
                 
+                    vpc_children_to_remove = set()
                     for az in vpc.children:
                         if az.has_leaves:
                             if outputfilter["azs"]:
                                 cytoscape_json.append(az.cytoscape_data())
                         
+                            az_children_to_remove = set()
                             for subnet in az.children:
                                 if subnet.has_leaves:
                                     cytoscape_json.append(subnet.cytoscape_data())
 
                                     for leaf in subnet.leaves:
                                         cytoscape_json.append(leaf.cytoscape_data(subnet.arn))
+                                else:
+                                    az_children_to_remove.add(subnet)
+                            for subnet in az_children_to_remove:
+                                az.removeChild(subnet)
+
+                        else:
+                            vpc_children_to_remove.add(az)
+                    for az in vpc_children_to_remove:
+                        vpc.removeChild(az)
+
+                else:
+                    region_children_to_remove.add(vpc)
+            for vpc in region_children_to_remove:
+                region.removeChild(vpc)
 
         log("- {} nodes built in region {}".format(len(nodes), region.local_id))
 
