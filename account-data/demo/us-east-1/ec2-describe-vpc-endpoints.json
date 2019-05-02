@@ -1,0 +1,54 @@
+{
+    "VpcEndpoints": [
+        {
+            "CreationTimestamp": "2019-04-11T18:59:11+00:00",
+            "DnsEntries": [],
+            "Groups": [],
+            "NetworkInterfaceIds": [],
+            "PolicyDocument": "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"*\",\"Resource\":\"*\"}]}",
+            "PrivateDnsEnabled": false,
+            "RouteTableIds": [
+                "rtb-00000000"
+            ],
+            "ServiceName": "com.amazonaws.us-east-1.s3",
+            "State": "available",
+            "SubnetIds": [],
+            "VpcEndpointId": "vpce-00000000000000001",
+            "VpcEndpointType": "Gateway",
+            "VpcId": "vpc-12345678"
+        },
+        {
+            "CreationTimestamp": "2019-04-30T15:19:35+00:00",
+            "DnsEntries": [
+                {
+                    "DnsName": "vpce-05ed16ac73726e737-5xkr9dae-us-east-1f.sqs.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "sqs.us-east-1.amazonaws.com",
+                    "HostedZoneId": "ZCYZV1JQU4VH2"
+                }
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-00000006",
+                    "GroupName": "default"
+                }
+            ],
+            "NetworkInterfaceIds": [
+                "eni-00000000000000001"
+            ],
+            "PolicyDocument": "{\n    \"Statement\": [\n        {\n            \"Action\": \"*\",\n            \"Effect\": \"Allow\",\n            \"Resource\": \"*\",\n            \"Principal\": \"*\"\n        }\n    ]\n}",
+            "PrivateDnsEnabled": true,
+            "RouteTableIds": [],
+            "ServiceName": "com.amazonaws.us-east-1.sqs",
+            "State": "available",
+            "SubnetIds": [
+                "subnet-00000003"
+            ],
+            "VpcEndpointId": "vpce-00000000000000002",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-12345678"
+        }
+    ]
+}
