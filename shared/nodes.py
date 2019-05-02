@@ -187,7 +187,6 @@ class Node(object):
         if self.isLeaf:
             return [self]
         else:
-            # TODO: Use iterators
             leaves = []
             for child in self.children:
                 leaves.extend(child.leaves)
@@ -199,7 +198,7 @@ class Node(object):
             "name": self.name,
             "type": self.node_type,
             "local_id": self.local_id,
-            "node_data": {} #self.json
+            "node_data": self.json
         }}
 
         if parent_arn != '':
