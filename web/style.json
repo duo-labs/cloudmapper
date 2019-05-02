@@ -759,7 +759,8 @@
         "selector": ":selected",
         "css": {
             "background-color": "#ff0",
-            "background-opacity": 0.5  
+            "background-opacity": 0.5,
+            "background-image-opacity": 0.7
         }
     },
     {
