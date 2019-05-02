@@ -99,6 +99,10 @@ class Node(object):
         return True
 
     @property
+    def has_unrestricted_ingress(self):
+        return False
+
+    @property
     def node_type(self):
         return self._type
 
@@ -443,7 +447,7 @@ class Rds(Leaf):
     def ips(self):
         # RDS instances don't have IPs
         return []
-    
+
     @property
     def can_egress(self):
         return False
@@ -491,9 +495,15 @@ class Rds(Leaf):
 class VpcEndpoint(Leaf):
     _subnet = None
 
+    _unrestricted_ingress = False
+
     @property
     def can_egress(self):
         return False
+
+    @property
+    def has_unrestricted_ingress(self):
+        return self._unrestricted_ingress
 
     @property
     def ips(self):
@@ -541,6 +551,11 @@ class VpcEndpoint(Leaf):
         # The ServiceName looks like com.amazonaws.us-east-1.sqs
         # So I want the last section, "sqs"
         self._name = json_blob["ServiceName"][json_blob["ServiceName"].rfind('.')+1:]
+
+        if json_blob['VpcEndpointType'] == 'Gateway':
+            # The Gateway Endpoints don't live in subnets and don't have Security Groups.
+            # Access is controlled through their policy, or the S3 bucket policies, or somewhere else.
+            self._unrestricted_ingress = True
 
         if self._name == 's3':
             self._type = 's3'

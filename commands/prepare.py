@@ -208,6 +208,13 @@ def get_connections(cidrs, vpc, outputfilter):
                             continue
                         add_connection(connections, source, target, sg)
 
+    # Connect everything to the Gateway endpoints
+    for targetResource in vpc.leaves:
+        if targetResource.has_unrestricted_ingress:
+            for sourceVpc in itertools.chain(vpc.peers, (vpc,)):
+                for sourceResource in sourceVpc.leaves:
+                    add_connection(connections, sourceResource, targetResource, [])
+
     # Remove connections for source nodes that cannot initiate traffic (ex. VPC endpoints)
     for connection in list(connections):
         if not connection.source.can_egress:
@@ -217,6 +224,11 @@ def get_connections(cidrs, vpc, outputfilter):
 
 
 def add_node_to_subnets(region, node, nodes):
+    '''
+    Given a node, find all the subnets it thinks it belongs to,
+    and duplicate it and add it a child of those subnets
+    '''
+
     # Remove node from dictionary
     del nodes[node.arn]
 
