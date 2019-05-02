@@ -14,6 +14,42 @@
                     "Ipv6Ranges": []
                 }
             ], 
+            "Description": "Endpoint access", 
+            "IpPermissions": [
+                {
+                    "PrefixListIds": [], 
+                    "FromPort": 443, 
+                    "IpRanges": [], 
+                    "ToPort": 443, 
+                    "IpProtocol": "tcp", 
+                    "UserIdGroupPairs": [
+                        {
+                            "UserId": "123456789012", 
+                            "GroupId": "sg-00000004"
+                        }
+                    ], 
+                    "Ipv6Ranges": []
+                }
+            ], 
+            "GroupName": "Endpint", 
+            "VpcId": "vpc-12345678", 
+            "OwnerId": "123456789012", 
+            "GroupId": "sg-00000006"
+        },
+        {
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1", 
+                    "PrefixListIds": [], 
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ], 
+                    "UserIdGroupPairs": [], 
+                    "Ipv6Ranges": []
+                }
+            ], 
             "Description": "Database", 
             "IpPermissions": [
                 {

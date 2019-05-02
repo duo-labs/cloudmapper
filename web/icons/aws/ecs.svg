@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Product_Icon"
+   data-name="Product Icon"
+   viewBox="0 0 75 75"
+   version="1.1"
+   sodipodi:docname="Amazon-Elastic-Container-Service_light-bg.svg"
+   width="75"
+   height="75"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Amazon-Elastic-Container-Service_light-bg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview11"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.1466667"
+     inkscape:cx="37.5"
+     inkscape:cy="37.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Product_Icon" />
+  <title
+     id="title2">Amazon-Elastic-Container-Service_light-bg</title>
+  <rect
+     id="Orange_Light_BG"
+     data-name="Orange Light BG"
+     width="75"
+     height="75"
+     style="fill:#d86613"
+     x="0"
+     y="0" />
+  <g
+     id="Product_Icon-2"
+     data-name="Product Icon">
+    <path
+       d="M 37.29,64.44 A 1,1 0 0 1 36.76,64.3 L 14,51.18 A 1.06,1.06 0 0 1 13.47,50.26 V 23.68 A 1.06,1.06 0 0 1 14,22.76 L 34.93,10.7 a 1,1 0 0 1 1.57,0.9 V 23.11 A 1.05,1.05 0 0 1 36,24 l -10.47,6 v 13.94 l 11.79,6.81 10.31,-6 a 1,1 0 0 1 1,0 l 9.92,5.7 a 1.06,1.06 0 0 1 0.53,0.92 1,1 0 0 1 -0.53,0.91 l -20.75,12 a 1,1 0 0 1 -0.51,0.16 z M 15.5,49.54 37.83,62.43 57,51.35 49,46.74 38.37,52.88 a 1.11,1.11 0 0 1 -1.09,0 L 24,45.22 A 1.05,1.05 0 0 1 23.47,44.31 V 29.46 A 1,1 0 0 1 24,28.55 l 10.47,-6 v -9.18 l -19,11 z"
+       style="fill:#ffffff"
+       id="path5"
+       inkscape:connector-curvature="0" />
+    <path
+       d="M 60.44,49 A 1.13,1.13 0 0 1 59.91,48.86 L 50,43.13 A 1,1 0 0 1 49.47,42.22 V 30.11 L 39,24.07 A 1.05,1.05 0 0 1 38.47,23.16 V 11.65 a 1,1 0 0 1 0.52,-0.9 1,1 0 0 1 1,0 L 61,22.82 a 1.05,1.05 0 0 1 0.53,0.91 V 47.9 A 1.06,1.06 0 0 1 61,48.82 1.1,1.1 0 0 1 60.44,49 Z m -8.94,-7.45 8,4.6 V 24.4 l -19,-11 v 9.13 L 51,28.61 a 1,1 0 0 1 0.53,0.91 z"
+       style="fill:#ffffff"
+       id="path7"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

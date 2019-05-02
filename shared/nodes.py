@@ -557,10 +557,9 @@ class VpcEndpoint(Leaf):
             # Access is controlled through their policy, or the S3 bucket policies, or somewhere else.
             self._unrestricted_ingress = True
 
-        if self._name == 's3':
-            self._type = 's3'
-        elif self._name == 'dynamodb':
-            self._type = 'dynamodb'
+        services_with_icons = ['s3', 'dynamodb', 'kinesis', 'sqs', 'sns', 'codebuild', 'codecommit', 'codepipeline', 'ecs', 'ecr', 'ssm', 'secretsmanager', 'kms', 'apigateway']
+        if self._name in services_with_icons:
+            self._type = self._name
 
         super(VpcEndpoint, self).__init__(self._parent, json_blob)
 

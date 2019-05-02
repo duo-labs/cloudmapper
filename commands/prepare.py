@@ -364,13 +364,16 @@ def build_data_structure(account_data, config, outputfilter):
                     cytoscape_json.append(vpc.cytoscape_data())
                 
                     vpc_children_to_remove = set()
-                    for az in vpc.children:
-                        if az.has_leaves:
+                    for vpc_child in vpc.children:
+                        if vpc_child.has_leaves:
                             if outputfilter["azs"]:
-                                cytoscape_json.append(az.cytoscape_data())
+                                cytoscape_json.append(vpc_child.cytoscape_data())
+                            elif vpc_child.node_type != 'az':
+                                # Add VPC children that are not AZs, such as Gateway endpoints
+                                cytoscape_json.append(vpc_child.cytoscape_data())
                         
                             az_children_to_remove = set()
-                            for subnet in az.children:
+                            for subnet in vpc_child.children:
                                 if subnet.has_leaves:
                                     cytoscape_json.append(subnet.cytoscape_data())
 
@@ -379,7 +382,7 @@ def build_data_structure(account_data, config, outputfilter):
                                 else:
                                     az_children_to_remove.add(subnet)
                             for subnet in az_children_to_remove:
-                                az.removeChild(subnet)
+                                vpc_child.removeChild(subnet)
 
                         else:
                             vpc_children_to_remove.add(az)
