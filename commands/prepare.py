@@ -31,7 +31,7 @@ import copy
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, get_regions, is_external_cidr
 from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Cidr, Connection
 
 __description__ = "Generate network connection information file"
 
@@ -72,28 +72,31 @@ def get_subnets(az):
     return pyjq.all(resource_filter.format(az.vpc.local_id, az.local_id), subnets)
 
 
-def get_ec2s(region, outputfilter):
+def get_ec2s(region):
     instances = query_aws(region.account, "ec2-describe-instances", region.region)
     resource_filter = '.Reservations[].Instances[] | select(.State.Name == "running")'
-
     return pyjq.all(resource_filter, instances)
 
 
-def get_elbs(region, outputfilter):
+def get_elbs(region):
     load_balancers = query_aws(region.account, "elb-describe-load-balancers", region.region)
     return pyjq.all('.LoadBalancerDescriptions[]', load_balancers)
 
-def get_elbv2s(region, outputfilter):
+
+def get_elbv2s(region):
     # ALBs and NLBs
     load_balancers = query_aws(region.account, "elbv2-describe-load-balancers", region.region)
     return pyjq.all('.LoadBalancers[]', load_balancers)
 
-    
 
-def get_rds_instances(region, outputfilter):
+def get_vpc_endpoints(region):
+    endpoints = query_aws(region.account, "ec2-describe-vpc-endpoints", region.region)
+    return pyjq.all('.VpcEndpoints[]', endpoints)
+
+
+def get_rds_instances(region):
     instances = query_aws(region.account, "rds-describe-db-instances", region.region)
-    resource_filter = '.DBInstances[]'
-    return pyjq.all(resource_filter, instances)
+    return pyjq.all('.DBInstances[]', instances)
 
 
 def get_sgs(vpc):
@@ -185,6 +188,12 @@ def get_connections(cidrs, vpc, outputfilter):
                     if instance.is_public:
                         cidrs[cidr].is_used = True
                         add_connection(connections, cidrs[cidr], instance, sg)
+                    else:
+                        if cidr == '0.0.0.0/0':
+                            # Resource is not public, but allows anything to access it,
+                            # so mark set all the resources in the VPC as allowing access to it.
+                            for source_instance in vpc.leaves:
+                                add_connection(connections, source_instance, instance, sg)
 
         if outputfilter["internal_edges"]:
             # Connect allowed in Security Groups
@@ -199,19 +208,43 @@ def get_connections(cidrs, vpc, outputfilter):
                             continue
                         add_connection(connections, source, target, sg)
 
+    # Connect everything to the Gateway endpoints
+    for targetResource in vpc.leaves:
+        if targetResource.has_unrestricted_ingress:
+            for sourceVpc in itertools.chain(vpc.peers, (vpc,)):
+                for sourceResource in sourceVpc.leaves:
+                    add_connection(connections, sourceResource, targetResource, [])
+
+    # Remove connections for source nodes that cannot initiate traffic (ex. VPC endpoints)
+    for connection in list(connections):
+        if not connection.source.can_egress:
+            del connections[connection]
+
     return connections
 
 
 def add_node_to_subnets(region, node, nodes):
+    '''
+    Given a node, find all the subnets it thinks it belongs to,
+    and duplicate it and add it a child of those subnets
+    '''
+
     # Remove node from dictionary
     del nodes[node.arn]
 
     # Add a new node (potentially the same one) back to the dictionary
     for vpc in region.children:
+        if len(node.subnets) == 0 and vpc.local_id == node._parent.local_id:
+            # VPC Gateway Endpoints (S3 and DynamoDB) reside in a VPC, not a subnet
+            # So set the relationship between the VPC and the node
+            nodes[node.arn] = node
+            vpc.addChild(node)
+            break
+
         for az in vpc.children:
             for subnet in az.children:
                 for node_subnet in node.subnets:
-                    if node_subnet == subnet.local_id:
+                    if (node_subnet == subnet.local_id):
                         # Copy the node
                         subnet_node = copy.copy(node)
                         # Set the subnet name on the copy, and potentially a new arn
@@ -221,6 +254,7 @@ def add_node_to_subnets(region, node, nodes):
                         nodes[subnet_node.arn] = subnet_node
 
                         subnet.addChild(subnet_node)
+
 
 def build_data_structure(account_data, config, outputfilter):
     cytoscape_json = []
@@ -265,24 +299,29 @@ def build_data_structure(account_data, config, outputfilter):
         #
 
         # EC2 nodes
-        for ec2_json in get_ec2s(region, outputfilter):
+        for ec2_json in get_ec2s(region):
             node = Ec2(region, ec2_json, outputfilter["collapse_by_tag"], outputfilter["collapse_asgs"])
             nodes[node.arn] = node
         
         # RDS nodes
-        for rds_json in get_rds_instances(region, outputfilter):
+        for rds_json in get_rds_instances(region):
             node = Rds(region, rds_json)
             if not outputfilter["read_replicas"] and node.node_type == "rds_rr":
                 continue
             nodes[node.arn] = node
 
         # ELB nodes
-        for elb_json in get_elbs(region, outputfilter):
+        for elb_json in get_elbs(region):
             node = Elb(region, elb_json)
             nodes[node.arn] = node
         
-        for elb_json in get_elbv2s(region, outputfilter):
+        for elb_json in get_elbv2s(region):
             node = Elbv2(region, elb_json)
+            nodes[node.arn] = node
+
+        # PrivateLink and VPC Endpoints
+        for vpc_endpoint_json in get_vpc_endpoints(region):
+            node = VpcEndpoint(region, vpc_endpoint_json)
             nodes[node.arn] = node
         
         # Filter out nodes based on tags
@@ -315,24 +354,42 @@ def build_data_structure(account_data, config, outputfilter):
             add_node_to_subnets(region, node, nodes)
 
         # From the root of the tree (the account), add in the children if there are leaves
+        # If not, mark the item for removal
         if region.has_leaves:
             cytoscape_json.append(region.cytoscape_data())
 
+            region_children_to_remove = set()
             for vpc in region.children:
                 if vpc.has_leaves:
                     cytoscape_json.append(vpc.cytoscape_data())
                 
+                    vpc_children_to_remove = set()
                     for az in vpc.children:
                         if az.has_leaves:
                             if outputfilter["azs"]:
                                 cytoscape_json.append(az.cytoscape_data())
                         
+                            az_children_to_remove = set()
                             for subnet in az.children:
                                 if subnet.has_leaves:
                                     cytoscape_json.append(subnet.cytoscape_data())
 
                                     for leaf in subnet.leaves:
                                         cytoscape_json.append(leaf.cytoscape_data(subnet.arn))
+                                else:
+                                    az_children_to_remove.add(subnet)
+                            for subnet in az_children_to_remove:
+                                az.removeChild(subnet)
+
+                        else:
+                            vpc_children_to_remove.add(az)
+                    for az in vpc_children_to_remove:
+                        vpc.removeChild(az)
+
+                else:
+                    region_children_to_remove.add(vpc)
+            for vpc in region_children_to_remove:
+                region.removeChild(vpc)
 
         log("- {} nodes built in region {}".format(len(nodes), region.local_id))
 

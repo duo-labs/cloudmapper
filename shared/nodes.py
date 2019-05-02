@@ -95,6 +95,14 @@ class Node(object):
         return self._name
 
     @property
+    def can_egress(self):
+        return True
+
+    @property
+    def has_unrestricted_ingress(self):
+        return False
+
+    @property
     def node_type(self):
         return self._type
 
@@ -159,6 +167,9 @@ class Node(object):
     @property
     def children(self):
         return self._children.values()
+    
+    def removeChild(self, child):
+        del self._children[child.local_id]
 
     @property
     def has_leaves(self):
@@ -437,6 +448,10 @@ class Rds(Leaf):
         # RDS instances don't have IPs
         return []
 
+    @property
+    def can_egress(self):
+        return False
+
     def set_subnet(self, subnet):
         self._subnet = subnet
         self._arn = self._arn + "." + subnet.local_id
@@ -474,6 +489,80 @@ class Rds(Leaf):
         self._arn = json_blob['DBInstanceArn']
         self._name = truncate(json_blob["DBInstanceIdentifier"])
         super(Rds, self).__init__(parent, json_blob)
+
+
+
+class VpcEndpoint(Leaf):
+    _subnet = None
+
+    _unrestricted_ingress = False
+
+    @property
+    def can_egress(self):
+        return False
+
+    @property
+    def has_unrestricted_ingress(self):
+        return self._unrestricted_ingress
+
+    @property
+    def ips(self):
+        return []
+
+    @property
+    def tags(self):
+        return []
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
+    @property
+    def subnets(self):
+        if self._subnet:
+            return self._subnet
+        else:
+            # TODO Has SubnetIds not Subnet names
+            # And in the case of Gateway endpoints, it has only a VPC
+            return pyjq.all('.SubnetIds[]', self._json_blob)
+
+    @property
+    def is_public(self):
+        return False
+
+    @property
+    def security_groups(self):
+        return pyjq.all('.Groups[].GroupId', self._json_blob)
+
+    def __init__(self, parent, json_blob):
+        self._type = "vpc_endpoint"
+        self._local_id = json_blob["VpcEndpointId"]
+        self._arn = "arn:aws:endpoint:{}:{}:instance/{}".format(
+            parent.region.name,
+            parent.account.local_id,
+            self._local_id)
+
+        # Need to set the parent, but what was passed in was the region
+        assert(parent._type == "region")
+        for vpc in parent.children:
+            if vpc.local_id == json_blob['VpcId']:
+                self._parent = vpc
+
+        # The ServiceName looks like com.amazonaws.us-east-1.sqs
+        # So I want the last section, "sqs"
+        self._name = json_blob["ServiceName"][json_blob["ServiceName"].rfind('.')+1:]
+
+        if json_blob['VpcEndpointType'] == 'Gateway':
+            # The Gateway Endpoints don't live in subnets and don't have Security Groups.
+            # Access is controlled through their policy, or the S3 bucket policies, or somewhere else.
+            self._unrestricted_ingress = True
+
+        if self._name == 's3':
+            self._type = 's3'
+        elif self._name == 'dynamodb':
+            self._type = 'dynamodb'
+
+        super(VpcEndpoint, self).__init__(self._parent, json_blob)
 
 
 class Cidr(Leaf):

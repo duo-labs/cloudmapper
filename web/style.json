@@ -247,6 +247,15 @@
         "background-clip": "none"
         }
     },
+    {
+        "selector": "[type = \"vpc_endpoint\"]",
+        "css": {
+        "background-opacity": 0,
+        "background-image": "./icons/aws/vpc_endpoint.svg",
+        "background-fit": "contain",
+        "background-clip": "none"
+        }
+    },
     
     
     
