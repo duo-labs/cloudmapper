@@ -476,6 +476,59 @@ class Rds(Leaf):
         super(Rds, self).__init__(parent, json_blob)
 
 
+
+class VpcEndpoint(Leaf):
+    _subnet = None
+
+    @property
+    def ips(self):
+        return []
+
+    @property
+    def tags(self):
+        return []
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
+    @property
+    def subnets(self):
+        if self._subnet:
+            return self._subnet
+        else:
+            # TODO Has SubnetIds not Subnet names
+            # And in the case of Gateway endpoints, it has only a VPC
+            return pyjq.all('.SubnetIds[]', self._json_blob)
+
+    @property
+    def is_public(self):
+        return False
+
+    @property
+    def security_groups(self):
+        return pyjq.all('.Groups[].GroupId', self._json_blob)
+
+    def __init__(self, parent, json_blob):
+        self._type = "vpc_endpoint"
+        self._local_id = json_blob["VpcEndpointId"]
+        self._arn = "arn:aws:endpoint:{}:{}:instance/{}".format(
+            parent.region.name,
+            parent.account.local_id,
+            self._local_id)
+
+        # The ServiceName looks like com.amazonaws.us-east-1.sqs
+        # So I want the last section, "sqs"
+        self._name = json_blob["ServiceName"][json_blob["ServiceName"].rfind('.')+1:]
+
+        if self._name == 's3':
+            self._type = 's3'
+        elif self._name == 'dynamodb':
+            self._type = 'dynamodb'
+
+        super(VpcEndpoint, self).__init__(parent, json_blob)
+
+
 class Cidr(Leaf):
     def ips(self):
         return [self._local_id]

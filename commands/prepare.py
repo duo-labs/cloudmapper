@@ -31,7 +31,7 @@ import copy
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, get_regions, is_external_cidr
 from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Cidr, Connection
 
 __description__ = "Generate network connection information file"
 
@@ -72,28 +72,31 @@ def get_subnets(az):
     return pyjq.all(resource_filter.format(az.vpc.local_id, az.local_id), subnets)
 
 
-def get_ec2s(region, outputfilter):
+def get_ec2s(region):
     instances = query_aws(region.account, "ec2-describe-instances", region.region)
     resource_filter = '.Reservations[].Instances[] | select(.State.Name == "running")'
-
     return pyjq.all(resource_filter, instances)
 
 
-def get_elbs(region, outputfilter):
+def get_elbs(region):
     load_balancers = query_aws(region.account, "elb-describe-load-balancers", region.region)
     return pyjq.all('.LoadBalancerDescriptions[]', load_balancers)
 
-def get_elbv2s(region, outputfilter):
+
+def get_elbv2s(region):
     # ALBs and NLBs
     load_balancers = query_aws(region.account, "elbv2-describe-load-balancers", region.region)
     return pyjq.all('.LoadBalancers[]', load_balancers)
 
-    
 
-def get_rds_instances(region, outputfilter):
+def get_vpc_endpoints(region):
+    endpoints = query_aws(region.account, "ec2-describe-vpc-endpoints", region.region)
+    return pyjq.all('.VpcEndpoints[]', endpoints)
+
+
+def get_rds_instances(region):
     instances = query_aws(region.account, "rds-describe-db-instances", region.region)
-    resource_filter = '.DBInstances[]'
-    return pyjq.all(resource_filter, instances)
+    return pyjq.all('.DBInstances[]', instances)
 
 
 def get_sgs(vpc):
@@ -208,10 +211,17 @@ def add_node_to_subnets(region, node, nodes):
 
     # Add a new node (potentially the same one) back to the dictionary
     for vpc in region.children:
+        if len(node.subnets) == 0:
+            # VPC Gateway Endpoints (S3 and DynamoDB) reside in a VPC, not a subnet
+            # Set the subnet name on the copy, and potentially a new arn
+            node._parent = vpc
+            nodes[node.arn] = node
+            vpc.addChild(node)
+
         for az in vpc.children:
             for subnet in az.children:
                 for node_subnet in node.subnets:
-                    if node_subnet == subnet.local_id:
+                    if (node_subnet == subnet.local_id):
                         # Copy the node
                         subnet_node = copy.copy(node)
                         # Set the subnet name on the copy, and potentially a new arn
@@ -265,25 +275,31 @@ def build_data_structure(account_data, config, outputfilter):
         #
 
         # EC2 nodes
-        for ec2_json in get_ec2s(region, outputfilter):
+        for ec2_json in get_ec2s(region):
             node = Ec2(region, ec2_json, outputfilter["collapse_by_tag"], outputfilter["collapse_asgs"])
             nodes[node.arn] = node
         
         # RDS nodes
-        for rds_json in get_rds_instances(region, outputfilter):
+        for rds_json in get_rds_instances(region):
             node = Rds(region, rds_json)
             if not outputfilter["read_replicas"] and node.node_type == "rds_rr":
                 continue
             nodes[node.arn] = node
 
         # ELB nodes
-        for elb_json in get_elbs(region, outputfilter):
+        for elb_json in get_elbs(region):
             node = Elb(region, elb_json)
             nodes[node.arn] = node
         
-        for elb_json in get_elbv2s(region, outputfilter):
+        for elb_json in get_elbv2s(region):
             node = Elbv2(region, elb_json)
             nodes[node.arn] = node
+
+        # PrivateLink and VPC Endpoints
+        for vpc_endpoint_json in get_vpc_endpoints(region):
+            node = VpcEndpoint(region, vpc_endpoint_json)
+            nodes[node.arn] = node
+
         
         # Filter out nodes based on tags
         if len(outputfilter.get("tags", [])) > 0:
