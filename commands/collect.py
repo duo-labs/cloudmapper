@@ -246,8 +246,46 @@ def collect(arguments):
                     # Look for any dynamic values (ones that jq parse a file)
                     if '|' in parameter['Value']:
                         dynamic_parameter = parameter['Name']
+            
+            if runner.get('Custom_collection', False):
+                # The data to collect for this function is too complicated for my existing code,
+                # so I have to write custom code.
+                if runner['Service']=='ecs' and runner['Request']=='describe-tasks':
+                    action_path = filepath
+                    make_directory(action_path)
 
-            if dynamic_parameter is not None:
+                    # Read the ecs-list-clusters.json file
+                    list_clusters_file = 'account-data/{}/{}/{}'.format(account_dir, region['RegionName'], 'ecs-list-clusters.json')
+                    with open(list_clusters_file, 'r') as f:
+                        list_clusters = json.load(f)
+
+                        # For each cluster, read the `ecs list-tasks`
+                        for clusterArn in list_clusters['clusterArns']:
+                            cluster_path = action_path + '/' + urllib.parse.quote_plus(clusterArn)
+                            make_directory(cluster_path)
+
+                            list_tasks_file = 'account-data/{}/{}/{}/{}'.format(account_dir, region['RegionName'], 'ecs-list-tasks', urllib.parse.quote_plus(clusterArn))
+
+                            with open(list_tasks_file, 'r') as f2:
+                                list_tasks = json.load(f2)
+
+                                # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
+                                for taskArn in list_tasks['taskArns']:
+                                    outputfile = action_path + '/' + urllib.parse.quote_plus(taskArn)
+
+                                    call_parameters = {}
+                                    call_parameters['cluster'] = clusterArn
+                                    call_parameters['tasks'] = [taskArn]
+
+                                    call_function(
+                                        outputfile,
+                                        handler,
+                                        method_to_call,
+                                        call_parameters,
+                                        runner.get('Check', None),
+                                        summary)
+
+            elif dynamic_parameter is not None:
                 # Set up directory for the dynamic value
                 make_directory(filepath)
 

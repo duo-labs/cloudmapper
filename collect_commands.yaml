@@ -316,10 +316,13 @@
 - Service: ecs
   Request: list-clusters
 - Service: ecs
-  Request: list-container-instances
+  Request: list-tasks
   Parameters:
-  - Name: Cluster
+  - Name: cluster
     Value: ecs-list-clusters.json|.clusterArns[]
+- Service: ecs
+  Request: describe-tasks
+  Custom_collection: True
 - Service: eks
   Request: describe-cluster
 - Service: logs
