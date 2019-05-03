@@ -620,6 +620,7 @@ class Ecs(Leaf):
         self._arn = json_blob['taskArn']
         self._name = truncate(json_blob["taskDefinitionArn"].split('task-definition/')[1])
         super(Ecs, self).__init__(parent, json_blob)
+        self.json['ips'] = self.ips
 
 
 class Cidr(Leaf):

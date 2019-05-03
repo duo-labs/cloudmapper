@@ -10,7 +10,7 @@ import sys
 import urllib.parse
 from netaddr import IPNetwork
 
-from shared.nodes import Account, Region
+from shared.nodes import Account, Region, is_public_ip
 from commands.prepare import build_data_structure
 from shared.common import get_regions, query_aws
 
@@ -101,6 +101,9 @@ def get_public_nodes(account, config, use_cache=False):
         if target_node['type'] == 'elb':
             target['type'] = 'elb'
             target['hostname'] = target_node['node_data']['DNSName']
+        elif target_node['type'] == 'elbv2':
+            target['type'] = 'elbv2'
+            target['hostname'] = target_node['node_data']['DNSName']
         elif target_node['type'] == 'autoscaling':
             target['type'] = 'autoscaling'
             target['hostname'] = target_node['node_data'].get('PublicIpAddress', '')
@@ -113,10 +116,15 @@ def get_public_nodes(account, config, use_cache=False):
             target['type'] = 'ec2'
             dns_name = target_node['node_data'].get('PublicDnsName', '')
             target['hostname'] = target_node['node_data'].get('PublicIpAddress', dns_name)
+        elif target_node['type'] == 'ecs':
+            target['type'] = 'ecs'
+            target['hostname'] = ''
+            for ip in target_node['node_data']['ips']:
+                if is_public_ip(ip):
+                    target['hostname'] = ip
         else:
             # Unknown node
-            # TODO Raise exception instead?
-            public_nodes.append(pyjq.first('.[].data|select(.id=="{}")|[.type, (.node_data|keys)]'.format(target['arn']), network, {}))
+            raise Exception('Unknown type: {}'.format(target_node['type']))
 
         # Check if any protocol is allowed (indicated by IpProtocol == -1)
         ingress = pyjq.all('.[]', edge.get('node_data', {}))
