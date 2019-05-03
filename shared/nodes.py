@@ -22,7 +22,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 """
-
 import pyjq
 from abc import ABCMeta
 from netaddr import IPNetwork, IPAddress
@@ -564,28 +563,30 @@ class VpcEndpoint(Leaf):
 
 
 class Ecs(Leaf):
-    _subnet = None
-
     @property
     def ips(self):
-        # TODO, can an ECS have a public IP?
         ips = []
         for detail in pyjq.all('.attachments[].details[]', self._json_blob):
-            if detail['name'] == 'privateIPv4Address':
-                return ips.append(detail['value'])
-        return ips
+            if detail['name'] == 'networkInterfaceId':
+                eni = detail['value']
+                interfaces_json = query_aws(self.account, 'ec2-describe-network-interfaces', self.region)
+                for interface in interfaces_json['NetworkInterfaces']:
+                    if interface['NetworkInterfaceId'] == eni:
 
-    def set_subnet(self, subnet):
-        self._subnet = subnet
-        self._arn = self._arn + "." + subnet.local_id
+                        # Get the public IP, if it exists
+                        public_ip = interface.get('Association', {}).get('PublicIp', '')
+                        if public_ip != '':
+                            ips.append(public_ip)
+                        
+                        # Get the private IP
+                        ips.append(interface['PrivateIpAddress'])
+        return ips
 
     @property
     def subnets(self):
-        if not self._subnet:
-            for detail in pyjq.all('.attachments[].details[]', self._json_blob):
-                if detail['name'] == 'subnetId':
-                    return [detail['value']]
-        return []
+        for detail in pyjq.all('.attachments[].details[]', self._json_blob):
+            if detail['name'] == 'subnetId':
+                return [detail['value']]
 
     @property
     def tags(self):
@@ -607,7 +608,7 @@ class Ecs(Leaf):
                 interfaces_json = query_aws(self.account, 'ec2-describe-network-interfaces', self.region)
                 for interface in interfaces_json['NetworkInterfaces']:
                     if interface['NetworkInterfaceId'] == eni:
-                        for group in interfaces_json['Groups']:
+                        for group in interface['Groups']:
                             sgs.append(group['GroupId'])
         return sgs
 

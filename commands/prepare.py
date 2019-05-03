@@ -265,7 +265,6 @@ def add_node_to_subnets(region, node, nodes):
 
                         # Add to the set
                         nodes[subnet_node.arn] = subnet_node
-
                         subnet.addChild(subnet_node)
 
 
@@ -401,12 +400,10 @@ def build_data_structure(account_data, config, outputfilter):
                                     az_children_to_remove.add(subnet)
                             for subnet in az_children_to_remove:
                                 vpc_child.removeChild(subnet)
-
                         else:
-                            vpc_children_to_remove.add(az)
+                            vpc_children_to_remove.add(vpc_child)
                     for az in vpc_children_to_remove:
                         vpc.removeChild(az)
-
                 else:
                     region_children_to_remove.add(vpc)
             for vpc in region_children_to_remove:
