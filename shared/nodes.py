@@ -623,6 +623,36 @@ class Ecs(Leaf):
         self.json['ips'] = self.ips
 
 
+class Lambda(Leaf):
+    @property
+    def ips(self):
+        return []
+
+    @property
+    def subnets(self):
+        return pyjq.all('.VpcConfig.SubnetIds[]', self._json_blob)
+
+    @property
+    def tags(self):
+        return pyjq.all('.tags[]', self._json_blob)
+
+    @property
+    def is_public(self):
+        return False
+
+    @property
+    def security_groups(self):
+        return pyjq.all('.VpcConfig.SecurityGroupIds[]', self._json_blob)
+
+    def __init__(self, parent, json_blob):
+        self._type = "lambda"
+
+        self._local_id = json_blob['FunctionArn']
+        self._arn = json_blob['FunctionArn']
+        self._name = truncate(json_blob['FunctionName'])
+        super(Lambda, self).__init__(parent, json_blob)
+
+
 class Cidr(Leaf):
     def ips(self):
         return [self._local_id]
