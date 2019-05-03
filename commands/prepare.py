@@ -103,7 +103,7 @@ def get_rds_instances(region):
 def get_ecs_tasks(region):
     tasks = []
     clusters = query_aws(region.account, "ecs-list-clusters", region.region)
-    for clusterArn in clusters['clusterArns']:
+    for clusterArn in clusters.get('clusterArns', []):
         tasks_json = get_parameter_file(region, 'ecs', 'list-tasks', clusterArn)
         for taskArn in tasks_json['taskArns']:
             task_path = 'account-data/{}/{}/{}/{}/{}'.format(region.account.name, region.region.name, 'ecs-describe-tasks', urllib.parse.quote_plus(clusterArn), urllib.parse.quote_plus(taskArn))

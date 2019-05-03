@@ -51,5 +51,5 @@ class TestNodes(unittest.TestCase):
         assert_equal("prod", get_name(json_blob, "name"))
         assert_false(account.has_leaves)
         assert_equal([], account.leaves)
-        assert_equal({'data': {'node_data': {}, 'local_id': 111111111111,
+        assert_equal({'data': {'node_data': {'id': 111111111111, 'name': 'prod'}, 'local_id': 111111111111,
                                'type': 'account', 'id': 'arn:aws:::111111111111:', 'name': u'prod'}}, account.cytoscape_data())
