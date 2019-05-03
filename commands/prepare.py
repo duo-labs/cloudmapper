@@ -32,7 +32,7 @@ import urllib.parse
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, get_regions, is_external_cidr
 from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, Lambda, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, Lambda, Redshift, ElasticSearch, Cidr, Connection
 
 __description__ = "Generate network connection information file"
 
@@ -115,6 +115,22 @@ def get_ecs_tasks(region):
 def get_lambda_functions(region):
     functions = query_aws(region.account, "lambda-list-functions", region.region)
     return pyjq.all('.Functions[]|select(.VpcConfig!=null)', functions)
+
+
+def get_redshift(region):
+    clusters = query_aws(region.account, "redshift-describe-clusters", region.region)
+    return pyjq.all('.Clusters[]', clusters)
+
+
+def get_elasticsearch(region):
+    es_domains = []
+    domain_json = query_aws(region.account, "es-list-domain-names", region.region)
+    domains = pyjq.all('.DomainNames[]', domain_json)
+    for domain in domains:
+        es = get_parameter_file(region, 'es', 'describe-elasticsearch-domain', domain['DomainName'])['DomainStatus']
+        if 'VPCOptions' in es:
+            es_domains.append(es)
+    return es_domains
 
 
 def get_sgs(vpc):
@@ -351,6 +367,16 @@ def build_data_structure(account_data, config, outputfilter):
             node = Lambda(region, lambda_json)
             nodes[node.arn] = node
 
+        # Redshift clusters
+        for node_json in get_redshift(region):
+            node = Redshift(region, node_json)
+            nodes[node.arn] = node
+
+        # ElasticSearch clusters
+        for node_json in get_elasticsearch(region):
+            node = ElasticSearch(region, node_json)
+            nodes[node.arn] = node
+
         # Filter out nodes based on tags
         if len(outputfilter.get("tags", [])) > 0:
             for node_id in list(nodes):
@@ -374,7 +400,7 @@ def build_data_structure(account_data, config, outputfilter):
                 # If there were no matches, remove the node
                 if not has_match:
                     del nodes[node_id]
-        
+
         # Add the nodes to their respective subnets
         for node_arn in list(nodes):
             node = nodes[node_arn]

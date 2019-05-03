@@ -122,6 +122,9 @@ def get_public_nodes(account, config, use_cache=False):
             for ip in target_node['node_data']['ips']:
                 if is_public_ip(ip):
                     target['hostname'] = ip
+        elif target_node['type'] == 'redshift':
+            target['type'] = 'redshift'
+            target['hostname'] = target_node['node_data'].get('Endpoint', {}).get('Address', '')
         else:
             # Unknown node
             raise Exception('Unknown type: {}'.format(target_node['type']))

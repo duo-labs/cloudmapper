@@ -653,6 +653,90 @@ class Lambda(Leaf):
         super(Lambda, self).__init__(parent, json_blob)
 
 
+class Redshift(Leaf):
+    @property
+    def ips(self):
+        ips = []
+        for cluster_node in self._json_blob['ClusterNodes']:
+            ips.append(cluster_node['PrivateIPAddress'])
+            ips.append(cluster_node['PublicIPAddress'])
+        return ips
+
+    @property
+    def can_egress(self):
+        return False
+
+    @property
+    def subnets(self):
+        return []
+
+    @property
+    def tags(self):
+        return pyjq.all('.Tags[]', self._json_blob)
+
+    @property
+    def is_public(self):
+        for ip in self.ips:
+            if is_public_ip(ip):
+                return True
+        return False
+
+    @property
+    def security_groups(self):
+        return pyjq.all('.VpcSecurityGroups[].VpcSecurityGroupId', self._json_blob)
+
+    def __init__(self, parent, json_blob):
+        self._type = "redshift"
+
+        # Set the parent to a VPC
+        # Redshift has no subnet
+        assert(parent._type == "region")
+        for vpc in parent.children:
+            if vpc.local_id == json_blob['VpcId']:
+                self._parent = vpc
+
+        self._local_id = json_blob['ClusterIdentifier']
+        self._arn = json_blob['Endpoint']['Address']
+        self._name = truncate(json_blob['ClusterIdentifier'])
+        super(Redshift, self).__init__(self._parent, json_blob)
+
+
+class ElasticSearch(Leaf):
+    @property
+    def ips(self):
+        return []
+
+    @property
+    def can_egress(self):
+        return False
+
+    @property
+    def subnets(self):
+        return pyjq.all('.VPCOptions.SubnetIds[]', self._json_blob)
+
+    @property
+    def tags(self):
+        # TODO Custom collection is required for the tags because list-domains returns a domain name,
+        # but getting the tags requires calling `es list-tags --arn ARN` and you get the ARN from
+        # the  `es-describe-elasticsearch-domain` files
+        return []
+
+    @property
+    def is_public(self):
+        return False
+
+    @property
+    def security_groups(self):
+        return pyjq.all('.VPCOptions.SecurityGroupIds[]', self._json_blob)
+
+    def __init__(self, parent, json_blob):
+        self._type = "elasticsearch"
+
+        self._local_id = json_blob['ARN']
+        self._arn = json_blob['ARN']
+        self._name = truncate(json_blob['DomainName'])
+        super(ElasticSearch, self).__init__(parent, json_blob)
+
 class Cidr(Leaf):
     def ips(self):
         return [self._local_id]
