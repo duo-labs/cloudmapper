@@ -32,7 +32,7 @@ import urllib.parse
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, get_regions, is_external_cidr
 from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, Lambda, Cidr, Connection
 
 __description__ = "Generate network connection information file"
 
@@ -109,8 +109,13 @@ def get_ecs_tasks(region):
             task_path = 'account-data/{}/{}/{}/{}/{}'.format(region.account.name, region.region.name, 'ecs-describe-tasks', urllib.parse.quote_plus(clusterArn), urllib.parse.quote_plus(taskArn))
             task = json.load(open(task_path))
             tasks.append(task['tasks'][0])
-
     return tasks
+
+
+def get_lambda_functions(region):
+    functions = query_aws(region.account, "lambda-list-functions", region.region)
+    return pyjq.all('.Functions[]|select(.VpcConfig!=null)', functions)
+
 
 def get_sgs(vpc):
     sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
@@ -341,6 +346,11 @@ def build_data_structure(account_data, config, outputfilter):
             node = Ecs(region, ecs_json)
             nodes[node.arn] = node
         
+        # Lambda functions
+        for lambda_json in get_lambda_functions(region):
+            node = Lambda(region, lambda_json)
+            nodes[node.arn] = node
+
         # Filter out nodes based on tags
         if len(outputfilter.get("tags", [])) > 0:
             for node_id in list(nodes):
