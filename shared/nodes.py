@@ -27,7 +27,7 @@ import pyjq
 from abc import ABCMeta
 from netaddr import IPNetwork, IPAddress
 from six import add_metaclass
-from shared.query import get_parameter_file
+from shared.query import query_aws, get_parameter_file
 
 
 def truncate(string):
@@ -561,6 +561,64 @@ class VpcEndpoint(Leaf):
             self._type = self._name
 
         super(VpcEndpoint, self).__init__(self._parent, json_blob)
+
+
+class Ecs(Leaf):
+    _subnet = None
+
+    @property
+    def ips(self):
+        # TODO, can an ECS have a public IP?
+        ips = []
+        for detail in pyjq.all('.attachments[].details[]', self._json_blob):
+            if detail['name'] == 'privateIPv4Address':
+                return ips.append(detail['value'])
+        return ips
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
+    @property
+    def subnets(self):
+        if not self._subnet:
+            for detail in pyjq.all('.attachments[].details[]', self._json_blob):
+                if detail['name'] == 'subnetId':
+                    return [detail['value']]
+        return []
+
+    @property
+    def tags(self):
+        return pyjq.all('.tags[]', self._json_blob)
+
+    @property
+    def is_public(self):
+        for ip in self.ips:
+            if is_public_ip(ip):
+                return True
+        return False
+
+    @property
+    def security_groups(self):
+        sgs = []
+        for detail in pyjq.all('.attachments[].details[]', self._json_blob):
+            if detail['name'] == 'networkInterfaceId':
+                eni = detail['value']
+                interfaces_json = query_aws(self.account, 'ec2-describe-network-interfaces', self.region)
+                for interface in interfaces_json['NetworkInterfaces']:
+                    if interface['NetworkInterfaceId'] == eni:
+                        for group in interfaces_json['Groups']:
+                            sgs.append(group['GroupId'])
+        return sgs
+
+
+    def __init__(self, parent, json_blob):
+        self._type = "ecs"
+
+        self._local_id = json_blob["taskArn"]
+        self._arn = json_blob['taskArn']
+        self._name = truncate(json_blob["taskDefinitionArn"].split('task-definition/')[1])
+        super(Ecs, self).__init__(parent, json_blob)
 
 
 class Cidr(Leaf):

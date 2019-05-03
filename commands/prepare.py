@@ -28,10 +28,11 @@ import itertools
 import argparse
 import pyjq
 import copy
+import urllib.parse
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, get_regions, is_external_cidr
 from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, Cidr, Connection
 
 __description__ = "Generate network connection information file"
 
@@ -98,6 +99,18 @@ def get_rds_instances(region):
     instances = query_aws(region.account, "rds-describe-db-instances", region.region)
     return pyjq.all('.DBInstances[]', instances)
 
+
+def get_ecs_tasks(region):
+    tasks = []
+    clusters = query_aws(region.account, "ecs-list-clusters", region.region)
+    for clusterArn in clusters['clusterArns']:
+        tasks_json = get_parameter_file(region, 'ecs', 'list-tasks', clusterArn)
+        for taskArn in tasks_json['taskArns']:
+            task_path = 'account-data/{}/{}/{}/{}/{}'.format(region.account.name, region.region.name, 'ecs-describe-tasks', urllib.parse.quote_plus(clusterArn), urllib.parse.quote_plus(taskArn))
+            task = json.load(open(task_path))
+            tasks.append(task['tasks'][0])
+
+    return tasks
 
 def get_sgs(vpc):
     sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
@@ -322,6 +335,11 @@ def build_data_structure(account_data, config, outputfilter):
         # PrivateLink and VPC Endpoints
         for vpc_endpoint_json in get_vpc_endpoints(region):
             node = VpcEndpoint(region, vpc_endpoint_json)
+            nodes[node.arn] = node
+
+        # ECS tasks
+        for ecs_json in get_ecs_tasks(region):
+            node = Ecs(region, ecs_json)
             nodes[node.arn] = node
         
         # Filter out nodes based on tags

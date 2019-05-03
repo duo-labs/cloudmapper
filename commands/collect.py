@@ -271,7 +271,7 @@ def collect(arguments):
 
                                 # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
                                 for taskArn in list_tasks['taskArns']:
-                                    outputfile = action_path + '/' + urllib.parse.quote_plus(taskArn)
+                                    outputfile = action_path + '/' + urllib.parse.quote_plus(clusterArn) + '/' + urllib.parse.quote_plus(taskArn)
 
                                     call_parameters = {}
                                     call_parameters['cluster'] = clusterArn
