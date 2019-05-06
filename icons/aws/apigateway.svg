@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Product_Icon"
+   data-name="Product Icon"
+   width="75"
+   height="75"
+   viewBox="0 0 75 75"
+   version="1.1"
+   sodipodi:docname="Amazon-API-Gateway_light-bg.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata25">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Amazon-API-Gateway_light-bg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs23" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview21"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.1466667"
+     inkscape:cx="37.5"
+     inkscape:cy="37.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Product_Icon" />
+  <title
+     id="title2">Amazon-API-Gateway_light-bg</title>
+  <rect
+     id="Purple_Light_BG"
+     data-name="Purple Light BG"
+     width="75"
+     height="75"
+     style="fill:#693cc5"
+     x="0"
+     y="0" />
+  <g
+     id="Product_Icon-2"
+     data-name="Product Icon">
+    <path
+       d="M 48.51,61.5 A 1,1 0 0 1 47.92,61.31 1,1 0 0 1 47.5,60.5 v -46 a 1,1 0 0 1 0.48,-0.85 1,1 0 0 1 1,-0.05 l 13,6.35 a 1,1 0 0 1 0.56,0.89 v 35.34 a 1,1 0 0 1 -0.69,1 l -13,4.32 a 1.19,1.19 0 0 1 -0.34,0 z m 1,-45.39 v 43 l 11,-3.65 v -34 z"
+       style="fill:#ffffff"
+       id="path5"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 26.5,61.5 a 1.19,1.19 0 0 1 -0.32,0 l -13,-4.32 a 1,1 0 0 1 -0.68,-1 V 20.84 a 1,1 0 0 1 0.56,-0.89 l 13,-6.35 a 1,1 0 0 1 1,0.05 1,1 0 0 1 0.47,0.85 v 46 a 1,1 0 0 1 -0.42,0.81 0.94,0.94 0 0 1 -0.61,0.19 z m -12,-6 11,3.65 v -43 l -11,5.37 z"
+       style="fill:#ffffff"
+       id="path7"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 47.5,27.5 h -3 v -2 h 3 z m -6,0 h -3 v -2 h 3 z m -6,0 h -3 v -2 h 3 z m -6,0 h -3 v -2 h 3 z"
+       style="fill:#ffffff"
+       id="path9"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 47.5,49.5 h -3 v -2 h 3 z m -6,0 h -3 v -2 h 3 z m -6,0 h -3 v -2 h 3 z m -6,0 h -3 v -2 h 3 z"
+       style="fill:#ffffff"
+       id="path11"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 33.11,40.94 -3.76,-3.21 a 1,1 0 0 1 0,-1.52 L 33.1,33 34.4,34.52 31.54,37 34.4,39.45 Z"
+       style="fill:#ffffff"
+       id="path13"
+       inkscape:connector-curvature="0" />
+    <path
+       d="M 41.9,40.94 40.6,39.42 43.46,37 40.59,34.56 41.89,33 l 3.76,3.2 a 1,1 0 0 1 0,1.52 z"
+       style="fill:#ffffff"
+       id="path15"
+       inkscape:connector-curvature="0" />
+    <rect
+       x="31.290001"
+       y="36.5"
+       width="12.41"
+       height="2"
+       transform="rotate(-71.32,37.487833,37.496371)"
+       style="fill:#ffffff"
+       id="rect17" />
+  </g>
+</svg>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Product_Icon"
+   data-name="Product Icon"
+   viewBox="0 0 75 75"
+   version="1.1"
+   sodipodi:docname="elb.svg"
+   width="75"
+   height="75"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata4176">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Elastic-Load-Balancing-ELB_light-bg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4174" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1031"
+     inkscape:window-height="772"
+     id="namedview4172"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.1466667"
+     inkscape:cx="37.5"
+     inkscape:cy="37.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Product_Icon" />
+  <title
+     id="title4165">Elastic-Load-Balancing-ELB_light-bg</title>
+  <rect
+     id="Orange_Light_BG"
+     data-name="Orange Light BG"
+     width="75"
+     height="75"
+     style="fill:#d86613"
+     x="0"
+     y="0" />
+  <g
+     id="Product_Icon-2"
+     data-name="Product Icon">
+    <path
+       d="m 49.54,38.5 a 6.22,6.22 0 1 0 0,-2 h -7.46 a 14.11,14.11 0 0 0 -1.4,-5.3 l 9,-7.61 a 6.22,6.22 0 1 0 -2.36,-4.87 6.08,6.08 0 0 0 1,3.4 l -8.7,7.33 a 14.5,14.5 0 1 0 0,16.1 l 8.7,7.33 a 6.08,6.08 0 0 0 -1,3.4 6.21,6.21 0 1 0 2.36,-4.87 l -9,-7.61 a 14.11,14.11 0 0 0 1.4,-5.3 z m 6.12,-5.22 a 4.22,4.22 0 1 1 -4.21,4.22 4.22,4.22 0 0 1 4.21,-4.22 z M 53.58,14.5 a 4.22,4.22 0 1 1 -4.22,4.22 4.22,4.22 0 0 1 4.22,-4.22 z m 0,37.57 a 4.22,4.22 0 1 1 -4.22,4.21 4.22,4.22 0 0 1 4.22,-4.21 z M 27.62,50 A 12.5,12.5 0 1 1 40.12,37.5 12.52,12.52 0 0 1 27.62,50 Z"
+       style="fill:#ffffff"
+       id="path4168"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

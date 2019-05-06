@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Product_Icon"
+   data-name="Product Icon"
+   width="75"
+   height="75"
+   viewBox="0 0 75 75"
+   version="1.1"
+   sodipodi:docname="AWS-Systems-Manager_light-bg.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>AWS-Systems-Manager_light-bg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs11" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview9"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.1466667"
+     inkscape:cx="37.5"
+     inkscape:cy="37.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Product_Icon" />
+  <title
+     id="title2">AWS-Systems-Manager_light-bg</title>
+  <rect
+     id="Pink_Light_BG"
+     data-name="Pink Light BG"
+     width="75"
+     height="75"
+     style="fill:#cc2264"
+     x="0"
+     y="0" />
+  <g
+     id="Product_Icon-2"
+     data-name="Product Icon">
+    <path
+       d="m 43.5,50.5 h 12 v 2 h -12 v 1 h -2 v -1 h -3 v -2 h 3 v -1 h 2 z m 4,-6 h -2 v 1 h -7 v 2 h 7 v 1 h 2 v -1 h 8 v -2 h -8 z M 18.43,42.87 a 8.15,8.15 0 0 1 -3.93,-7.21 7.23,7.23 0 0 1 5.85,-7.48 1,1 0 0 0 0.75,-1 L 21,25.69 a 11.73,11.73 0 0 1 6.6,-10.22 11.14,11.14 0 0 1 12.6,2.53 13.56,13.56 0 0 1 3.14,5.12 1,1 0 0 0 0.79,0.65 1,1 0 0 0 0.95,-0.39 4.17,4.17 0 0 1 4.64,-1.52 c 1.88,0.62 3,2.45 3,5 a 1,1 0 0 0 0.15,0.76 1,1 0 0 0 0.66,0.42 c 2.1,0.37 7,1.84 7,7.71 0,0.24 0,0.46 0,0.68 l 2,0.08 c 0,-0.24 0,-0.49 0,-0.76 0,-6.75 -5.22,-8.87 -7.8,-9.5 -0.21,-3.14 -1.81,-5.47 -4.35,-6.31 a 6.15,6.15 0 0 0 -5.72,1 15,15 0 0 0 -3,-4.41 A 13.12,13.12 0 0 0 26.87,13.6 13.71,13.71 0 0 0 19,25.75 v 0.72 a 9.11,9.11 0 0 0 -6.55,9.19 10.19,10.19 0 0 0 4.86,8.9 5.31,5.31 0 0 0 2.95,0.94 h 8.11 v -2 H 20.31 A 3.3,3.3 0 0 1 18.43,42.87 Z M 51.5,39.5 h -2 v 1 h -11 v 2 h 11 v 1 h 2 v -1 h 4 v -2 h -4 z m 10.69,3.29 a 1,1 0 0 1 0.31,0.72 v 6 a 1,1 0 0 1 -0.31,0.72 1,1 0 0 1 -0.75,0.28 l -1.67,-0.1 a 13.84,13.84 0 0 1 -1.14,2.76 l 1.25,1.11 a 0.94,0.94 0 0 1 0.33,0.72 1,1 0 0 1 -0.29,0.73 l -4.21,4.22 a 1.13,1.13 0 0 1 -0.74,0.29 1,1 0 0 1 -0.72,-0.33 l -1.11,-1.25 a 13.63,13.63 0 0 1 -2.76,1.15 l 0.1,1.66 a 1,1 0 0 1 -0.27,0.74 1,1 0 0 1 -0.73,0.32 h -6 a 1,1 0 0 1 -0.73,-0.32 1,1 0 0 1 -0.27,-0.74 l 0.1,-1.66 a 13.63,13.63 0 0 1 -2.76,-1.15 l -1.11,1.25 a 1,1 0 0 1 -0.72,0.33 1.09,1.09 0 0 1 -0.74,-0.29 L 33.08,55.7 a 1,1 0 0 1 -0.29,-0.73 0.94,0.94 0 0 1 0.33,-0.72 l 1.24,-1.11 a 13.84,13.84 0 0 1 -1.14,-2.76 l -1.66,0.1 A 1.08,1.08 0 0 1 30.81,50.21 1,1 0 0 1 30.5,49.48 v -6 a 1,1 0 0 1 1.06,-1 l 1.67,0.09 a 14,14 0 0 1 1.14,-2.75 L 33.12,38.7 a 0.94,0.94 0 0 1 -0.33,-0.71 1,1 0 0 1 0.29,-0.74 l 4.21,-4.22 a 1.08,1.08 0 0 1 0.74,-0.29 1,1 0 0 1 0.72,0.34 l 1.12,1.25 a 13.52,13.52 0 0 1 2.75,-1.14 l -0.1,-1.68 a 1,1 0 0 1 0.27,-0.74 1,1 0 0 1 0.73,-0.31 h 6 a 1,1 0 0 1 0.73,0.31 1,1 0 0 1 0.27,0.74 l -0.1,1.68 a 13.52,13.52 0 0 1 2.75,1.14 l 1.12,-1.25 a 1,1 0 0 1 0.72,-0.34 1.08,1.08 0 0 1 0.74,0.29 l 4.21,4.22 a 1,1 0 0 1 0.29,0.74 0.94,0.94 0 0 1 -0.33,0.71 l -1.25,1.12 a 13.52,13.52 0 0 1 1.14,2.75 l 1.67,-0.09 a 1,1 0 0 1 0.71,0.31 z m -1.69,1.78 -1.43,0.09 a 1,1 0 0 1 -1,-0.78 11.8,11.8 0 0 0 -1.52,-3.69 1,1 0 0 1 0.18,-1.28 L 57.76,38 55,35.24 54,36.31 A 1,1 0 0 1 52.72,36.49 11.65,11.65 0 0 0 49.12,35 1,1 0 0 1 48.34,34 l 0.08,-1.44 h -3.84 l 0.08,1.43 a 1,1 0 0 1 -0.78,1 11.65,11.65 0 0 0 -3.68,1.52 1,1 0 0 1 -1.28,-0.18 l -1,-1.07 -2.68,2.74 1.08,1 a 1,1 0 0 1 0.18,1.28 11.45,11.45 0 0 0 -1.5,3.6 1,1 0 0 1 -1,0.78 l -1.43,-0.09 v 3.85 L 34,48.34 a 1,1 0 0 1 1,0.78 11.67,11.67 0 0 0 1.53,3.68 1,1 0 0 1 -0.18,1.28 l -1.07,1 2.72,2.67 0.95,-1.06 a 1,1 0 0 1 1.28,-0.18 11.82,11.82 0 0 0 3.65,1.49 1,1 0 0 1 0.78,1 l -0.08,1.43 h 3.84 L 48.34,59 a 1,1 0 0 1 0.78,-1 11.82,11.82 0 0 0 3.69,-1.53 1,1 0 0 1 1.28,0.18 L 55,57.75 57.76,55 56.69,54 a 1,1 0 0 1 -0.18,-1.28 11.77,11.77 0 0 0 1.49,-3.6 1,1 0 0 1 1,-0.78 l 1.43,0.08 z"
+       style="fill:#ffffff"
+       id="path5"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

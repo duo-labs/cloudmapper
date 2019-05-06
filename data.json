@@ -1,1507 +1,2638 @@
 [
     {
         "data": {
+            "id": "arn:aws:::123456789012:",
+            "name": "demo",
+            "type": "account",
+            "local_id": "123456789012",
             "node_data": {
-                "id": 123456789012, 
-                "name": "demo"
-            }, 
-            "local_id": 123456789012, 
-            "type": "account", 
-            "id": "arn:aws:::123456789012:", 
-            "name": "demo"
+                "id": "123456789012",
+                "name": "demo",
+                "default": true
+            }
         }
-    }, 
+    },
     {
         "data": {
-            "name": "Bastion", 
-            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001", 
+            "id": "arn:aws::us-east-1:123456789012:",
+            "name": "us-east-1",
+            "type": "region",
+            "local_id": "us-east-1",
             "node_data": {
-                "Monitoring": {
-                    "State": "enabled"
-                }, 
-                "PublicDnsName": "ec2-1-2-3-4.compute-1.amazonaws.com", 
-                "State": {
-                    "Code": 16, 
-                    "Name": "running"
-                }, 
-                "EbsOptimized": true, 
-                "LaunchTime": "2017-12-01T00:00:00.000Z", 
-                "PublicIpAddress": "1.2.3.4", 
-                "PrivateIpAddress": "10.0.0.1", 
-                "VpcId": "vpc-12345678", 
-                "StateTransitionReason": "", 
-                "InstanceId": "i-00000000000000000", 
-                "EnaSupport": true, 
-                "ImageId": "ami-00000000", 
-                "PrivateDnsName": "ip-10-0-0-1.ec2.internal", 
-                "KeyName": "bastion", 
-                "SecurityGroups": [
-                    {
-                        "GroupName": "Restricted SSH Access", 
-                        "GroupId": "sg-00000002"
-                    }
-                ], 
-                "ClientToken": "00000000000000000", 
-                "SubnetId": "subnet-00000001", 
-                "InstanceType": "t2.micro", 
-                "NetworkInterfaces": [
-                    {
-                        "Status": "in-use", 
-                        "MacAddress": "0e:d7:00:00:00:00", 
-                        "SourceDestCheck": true, 
-                        "VpcId": "vpc-12345678", 
-                        "Description": "Primary network interface", 
-                        "Association": {
-                            "PublicIp": "1.2.3.4", 
-                            "PublicDnsName": "ec2-1-2-3-4.compute-1.amazonaws.com", 
-                            "IpOwnerId": "amazon"
-                        }, 
-                        "NetworkInterfaceId": "eni-00000000", 
-                        "PrivateIpAddresses": [
-                            {
-                                "PrivateDnsName": "ip-10-0-0-1.ec2.internal", 
-                                "Association": {
-                                    "PublicIp": "1.2.3.4", 
-                                    "PublicDnsName": "ec2-1-2-3-4.compute-1.amazonaws.com", 
-                                    "IpOwnerId": "amazon"
-                                }, 
-                                "Primary": true, 
-                                "PrivateIpAddress": "10.0.0.1"
-                            }
-                        ], 
-                        "PrivateDnsName": "ip-10-0-0-1.ec2.internal", 
-                        "Attachment": {
-                            "Status": "attached", 
-                            "DeviceIndex": 0, 
-                            "DeleteOnTermination": true, 
-                            "AttachmentId": "eni-attach-00000000", 
-                            "AttachTime": "2017-12-01T00:00:00.000Z"
-                        }, 
-                        "Groups": [
-                            {
-                                "GroupName": "Bastion", 
-                                "GroupId": "sg-00000002"
-                            }
-                        ], 
-                        "Ipv6Addresses": [], 
-                        "OwnerId": "123456789012", 
-                        "SubnetId": "subnet-00000001", 
-                        "PrivateIpAddress": "10.0.0.1"
-                    }
-                ], 
-                "SourceDestCheck": true, 
-                "Placement": {
-                    "GroupName": "", 
-                    "Tenancy": "default", 
-                    "AvailabilityZone": "us-east-1a"
-                }, 
-                "Hypervisor": "xen", 
-                "BlockDeviceMappings": [
-                    {
-                        "DeviceName": "/dev/sda1", 
-                        "Ebs": {
-                            "Status": "attached", 
-                            "DeleteOnTermination": true, 
-                            "VolumeId": "vol-00000000000000000", 
-                            "AttachTime": "2017-12-01T00:00:00.000Z"
-                        }
-                    }
-                ], 
-                "Architecture": "x86_64", 
-                "RootDeviceType": "ebs", 
-                "RootDeviceName": "/dev/sda1", 
-                "VirtualizationType": "hvm", 
+                "Endpoint": "ec2.us-east-1.amazonaws.com",
+                "RegionName": "us-east-1"
+            },
+            "parent": "arn:aws:::123456789012:"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678",
+            "name": "Prod (10.0.0.0/16)",
+            "type": "vpc",
+            "local_id": "vpc-12345678",
+            "node_data": {
+                "VpcId": "vpc-12345678",
                 "Tags": [
                     {
-                        "Key": "Name", 
-                        "Value": "Bastion"
+                        "Value": "Prod",
+                        "Key": "Name"
                     }
-                ], 
-                "AmiLaunchIndex": 0
-            }, 
-            "local_id": "i-00000000000000000", 
-            "type": "ec2", 
-            "id": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000"
-        }
-    }, 
-    {
-        "data": {
-            "name": "weblb", 
-            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001", 
-            "node_data": {
-                "DNSName": "weblb.us-west-2.elb.amazonaws.com", 
-                "Subnets": [
-                    "subnet-00000001", 
-                    "subnet-00000002"
-                ], 
-                "CanonicalHostedZoneNameID": "0000000000000", 
-                "CanonicalHostedZoneName": "weblb-0000000000.us-east-1.elb.amazonaws.com", 
-                "ListenerDescriptions": [
-                    {
-                        "Listener": {
-                            "InstancePort": 8000, 
-                            "LoadBalancerPort": 8000, 
-                            "Protocol": "HTTP", 
-                            "InstanceProtocol": "HTTP"
-                        }, 
-                        "PolicyNames": []
-                    }
-                ], 
-                "HealthCheck": {
-                    "HealthyThreshold": 2, 
-                    "Interval": 30, 
-                    "Target": "TCP:8000", 
-                    "Timeout": 5, 
-                    "UnhealthyThreshold": 2
-                }, 
-                "BackendServerDescriptions": [], 
-                "Instances": [
-                    {
-                        "InstanceId": "i-00000000000000002"
-                    }, 
-                    {
-                        "InstanceId": "i-00000000000000003"
-                    }
-                ], 
-                "VPCId": "vpc-12345678", 
-                "SecurityGroups": [
-                    "sg-00000003"
-                ], 
-                "Policies": {
-                    "LBCookieStickinessPolicies": [], 
-                    "AppCookieStickinessPolicies": [], 
-                    "OtherPolicies": []
-                }, 
-                "LoadBalancerName": "weblb", 
-                "CreatedTime": "2017-12-01T00:00:00.000Z", 
-                "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b"
-                ], 
-                "Scheme": "internet-facing", 
-                "SourceSecurityGroup": {
-                    "OwnerAlias": "12345789012", 
-                    "GroupName": "Web LB"
-                }
-            }, 
-            "local_id": "weblb", 
-            "type": "elb", 
-            "id": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000001"
-        }
-    }, 
-    {
-        "data": {
-            "name": "Public 1a", 
-            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1a", 
-            "node_data": {
-                "VpcId": "vpc-12345678", 
-                "Tags": [
-                    {
-                        "Key": "Name", 
-                        "Value": "Public 1a"
-                    }
-                ], 
-                "CidrBlock": "10.0.0.0/24", 
-                "MapPublicIpOnLaunch": true, 
-                "DefaultForAz": true, 
-                "Ipv6CidrBlockAssociationSet": [], 
-                "State": "available", 
-                "AvailabilityZone": "us-east-1a", 
-                "SubnetId": "subnet-00000001", 
-                "AvailableIpAddressCount": 4091, 
-                "AssignIpv6AddressOnCreation": false
-            }, 
-            "local_id": "subnet-00000001", 
-            "type": "subnet", 
-            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001"
-        }
-    }, 
-    {
-        "data": {
-            "name": "Web1", 
-            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003", 
-            "node_data": {
-                "Monitoring": {
-                    "State": "enabled"
-                }, 
-                "State": {
-                    "Code": 16, 
-                    "Name": "running"
-                }, 
-                "EbsOptimized": true, 
-                "LaunchTime": "2017-12-01T00:00:00.000Z", 
-                "PrivateIpAddress": "10.0.2.1", 
-                "VpcId": "vpc-12345678", 
-                "StateTransitionReason": "", 
-                "InstanceId": "i-00000000000000001", 
-                "EnaSupport": true, 
-                "ImageId": "ami-00000001", 
-                "PrivateDnsName": "ip-10-0-2-1.ec2.internal", 
-                "KeyName": "web2", 
-                "SecurityGroups": [
-                    {
-                        "GroupName": "Internal web", 
-                        "GroupId": "sg-00000004"
-                    }
-                ], 
-                "ClientToken": "00000000000000000", 
-                "SubnetId": "subnet-00000003", 
-                "InstanceType": "t2.micro", 
-                "NetworkInterfaces": [
-                    {
-                        "Status": "in-use", 
-                        "MacAddress": "0e:d7:00:00:00:00", 
-                        "SourceDestCheck": true, 
-                        "VpcId": "vpc-12345678", 
-                        "Description": "Primary network interface", 
-                        "NetworkInterfaceId": "eni-00000000", 
-                        "PrivateIpAddresses": [
-                            {
-                                "PrivateDnsName": "ip-10-0-2-1.ec2.internal", 
-                                "Primary": true, 
-                                "PrivateIpAddress": "10.0.2.1"
-                            }
-                        ], 
-                        "PrivateDnsName": "ip-10-0-0-1.ec2.internal", 
-                        "Attachment": {
-                            "Status": "attached", 
-                            "DeviceIndex": 0, 
-                            "DeleteOnTermination": true, 
-                            "AttachmentId": "eni-attach-00000000", 
-                            "AttachTime": "2017-12-01T00:00:00.000Z"
-                        }, 
-                        "Groups": [
-                            {
-                                "GroupName": "Internal web", 
-                                "GroupId": "sg-00000004"
-                            }
-                        ], 
-                        "Ipv6Addresses": [], 
-                        "OwnerId": "123456789012", 
-                        "SubnetId": "subnet-00000003", 
-                        "PrivateIpAddress": "10.0.2.1"
-                    }
-                ], 
-                "SourceDestCheck": true, 
-                "Placement": {
-                    "GroupName": "", 
-                    "Tenancy": "default", 
-                    "AvailabilityZone": "us-east-1a"
-                }, 
-                "Hypervisor": "xen", 
-                "BlockDeviceMappings": [
-                    {
-                        "DeviceName": "/dev/sda1", 
-                        "Ebs": {
-                            "Status": "attached", 
-                            "DeleteOnTermination": true, 
-                            "VolumeId": "vol-00000000000000001", 
-                            "AttachTime": "2017-12-01T00:00:00.000Z"
-                        }
-                    }
-                ], 
-                "Architecture": "x86_64", 
-                "RootDeviceType": "ebs", 
-                "RootDeviceName": "/dev/sda1", 
-                "VirtualizationType": "hvm", 
-                "Tags": [
-                    {
-                        "Key": "Name", 
-                        "Value": "Web1"
-                    }
-                ], 
-                "AmiLaunchIndex": 0
-            }, 
-            "local_id": "i-00000000000000001", 
-            "type": "ec2", 
-            "id": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001"
-        }
-    }, 
-    {
-        "data": {
-            "name": "database", 
-            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003", 
-            "node_data": {
-                "PubliclyAccessible": false, 
-                "MasterUsername": "master", 
-                "EngineVersion": "9.6.2", 
-                "LicenseModel": "postgresql-license", 
-                "VpcSecurityGroups": [
-                    {
-                        "Status": "active", 
-                        "VpcSecurityGroupId": "sg-00000005"
-                    }
-                ], 
-                "InstanceCreateTime": "2017-12-01T00:00:00.000Z", 
-                "CopyTagsToSnapshot": false, 
-                "OptionGroupMemberships": [
-                    {
-                        "Status": "in-sync", 
-                        "OptionGroupName": "default:postgres-9-6"
-                    }
-                ], 
-                "PendingModifiedValues": {}, 
-                "Engine": "postgres", 
-                "MultiAZ": false, 
-                "LatestRestorableTime": "2017-12-01T00:00:00Z", 
-                "DBSecurityGroups": [], 
-                "DBParameterGroups": [
-                    {
-                        "DBParameterGroupName": "default.postgres9.6", 
-                        "ParameterApplyStatus": "in-sync"
-                    }
-                ], 
-                "PerformanceInsightsEnabled": false, 
-                "AutoMinorVersionUpgrade": true, 
-                "PreferredBackupWindow": "00:00-01:00", 
-                "DBSubnetGroup": {
-                    "Subnets": [
-                        {
-                            "SubnetStatus": "Active", 
-                            "SubnetIdentifier": "subnet-00000004", 
-                            "SubnetAvailabilityZone": {
-                                "Name": "us-east-2b"
-                            }
-                        }, 
-                        {
-                            "SubnetStatus": "Active", 
-                            "SubnetIdentifier": "subnet-00000003", 
-                            "SubnetAvailabilityZone": {
-                                "Name": "us-east-2a"
-                            }
-                        }
-                    ], 
-                    "DBSubnetGroupName": "db subnet", 
-                    "VpcId": "vpc-12345678", 
-                    "DBSubnetGroupDescription": "Private", 
-                    "SubnetGroupStatus": "Complete"
-                }, 
-                "ReadReplicaDBInstanceIdentifiers": [], 
-                "AllocatedStorage": 100, 
-                "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey", 
-                "BackupRetentionPeriod": 7, 
-                "DBName": "database", 
-                "PreferredMaintenanceWindow": "fri:00:00-fri:01:00", 
-                "Endpoint": {
-                    "HostedZoneId": "Z2XHWR1WZ565X2", 
-                    "Port": 5432, 
-                    "Address": "database.abcdefghijkl.us-east-1.rds.amazonaws.com"
-                }, 
-                "DBInstanceStatus": "available", 
-                "IAMDatabaseAuthenticationEnabled": false, 
-                "MonitoringInterval": 60, 
-                "EnhancedMonitoringResourceArn": "arn:aws:logs:us-east-2:123456789012:log-group:RDSOSMetrics:log-stream:db-00000000000000000000000000", 
-                "AvailabilityZone": "us-east-2a", 
-                "DomainMemberships": [], 
-                "MonitoringRoleArn": "arn:aws:iam::123456789012:role/rds-monitoring-role", 
-                "StorageType": "gp2", 
-                "DbiResourceId": "db-00000000000000000000000000", 
-                "CACertificateIdentifier": "rds-ca-2015", 
-                "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/ca455c06-8a9f-4057-949d-b13d298d478b", 
-                "StorageEncrypted": true, 
-                "DBInstanceClass": "db.t2.micro", 
-                "DbInstancePort": 0, 
-                "DBInstanceIdentifier": "database"
-            }, 
-            "local_id": "database", 
-            "type": "rds", 
-            "id": "arn:aws:rds:us-east-1:123456789012:db-instance/database/subnet-00000003"
-        }
-    }, 
-    {
-        "data": {
-            "name": "Private 1a", 
-            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1a", 
-            "node_data": {
-                "VpcId": "vpc-12345678", 
-                "Tags": [
-                    {
-                        "Key": "Name", 
-                        "Value": "Private 1a"
-                    }
-                ], 
-                "CidrBlock": "10.0.2.0/24", 
-                "MapPublicIpOnLaunch": false, 
-                "DefaultForAz": true, 
-                "Ipv6CidrBlockAssociationSet": [], 
-                "State": "available", 
-                "AvailabilityZone": "us-east-1a", 
-                "SubnetId": "subnet-00000003", 
-                "AvailableIpAddressCount": 4091, 
-                "AssignIpv6AddressOnCreation": false
-            }, 
-            "local_id": "subnet-00000003", 
-            "type": "subnet", 
-            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003"
-        }
-    }, 
-    {
-        "data": {
-            "name": "us-east-1a", 
-            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678", 
-            "node_data": {
-                "State": "available", 
-                "RegionName": "us-east-1", 
-                "Messages": [], 
-                "ZoneName": "us-east-1a"
-            }, 
-            "local_id": "us-east-1a", 
-            "type": "az", 
-            "id": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1a"
-        }
-    }, 
-    {
-        "data": {
-            "name": "weblb", 
-            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000002", 
-            "node_data": {
-                "DNSName": "weblb.us-west-2.elb.amazonaws.com", 
-                "Subnets": [
-                    "subnet-00000001", 
-                    "subnet-00000002"
-                ], 
-                "CanonicalHostedZoneNameID": "0000000000000", 
-                "CanonicalHostedZoneName": "weblb-0000000000.us-east-1.elb.amazonaws.com", 
-                "ListenerDescriptions": [
-                    {
-                        "Listener": {
-                            "InstancePort": 8000, 
-                            "LoadBalancerPort": 8000, 
-                            "Protocol": "HTTP", 
-                            "InstanceProtocol": "HTTP"
-                        }, 
-                        "PolicyNames": []
-                    }
-                ], 
-                "HealthCheck": {
-                    "HealthyThreshold": 2, 
-                    "Interval": 30, 
-                    "Target": "TCP:8000", 
-                    "Timeout": 5, 
-                    "UnhealthyThreshold": 2
-                }, 
-                "BackendServerDescriptions": [], 
-                "Instances": [
-                    {
-                        "InstanceId": "i-00000000000000002"
-                    }, 
-                    {
-                        "InstanceId": "i-00000000000000003"
-                    }
-                ], 
-                "VPCId": "vpc-12345678", 
-                "SecurityGroups": [
-                    "sg-00000003"
-                ], 
-                "Policies": {
-                    "LBCookieStickinessPolicies": [], 
-                    "AppCookieStickinessPolicies": [], 
-                    "OtherPolicies": []
-                }, 
-                "LoadBalancerName": "weblb", 
-                "CreatedTime": "2017-12-01T00:00:00.000Z", 
-                "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b"
-                ], 
-                "Scheme": "internet-facing", 
-                "SourceSecurityGroup": {
-                    "OwnerAlias": "12345789012", 
-                    "GroupName": "Web LB"
-                }
-            }, 
-            "local_id": "weblb", 
-            "type": "elb", 
-            "id": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000002"
-        }
-    }, 
-    {
-        "data": {
-            "name": "Public 1b", 
-            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1b", 
-            "node_data": {
-                "VpcId": "vpc-12345678", 
-                "Tags": [
-                    {
-                        "Key": "Name", 
-                        "Value": "Public 1b"
-                    }
-                ], 
-                "CidrBlock": "10.0.1.0/24", 
-                "MapPublicIpOnLaunch": true, 
-                "DefaultForAz": true, 
-                "Ipv6CidrBlockAssociationSet": [], 
-                "State": "available", 
-                "AvailabilityZone": "us-east-1b", 
-                "SubnetId": "subnet-00000002", 
-                "AvailableIpAddressCount": 4091, 
-                "AssignIpv6AddressOnCreation": false
-            }, 
-            "local_id": "subnet-00000002", 
-            "type": "subnet", 
-            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000002"
-        }
-    }, 
-    {
-        "data": {
-            "name": "Web2", 
-            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000004", 
-            "node_data": {
-                "Monitoring": {
-                    "State": "enabled"
-                }, 
-                "State": {
-                    "Code": 16, 
-                    "Name": "running"
-                }, 
-                "EbsOptimized": true, 
-                "LaunchTime": "2017-12-01T00:00:00.000Z", 
-                "PrivateIpAddress": "10.0.3.1", 
-                "VpcId": "vpc-12345678", 
-                "StateTransitionReason": "", 
-                "InstanceId": "i-00000000000000002", 
-                "EnaSupport": true, 
-                "ImageId": "ami-00000001", 
-                "PrivateDnsName": "ip-10-0-3-1.ec2.internal", 
-                "KeyName": "web2", 
-                "SecurityGroups": [
-                    {
-                        "GroupName": "Internal web", 
-                        "GroupId": "sg-00000004"
-                    }
-                ], 
-                "ClientToken": "00000000000000000", 
-                "SubnetId": "subnet-00000004", 
-                "InstanceType": "t2.micro", 
-                "NetworkInterfaces": [
-                    {
-                        "Status": "in-use", 
-                        "MacAddress": "0e:d7:00:00:00:00", 
-                        "SourceDestCheck": true, 
-                        "VpcId": "vpc-12345678", 
-                        "Description": "Primary network interface", 
-                        "NetworkInterfaceId": "eni-00000000", 
-                        "PrivateIpAddresses": [
-                            {
-                                "PrivateDnsName": "ip-10-0-3-1.ec2.internal", 
-                                "Primary": true, 
-                                "PrivateIpAddress": "10.0.3.1"
-                            }
-                        ], 
-                        "PrivateDnsName": "ip-10-0-3-1.ec2.internal", 
-                        "Attachment": {
-                            "Status": "attached", 
-                            "DeviceIndex": 0, 
-                            "DeleteOnTermination": true, 
-                            "AttachmentId": "eni-attach-00000000", 
-                            "AttachTime": "2017-12-01T00:00:00.000Z"
-                        }, 
-                        "Groups": [
-                            {
-                                "GroupName": "Internal web", 
-                                "GroupId": "sg-00000004"
-                            }
-                        ], 
-                        "Ipv6Addresses": [], 
-                        "OwnerId": "123456789012", 
-                        "SubnetId": "subnet-00000004", 
-                        "PrivateIpAddress": "10.0.3.1"
-                    }
-                ], 
-                "SourceDestCheck": true, 
-                "Placement": {
-                    "GroupName": "", 
-                    "Tenancy": "default", 
-                    "AvailabilityZone": "us-east-1b"
-                }, 
-                "Hypervisor": "xen", 
-                "BlockDeviceMappings": [
-                    {
-                        "DeviceName": "/dev/sda1", 
-                        "Ebs": {
-                            "Status": "attached", 
-                            "DeleteOnTermination": true, 
-                            "VolumeId": "vol-00000000000000003", 
-                            "AttachTime": "2017-12-01T00:00:00.000Z"
-                        }
-                    }
-                ], 
-                "Architecture": "x86_64", 
-                "RootDeviceType": "ebs", 
-                "RootDeviceName": "/dev/sda1", 
-                "VirtualizationType": "hvm", 
-                "Tags": [
-                    {
-                        "Key": "Name", 
-                        "Value": "Web2"
-                    }
-                ], 
-                "AmiLaunchIndex": 0
-            }, 
-            "local_id": "i-00000000000000002", 
-            "type": "ec2", 
-            "id": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002"
-        }
-    }, 
-    {
-        "data": {
-            "name": "database", 
-            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000004", 
-            "node_data": {
-                "PubliclyAccessible": false, 
-                "MasterUsername": "master", 
-                "EngineVersion": "9.6.2", 
-                "LicenseModel": "postgresql-license", 
-                "VpcSecurityGroups": [
-                    {
-                        "Status": "active", 
-                        "VpcSecurityGroupId": "sg-00000005"
-                    }
-                ], 
-                "InstanceCreateTime": "2017-12-01T00:00:00.000Z", 
-                "CopyTagsToSnapshot": false, 
-                "OptionGroupMemberships": [
-                    {
-                        "Status": "in-sync", 
-                        "OptionGroupName": "default:postgres-9-6"
-                    }
-                ], 
-                "PendingModifiedValues": {}, 
-                "Engine": "postgres", 
-                "MultiAZ": false, 
-                "LatestRestorableTime": "2017-12-01T00:00:00Z", 
-                "DBSecurityGroups": [], 
-                "DBParameterGroups": [
-                    {
-                        "DBParameterGroupName": "default.postgres9.6", 
-                        "ParameterApplyStatus": "in-sync"
-                    }
-                ], 
-                "PerformanceInsightsEnabled": false, 
-                "AutoMinorVersionUpgrade": true, 
-                "PreferredBackupWindow": "00:00-01:00", 
-                "DBSubnetGroup": {
-                    "Subnets": [
-                        {
-                            "SubnetStatus": "Active", 
-                            "SubnetIdentifier": "subnet-00000004", 
-                            "SubnetAvailabilityZone": {
-                                "Name": "us-east-2b"
-                            }
-                        }, 
-                        {
-                            "SubnetStatus": "Active", 
-                            "SubnetIdentifier": "subnet-00000003", 
-                            "SubnetAvailabilityZone": {
-                                "Name": "us-east-2a"
-                            }
-                        }
-                    ], 
-                    "DBSubnetGroupName": "db subnet", 
-                    "VpcId": "vpc-12345678", 
-                    "DBSubnetGroupDescription": "Private", 
-                    "SubnetGroupStatus": "Complete"
-                }, 
-                "ReadReplicaDBInstanceIdentifiers": [], 
-                "AllocatedStorage": 100, 
-                "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey", 
-                "BackupRetentionPeriod": 7, 
-                "DBName": "database", 
-                "PreferredMaintenanceWindow": "fri:00:00-fri:01:00", 
-                "Endpoint": {
-                    "HostedZoneId": "Z2XHWR1WZ565X2", 
-                    "Port": 5432, 
-                    "Address": "database.abcdefghijkl.us-east-1.rds.amazonaws.com"
-                }, 
-                "DBInstanceStatus": "available", 
-                "IAMDatabaseAuthenticationEnabled": false, 
-                "MonitoringInterval": 60, 
-                "EnhancedMonitoringResourceArn": "arn:aws:logs:us-east-2:123456789012:log-group:RDSOSMetrics:log-stream:db-00000000000000000000000000", 
-                "AvailabilityZone": "us-east-2a", 
-                "DomainMemberships": [], 
-                "MonitoringRoleArn": "arn:aws:iam::123456789012:role/rds-monitoring-role", 
-                "StorageType": "gp2", 
-                "DbiResourceId": "db-00000000000000000000000000", 
-                "CACertificateIdentifier": "rds-ca-2015", 
-                "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/ca455c06-8a9f-4057-949d-b13d298d478b", 
-                "StorageEncrypted": true, 
-                "DBInstanceClass": "db.t2.micro", 
-                "DbInstancePort": 0, 
-                "DBInstanceIdentifier": "database"
-            }, 
-            "local_id": "database", 
-            "type": "rds", 
-            "id": "arn:aws:rds:us-east-1:123456789012:db-instance/database/subnet-00000004"
-        }
-    }, 
-    {
-        "data": {
-            "name": "Private 1b", 
-            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1b", 
-            "node_data": {
-                "VpcId": "vpc-12345678", 
-                "Tags": [
-                    {
-                        "Key": "Name", 
-                        "Value": "Private 1b"
-                    }
-                ], 
-                "CidrBlock": "10.0.3.0/24", 
-                "MapPublicIpOnLaunch": false, 
-                "DefaultForAz": true, 
-                "Ipv6CidrBlockAssociationSet": [], 
-                "State": "available", 
-                "AvailabilityZone": "us-east-1b", 
-                "SubnetId": "subnet-00000004", 
-                "AvailableIpAddressCount": 4091, 
-                "AssignIpv6AddressOnCreation": false
-            }, 
-            "local_id": "subnet-00000004", 
-            "type": "subnet", 
-            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000004"
-        }
-    }, 
-    {
-        "data": {
-            "name": "us-east-1b", 
-            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678", 
-            "node_data": {
-                "State": "available", 
-                "RegionName": "us-east-1", 
-                "Messages": [], 
-                "ZoneName": "us-east-1b"
-            }, 
-            "local_id": "us-east-1b", 
-            "type": "az", 
-            "id": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1b"
-        }
-    }, 
-    {
-        "data": {
-            "name": "Prod", 
-            "parent": "arn:aws::us-east-1:123456789012:", 
-            "node_data": {
-                "VpcId": "vpc-12345678", 
-                "InstanceTenancy": "default", 
-                "Tags": [
-                    {
-                        "Key": "Name", 
-                        "Value": "Prod"
-                    }
-                ], 
+                ],
+                "InstanceTenancy": "default",
                 "CidrBlockAssociationSet": [
                     {
-                        "AssociationId": "vpc-cidr-assoc-12345678", 
-                        "CidrBlock": "10.0.0.0/16", 
+                        "AssociationId": "vpc-cidr-assoc-12345678",
+                        "CidrBlock": "10.0.0.0/16",
                         "CidrBlockState": {
                             "State": "associated"
                         }
                     }
-                ], 
-                "State": "available", 
-                "DhcpOptionsId": "dopt-12345678", 
-                "CidrBlock": "10.0.0.0/16", 
+                ],
+                "State": "available",
+                "DhcpOptionsId": "dopt-12345678",
+                "CidrBlock": "10.0.0.0/16",
                 "IsDefault": true
-            }, 
-            "local_id": "vpc-12345678", 
-            "type": "vpc", 
-            "id": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678"
+            },
+            "parent": "arn:aws::us-east-1:123456789012:"
         }
-    }, 
+    },
     {
         "data": {
-            "name": "us-east-1", 
-            "parent": "arn:aws:::123456789012:", 
+            "id": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1a",
+            "name": "us-east-1a",
+            "type": "az",
+            "local_id": "us-east-1a",
             "node_data": {
-                "Endpoint": "ec2.us-east-1.amazonaws.com", 
+                "State": "available",
+                "ZoneName": "us-east-1a",
+                "Messages": [],
                 "RegionName": "us-east-1"
-            }, 
-            "local_id": "us-east-1", 
-            "type": "region", 
-            "id": "arn:aws::us-east-1:123456789012:"
+            },
+            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678"
         }
-    }, 
+    },
     {
         "data": {
-            "node_data": "1.1.1.1/32", 
-            "local_id": "1.1.1.1/32", 
-            "type": "ip", 
-            "id": "1.1.1.1/32", 
-            "name": "SF Office"
+            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001",
+            "name": "Public 1a (10.0.0.0/24)",
+            "type": "subnet",
+            "local_id": "subnet-00000001",
+            "node_data": {
+                "AvailabilityZone": "us-east-1a",
+                "Tags": [
+                    {
+                        "Value": "Public 1a",
+                        "Key": "Name"
+                    }
+                ],
+                "AvailableIpAddressCount": 4091,
+                "DefaultForAz": true,
+                "Ipv6CidrBlockAssociationSet": [],
+                "VpcId": "vpc-12345678",
+                "State": "available",
+                "MapPublicIpOnLaunch": true,
+                "SubnetId": "subnet-00000001",
+                "CidrBlock": "10.0.0.0/24",
+                "AssignIpv6AddressOnCreation": false
+            },
+            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1a"
         }
-    }, 
+    },
     {
         "data": {
-            "node_data": "2.2.2.2/28", 
-            "local_id": "2.2.2.2/28", 
-            "type": "ip", 
-            "id": "2.2.2.2/28", 
-            "name": "NY Office"
+            "id": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "name": "Bastion",
+            "type": "ec2",
+            "local_id": "i-00000000000000000",
+            "node_data": {
+                "Monitoring": {
+                    "State": "enabled"
+                },
+                "PublicDnsName": "ec2-1-2-3-4.compute-1.amazonaws.com",
+                "State": {
+                    "Code": 16,
+                    "Name": "running"
+                },
+                "EbsOptimized": true,
+                "LaunchTime": "2017-12-01T00:00:00.000Z",
+                "PublicIpAddress": "1.2.3.4",
+                "PrivateIpAddress": "10.0.0.1",
+                "VpcId": "vpc-12345678",
+                "StateTransitionReason": "",
+                "InstanceId": "i-00000000000000000",
+                "EnaSupport": true,
+                "ImageId": "ami-00000000",
+                "PrivateDnsName": "ip-10-0-0-1.ec2.internal",
+                "KeyName": "bastion",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "Restricted SSH Access",
+                        "GroupId": "sg-00000002"
+                    }
+                ],
+                "ClientToken": "00000000000000000",
+                "SubnetId": "subnet-00000001",
+                "InstanceType": "t2.micro",
+                "NetworkInterfaces": [
+                    {
+                        "Status": "in-use",
+                        "MacAddress": "0e:d7:00:00:00:00",
+                        "SourceDestCheck": true,
+                        "VpcId": "vpc-12345678",
+                        "Description": "Primary network interface",
+                        "NetworkInterfaceId": "eni-00000000",
+                        "PrivateIpAddresses": [
+                            {
+                                "PrivateDnsName": "ip-10-0-0-1.ec2.internal",
+                                "PrivateIpAddress": "10.0.0.1",
+                                "Primary": true,
+                                "Association": {
+                                    "PublicIp": "1.2.3.4",
+                                    "PublicDnsName": "ec2-1-2-3-4.compute-1.amazonaws.com",
+                                    "IpOwnerId": "amazon"
+                                }
+                            }
+                        ],
+                        "PrivateDnsName": "ip-10-0-0-1.ec2.internal",
+                        "Attachment": {
+                            "Status": "attached",
+                            "DeviceIndex": 0,
+                            "DeleteOnTermination": true,
+                            "AttachmentId": "eni-attach-00000000",
+                            "AttachTime": "2017-12-01T00:00:00.000Z"
+                        },
+                        "Groups": [
+                            {
+                                "GroupName": "Bastion",
+                                "GroupId": "sg-00000002"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "OwnerId": "123456789012",
+                        "PrivateIpAddress": "10.0.0.1",
+                        "SubnetId": "subnet-00000001",
+                        "Association": {
+                            "PublicIp": "1.2.3.4",
+                            "PublicDnsName": "ec2-1-2-3-4.compute-1.amazonaws.com",
+                            "IpOwnerId": "amazon"
+                        }
+                    }
+                ],
+                "SourceDestCheck": true,
+                "Placement": {
+                    "Tenancy": "default",
+                    "GroupName": "",
+                    "AvailabilityZone": "us-east-1a"
+                },
+                "Hypervisor": "xen",
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/sda1",
+                        "Ebs": {
+                            "Status": "attached",
+                            "DeleteOnTermination": true,
+                            "VolumeId": "vol-00000000000000000",
+                            "AttachTime": "2017-12-01T00:00:00.000Z"
+                        }
+                    }
+                ],
+                "Architecture": "x86_64",
+                "RootDeviceType": "ebs",
+                "RootDeviceName": "/dev/sda1",
+                "VirtualizationType": "hvm",
+                "Tags": [
+                    {
+                        "Value": "Bastion",
+                        "Key": "Name"
+                    }
+                ],
+                "AmiLaunchIndex": 0
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001"
         }
-    }, 
+    },
     {
         "data": {
-            "node_data": "0.0.0.0/0", 
-            "local_id": "0.0.0.0/0", 
-            "type": "cloud", 
-            "id": "0.0.0.0/0", 
-            "name": "Public"
+            "id": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000001",
+            "name": "weblb",
+            "type": "elb",
+            "local_id": "weblb",
+            "node_data": {
+                "Subnets": [
+                    "subnet-00000001",
+                    "subnet-00000002"
+                ],
+                "CanonicalHostedZoneNameID": "0000000000000",
+                "CanonicalHostedZoneName": "weblb-0000000000.us-east-1.elb.amazonaws.com",
+                "ListenerDescriptions": [
+                    {
+                        "Listener": {
+                            "InstancePort": 8000,
+                            "LoadBalancerPort": 8000,
+                            "Protocol": "HTTP",
+                            "InstanceProtocol": "HTTP"
+                        },
+                        "PolicyNames": []
+                    }
+                ],
+                "HealthCheck": {
+                    "HealthyThreshold": 2,
+                    "Interval": 30,
+                    "Target": "TCP:8000",
+                    "Timeout": 5,
+                    "UnhealthyThreshold": 2
+                },
+                "VPCId": "vpc-12345678",
+                "BackendServerDescriptions": [],
+                "Instances": [
+                    {
+                        "InstanceId": "i-00000000000000002"
+                    },
+                    {
+                        "InstanceId": "i-00000000000000003"
+                    }
+                ],
+                "DNSName": "weblb.us-west-2.elb.amazonaws.com",
+                "SecurityGroups": [
+                    "sg-00000003"
+                ],
+                "Policies": {
+                    "LBCookieStickinessPolicies": [],
+                    "AppCookieStickinessPolicies": [],
+                    "OtherPolicies": []
+                },
+                "LoadBalancerName": "weblb",
+                "CreatedTime": "2017-12-01T00:00:00.000Z",
+                "AvailabilityZones": [
+                    "us-east-1a",
+                    "us-east-1b"
+                ],
+                "Scheme": "internet-facing",
+                "SourceSecurityGroup": {
+                    "OwnerAlias": "12345789012",
+                    "GroupName": "Web LB"
+                }
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001"
         }
-    }, 
+    },
     {
         "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000002", 
+            "id": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7",
+            "name": "myecs:3",
+            "type": "ecs",
+            "local_id": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7",
+            "node_data": {
+                "attachments": [
+                    {
+                        "details": [
+                            {
+                                "name": "subnetId",
+                                "value": "subnet-00000001"
+                            },
+                            {
+                                "name": "networkInterfaceId",
+                                "value": "eni-00000001"
+                            },
+                            {
+                                "name": "macAddress",
+                                "value": "16:2f:d0:d6:ed:28"
+                            },
+                            {
+                                "name": "privateIPv4Address",
+                                "value": "10.0.0.11"
+                            }
+                        ],
+                        "id": "ed8fed01-82d0-4bf6-86cf-fe3115c23ab8",
+                        "status": "ATTACHED",
+                        "type": "ElasticNetworkInterface"
+                    }
+                ],
+                "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/myecs",
+                "connectivity": "CONNECTED",
+                "connectivityAt": "2018-11-26T20:36:35.422000-07:00",
+                "containers": [
+                    {
+                        "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/f67ce604-5248-41a0-8a95-78ab4fb57a44",
+                        "cpu": "0",
+                        "healthStatus": "UNHEALTHY",
+                        "lastStatus": "RUNNING",
+                        "name": "myecs",
+                        "networkBindings": [],
+                        "networkInterfaces": [
+                            {
+                                "attachmentId": "ed8fed01-82d0-4bf6-86cf-fe3115c23ab8",
+                                "privateIpv4Address": "172.31.48.168"
+                            }
+                        ],
+                        "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7"
+                    }
+                ],
+                "cpu": "256",
+                "createdAt": "2018-11-26T20:36:30.710000-07:00",
+                "desiredStatus": "RUNNING",
+                "group": "family:myecs",
+                "healthStatus": "UNHEALTHY",
+                "lastStatus": "RUNNING",
+                "launchType": "FARGATE",
+                "memory": "512",
+                "overrides": {
+                    "containerOverrides": [
+                        {
+                            "name": "myecs"
+                        }
+                    ]
+                },
+                "platformVersion": "1.2.0",
+                "pullStartedAt": "2018-11-26T20:36:43.371000-07:00",
+                "pullStoppedAt": "2018-11-26T20:37:04.371000-07:00",
+                "startedAt": "2018-11-26T20:37:05.371000-07:00",
+                "tags": [],
+                "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7",
+                "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/myecs:3",
+                "version": 3,
+                "ips": [
+                    "3.80.3.41",
+                    "172.31.48.168"
+                ]
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001"
+        }
+    },
+    {
+        "data": {
+            "id": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com.subnet-00000001",
+            "name": "redshift-cluster-1",
+            "type": "redshift",
+            "local_id": "redshift-cluster-1",
+            "node_data": {
+                "AllowVersionUpgrade": true,
+                "AutomatedSnapshotRetentionPeriod": 1,
+                "AvailabilityZone": "us-east-1f",
+                "ClusterCreateTime": "2019-05-03T20:59:48.939000+00:00",
+                "ClusterIdentifier": "redshift-cluster-1",
+                "ClusterNodes": [
+                    {
+                        "NodeRole": "LEADER",
+                        "PrivateIPAddress": "10.0.0.10",
+                        "PublicIPAddress": "3.89.235.255"
+                    },
+                    {
+                        "NodeRole": "COMPUTE-0",
+                        "PrivateIPAddress": "10.0.1.10",
+                        "PublicIPAddress": "3.214.182.31"
+                    }
+                ],
+                "ClusterParameterGroups": [
+                    {
+                        "ParameterApplyStatus": "in-sync",
+                        "ParameterGroupName": "default.redshift-1.0"
+                    }
+                ],
+                "ClusterPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCIL3RHoN5CsM1lLcJDT7WMAp/VVx9PQfvC/HDnp9Lo6Z0YI1dAxn/woZbJRDWceUFcvUOtJyAIvLCtee8m/Gz4oxudtCGGLvZL7bZPPARUgNx6UxtQ8jcj8V6mzEZNh7WqjOo8C7J4o55DtydidtB4U3TYDRixm1JnhUprgiICFTlqm7LJkYNqNDNfBNRzmp3fHOqR63ooKqTmx9IMPleED1T5Scm6ht70oNug0b65vK5uChELPU8FB87wKHu57O3gDk4J679dmS1Sa5qSTpTSvSJhhh76KklBEQhddBojc8qarqsEd+XHt5O644Oo6z8QJ9U7qzztWJN2q4YYvRYX Amazon-Redshift\n",
+                "ClusterRevisionNumber": "7152",
+                "ClusterSecurityGroups": [],
+                "ClusterStatus": "available",
+                "ClusterSubnetGroupName": "default",
+                "ClusterVersion": "1.0",
+                "DBName": "dev",
+                "DeferredMaintenanceWindows": [],
+                "ElasticResizeNumberOfNodeOptions": "[4]",
+                "Encrypted": false,
+                "Endpoint": {
+                    "Address": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com",
+                    "Port": 5439
+                },
+                "EnhancedVpcRouting": false,
+                "IamRoles": [],
+                "MaintenanceTrackName": "current",
+                "ManualSnapshotRetentionPeriod": -1,
+                "MasterUsername": "awsuser",
+                "NodeType": "dc2.large",
+                "NumberOfNodes": 2,
+                "PendingModifiedValues": {},
+                "PreferredMaintenanceWindow": "thu:08:30-thu:09:00",
+                "PubliclyAccessible": true,
+                "Tags": [],
+                "VpcId": "vpc-12345678",
+                "VpcSecurityGroups": [
+                    {
+                        "Status": "active",
+                        "VpcSecurityGroupId": "sg-00000002"
+                    }
+                ]
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000001"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003",
+            "name": "Private 1a (10.0.2.0/24)",
+            "type": "subnet",
+            "local_id": "subnet-00000003",
+            "node_data": {
+                "AvailabilityZone": "us-east-1a",
+                "Tags": [
+                    {
+                        "Value": "Private 1a",
+                        "Key": "Name"
+                    }
+                ],
+                "AvailableIpAddressCount": 4091,
+                "DefaultForAz": true,
+                "Ipv6CidrBlockAssociationSet": [],
+                "VpcId": "vpc-12345678",
+                "State": "available",
+                "MapPublicIpOnLaunch": false,
+                "SubnetId": "subnet-00000003",
+                "CidrBlock": "10.0.2.0/24",
+                "AssignIpv6AddressOnCreation": false
+            },
+            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1a"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "name": "Web1",
+            "type": "ec2",
+            "local_id": "i-00000000000000001",
+            "node_data": {
+                "Monitoring": {
+                    "State": "enabled"
+                },
+                "State": {
+                    "Code": 16,
+                    "Name": "running"
+                },
+                "EbsOptimized": true,
+                "LaunchTime": "2017-12-01T00:00:00.000Z",
+                "PrivateIpAddress": "10.0.2.1",
+                "VpcId": "vpc-12345678",
+                "StateTransitionReason": "",
+                "InstanceId": "i-00000000000000001",
+                "EnaSupport": true,
+                "ImageId": "ami-00000001",
+                "PrivateDnsName": "ip-10-0-2-1.ec2.internal",
+                "KeyName": "web2",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "Internal web",
+                        "GroupId": "sg-00000004"
+                    }
+                ],
+                "ClientToken": "00000000000000000",
+                "SubnetId": "subnet-00000003",
+                "InstanceType": "t2.micro",
+                "NetworkInterfaces": [
+                    {
+                        "Status": "in-use",
+                        "MacAddress": "0e:d7:00:00:00:00",
+                        "SourceDestCheck": true,
+                        "VpcId": "vpc-12345678",
+                        "Description": "Primary network interface",
+                        "NetworkInterfaceId": "eni-00000000",
+                        "PrivateIpAddresses": [
+                            {
+                                "PrivateDnsName": "ip-10-0-2-1.ec2.internal",
+                                "PrivateIpAddress": "10.0.2.1",
+                                "Primary": true
+                            }
+                        ],
+                        "PrivateDnsName": "ip-10-0-0-1.ec2.internal",
+                        "Attachment": {
+                            "Status": "attached",
+                            "DeviceIndex": 0,
+                            "DeleteOnTermination": true,
+                            "AttachmentId": "eni-attach-00000000",
+                            "AttachTime": "2017-12-01T00:00:00.000Z"
+                        },
+                        "Groups": [
+                            {
+                                "GroupName": "Internal web",
+                                "GroupId": "sg-00000004"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "OwnerId": "123456789012",
+                        "PrivateIpAddress": "10.0.2.1",
+                        "SubnetId": "subnet-00000003"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "Placement": {
+                    "Tenancy": "default",
+                    "GroupName": "",
+                    "AvailabilityZone": "us-east-1a"
+                },
+                "Hypervisor": "xen",
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/sda1",
+                        "Ebs": {
+                            "Status": "attached",
+                            "DeleteOnTermination": true,
+                            "VolumeId": "vol-00000000000000001",
+                            "AttachTime": "2017-12-01T00:00:00.000Z"
+                        }
+                    }
+                ],
+                "Architecture": "x86_64",
+                "RootDeviceType": "ebs",
+                "RootDeviceName": "/dev/sda1",
+                "VirtualizationType": "hvm",
+                "Tags": [
+                    {
+                        "Value": "Web1",
+                        "Key": "Name"
+                    }
+                ],
+                "AmiLaunchIndex": 0
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey.subnet-00000003",
+            "name": "database",
+            "type": "rds",
+            "local_id": "database",
+            "node_data": {
+                "PubliclyAccessible": false,
+                "MasterUsername": "master",
+                "MonitoringInterval": 60,
+                "LicenseModel": "postgresql-license",
+                "VpcSecurityGroups": [
+                    {
+                        "Status": "active",
+                        "VpcSecurityGroupId": "sg-00000005"
+                    }
+                ],
+                "InstanceCreateTime": "2017-12-01T00:00:00.000Z",
+                "CopyTagsToSnapshot": false,
+                "OptionGroupMemberships": [
+                    {
+                        "Status": "in-sync",
+                        "OptionGroupName": "default:postgres-9-6"
+                    }
+                ],
+                "PendingModifiedValues": {},
+                "Engine": "postgres",
+                "MultiAZ": false,
+                "LatestRestorableTime": "2017-12-01T00:00:00Z",
+                "DBSecurityGroups": [],
+                "DBParameterGroups": [
+                    {
+                        "DBParameterGroupName": "default.postgres9.6",
+                        "ParameterApplyStatus": "in-sync"
+                    }
+                ],
+                "PerformanceInsightsEnabled": false,
+                "AutoMinorVersionUpgrade": true,
+                "PreferredBackupWindow": "00:00-01:00",
+                "DBSubnetGroup": {
+                    "Subnets": [
+                        {
+                            "SubnetStatus": "Active",
+                            "SubnetIdentifier": "subnet-00000004",
+                            "SubnetAvailabilityZone": {
+                                "Name": "us-east-2b"
+                            }
+                        },
+                        {
+                            "SubnetStatus": "Active",
+                            "SubnetIdentifier": "subnet-00000003",
+                            "SubnetAvailabilityZone": {
+                                "Name": "us-east-2a"
+                            }
+                        }
+                    ],
+                    "DBSubnetGroupName": "db subnet",
+                    "VpcId": "vpc-12345678",
+                    "DBSubnetGroupDescription": "Private",
+                    "SubnetGroupStatus": "Complete"
+                },
+                "ReadReplicaDBInstanceIdentifiers": [],
+                "AllocatedStorage": 100,
+                "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey",
+                "BackupRetentionPeriod": 7,
+                "DBName": "database",
+                "PreferredMaintenanceWindow": "fri:00:00-fri:01:00",
+                "Endpoint": {
+                    "HostedZoneId": "Z2XHWR1WZ565X2",
+                    "Port": 5432,
+                    "Address": "database.abcdefghijkl.us-east-1.rds.amazonaws.com"
+                },
+                "DBInstanceStatus": "available",
+                "IAMDatabaseAuthenticationEnabled": false,
+                "EngineVersion": "9.6.2",
+                "EnhancedMonitoringResourceArn": "arn:aws:logs:us-east-2:123456789012:log-group:RDSOSMetrics:log-stream:db-00000000000000000000000000",
+                "AvailabilityZone": "us-east-2a",
+                "DomainMemberships": [],
+                "MonitoringRoleArn": "arn:aws:iam::123456789012:role/rds-monitoring-role",
+                "StorageType": "gp2",
+                "DbiResourceId": "db-00000000000000000000000000",
+                "CACertificateIdentifier": "rds-ca-2015",
+                "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/ca455c06-8a9f-4057-949d-b13d298d478b",
+                "StorageEncrypted": true,
+                "DBInstanceClass": "db.t2.micro",
+                "DbInstancePort": 0,
+                "DBInstanceIdentifier": "database"
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000002.subnet-00000003",
+            "name": "sqs",
+            "type": "sqs",
+            "local_id": "vpce-00000000000000002",
+            "node_data": {
+                "CreationTimestamp": "2019-04-30T15:19:35+00:00",
+                "DnsEntries": [
+                    {
+                        "DnsName": "vpce-05ed16ac73726e737-5xkr9dae-us-east-1f.sqs.us-east-1.vpce.amazonaws.com",
+                        "HostedZoneId": "Z7HUB22UULQXV"
+                    },
+                    {
+                        "DnsName": "sqs.us-east-1.amazonaws.com",
+                        "HostedZoneId": "ZCYZV1JQU4VH2"
+                    }
+                ],
+                "Groups": [
+                    {
+                        "GroupId": "sg-00000006",
+                        "GroupName": "default"
+                    }
+                ],
+                "NetworkInterfaceIds": [
+                    "eni-00000000000000001"
+                ],
+                "PolicyDocument": "{\n    \"Statement\": [\n        {\n            \"Action\": \"*\",\n            \"Effect\": \"Allow\",\n            \"Resource\": \"*\",\n            \"Principal\": \"*\"\n        }\n    ]\n}",
+                "PrivateDnsEnabled": true,
+                "RouteTableIds": [],
+                "ServiceName": "com.amazonaws.us-east-1.sqs",
+                "State": "available",
+                "SubnetIds": [
+                    "subnet-00000003"
+                ],
+                "VpcEndpointId": "vpce-00000000000000002",
+                "VpcEndpointType": "Interface",
+                "VpcId": "vpc-12345678"
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda.subnet-00000003",
+            "name": "invpclambda",
+            "type": "lambda",
+            "local_id": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda",
+            "node_data": {
+                "CodeSha256": "H4QrZXTeJhAFtZ6dfi7NjMZiGHZfFgGpD38SjX+BaMw=",
+                "CodeSize": 262,
+                "Description": "",
+                "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda",
+                "FunctionName": "invpclambda",
+                "Handler": "index.handler",
+                "LastModified": "2019-04-30T16:26:38.618+0000",
+                "MemorySize": 128,
+                "RevisionId": "78a5eca3-193c-4f09-bed0-123f2d1c3ad3",
+                "Role": "arn:aws:iam::123456789012:role/service-role/invpclambda",
+                "Runtime": "nodejs8.10",
+                "Timeout": 3,
+                "TracingConfig": {
+                    "Mode": "PassThrough"
+                },
+                "Version": "$LATEST",
+                "VpcConfig": {
+                    "SecurityGroupIds": [
+                        "sg-09920178"
+                    ],
+                    "SubnetIds": [
+                        "subnet-00000003",
+                        "subnet-00000004"
+                    ],
+                    "VpcId": "vpc-12345678"
+                }
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:es:us-east-1:123456789012:domain/myvpcdomain",
+            "name": "myvpcdomain",
+            "type": "elasticsearch",
+            "local_id": "arn:aws:es:us-east-1:123456789012:domain/myvpcdomain",
+            "node_data": {
+                "ARN": "arn:aws:es:us-east-1:123456789012:domain/myvpcdomain",
+                "AccessPolicies": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-east-1:123456789012:domain/myvpcdomain/*\"}]}",
+                "AdvancedOptions": {
+                    "rest.action.multi.allow_explicit_index": "true"
+                },
+                "CognitoOptions": {
+                    "Enabled": false
+                },
+                "Created": true,
+                "Deleted": false,
+                "DomainId": "123456789012/myvpcdomain",
+                "DomainName": "myvpcdomain",
+                "EBSOptions": {
+                    "EBSEnabled": true,
+                    "VolumeSize": 10,
+                    "VolumeType": "gp2"
+                },
+                "ElasticsearchClusterConfig": {
+                    "DedicatedMasterEnabled": false,
+                    "InstanceCount": 1,
+                    "InstanceType": "t2.small.elasticsearch",
+                    "ZoneAwarenessEnabled": false
+                },
+                "ElasticsearchVersion": "6.5",
+                "EncryptionAtRestOptions": {
+                    "Enabled": false
+                },
+                "Endpoints": {
+                    "vpc": "vpc-myvpcdomain-ffvrwsgtge4ypzq47gvxkcbniy.us-east-1.es.amazonaws.com"
+                },
+                "NodeToNodeEncryptionOptions": {
+                    "Enabled": false
+                },
+                "Processing": false,
+                "ServiceSoftwareOptions": {
+                    "AutomatedUpdateDate": "2019-04-30T11:31:21-06:00",
+                    "Cancellable": false,
+                    "CurrentVersion": "R20190221-P1",
+                    "Description": "There is no software update available for this domain.",
+                    "NewVersion": "",
+                    "UpdateAvailable": false,
+                    "UpdateStatus": "COMPLETED"
+                },
+                "SnapshotOptions": {
+                    "AutomatedSnapshotStartHour": 0
+                },
+                "UpgradeProcessing": false,
+                "VPCOptions": {
+                    "AvailabilityZones": [
+                        "us-east-1a"
+                    ],
+                    "SecurityGroupIds": [
+                        "sg-00000007"
+                    ],
+                    "SubnetIds": [
+                        "subnet-00000003"
+                    ],
+                    "VPCId": "vpc-12345678"
+                }
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000003"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1b",
+            "name": "us-east-1b",
+            "type": "az",
+            "local_id": "us-east-1b",
+            "node_data": {
+                "State": "available",
+                "ZoneName": "us-east-1b",
+                "Messages": [],
+                "RegionName": "us-east-1"
+            },
+            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000002",
+            "name": "Public 1b (10.0.1.0/24)",
+            "type": "subnet",
+            "local_id": "subnet-00000002",
+            "node_data": {
+                "AvailabilityZone": "us-east-1b",
+                "Tags": [
+                    {
+                        "Value": "Public 1b",
+                        "Key": "Name"
+                    }
+                ],
+                "AvailableIpAddressCount": 4091,
+                "DefaultForAz": true,
+                "Ipv6CidrBlockAssociationSet": [],
+                "VpcId": "vpc-12345678",
+                "State": "available",
+                "MapPublicIpOnLaunch": true,
+                "SubnetId": "subnet-00000002",
+                "CidrBlock": "10.0.1.0/24",
+                "AssignIpv6AddressOnCreation": false
+            },
+            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1b"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000002",
+            "name": "weblb",
+            "type": "elb",
+            "local_id": "weblb",
+            "node_data": {
+                "Subnets": [
+                    "subnet-00000001",
+                    "subnet-00000002"
+                ],
+                "CanonicalHostedZoneNameID": "0000000000000",
+                "CanonicalHostedZoneName": "weblb-0000000000.us-east-1.elb.amazonaws.com",
+                "ListenerDescriptions": [
+                    {
+                        "Listener": {
+                            "InstancePort": 8000,
+                            "LoadBalancerPort": 8000,
+                            "Protocol": "HTTP",
+                            "InstanceProtocol": "HTTP"
+                        },
+                        "PolicyNames": []
+                    }
+                ],
+                "HealthCheck": {
+                    "HealthyThreshold": 2,
+                    "Interval": 30,
+                    "Target": "TCP:8000",
+                    "Timeout": 5,
+                    "UnhealthyThreshold": 2
+                },
+                "VPCId": "vpc-12345678",
+                "BackendServerDescriptions": [],
+                "Instances": [
+                    {
+                        "InstanceId": "i-00000000000000002"
+                    },
+                    {
+                        "InstanceId": "i-00000000000000003"
+                    }
+                ],
+                "DNSName": "weblb.us-west-2.elb.amazonaws.com",
+                "SecurityGroups": [
+                    "sg-00000003"
+                ],
+                "Policies": {
+                    "LBCookieStickinessPolicies": [],
+                    "AppCookieStickinessPolicies": [],
+                    "OtherPolicies": []
+                },
+                "LoadBalancerName": "weblb",
+                "CreatedTime": "2017-12-01T00:00:00.000Z",
+                "AvailabilityZones": [
+                    "us-east-1a",
+                    "us-east-1b"
+                ],
+                "Scheme": "internet-facing",
+                "SourceSecurityGroup": {
+                    "OwnerAlias": "12345789012",
+                    "GroupName": "Web LB"
+                }
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000002"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:elasticloadbalancingv2:us-east-1:123456789012:instance/webalb/us-east-1.subnet-00000002",
+            "name": "webalb",
+            "type": "elbv2",
+            "local_id": "webalb",
+            "node_data": {
+                "IpAddressType": "ipv4",
+                "VpcId": "vpc-12345678",
+                "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/demo/qwerty",
+                "State": {
+                    "Code": "active"
+                },
+                "DNSName": "webalb",
+                "SecurityGroups": [
+                    "sg-00000003"
+                ],
+                "LoadBalancerName": "webalb",
+                "CreatedTime": "2017-12-01T00:00:00.000Z",
+                "Scheme": "internet-facing",
+                "Type": "application",
+                "CanonicalHostedZoneId": "AAAAAAAAAAA",
+                "AvailabilityZones": [
+                    {
+                        "SubnetId": "subnet-00000002",
+                        "ZoneName": "us-east-1b"
+                    }
+                ]
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000002"
+        }
+    },
+    {
+        "data": {
+            "id": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com.subnet-00000002",
+            "name": "redshift-cluster-1",
+            "type": "redshift",
+            "local_id": "redshift-cluster-1",
+            "node_data": {
+                "AllowVersionUpgrade": true,
+                "AutomatedSnapshotRetentionPeriod": 1,
+                "AvailabilityZone": "us-east-1f",
+                "ClusterCreateTime": "2019-05-03T20:59:48.939000+00:00",
+                "ClusterIdentifier": "redshift-cluster-1",
+                "ClusterNodes": [
+                    {
+                        "NodeRole": "LEADER",
+                        "PrivateIPAddress": "10.0.0.10",
+                        "PublicIPAddress": "3.89.235.255"
+                    },
+                    {
+                        "NodeRole": "COMPUTE-0",
+                        "PrivateIPAddress": "10.0.1.10",
+                        "PublicIPAddress": "3.214.182.31"
+                    }
+                ],
+                "ClusterParameterGroups": [
+                    {
+                        "ParameterApplyStatus": "in-sync",
+                        "ParameterGroupName": "default.redshift-1.0"
+                    }
+                ],
+                "ClusterPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCIL3RHoN5CsM1lLcJDT7WMAp/VVx9PQfvC/HDnp9Lo6Z0YI1dAxn/woZbJRDWceUFcvUOtJyAIvLCtee8m/Gz4oxudtCGGLvZL7bZPPARUgNx6UxtQ8jcj8V6mzEZNh7WqjOo8C7J4o55DtydidtB4U3TYDRixm1JnhUprgiICFTlqm7LJkYNqNDNfBNRzmp3fHOqR63ooKqTmx9IMPleED1T5Scm6ht70oNug0b65vK5uChELPU8FB87wKHu57O3gDk4J679dmS1Sa5qSTpTSvSJhhh76KklBEQhddBojc8qarqsEd+XHt5O644Oo6z8QJ9U7qzztWJN2q4YYvRYX Amazon-Redshift\n",
+                "ClusterRevisionNumber": "7152",
+                "ClusterSecurityGroups": [],
+                "ClusterStatus": "available",
+                "ClusterSubnetGroupName": "default",
+                "ClusterVersion": "1.0",
+                "DBName": "dev",
+                "DeferredMaintenanceWindows": [],
+                "ElasticResizeNumberOfNodeOptions": "[4]",
+                "Encrypted": false,
+                "Endpoint": {
+                    "Address": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com",
+                    "Port": 5439
+                },
+                "EnhancedVpcRouting": false,
+                "IamRoles": [],
+                "MaintenanceTrackName": "current",
+                "ManualSnapshotRetentionPeriod": -1,
+                "MasterUsername": "awsuser",
+                "NodeType": "dc2.large",
+                "NumberOfNodes": 2,
+                "PendingModifiedValues": {},
+                "PreferredMaintenanceWindow": "thu:08:30-thu:09:00",
+                "PubliclyAccessible": true,
+                "Tags": [],
+                "VpcId": "vpc-12345678",
+                "VpcSecurityGroups": [
+                    {
+                        "Status": "active",
+                        "VpcSecurityGroupId": "sg-00000002"
+                    }
+                ]
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000002"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws::us-east-1:123456789012:subnet/subnet-00000004",
+            "name": "Private 1b (10.0.3.0/24)",
+            "type": "subnet",
+            "local_id": "subnet-00000004",
+            "node_data": {
+                "AvailabilityZone": "us-east-1b",
+                "Tags": [
+                    {
+                        "Value": "Private 1b",
+                        "Key": "Name"
+                    }
+                ],
+                "AvailableIpAddressCount": 4091,
+                "DefaultForAz": true,
+                "Ipv6CidrBlockAssociationSet": [],
+                "VpcId": "vpc-12345678",
+                "State": "available",
+                "MapPublicIpOnLaunch": false,
+                "SubnetId": "subnet-00000004",
+                "CidrBlock": "10.0.3.0/24",
+                "AssignIpv6AddressOnCreation": false
+            },
+            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678/az/us-east-1b"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "name": "Web2",
+            "type": "ec2",
+            "local_id": "i-00000000000000002",
+            "node_data": {
+                "Monitoring": {
+                    "State": "enabled"
+                },
+                "State": {
+                    "Code": 16,
+                    "Name": "running"
+                },
+                "EbsOptimized": true,
+                "LaunchTime": "2017-12-01T00:00:00.000Z",
+                "PrivateIpAddress": "10.0.3.1",
+                "VpcId": "vpc-12345678",
+                "StateTransitionReason": "",
+                "InstanceId": "i-00000000000000002",
+                "EnaSupport": true,
+                "ImageId": "ami-00000001",
+                "PrivateDnsName": "ip-10-0-3-1.ec2.internal",
+                "KeyName": "web2",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "Internal web",
+                        "GroupId": "sg-00000004"
+                    }
+                ],
+                "ClientToken": "00000000000000000",
+                "SubnetId": "subnet-00000004",
+                "InstanceType": "t2.micro",
+                "NetworkInterfaces": [
+                    {
+                        "Status": "in-use",
+                        "MacAddress": "0e:d7:00:00:00:00",
+                        "SourceDestCheck": true,
+                        "VpcId": "vpc-12345678",
+                        "Description": "Primary network interface",
+                        "NetworkInterfaceId": "eni-00000000",
+                        "PrivateIpAddresses": [
+                            {
+                                "PrivateDnsName": "ip-10-0-3-1.ec2.internal",
+                                "PrivateIpAddress": "10.0.3.1",
+                                "Primary": true
+                            }
+                        ],
+                        "PrivateDnsName": "ip-10-0-3-1.ec2.internal",
+                        "Attachment": {
+                            "Status": "attached",
+                            "DeviceIndex": 0,
+                            "DeleteOnTermination": true,
+                            "AttachmentId": "eni-attach-00000000",
+                            "AttachTime": "2017-12-01T00:00:00.000Z"
+                        },
+                        "Groups": [
+                            {
+                                "GroupName": "Internal web",
+                                "GroupId": "sg-00000004"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "OwnerId": "123456789012",
+                        "PrivateIpAddress": "10.0.3.1",
+                        "SubnetId": "subnet-00000004"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "Placement": {
+                    "Tenancy": "default",
+                    "GroupName": "",
+                    "AvailabilityZone": "us-east-1b"
+                },
+                "Hypervisor": "xen",
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/sda1",
+                        "Ebs": {
+                            "Status": "attached",
+                            "DeleteOnTermination": true,
+                            "VolumeId": "vol-00000000000000003",
+                            "AttachTime": "2017-12-01T00:00:00.000Z"
+                        }
+                    }
+                ],
+                "Architecture": "x86_64",
+                "RootDeviceType": "ebs",
+                "RootDeviceName": "/dev/sda1",
+                "VirtualizationType": "hvm",
+                "Tags": [
+                    {
+                        "Value": "Web2",
+                        "Key": "Name"
+                    }
+                ],
+                "AmiLaunchIndex": 0
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000004"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey.subnet-00000004",
+            "name": "database",
+            "type": "rds",
+            "local_id": "database",
+            "node_data": {
+                "PubliclyAccessible": false,
+                "MasterUsername": "master",
+                "MonitoringInterval": 60,
+                "LicenseModel": "postgresql-license",
+                "VpcSecurityGroups": [
+                    {
+                        "Status": "active",
+                        "VpcSecurityGroupId": "sg-00000005"
+                    }
+                ],
+                "InstanceCreateTime": "2017-12-01T00:00:00.000Z",
+                "CopyTagsToSnapshot": false,
+                "OptionGroupMemberships": [
+                    {
+                        "Status": "in-sync",
+                        "OptionGroupName": "default:postgres-9-6"
+                    }
+                ],
+                "PendingModifiedValues": {},
+                "Engine": "postgres",
+                "MultiAZ": false,
+                "LatestRestorableTime": "2017-12-01T00:00:00Z",
+                "DBSecurityGroups": [],
+                "DBParameterGroups": [
+                    {
+                        "DBParameterGroupName": "default.postgres9.6",
+                        "ParameterApplyStatus": "in-sync"
+                    }
+                ],
+                "PerformanceInsightsEnabled": false,
+                "AutoMinorVersionUpgrade": true,
+                "PreferredBackupWindow": "00:00-01:00",
+                "DBSubnetGroup": {
+                    "Subnets": [
+                        {
+                            "SubnetStatus": "Active",
+                            "SubnetIdentifier": "subnet-00000004",
+                            "SubnetAvailabilityZone": {
+                                "Name": "us-east-2b"
+                            }
+                        },
+                        {
+                            "SubnetStatus": "Active",
+                            "SubnetIdentifier": "subnet-00000003",
+                            "SubnetAvailabilityZone": {
+                                "Name": "us-east-2a"
+                            }
+                        }
+                    ],
+                    "DBSubnetGroupName": "db subnet",
+                    "VpcId": "vpc-12345678",
+                    "DBSubnetGroupDescription": "Private",
+                    "SubnetGroupStatus": "Complete"
+                },
+                "ReadReplicaDBInstanceIdentifiers": [],
+                "AllocatedStorage": 100,
+                "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey",
+                "BackupRetentionPeriod": 7,
+                "DBName": "database",
+                "PreferredMaintenanceWindow": "fri:00:00-fri:01:00",
+                "Endpoint": {
+                    "HostedZoneId": "Z2XHWR1WZ565X2",
+                    "Port": 5432,
+                    "Address": "database.abcdefghijkl.us-east-1.rds.amazonaws.com"
+                },
+                "DBInstanceStatus": "available",
+                "IAMDatabaseAuthenticationEnabled": false,
+                "EngineVersion": "9.6.2",
+                "EnhancedMonitoringResourceArn": "arn:aws:logs:us-east-2:123456789012:log-group:RDSOSMetrics:log-stream:db-00000000000000000000000000",
+                "AvailabilityZone": "us-east-2a",
+                "DomainMemberships": [],
+                "MonitoringRoleArn": "arn:aws:iam::123456789012:role/rds-monitoring-role",
+                "StorageType": "gp2",
+                "DbiResourceId": "db-00000000000000000000000000",
+                "CACertificateIdentifier": "rds-ca-2015",
+                "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/ca455c06-8a9f-4057-949d-b13d298d478b",
+                "StorageEncrypted": true,
+                "DBInstanceClass": "db.t2.micro",
+                "DbInstancePort": 0,
+                "DBInstanceIdentifier": "database"
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000004"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda.subnet-00000004",
+            "name": "invpclambda",
+            "type": "lambda",
+            "local_id": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda",
+            "node_data": {
+                "CodeSha256": "H4QrZXTeJhAFtZ6dfi7NjMZiGHZfFgGpD38SjX+BaMw=",
+                "CodeSize": 262,
+                "Description": "",
+                "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda",
+                "FunctionName": "invpclambda",
+                "Handler": "index.handler",
+                "LastModified": "2019-04-30T16:26:38.618+0000",
+                "MemorySize": 128,
+                "RevisionId": "78a5eca3-193c-4f09-bed0-123f2d1c3ad3",
+                "Role": "arn:aws:iam::123456789012:role/service-role/invpclambda",
+                "Runtime": "nodejs8.10",
+                "Timeout": 3,
+                "TracingConfig": {
+                    "Mode": "PassThrough"
+                },
+                "Version": "$LATEST",
+                "VpcConfig": {
+                    "SecurityGroupIds": [
+                        "sg-09920178"
+                    ],
+                    "SubnetIds": [
+                        "subnet-00000003",
+                        "subnet-00000004"
+                    ],
+                    "VpcId": "vpc-12345678"
+                }
+            },
+            "parent": "arn:aws::us-east-1:123456789012:subnet/subnet-00000004"
+        }
+    },
+    {
+        "data": {
+            "id": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "name": "s3",
+            "type": "s3",
+            "local_id": "vpce-00000000000000001",
+            "node_data": {
+                "CreationTimestamp": "2019-04-11T18:59:11+00:00",
+                "DnsEntries": [],
+                "Groups": [],
+                "NetworkInterfaceIds": [],
+                "PolicyDocument": "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"*\",\"Resource\":\"*\"}]}",
+                "PrivateDnsEnabled": false,
+                "RouteTableIds": [
+                    "rtb-00000000"
+                ],
+                "ServiceName": "com.amazonaws.us-east-1.s3",
+                "State": "available",
+                "SubnetIds": [],
+                "VpcEndpointId": "vpce-00000000000000001",
+                "VpcEndpointType": "Gateway",
+                "VpcId": "vpc-12345678"
+            },
+            "parent": "arn:aws::us-east-1:123456789012:vpc/vpc-12345678"
+        }
+    },
+    {
+        "data": {
+            "id": "0.0.0.0/0",
+            "name": "Public",
+            "type": "cloud",
+            "local_id": "0.0.0.0/0",
+            "node_data": "0.0.0.0/0"
+        }
+    },
+    {
+        "data": {
+            "id": "1.1.1.1/32",
+            "name": "SF Office",
+            "type": "ip",
+            "local_id": "1.1.1.1/32",
+            "node_data": "1.1.1.1/32"
+        }
+    },
+    {
+        "data": {
+            "id": "2.2.2.2/28",
+            "name": "NY Office",
+            "type": "ip",
+            "local_id": "2.2.2.2/28",
+            "node_data": "2.2.2.2/28"
+        }
+    },
+    {
+        "data": {
+            "source": "0.0.0.0/0",
+            "target": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7",
+            "type": "edge",
             "node_data": [
                 {
                     "IpPermissionsEgress": [
                         {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
                             "IpRanges": [
                                 {
                                     "CidrIp": "0.0.0.0/0"
                                 }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Internal web", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 8000, 
-                            "IpRanges": [], 
-                            "ToPort": 8000, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000003"
-                                }, 
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000002"
-                                }
-                            ], 
+                            ],
+                            "UserIdGroupPairs": [],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Internal web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000004"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002"
-        }
-    }, 
-    {
-        "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
-                        {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Internal web", 
+                    ],
+                    "Description": "Public access",
                     "IpPermissions": [
                         {
-                            "PrefixListIds": [], 
-                            "FromPort": 8000, 
-                            "IpRanges": [], 
-                            "ToPort": 8000, 
-                            "IpProtocol": "tcp", 
+                            "PrefixListIds": [],
+                            "FromPort": 22,
+                            "IpRanges": [],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
                             "UserIdGroupPairs": [
                                 {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000003"
-                                }, 
-                                {
-                                    "UserId": "123456789012", 
+                                    "UserId": "123456789012",
                                     "GroupId": "sg-00000002"
                                 }
-                            ], 
+                            ],
                             "Ipv6Ranges": []
-                        }
-                    ], 
-                    "GroupName": "Internal web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000004"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001"
-        }
-    }, 
-    {
-        "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
+                        },
                         {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
+                            "PrefixListIds": [],
+                            "FromPort": 443,
                             "IpRanges": [
                                 {
                                     "CidrIp": "0.0.0.0/0"
                                 }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
+                            ],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
                         }
-                    ], 
-                    "Description": "Database", 
+                    ],
+                    "GroupName": "Public",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000008"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "target": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Public access",
                     "IpPermissions": [
                         {
-                            "PrefixListIds": [], 
-                            "FromPort": 5432, 
-                            "IpRanges": [], 
-                            "ToPort": 5432, 
-                            "IpProtocol": "tcp", 
+                            "PrefixListIds": [],
+                            "FromPort": 22,
+                            "IpRanges": [],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
                             "UserIdGroupPairs": [
                                 {
-                                    "UserId": "123456789012", 
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        },
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 443,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Public",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000008"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "target": "arn:aws:es:us-east-1:123456789012:domain/myvpcdomain",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Bastion only access",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 443,
+                            "IpRanges": [],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Bastion access",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000007"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000002.subnet-00000003",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Endpoint access",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 443,
+                            "IpRanges": [],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
                                     "GroupId": "sg-00000004"
                                 }
-                            ], 
+                            ],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Database", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
+                    ],
+                    "GroupName": "Endpoint",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000006"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000002.subnet-00000003",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Endpoint access",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 443,
+                            "IpRanges": [],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000004"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Endpoint",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000006"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "target": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey.subnet-00000003",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Database",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 5432,
+                            "IpRanges": [],
+                            "ToPort": 5432,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000004"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Database",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
                     "GroupId": "sg-00000005"
                 }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:rds:us-east-1:123456789012:db-instance/database/subnet-00000003"
+            ]
         }
-    }, 
+    },
     {
         "data": {
-            "source": "0.0.0.0/0", 
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "target": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey.subnet-00000003",
+            "type": "edge",
             "node_data": [
                 {
                     "IpPermissionsEgress": [
                         {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
                             "IpRanges": [
                                 {
                                     "CidrIp": "0.0.0.0/0"
                                 }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Public web access", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 443, 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "ToPort": 443, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [], 
+                            ],
+                            "UserIdGroupPairs": [],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Public web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000003"
+                    ],
+                    "Description": "Database",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 5432,
+                            "IpRanges": [],
+                            "ToPort": 5432,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000004"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Database",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000005"
                 }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000002"
+            ]
         }
-    }, 
+    },
     {
         "data": {
-            "source": "2.2.2.2/28", 
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "target": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey.subnet-00000004",
+            "type": "edge",
             "node_data": [
                 {
                     "IpPermissionsEgress": [
                         {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
                             "IpRanges": [
                                 {
                                     "CidrIp": "0.0.0.0/0"
                                 }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
                         }
-                    ], 
-                    "Description": "Only allow SSH from the offices", 
+                    ],
+                    "Description": "Database",
                     "IpPermissions": [
                         {
-                            "PrefixListIds": [], 
-                            "FromPort": 22, 
+                            "PrefixListIds": [],
+                            "FromPort": 5432,
+                            "IpRanges": [],
+                            "ToPort": 5432,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000004"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Database",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000005"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "target": "arn:aws:rds:us-east-1:123456789012:db:securitymonkey.subnet-00000004",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Database",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 5432,
+                            "IpRanges": [],
+                            "ToPort": 5432,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000004"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Database",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000005"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000001",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000002",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancingv2:us-east-1:123456789012:instance/webalb/us-east-1.subnet-00000002",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000001",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000002",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancingv2:us-east-1:123456789012:instance/webalb/us-east-1.subnet-00000002",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Internal web",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 8000,
+                            "IpRanges": [],
+                            "ToPort": 8000,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000003"
+                                },
+                                {
+                                    "UserId": "123456789012",
+                                    "GroupId": "sg-00000002"
+                                }
+                            ],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Internal web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000004"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "0.0.0.0/0",
+            "target": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000001",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Public web access",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 443,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Public web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000003"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "0.0.0.0/0",
+            "target": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000002",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Public web access",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 443,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Public web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000003"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "0.0.0.0/0",
+            "target": "arn:aws:elasticloadbalancingv2:us-east-1:123456789012:instance/webalb/us-east-1.subnet-00000002",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Public web access",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 443,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "ToPort": 443,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Public web",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000003"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "1.1.1.1/32",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Only allow SSH from the offices",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 22,
                             "IpRanges": [
                                 {
                                     "CidrIp": "1.1.1.1/32"
-                                }, 
+                                },
                                 {
                                     "CidrIp": "2.2.2.2/28"
                                 }
-                            ], 
-                            "ToPort": 22, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [], 
+                            ],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Bastion", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
+                    ],
+                    "GroupName": "Bastion",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
                     "GroupId": "sg-00000002"
                 }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000"
+            ]
         }
-    }, 
+    },
     {
         "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000", 
+            "source": "1.1.1.1/32",
+            "target": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com.subnet-00000001",
+            "type": "edge",
             "node_data": [
                 {
                     "IpPermissionsEgress": [
                         {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
                             "IpRanges": [
                                 {
                                     "CidrIp": "0.0.0.0/0"
                                 }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Internal web", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 8000, 
-                            "IpRanges": [], 
-                            "ToPort": 8000, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000003"
-                                }, 
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000002"
-                                }
-                            ], 
+                            ],
+                            "UserIdGroupPairs": [],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Internal web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000004"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002"
-        }
-    }, 
-    {
-        "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
-                        {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Database", 
+                    ],
+                    "Description": "Only allow SSH from the offices",
                     "IpPermissions": [
                         {
-                            "PrefixListIds": [], 
-                            "FromPort": 5432, 
-                            "IpRanges": [], 
-                            "ToPort": 5432, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000004"
-                                }
-                            ], 
-                            "Ipv6Ranges": []
-                        }
-                    ], 
-                    "GroupName": "Database", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000005"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:rds:us-east-1:123456789012:db-instance/database/subnet-00000004"
-        }
-    }, 
-    {
-        "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000001", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
-                        {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Internal web", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 8000, 
-                            "IpRanges": [], 
-                            "ToPort": 8000, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000003"
-                                }, 
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000002"
-                                }
-                            ], 
-                            "Ipv6Ranges": []
-                        }
-                    ], 
-                    "GroupName": "Internal web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000004"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001"
-        }
-    }, 
-    {
-        "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
-                        {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Database", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 5432, 
-                            "IpRanges": [], 
-                            "ToPort": 5432, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000004"
-                                }
-                            ], 
-                            "Ipv6Ranges": []
-                        }
-                    ], 
-                    "GroupName": "Database", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000005"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:rds:us-east-1:123456789012:db-instance/database/subnet-00000003"
-        }
-    }, 
-    {
-        "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
-                        {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Database", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 5432, 
-                            "IpRanges": [], 
-                            "ToPort": 5432, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000004"
-                                }
-                            ], 
-                            "Ipv6Ranges": []
-                        }
-                    ], 
-                    "GroupName": "Database", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000005"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:rds:us-east-1:123456789012:db-instance/database/subnet-00000004"
-        }
-    }, 
-    {
-        "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000001", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
-                        {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Internal web", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 8000, 
-                            "IpRanges": [], 
-                            "ToPort": 8000, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000003"
-                                }, 
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000002"
-                                }
-                            ], 
-                            "Ipv6Ranges": []
-                        }
-                    ], 
-                    "GroupName": "Internal web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000004"
-                }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002"
-        }
-    }, 
-    {
-        "data": {
-            "source": "1.1.1.1/32", 
-            "node_data": [
-                {
-                    "IpPermissionsEgress": [
-                        {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Only allow SSH from the offices", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 22, 
+                            "PrefixListIds": [],
+                            "FromPort": 22,
                             "IpRanges": [
                                 {
                                     "CidrIp": "1.1.1.1/32"
-                                }, 
+                                },
                                 {
                                     "CidrIp": "2.2.2.2/28"
                                 }
-                            ], 
-                            "ToPort": 22, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [], 
+                            ],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Bastion", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
+                    ],
+                    "GroupName": "Bastion",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
                     "GroupId": "sg-00000002"
                 }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000"
+            ]
         }
-    }, 
+    },
     {
         "data": {
-            "source": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000002", 
+            "source": "1.1.1.1/32",
+            "target": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com.subnet-00000002",
+            "type": "edge",
             "node_data": [
                 {
                     "IpPermissionsEgress": [
                         {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
                             "IpRanges": [
                                 {
                                     "CidrIp": "0.0.0.0/0"
                                 }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Internal web", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 8000, 
-                            "IpRanges": [], 
-                            "ToPort": 8000, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000003"
-                                }, 
-                                {
-                                    "UserId": "123456789012", 
-                                    "GroupId": "sg-00000002"
-                                }
-                            ], 
+                            ],
+                            "UserIdGroupPairs": [],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Internal web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000004"
+                    ],
+                    "Description": "Only allow SSH from the offices",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 22,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "1.1.1.1/32"
+                                },
+                                {
+                                    "CidrIp": "2.2.2.2/28"
+                                }
+                            ],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Bastion",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000002"
                 }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001"
+            ]
         }
-    }, 
+    },
     {
         "data": {
-            "source": "0.0.0.0/0", 
+            "source": "2.2.2.2/28",
+            "target": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "type": "edge",
             "node_data": [
                 {
                     "IpPermissionsEgress": [
                         {
-                            "IpProtocol": "-1", 
-                            "Ipv6Ranges": [], 
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
                             "IpRanges": [
                                 {
                                     "CidrIp": "0.0.0.0/0"
                                 }
-                            ], 
-                            "UserIdGroupPairs": [], 
-                            "PrefixListIds": []
-                        }
-                    ], 
-                    "Description": "Public web access", 
-                    "IpPermissions": [
-                        {
-                            "PrefixListIds": [], 
-                            "FromPort": 443, 
-                            "IpRanges": [
-                                {
-                                    "CidrIp": "0.0.0.0/0"
-                                }
-                            ], 
-                            "ToPort": 443, 
-                            "IpProtocol": "tcp", 
-                            "UserIdGroupPairs": [], 
+                            ],
+                            "UserIdGroupPairs": [],
                             "Ipv6Ranges": []
                         }
-                    ], 
-                    "GroupName": "Public web", 
-                    "VpcId": "vpc-12345678", 
-                    "OwnerId": "123456789012", 
-                    "GroupId": "sg-00000003"
+                    ],
+                    "Description": "Only allow SSH from the offices",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 22,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "1.1.1.1/32"
+                                },
+                                {
+                                    "CidrIp": "2.2.2.2/28"
+                                }
+                            ],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Bastion",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000002"
                 }
-            ], 
-            "type": "edge", 
-            "target": "arn:aws:ec2:us-east-1:123456789012:instance/weblb/subnet-00000001"
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "2.2.2.2/28",
+            "target": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com.subnet-00000001",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Only allow SSH from the offices",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 22,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "1.1.1.1/32"
+                                },
+                                {
+                                    "CidrIp": "2.2.2.2/28"
+                                }
+                            ],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Bastion",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000002"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "2.2.2.2/28",
+            "target": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com.subnet-00000002",
+            "type": "edge",
+            "node_data": [
+                {
+                    "IpPermissionsEgress": [
+                        {
+                            "IpProtocol": "-1",
+                            "PrefixListIds": [],
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "0.0.0.0/0"
+                                }
+                            ],
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "Description": "Only allow SSH from the offices",
+                    "IpPermissions": [
+                        {
+                            "PrefixListIds": [],
+                            "FromPort": 22,
+                            "IpRanges": [
+                                {
+                                    "CidrIp": "1.1.1.1/32"
+                                },
+                                {
+                                    "CidrIp": "2.2.2.2/28"
+                                }
+                            ],
+                            "ToPort": 22,
+                            "IpProtocol": "tcp",
+                            "UserIdGroupPairs": [],
+                            "Ipv6Ranges": []
+                        }
+                    ],
+                    "GroupName": "Bastion",
+                    "VpcId": "vpc-12345678",
+                    "OwnerId": "123456789012",
+                    "GroupId": "sg-00000002"
+                }
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000000",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000001",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000001",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda.subnet-00000003",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancing:us-east-1:123456789012:instance/weblb/us-east-1.subnet-00000002",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:elasticloadbalancingv2:us-east-1:123456789012:instance/webalb/us-east-1.subnet-00000002",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:ec2:us-east-1:123456789012:instance/i-00000000000000002",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
+        }
+    },
+    {
+        "data": {
+            "source": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda.subnet-00000004",
+            "target": "arn:aws:endpoint:us-east-1:123456789012:instance/vpce-00000000000000001",
+            "type": "edge",
+            "node_data": [
+                []
+            ]
         }
     }
 ]
