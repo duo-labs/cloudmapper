@@ -1,0 +1,27 @@
+{
+    "ClusterSubnetGroups": [
+        {
+            "Subnets": [
+                {
+                    "SubnetStatus": "Active", 
+                    "SubnetIdentifier": "subnet-00000001", 
+                    "SubnetAvailabilityZone": {
+                        "Name": "us-east-1a"
+                    }
+                }, 
+                {
+                    "SubnetStatus": "Active", 
+                    "SubnetIdentifier": "subnet-00000002", 
+                    "SubnetAvailabilityZone": {
+                        "Name": "us-east-1b"
+                    }
+                }
+            ], 
+            "VpcId": "vpc-12345678", 
+            "Description": "default", 
+            "Tags": [], 
+            "SubnetGroupStatus": "Complete", 
+            "ClusterSubnetGroupName": "default"
+        }
+    ]
+}

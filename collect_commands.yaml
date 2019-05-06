@@ -142,6 +142,8 @@
     Value: elbv2-describe-load-balancers.json|.LoadBalancers[]?|[[.LoadBalancerArn]]
 - Service: redshift
   Request: describe-clusters
+- Service: redshift
+  Request: describe-cluster-subnet-groups
 - Service: sqs
   Request: list-queues
 - Service: sqs

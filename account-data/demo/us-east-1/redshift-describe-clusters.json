@@ -1,0 +1,61 @@
+{
+    "Clusters": [
+        {
+            "AllowVersionUpgrade": true,
+            "AutomatedSnapshotRetentionPeriod": 1,
+            "AvailabilityZone": "us-east-1f",
+            "ClusterCreateTime": "2019-05-03T20:59:48.939000+00:00",
+            "ClusterIdentifier": "redshift-cluster-1",
+            "ClusterNodes": [
+                {
+                    "NodeRole": "LEADER",
+                    "PrivateIPAddress": "10.0.0.10",
+                    "PublicIPAddress": "3.89.235.255"
+                },
+                {
+                    "NodeRole": "COMPUTE-0",
+                    "PrivateIPAddress": "10.0.1.10",
+                    "PublicIPAddress": "3.214.182.31"
+                }
+            ],
+            "ClusterParameterGroups": [
+                {
+                    "ParameterApplyStatus": "in-sync",
+                    "ParameterGroupName": "default.redshift-1.0"
+                }
+            ],
+            "ClusterPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCIL3RHoN5CsM1lLcJDT7WMAp/VVx9PQfvC/HDnp9Lo6Z0YI1dAxn/woZbJRDWceUFcvUOtJyAIvLCtee8m/Gz4oxudtCGGLvZL7bZPPARUgNx6UxtQ8jcj8V6mzEZNh7WqjOo8C7J4o55DtydidtB4U3TYDRixm1JnhUprgiICFTlqm7LJkYNqNDNfBNRzmp3fHOqR63ooKqTmx9IMPleED1T5Scm6ht70oNug0b65vK5uChELPU8FB87wKHu57O3gDk4J679dmS1Sa5qSTpTSvSJhhh76KklBEQhddBojc8qarqsEd+XHt5O644Oo6z8QJ9U7qzztWJN2q4YYvRYX Amazon-Redshift\n",
+            "ClusterRevisionNumber": "7152",
+            "ClusterSecurityGroups": [],
+            "ClusterStatus": "available",
+            "ClusterSubnetGroupName": "default",
+            "ClusterVersion": "1.0",
+            "DBName": "dev",
+            "DeferredMaintenanceWindows": [],
+            "ElasticResizeNumberOfNodeOptions": "[4]",
+            "Encrypted": false,
+            "Endpoint": {
+                "Address": "redshift-cluster-1.clmpesh3q8lz.us-east-1.redshift.amazonaws.com",
+                "Port": 5439
+            },
+            "EnhancedVpcRouting": false,
+            "IamRoles": [],
+            "MaintenanceTrackName": "current",
+            "ManualSnapshotRetentionPeriod": -1,
+            "MasterUsername": "awsuser",
+            "NodeType": "dc2.large",
+            "NumberOfNodes": 2,
+            "PendingModifiedValues": {},
+            "PreferredMaintenanceWindow": "thu:08:30-thu:09:00",
+            "PubliclyAccessible": true,
+            "Tags": [],
+            "VpcId": "vpc-12345678",
+            "VpcSecurityGroups": [
+                {
+                    "Status": "active",
+                    "VpcSecurityGroupId": "sg-00000002"
+                }
+            ]
+        }
+    ]
+}
