@@ -1,0 +1,32 @@
+{
+    "Functions": [
+        {
+            "CodeSha256": "H4QrZXTeJhAFtZ6dfi7NjMZiGHZfFgGpD38SjX+BaMw=",
+            "CodeSize": 262,
+            "Description": "",
+            "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:invpclambda",
+            "FunctionName": "invpclambda",
+            "Handler": "index.handler",
+            "LastModified": "2019-04-30T16:26:38.618+0000",
+            "MemorySize": 128,
+            "RevisionId": "78a5eca3-193c-4f09-bed0-123f2d1c3ad3",
+            "Role": "arn:aws:iam::123456789012:role/service-role/invpclambda",
+            "Runtime": "nodejs8.10",
+            "Timeout": 3,
+            "TracingConfig": {
+                "Mode": "PassThrough"
+            },
+            "Version": "$LATEST",
+            "VpcConfig": {
+                "SecurityGroupIds": [
+                    "sg-09920178"
+                ],
+                "SubnetIds": [
+                    "subnet-00000003",
+                    "subnet-00000004"
+                ],
+                "VpcId": "vpc-12345678"
+            }
+        }
+    ]
+}

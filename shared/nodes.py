@@ -624,13 +624,23 @@ class Ecs(Leaf):
 
 
 class Lambda(Leaf):
+    _subnet = None
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
+
     @property
     def ips(self):
         return []
 
     @property
     def subnets(self):
-        return pyjq.all('.VpcConfig.SubnetIds[]', self._json_blob)
+        if self._subnet:
+            return self._subnet
+        else:
+            return pyjq.all('.VpcConfig.SubnetIds[]', self._json_blob)
 
     @property
     def tags(self):
