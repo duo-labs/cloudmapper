@@ -1,0 +1,75 @@
+{
+    "failures": [],
+    "tasks": [
+        {
+            "attachments": [
+                {
+                    "details": [
+                        {
+                            "name": "subnetId",
+                            "value": "subnet-00000001"
+                        },
+                        {
+                            "name": "networkInterfaceId",
+                            "value": "eni-00000001"
+                        },
+                        {
+                            "name": "macAddress",
+                            "value": "16:2f:d0:d6:ed:28"
+                        },
+                        {
+                            "name": "privateIPv4Address",
+                            "value": "10.0.0.11"
+                        }
+                    ],
+                    "id": "ed8fed01-82d0-4bf6-86cf-fe3115c23ab8",
+                    "status": "ATTACHED",
+                    "type": "ElasticNetworkInterface"
+                }
+            ],
+            "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/myecs",
+            "connectivity": "CONNECTED",
+            "connectivityAt": "2018-11-26T20:36:35.422000-07:00",
+            "containers": [
+                {
+                    "containerArn": "arn:aws:ecs:us-east-1:123456789012:container/f67ce604-5248-41a0-8a95-78ab4fb57a44",
+                    "cpu": "0",
+                    "healthStatus": "UNHEALTHY",
+                    "lastStatus": "RUNNING",
+                    "name": "myecs",
+                    "networkBindings": [],
+                    "networkInterfaces": [
+                        {
+                            "attachmentId": "ed8fed01-82d0-4bf6-86cf-fe3115c23ab8",
+                            "privateIpv4Address": "172.31.48.168"
+                        }
+                    ],
+                    "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7"
+                }
+            ],
+            "cpu": "256",
+            "createdAt": "2018-11-26T20:36:30.710000-07:00",
+            "desiredStatus": "RUNNING",
+            "group": "family:myecs",
+            "healthStatus": "UNHEALTHY",
+            "lastStatus": "RUNNING",
+            "launchType": "FARGATE",
+            "memory": "512",
+            "overrides": {
+                "containerOverrides": [
+                    {
+                        "name": "myecs"
+                    }
+                ]
+            },
+            "platformVersion": "1.2.0",
+            "pullStartedAt": "2018-11-26T20:36:43.371000-07:00",
+            "pullStoppedAt": "2018-11-26T20:37:04.371000-07:00",
+            "startedAt": "2018-11-26T20:37:05.371000-07:00",
+            "tags": [],
+            "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7",
+            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/myecs:3",
+            "version": 3
+        }
+    ]
+}

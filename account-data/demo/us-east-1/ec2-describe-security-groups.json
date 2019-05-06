@@ -14,6 +14,53 @@
                     "Ipv6Ranges": []
                 }
             ], 
+            "Description": "Public access", 
+            "IpPermissions": [
+                {
+                    "PrefixListIds": [], 
+                    "FromPort": 22, 
+                    "IpRanges": [], 
+                    "ToPort": 22, 
+                    "IpProtocol": "tcp", 
+                    "UserIdGroupPairs": [
+                        {
+                            "UserId": "123456789012", 
+                            "GroupId": "sg-00000002"
+                        }
+                    ], 
+                    "Ipv6Ranges": []
+                },
+                {
+                    "PrefixListIds": [], 
+                    "FromPort": 443, 
+                    "IpRanges": [{
+                        "CidrIp": "0.0.0.0/0"
+                    }], 
+                    "ToPort": 443, 
+                    "IpProtocol": "tcp", 
+                    "UserIdGroupPairs": [], 
+                    "Ipv6Ranges": []
+                }
+            ], 
+            "GroupName": "Public", 
+            "VpcId": "vpc-12345678", 
+            "OwnerId": "123456789012", 
+            "GroupId": "sg-00000008"
+        },
+        {
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1", 
+                    "PrefixListIds": [], 
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ], 
+                    "UserIdGroupPairs": [], 
+                    "Ipv6Ranges": []
+                }
+            ], 
             "Description": "Bastion only access", 
             "IpPermissions": [
                 {
@@ -31,7 +78,7 @@
                     "Ipv6Ranges": []
                 }
             ], 
-            "GroupName": "Endpint", 
+            "GroupName": "Bastion access", 
             "VpcId": "vpc-12345678", 
             "OwnerId": "123456789012", 
             "GroupId": "sg-00000007"
@@ -67,7 +114,7 @@
                     "Ipv6Ranges": []
                 }
             ], 
-            "GroupName": "Endpint", 
+            "GroupName": "Endpoint", 
             "VpcId": "vpc-12345678", 
             "OwnerId": "123456789012", 
             "GroupId": "sg-00000006"

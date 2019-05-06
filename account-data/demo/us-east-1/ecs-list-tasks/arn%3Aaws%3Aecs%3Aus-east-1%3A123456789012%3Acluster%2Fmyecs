@@ -1,0 +1,5 @@
+{
+    "taskArns": [
+        "arn:aws:ecs:us-east-1:123456789012:task/d190d14a-2404-45d6-9113-4eda22d7f2c7"
+    ]
+}
