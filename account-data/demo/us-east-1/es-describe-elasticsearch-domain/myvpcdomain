@@ -1,0 +1,63 @@
+{
+    "DomainStatus": {
+        "ARN": "arn:aws:es:us-east-1:123456789012:domain/myvpcdomain",
+        "AccessPolicies": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"es:*\",\"Resource\":\"arn:aws:es:us-east-1:123456789012:domain/myvpcdomain/*\"}]}",
+        "AdvancedOptions": {
+            "rest.action.multi.allow_explicit_index": "true"
+        },
+        "CognitoOptions": {
+            "Enabled": false
+        },
+        "Created": true,
+        "Deleted": false,
+        "DomainId": "123456789012/myvpcdomain",
+        "DomainName": "myvpcdomain",
+        "EBSOptions": {
+            "EBSEnabled": true,
+            "VolumeSize": 10,
+            "VolumeType": "gp2"
+        },
+        "ElasticsearchClusterConfig": {
+            "DedicatedMasterEnabled": false,
+            "InstanceCount": 1,
+            "InstanceType": "t2.small.elasticsearch",
+            "ZoneAwarenessEnabled": false
+        },
+        "ElasticsearchVersion": "6.5",
+        "EncryptionAtRestOptions": {
+            "Enabled": false
+        },
+        "Endpoints": {
+            "vpc": "vpc-myvpcdomain-ffvrwsgtge4ypzq47gvxkcbniy.us-east-1.es.amazonaws.com"
+        },
+        "NodeToNodeEncryptionOptions": {
+            "Enabled": false
+        },
+        "Processing": false,
+        "ServiceSoftwareOptions": {
+            "AutomatedUpdateDate": "2019-04-30T11:31:21-06:00",
+            "Cancellable": false,
+            "CurrentVersion": "R20190221-P1",
+            "Description": "There is no software update available for this domain.",
+            "NewVersion": "",
+            "UpdateAvailable": false,
+            "UpdateStatus": "COMPLETED"
+        },
+        "SnapshotOptions": {
+            "AutomatedSnapshotStartHour": 0
+        },
+        "UpgradeProcessing": false,
+        "VPCOptions": {
+            "AvailabilityZones": [
+                "us-east-1a"
+            ],
+            "SecurityGroupIds": [
+                "sg-00000007"
+            ],
+            "SubnetIds": [
+                "subnet-00000003"
+            ],
+            "VPCId": "vpc-12345678"
+        }
+    }
+}
