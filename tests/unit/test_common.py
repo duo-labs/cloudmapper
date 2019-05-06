@@ -13,8 +13,8 @@ class TestCommon(unittest.TestCase):
 
     def test_parse_arguments(self):
         parser = argparse.ArgumentParser()
-        parser.add_argument("--json", help="Print the json of the issues", default=False, action='store_true')
-        args, accounts, config = parse_arguments(["--json", "--accounts", "demo"], parser)
+        parser.add_argument('--json', help='Print the json of the issues', default=False, action='store_true')
+        args, accounts, config = parse_arguments(['--json', '--accounts', 'demo', '--config', 'config.json.demo'], parser)
 
         assert_equal(args.json, True)
 

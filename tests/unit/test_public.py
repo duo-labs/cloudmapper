@@ -20,7 +20,7 @@ class TestPublic(unittest.TestCase):
 
 
     def test_get_public_nodes(self):
-        args, accounts, config = parse_arguments(["--accounts", "demo"], None)
+        args, accounts, config = parse_arguments(['--accounts', 'demo', '--config', 'config.json.demo'], None)
 
         public_nodes = get_public_nodes(accounts[0], config)
         # public_nodes contains a list of nodes from the network diagram as the first item,
