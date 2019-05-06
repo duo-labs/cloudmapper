@@ -73,7 +73,7 @@ class TestPrepare(unittest.TestCase):
 
         # Now check it
         # Check number of connections
-        assert_equal(25, len(pyjq.all('.[].data|select(.type == "edge")|keys', cytoscape_json)))
+        assert_equal(29, len(pyjq.all('.[].data|select(.type == "edge")|keys', cytoscape_json)))
 
         # Check number of nodes
         assert_equal(2, len(pyjq.all('.[].data|select(.type == "ip")|keys', cytoscape_json)))
@@ -86,3 +86,4 @@ class TestPrepare(unittest.TestCase):
         assert_equal(1, len(pyjq.all('.[].data|select(.type == "vpc")|keys', cytoscape_json)))
         assert_equal(1, len(pyjq.all('.[].data|select(.type == "sqs")|keys', cytoscape_json)))
         assert_equal(1, len(pyjq.all('.[].data|select(.type == "s3")|keys', cytoscape_json)))
+        assert_equal(2, len(pyjq.all('.[].data|select(.type == "redshift")|keys', cytoscape_json)))
