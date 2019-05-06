@@ -90,3 +90,28 @@ class TestPrepare(unittest.TestCase):
         assert_equal(1, len(pyjq.all('.[].data|select(.type == "elasticsearch")|keys', cytoscape_json)))
         assert_equal(2, len(pyjq.all('.[].data|select(.type == "lambda")|keys', cytoscape_json)))
         assert_equal(1, len(pyjq.all('.[].data|select(.type == "ecs")|keys', cytoscape_json)))
+
+        # Test without internal edges
+        outputfilter["internal_edges"] = False
+        cytoscape_json = build_data_structure(json_blob, config, outputfilter)
+
+        # Check number of connections
+        assert_equal(19, len(pyjq.all('.[].data|select(.type == "edge")|keys', cytoscape_json)))
+
+        # Test with AZs
+        outputfilter["azs"] = True
+        outputfilter["internal_edges"] = True
+        cytoscape_json = build_data_structure(json_blob, config, outputfilter)
+
+        # Check number of connections
+        assert_equal(2, len(pyjq.all('.[].data|select(.type == "az")|keys', cytoscape_json)))
+
+
+        # Test with specific VPC name
+        outputfilter["azs"] = False
+        outputfilter["vpc-names"] = '\"Prod\"'
+        cytoscape_json = build_data_structure(json_blob, config, outputfilter)
+
+        # Check number of connections
+        assert_equal(3, len(pyjq.all('.[].data|select(.type == "ec2")|keys', cytoscape_json)))
+
