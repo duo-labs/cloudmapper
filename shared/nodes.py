@@ -654,6 +654,12 @@ class Lambda(Leaf):
 
 
 class Redshift(Leaf):
+    _subnet = None
+
+    def set_subnet(self, subnet):
+        self._subnet = subnet
+        self._arn = self._arn + "." + subnet.local_id
+
     @property
     def ips(self):
         ips = []
@@ -668,7 +674,37 @@ class Redshift(Leaf):
 
     @property
     def subnets(self):
-        return []
+        if self._subnet:
+            return self._subnet
+        else:
+            # Get the subnets that this cluster can be a part of
+            cluster_subnet_group_name = self._json_blob['ClusterSubnetGroupName']
+            vpc_id = self._json_blob['VpcId']
+            subnet_groups_json = query_aws(self.account, 'redshift-describe-cluster-subnet-groups', self.region)
+            matched_subnet_group = {}
+            for subnet_group in subnet_groups_json['ClusterSubnetGroups']:
+                if vpc_id == subnet_group['VpcId'] and cluster_subnet_group_name == subnet_group['ClusterSubnetGroupName']:
+                    matched_subnet_group = subnet_group
+            if matched_subnet_group == {}:
+                raise Exception("Could not find the subnet group")
+
+            # Get the IDs of those subnets
+            subnet_ids = []
+            for subnet in matched_subnet_group['Subnets']:
+                subnet_ids.append(subnet['SubnetIdentifier'])
+
+            # Look through the subnets in the regions for ones that match,
+            # then find those subnets that actually have the IPs for the cluster nodes in them
+            subnets_with_cluster_nodes = []
+            subnets = query_aws(self.account, 'ec2-describe-subnets', self.region)
+            for subnet in subnets['Subnets']:
+                if subnet['SubnetId'] in subnet_ids:
+                    # We have a subnet ID that we know the cluster can be part of, now check if there is actually a node there
+                    for cluster_node in self._json_blob['ClusterNodes']:
+                        if IPAddress(cluster_node['PrivateIPAddress']) in IPNetwork(subnet['CidrBlock']):
+                            subnets_with_cluster_nodes.append(subnet['SubnetId'])
+
+            return subnets_with_cluster_nodes
 
     @property
     def tags(self):
@@ -691,9 +727,12 @@ class Redshift(Leaf):
         # Set the parent to a VPC
         # Redshift has no subnet
         assert(parent._type == "region")
+        self._parent = None
         for vpc in parent.children:
             if vpc.local_id == json_blob['VpcId']:
                 self._parent = vpc
+        if self._parent is None:
+            raise Exception('Could not find parent for Redshift node, was looking for VPC {}'.format(json_blob['VpcId']))
 
         self._local_id = json_blob['ClusterIdentifier']
         self._arn = json_blob['Endpoint']['Address']
@@ -736,6 +775,7 @@ class ElasticSearch(Leaf):
         self._arn = json_blob['ARN']
         self._name = truncate(json_blob['DomainName'])
         super(ElasticSearch, self).__init__(parent, json_blob)
+
 
 class Cidr(Leaf):
     def ips(self):
