@@ -114,7 +114,10 @@ def get_regions(account, outputfilter={}):
     return regions
 
 
-def get_account(account_name, config, config_filename):
+def get_account(account_name, config=None, config_filename="config.json.demo"):
+    if config is None:
+        config = json.load(open(config_filename))
+
     for account in config["accounts"]:
         if account["name"] == account_name:
             return account
