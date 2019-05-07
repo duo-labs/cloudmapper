@@ -24,6 +24,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import json
+import operator
 import itertools
 import argparse
 import pyjq
@@ -479,6 +480,58 @@ def build_data_structure(account_data, config, outputfilter):
                 r = connections.get(c, [])
                 r.extend(reasons)
                 connections[c] = r
+
+    #
+    # Collapse CIDRs
+    #
+
+    # Get a list of the current CIDRs
+    current_cidrs = []
+    for cidr_string in cidrs:
+        current_cidrs.append(cidr_string)
+
+    # Iterate through them
+    cidrs_to_remove = []
+    for cidr_string in current_cidrs:
+        # Find CIDRs in the config that our CIDR falls inside
+        # It may fall inside multiple ranges
+        matching_known_cidrs = {}
+        for named_cidr in config["cidrs"]:
+            if IPNetwork(cidr_string) in IPNetwork(named_cidr):
+                # Match found
+                matching_known_cidrs[named_cidr] = IPNetwork(named_cidr).size
+
+        if len(matching_known_cidrs) > 0:
+            # A match was found. Find the smallest matching range.
+            sorted_matches = sorted(matching_known_cidrs.items(), key=operator.itemgetter(1))
+            # Get first item to get (CIDR,size); and first item of that to get just the CIDR
+            smallest_matched_cidr_string = sorted_matches[0][0]
+            smallest_matched_cidr_name = config["cidrs"][smallest_matched_cidr_string]['name']
+
+            # Check if we have a CIDR node that doesn't match the smallest one possible.
+            if cidrs[cidr_string].name != config["cidrs"][smallest_matched_cidr_string]['name']:
+                # See if we need to create the larger known range
+                if cidrs.get(smallest_matched_cidr_string, "") == "":
+                    cidrs[smallest_matched_cidr_string] = Cidr(smallest_matched_cidr_string, smallest_matched_cidr_name)
+
+                # The existing CIDR node needs to be removed and rebuilt as the larger known range
+                del cidrs[cidr_string]
+
+                # Get the larger known range
+                new_source = cidrs[smallest_matched_cidr_string]
+                new_source.is_used = True
+
+                # Find all the connections to the old node
+                connections_to_remove = []
+                for c in connections:
+                    if c.source.node_type == 'ip' and c.source.arn == cidr_string:
+                        connections_to_remove.append(c)
+                
+                # Create new connections to the new node
+                for c in connections_to_remove:
+                    r = connections[c]
+                    del connections[c]
+                    connections[Connection(new_source, c._target)] = r
 
     # Add external cidr nodes
     used_cidrs = 0
