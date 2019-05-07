@@ -4,7 +4,7 @@
             "HasCustomEventSelectors": true,
             "HomeRegion": "us-east-1",
             "IncludeGlobalServiceEvents": true,
-            "IsMultiRegionTrail": true,
+            "IsMultiRegionTrail": false,
             "IsOrganizationTrail": true,
             "LogFileValidationEnabled": true,
             "Name": "cloudtrail",

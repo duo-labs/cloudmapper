@@ -12,4 +12,18 @@ class TestAudit(unittest.TestCase):
         args, accounts, config = parse_arguments(['--accounts', 'demo', '--config', 'config.json.demo'], None)
         findings = audit(accounts)
 
-        assert_equal(5, len(findings))
+        issue_ids = set()
+        for finding in findings:
+            print(finding)
+            issue_ids.add(finding.issue_id)
+
+        assert_equal(issue_ids, set([
+            # The trail includes "IsMultiRegionTrail": false
+            'CLOUDTRAIL_NOT_MULTIREGION',
+            # No password policy exists, so no file for it exists
+            'PASSWORD_POLICY_NOT_SET',
+            'ROOT_USER_HAS_ACCESS_KEYS',
+            'USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS',
+            'S3_ACCESS_BLOCK_OFF',
+            'EXCEPTION'])) # TODO REMOVE 'EXCEPTION'
+
