@@ -24,6 +24,9 @@ class TestAudit(unittest.TestCase):
             'PASSWORD_POLICY_NOT_SET',
             'ROOT_USER_HAS_ACCESS_KEYS',
             'USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS',
+            'USER_HAS_UNUSED_ACCESS_KEY',
             'S3_ACCESS_BLOCK_OFF',
-            'EXCEPTION'])) # TODO REMOVE 'EXCEPTION'
+            'S3_PUBLIC_POLICY_GETOBJECT_ONLY',
+            'GUARDDUTY_OFF',
+            'EXCEPTION'])) # TODO REMOVE
 

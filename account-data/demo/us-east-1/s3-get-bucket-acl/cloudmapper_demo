@@ -1,0 +1,16 @@
+{
+    "Grants": [
+        {
+            "Grantee": {
+                "DisplayName": "cloudmapper",
+                "ID": "ff023120a5d4ac3baac81aa8da6dda98a1a200fabb0578d60d4ba34cea1b7939",
+                "Type": "CanonicalUser"
+            },
+            "Permission": "FULL_CONTROL"
+        }
+    ],
+    "Owner": {
+        "DisplayName": "cloudmapper",
+        "ID": "ff023120a5d4ac3baac81aa8da6dda98a1a200fabb0578d60d4ba34cea1b7939"
+    }
+}
