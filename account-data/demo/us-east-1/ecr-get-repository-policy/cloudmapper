@@ -1,0 +1,5 @@
+{
+    "policyText": "{\n  \"Version\" : \"2008-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"AccessControl\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : \"*\",\n    \"Action\" : [ \"ecr:GetDownloadUrlForLayer\", \"ecr:BatchGetImage\", \"ecr:BatchCheckLayerAvailability\", \"ecr:ListImages\", \"ecr:DescribeImages\" ]\n  } ]\n}",
+    "registryId": "123456789012",
+    "repositoryName": "cloudmapper"
+}

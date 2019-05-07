@@ -28,5 +28,6 @@ class TestAudit(unittest.TestCase):
             'S3_ACCESS_BLOCK_OFF',
             'S3_PUBLIC_POLICY_GETOBJECT_ONLY',
             'GUARDDUTY_OFF',
-            'EXCEPTION'])) # TODO REMOVE
+            'REDSHIFT_PUBLIC_IP',
+            'ECR_PUBLIC']))
 
