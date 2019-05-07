@@ -30,5 +30,6 @@ class TestAudit(unittest.TestCase):
             'GUARDDUTY_OFF',
             'REDSHIFT_PUBLIC_IP',
             'ECR_PUBLIC',
-            'SQS_PUBLIC']))
+            'SQS_PUBLIC',
+            'SNS_PUBLIC']))
 
