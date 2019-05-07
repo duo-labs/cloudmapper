@@ -56,6 +56,9 @@ class Findings(object):
     def __iter__(self):
         for finding in self.findings:
             yield finding
+    
+    def __len__(self):
+        return len(self.findings)
 
 
 def audit_s3_buckets(findings, region):
@@ -797,6 +800,6 @@ def audit(accounts):
                 findings.add(Finding(
                     region,
                     'EXCEPTION',
-                    e,
-                    resource_details={'exception': e, 'traceback': sys.exc_info()}))
+                    str(e),
+                    resource_details={'exception': str(e), 'traceback': str(traceback.format_exc())}))
     return findings
