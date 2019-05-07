@@ -1,0 +1,16 @@
+{
+    "Attributes": {
+        "ApproximateNumberOfMessages": "0",
+        "ApproximateNumberOfMessagesDelayed": "0",
+        "ApproximateNumberOfMessagesNotVisible": "0",
+        "CreatedTimestamp": "1550000932",
+        "DelaySeconds": "0",
+        "LastModifiedTimestamp": "1550000934",
+        "MaximumMessageSize": "262144",
+        "MessageRetentionPeriod": "86400",
+        "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:123456789012:demo\"}]}",
+        "QueueArn": "arn:aws:sqs:us-east-1:123456789012:demo",
+        "ReceiveMessageWaitTimeSeconds": "10",
+        "VisibilityTimeout": "62"
+    }
+}

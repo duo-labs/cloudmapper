@@ -29,5 +29,6 @@ class TestAudit(unittest.TestCase):
             'S3_PUBLIC_POLICY_GETOBJECT_ONLY',
             'GUARDDUTY_OFF',
             'REDSHIFT_PUBLIC_IP',
-            'ECR_PUBLIC']))
+            'ECR_PUBLIC',
+            'SQS_PUBLIC']))
 
