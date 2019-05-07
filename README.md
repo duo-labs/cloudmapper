@@ -92,6 +92,22 @@ You must have the following privileges (these grant various read access of metad
 - `arn:aws:iam::aws:policy/SecurityAudit`
 - `arn:aws:iam::aws:policy/job-function/ViewOnlyAccess`
 
+And also:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "lightsail:GetLoadBalancers"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]
+}
+```
+
 ### Collect the data
 
 Collecting the data is done as follows:
