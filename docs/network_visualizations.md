@@ -2,6 +2,8 @@
 
 This page describes how to visualize network environments using the `prepare` and `webserver` commands, and assumes you have already configured your account and collected the metadata about it.
 
+The network visualization will only show VPC resources, ie. those things with a Security Group attached to it.  It can show EC2, RDS, ELB (original and v2), Redshift, ElasticSearch, ECS, Lambda, and VPC Endpoints (ie. the Gateway Endpoints for S3 and DynamoDB, and PrivateLink).  This will NOT show your S3 buckets. It will ONLY show the Gateway Endpoint to the S3 service if you created one (your AWS account does not have one by default).  Again, only Lambdas and others resources that are inside a VPC will be shown.  The edges shown are only based on the ingress rules of the Security Groups, and not the resource policy, or Network ACLs, or Route Tables.
+
 ## Prepare the data
 
 This step converts the collected AWS data into a format that can be displayed in the browser by generating a `web/data.json` file.
