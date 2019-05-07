@@ -1,0 +1,4 @@
+{
+    "Policy": "{\"Version\":\"2012-10-17\",\"Id\":\"default\",\"Statement\":[{\"Sid\":\"lambda-5aeac81b-9422-42b5-9d58-22a0eba87078\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"apigateway.amazonaws.com\"},\"Action\":\"lambda:InvokeFunction\",\"Resource\":\"arn:aws:lambda:us-east-1:653711331788:function:invpclambda\",\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:execute-api:us-east-1:653711331788:2rfismmoo8/*/*/invpclambda\"}}}]}",
+    "RevisionId": "acec1b44-384a-419e-9c72-24beab3d7865"
+}

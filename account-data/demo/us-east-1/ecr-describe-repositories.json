@@ -1,0 +1,11 @@
+{
+    "repositories": [
+        {
+            "createdAt": "2018-11-23T09:03:53-07:00",
+            "registryId": "123456789012",
+            "repositoryArn": "arn:aws:ecr:us-east-1:123456789012:repository/cloudmapper",
+            "repositoryName": "cloudmapper",
+            "repositoryUri": "123456789012.dkr.ecr.us-east-1.amazonaws.com/cloudmapper"
+        }
+    ]
+}

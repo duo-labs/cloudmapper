@@ -1,0 +1,10 @@
+{
+    "Topics": [
+        {
+            "TopicArn": "arn:aws:sns:us-east-1:123456789012:demo_public"
+        },
+        {
+            "TopicArn": "arn:aws:sns:us-east-1:123456789012:demo_private"
+        }
+    ]
+}

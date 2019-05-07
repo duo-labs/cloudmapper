@@ -100,8 +100,6 @@ Collecting the data is done as follows:
 python cloudmapper.py collect --account my_account
 ```
 
-
-
 # Commands
 
 - `api_endpoints`: List the URLs that can be called via API Gateway.

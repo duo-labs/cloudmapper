@@ -28,7 +28,7 @@ class TestCommon(unittest.TestCase):
 
     def test_get_collection_date(self):
         account = get_account("demo")
-        assert_equal('2019-05-02', get_collection_date(account))
+        assert_equal('2019-05-07', get_collection_date(account))
 
 
     # def test_get_access_advisor_active_counts(self):
