@@ -1,9 +1,110 @@
 {
     "GroupDetailList": [],
-    "Policies": [],
+    "Policies": [
+        {
+            "PolicyName": "BAD_MFA_POLICY", 
+            "PermissionsBoundaryUsageCount": 0, 
+            "CreateDate": "2019-05-07T18:55:12Z", 
+            "AttachmentCount": 0, 
+            "IsAttachable": true, 
+            "PolicyId": "ANPAZQNB3KHGKJK37F2XG", 
+            "DefaultVersionId": "v1", 
+            "PolicyVersionList": [
+                {
+                    "CreateDate": "2019-05-07T18:55:12Z", 
+                    "VersionId": "v1", 
+                    "Document": {
+                        "Version": "2012-10-17", 
+                        "Statement": [
+                            {
+                                "Action": [
+                                    "iam:ListAccountAliases", 
+                                    "iam:ListUsers", 
+                                    "iam:GetAccountSummary"
+                                ], 
+                                "Resource": "*", 
+                                "Effect": "Allow", 
+                                "Sid": "AllowAllUsersToListAccounts"
+                            }, 
+                            {
+                                "Action": [
+                                    "iam:ChangePassword", 
+                                    "iam:CreateAccessKey", 
+                                    "iam:CreateLoginProfile", 
+                                    "iam:DeleteAccessKey", 
+                                    "iam:DeleteLoginProfile", 
+                                    "iam:GetAccountPasswordPolicy", 
+                                    "iam:GetLoginProfile", 
+                                    "iam:ListAccessKeys", 
+                                    "iam:UpdateAccessKey", 
+                                    "iam:UpdateLoginProfile", 
+                                    "iam:ListSigningCertificates", 
+                                    "iam:DeleteSigningCertificate", 
+                                    "iam:UpdateSigningCertificate", 
+                                    "iam:UploadSigningCertificate", 
+                                    "iam:ListSSHPublicKeys", 
+                                    "iam:GetSSHPublicKey", 
+                                    "iam:DeleteSSHPublicKey", 
+                                    "iam:UpdateSSHPublicKey", 
+                                    "iam:UploadSSHPublicKey"
+                                ], 
+                                "Resource": "arn:aws:iam::123456789012:user/${aws:username}", 
+                                "Effect": "Allow", 
+                                "Sid": "AllowIndividualUserToSeeAndManageTheirOwnAccountInformation"
+                            }, 
+                            {
+                                "Action": [
+                                    "iam:ListVirtualMFADevices", 
+                                    "iam:ListMFADevices"
+                                ], 
+                                "Resource": [
+                                    "arn:aws:iam::123456789012:mfa/*", 
+                                    "arn:aws:iam::123456789012:user/${aws:username}"
+                                ], 
+                                "Effect": "Allow", 
+                                "Sid": "AllowIndividualUserToListTheirOwnMFA"
+                            }, 
+                            {
+                                "Action": [
+                                    "iam:CreateVirtualMFADevice", 
+                                    "iam:DeactivateMFADevice", 
+                                    "iam:DeleteVirtualMFADevice", 
+                                    "iam:RequestSmsMfaRegistration", 
+                                    "iam:FinalizeSmsMfaRegistration", 
+                                    "iam:EnableMFADevice", 
+                                    "iam:ResyncMFADevice"
+                                ], 
+                                "Resource": [
+                                    "arn:aws:iam::123456789012:mfa/${aws:username}", 
+                                    "arn:aws:iam::123456789012:user/${aws:username}"
+                                ], 
+                                "Effect": "Allow", 
+                                "Sid": "AllowIndividualUserToManageTheirOwnMFA"
+                            }, 
+                            {
+                                "NotAction": "iam:*", 
+                                "Resource": "*", 
+                                "Effect": "Deny", 
+                                "Condition": {
+                                    "BoolIfExists": {
+                                        "aws:MultiFactorAuthPresent": "false"
+                                    }
+                                }, 
+                                "Sid": "BlockAnyAccessOtherThanAboveUnlessSignedInWithMFA"
+                            }
+                        ]
+                    }, 
+                    "IsDefaultVersion": true
+                }
+            ], 
+            "Path": "/", 
+            "Arn": "arn:aws:iam::123456789012:policy/BAD_MFA_POLICY", 
+            "UpdateDate": "2019-05-07T18:55:12Z"
+        }
+    ],
     "RoleDetailList": [
         {
-            "Arn": "arn:aws:iam::653711331788:role/service-role/level1",
+            "Arn": "arn:aws:iam::123456789012:role/service-role/level1",
             "AssumeRolePolicyDocument": {
                 "Statement": [
                     {
@@ -47,7 +148,7 @@
                                     "ecr:BatchGetImage"
                                 ],
                                 "Effect": "Allow",
-                                "Resource": "arn:aws:ecr:*:653711331788:repository/level2"
+                                "Resource": "arn:aws:ecr:*:123456789012:repository/level2"
                             },
                             {
                                 "Action": [
@@ -65,7 +166,7 @@
             "Tags": []
         },
         {
-            "Arn": "arn:aws:iam::653711331788:role/level3",
+            "Arn": "arn:aws:iam::123456789012:role/level3",
             "AssumeRolePolicyDocument": {
                 "Statement": [
                     {

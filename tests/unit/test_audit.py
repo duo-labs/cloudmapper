@@ -31,5 +31,6 @@ class TestAudit(unittest.TestCase):
             'REDSHIFT_PUBLIC_IP',
             'ECR_PUBLIC',
             'SQS_PUBLIC',
-            'SNS_PUBLIC']))
+            'SNS_PUBLIC',
+            'BAD_MFA_POLICY']))
 
