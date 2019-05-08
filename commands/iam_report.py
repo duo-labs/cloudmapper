@@ -3,6 +3,7 @@ import argparse
 import json
 import datetime
 import os.path
+from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 from jinja2 import Template
 
