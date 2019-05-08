@@ -106,33 +106,29 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
     except ClientError as e:
         if 'NoSuchBucketPolicy' in str(e):
             # This error occurs when you try to get the bucket policy for a bucket that has no bucket policy, so this can be ignored.
-            pass
+            print('  - No bucket policy')
         elif 'NoSuchPublicAccessBlockConfiguration' in str(e):
             # This error occurs when you try to get the account Public Access Block policy for an account that has none, so this can be ignored.
-            pass
+            print('  - No public access block set')
         elif 'ServerSideEncryptionConfigurationNotFoundError' in str(e) and call_summary['service'] == 's3' and call_summary['action'] == 'get_bucket_encryption':
-            pass
+            print('  - No encryption set')
         elif 'NoSuchEntity' in str(e) and call_summary['action'] == 'get_account_password_policy':
-            print("  - No password policy set")
-            pass
+            print('  - No password policy set')
         elif 'AccessDeniedException' in str(e) and call_summary['service'] == 'organizations' and call_summary['action'] == 'list_accounts':
-            print("  - Denied, which likely means this is not the organization root")
-            pass
+            print('  - Denied, which likely means this is not the organization root')
         elif 'RepositoryPolicyNotFoundException' in str(e) and call_summary['service'] == 'ecr' and call_summary['action'] == 'get_repository_policy':
-            print("  - No policy exists")
-            pass
+            print('  - No policy exists')
         elif 'ResourceNotFoundException' in str(e) and call_summary['service'] == 'lambda' and call_summary['action'] == 'get_policy':
-            print("  - No policy exists")
-            pass
+            print('  - No policy exists')
         else:
-            print("ClientError: {}".format(e), flush=True)
+            print('ClientError: {}'.format(e), flush=True)
             call_summary['exception'] = e
     except EndpointConnectionError as e:
-        print("EndpointConnectionError: {}".format(e), flush=True)
+        print('EndpointConnectionError: {}'.format(e), flush=True)
         call_summary['exception'] = e
         pass
     except Exception as e:
-        print("Exception: {}".format(e), flush=True)
+        print('Exception: {}'.format(e), flush=True)
         call_summary['exception'] = e
         pass
 
