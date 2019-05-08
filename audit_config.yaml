@@ -252,6 +252,12 @@ SQS_PUBLIC:
   severity: Medium
   group: SQS
 
+SNS_PUBLIC:
+  title: SNS is publicly accesible
+  description: This may allow an attacker to read or write messages to this queue.
+  severity: Medium
+  group: SNS
+
 LIGHTSAIL_IN_USE:
   title: Lightsail in use
   description: There is nothing wrong with Lightsail, but it does not tend to be used in enterprises. The instances often were created while testing something and forgotten about.
