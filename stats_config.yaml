@@ -50,6 +50,9 @@
 - name: Lambda functions
   query: .Functions|length
   source: lambda-list-functions
+- name: Kafka clusters
+  query: .ClusterInfoList|length
+  source: kafka-list-clusters
 # Verbose resources
 - name: Route53 hosted zones
   query: .HostedZones|length
