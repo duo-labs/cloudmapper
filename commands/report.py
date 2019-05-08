@@ -1,23 +1,11 @@
 from __future__ import print_function
-import sys
 import argparse
 import json
 import yaml
-import datetime
-import itertools
 import os.path
-import math
-import urllib.parse
-from os import listdir
-from collections import OrderedDict
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
-import pyjq
 from jinja2 import Template
 
-from policyuniverse.policy import Policy
 from shared.common import parse_arguments, get_regions, get_account_stats, get_collection_date, get_access_advisor_active_counts
-from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
 from shared.audit import audit
@@ -278,7 +266,7 @@ def report(accounts, config, args):
     t['findings_severity_by_account_chart'] = []
     for severity in SEVERITIES:
         severity_counts_by_account = []
-        for account in accounts:
+        for _ in accounts:
             severity_counts_by_account.append(len(findings_severity_by_account[finding.account_name][severity['name']]))
 
         t['findings_severity_by_account_chart'].append({

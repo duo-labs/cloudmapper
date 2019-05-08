@@ -2,7 +2,6 @@ import json
 import os.path
 import netaddr
 import argparse
-from shared.common import get_account
 
 __description__ = "Add and remove items from the config file"
 

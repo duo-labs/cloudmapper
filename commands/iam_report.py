@@ -1,16 +1,9 @@
 from __future__ import print_function
-import sys
 import argparse
 import json
 import datetime
-import itertools
 import os.path
-import urllib.parse
-from os import listdir
-from collections import OrderedDict
-from abc import ABCMeta, abstractmethod
 from six import add_metaclass
-import pyjq
 from jinja2 import Template
 
 from policyuniverse.policy import Policy
@@ -29,24 +22,11 @@ def tolink(s):
     return s
 
 
-def get_cred_usage():
-    MAX_DAYS_SINCE_LAST_USAGE = 90
-
-    def days_between(s1, s2):
-        """s1 and s2 are date strings, in the format 2018-04-08T23:33:20+00:00 """
-        time_format = "%Y-%m-%dT%H:%M:%S"
-
-        d1 = datetime.strptime(s1.split("+")[0], time_format)
-        d2 = datetime.strptime(s2.split("+")[0], time_format)
-        return abs((d1 - d2).days)
-
-
 def load_credential_report():
     users = []
 
     json_blob = query_aws(region.account, "iam-get-credential-report", region)
     csv_lines = json_blob['Content'].split('\n')
-    collection_date = json_blob['GeneratedTime']
 
     # Skip header
     csv_lines.pop(0)

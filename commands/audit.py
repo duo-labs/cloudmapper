@@ -1,5 +1,4 @@
 import argparse
-import json
 import yaml
 
 from shared.common import parse_arguments

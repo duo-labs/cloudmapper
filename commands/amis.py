@@ -2,15 +2,11 @@ from __future__ import print_function
 import sys
 import json
 import argparse
-import itertools
 import pyjq
 import os.path
-from netaddr import IPNetwork, IPAddress
 from shared.nodes import Account, Region
-from shared.common import parse_arguments, query_aws, make_list, get_regions
-from collections import OrderedDict
+from shared.common import parse_arguments, query_aws
 from os import listdir
-from datetime import datetime
 
 __description__ = "Cross-reference EC2 instances with AMI information"
 

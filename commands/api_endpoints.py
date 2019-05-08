@@ -1,7 +1,4 @@
 from __future__ import print_function
-import sys
-import json
-import pyjq
 from shared.common import parse_arguments, get_regions
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region

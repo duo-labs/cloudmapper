@@ -1,7 +1,6 @@
 from __future__ import print_function
 import sys
 import json
-import pyjq
 from shared.common import parse_arguments
 from shared.public import get_public_nodes
 

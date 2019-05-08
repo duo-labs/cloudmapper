@@ -29,7 +29,6 @@ from __future__ import (absolute_import, division, print_function)
 import sys
 import pkgutil
 import importlib
-import commands
 
 __version__ = "2.5.5"
 

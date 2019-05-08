@@ -1,15 +1,7 @@
 from __future__ import print_function
 import sys
 import argparse
-import json
-import itertools
-import os.path
-import urllib.parse
-from os import listdir
-from collections import OrderedDict
-import pyjq
-from shared.nodes import Account, Region
-from shared.common import parse_arguments, query_aws, get_regions, log_debug, get_account_stats
+from shared.common import parse_arguments, get_account_stats
 
 __description__ = "Print counts of resources for accounts"
 

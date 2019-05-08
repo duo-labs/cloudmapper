@@ -1,17 +1,11 @@
-import argparse
 import json
-import os.path
-import ssl
 from datetime import datetime
-import urllib
 import pyjq
 import traceback
-import sys
-import yaml
 
 from policyuniverse.policy import Policy
 
-from shared.common import parse_arguments, make_list, get_regions
+from shared.common import make_list, get_regions
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
@@ -416,7 +410,7 @@ def audit_ebs_snapshots(findings, region):
     for snapshot in json_blob['Snapshots']:
         try:
             file_json = get_parameter_file(region, 'ec2', 'describe-snapshot-attribute', snapshot['SnapshotId'])
-            if file_json == None:
+            if file_json is None:
                 # Not technically an exception, but an unexpected situation
                 findings.add(Finding(
                     region,
@@ -563,7 +557,6 @@ def audit_cloudfront(findings, region):
                 'CLOUDFRONT_MINIMUM_PROTOCOL_SUPPORT',
                 distribution['DomainName'],
                 resource_details={'Minimum protocol version': minimum_protocol_version}))
-        domain = distribution['DomainName']
 
 
 def audit_ec2(findings, region):
