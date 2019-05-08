@@ -109,6 +109,7 @@ def get_public_nodes(account, config, use_cache=False):
             target['type'] = 'ec2'
             dns_name = target_node['node_data'].get('PublicDnsName', '')
             target['hostname'] = target_node['node_data'].get('PublicIpAddress', dns_name)
+            target['tags'] = target_node['node_data']['Tags']
         elif target_node['type'] == 'ecs':
             target['type'] = 'ecs'
             target['hostname'] = ''
