@@ -384,8 +384,3 @@
   Request: list-accounts
 - Service: kafka
   Request: list-clusters
-- Service: kafka
-  Request: describe-cluster
-  Parameters:
-  - Name: ClusterArn
-    Value: kafka-list-clusters.json|.ClusterInfoList[]?|.ClusterArn
