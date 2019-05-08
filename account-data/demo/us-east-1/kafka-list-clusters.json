@@ -1,0 +1,38 @@
+{
+    "ClusterInfoList": [
+        {
+            "BrokerNodeGroupInfo": {
+                "BrokerAZDistribution": "DEFAULT",
+                "ClientSubnets": [
+                    "subnet-00000001",
+                    "subnet-00000002",
+                    "subnet-00000003"
+                ],
+                "InstanceType": "kafka.m5.large",
+                "SecurityGroups": [
+                    "sg-00000001"
+                ],
+                "StorageInfo": {
+                    "EbsStorageInfo": {
+                        "VolumeSize": 1000
+                    }
+                }
+            },
+            "ClusterArn": "arn:aws:kafka:us-east-1:123456789012:cluster/demo/ecf9bd76-d479-42b3-b588-b0ee9994c27a-3",
+            "ClusterName": "demo",
+            "CreationTime": "2019-05-08T22:13:42.416000+00:00",
+            "CurrentBrokerSoftwareInfo": {
+                "KafkaVersion": "1.1.1"
+            },
+            "CurrentVersion": "K3UN6WX5RRO2AG",
+            "EncryptionInfo": {
+                "EncryptionAtRest": {
+                    "DataVolumeKMSKeyId": "arn:aws:kms:us-east-1:123456789012:key/b0890cec-3d0f-40b6-bd9c-e2f17eb18bf0"
+                }
+            },
+            "EnhancedMonitoring": "DEFAULT",
+            "NumberOfBrokerNodes": 3,
+            "State": "CREATING"
+        }
+    ]
+}
