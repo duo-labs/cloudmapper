@@ -491,7 +491,6 @@ def build_data_structure(account_data, config, outputfilter):
         current_cidrs.append(cidr_string)
 
     # Iterate through them
-    cidrs_to_remove = []
     for cidr_string in current_cidrs:
         # Find CIDRs in the config that our CIDR falls inside
         # It may fall inside multiple ranges

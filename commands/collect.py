@@ -126,11 +126,9 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
     except EndpointConnectionError as e:
         print('EndpointConnectionError: {}'.format(e), flush=True)
         call_summary['exception'] = e
-        pass
     except Exception as e:
         print('Exception: {}'.format(e), flush=True)
         call_summary['exception'] = e
-        pass
 
     # Remove unused values
     if data is not None:

@@ -1,6 +1,5 @@
 import argparse
 from os import path, listdir
-import os
 import json
 import yaml
 import pyjq
@@ -221,7 +220,7 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
 def get_s3_trusts(account, nodes, connections):
     policy_dir = './account-data/{}/us-east-1/s3-get-bucket-policy/'.format(account.name)
     for s3_policy_file in [f for f in listdir(policy_dir) if path.isfile(path.join(policy_dir, f)) and path.getsize(path.join(policy_dir, f)) > 4]:
-        s3_policy = json.load(open(os.path.join(policy_dir, s3_policy_file)))
+        s3_policy = json.load(open(path.join(policy_dir, s3_policy_file)))
         s3_policy = json.loads(s3_policy['Policy'])
         s3_bucket_name = urllib.parse.unquote_plus(s3_policy_file)
         for s in s3_policy['Statement']:
@@ -297,7 +296,7 @@ def weboftrust(args, accounts, config):
     connections = {}
     for account in accounts:
         # Check if the account data exists
-        if not os.path.exists('./account-data/{}/us-east-1/iam-get-account-authorization-details.json'.format(account['name'])):
+        if not path.exists('./account-data/{}/us-east-1/iam-get-account-authorization-details.json'.format(account['name'])):
             print('INFO: Skipping account {}'.format(account['name']))
             continue
         get_nodes_and_connections(account, nodes, connections, args)

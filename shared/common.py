@@ -1,13 +1,10 @@
 from __future__ import print_function
 import argparse
 import json
-import os
 import datetime
 import pyjq
-from collections import OrderedDict
 import yaml
 import sys
-import urllib.parse
 from netaddr import IPNetwork
 
 from shared.nodes import Account, Region

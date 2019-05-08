@@ -1,14 +1,7 @@
 from __future__ import print_function
-import argparse
 import json
 import os
-import datetime
 import pyjq
-from collections import OrderedDict
-import yaml
-import sys
-import urllib.parse
-from netaddr import IPNetwork
 
 from shared.nodes import Account, Region, is_public_ip
 from commands.prepare import build_data_structure
@@ -136,7 +129,6 @@ def get_public_nodes(account, config, use_cache=False):
         public_sgs = {}
         if sg_group_allowing_all_protocols is not None:
             warnings.append('All protocols allowed access to {} due to {}'.format(target, sg_group_allowing_all_protocols))
-            range_string = '0-65535'
             # I would need to redo this code in order to get the name of the security group
             public_sgs[sg_group_allowing_all_protocols] = {'public_ports': '0-65535'}
         else:
