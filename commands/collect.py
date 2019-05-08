@@ -110,6 +110,8 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
         elif 'NoSuchPublicAccessBlockConfiguration' in str(e):
             # This error occurs when you try to get the account Public Access Block policy for an account that has none, so this can be ignored.
             pass
+        elif 'ServerSideEncryptionConfigurationNotFoundError' in str(e) and call_summary['service'] == 's3' and call_summary['action'] == 'get_bucket_encryption':
+            pass
         elif 'NoSuchEntity' in str(e) and call_summary['action'] == 'get_account_password_policy':
             print("  - No password policy set")
             pass

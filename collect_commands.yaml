@@ -74,6 +74,21 @@
   Parameters:
   - Name: Bucket
     Value: s3-list-buckets.json|.Buckets[]?|.Name
+- Service: s3
+  Request: get-bucket-logging
+  Parameters:
+  - Name: Bucket
+    Value: s3-list-buckets.json|.Buckets[]?|.Name
+- Service: s3
+  Request: get-bucket-location
+  Parameters:
+  - Name: Bucket
+    Value: s3-list-buckets.json|.Buckets[]?|.Name
+- Service: s3
+  Request: get-bucket-encryption
+  Parameters:
+  - Name: Bucket
+    Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: route53
   Request: list-hosted-zones
 - Service: route53
@@ -91,6 +106,8 @@
   Request: describe-subnets
 - Service: ec2
   Request: describe-instances
+- Service: ec2
+  Request: describe-volumes
 - Service: ec2
   Request: describe-addresses
 - Service: cloudtrail
