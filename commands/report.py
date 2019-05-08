@@ -278,7 +278,7 @@ def report(accounts, config, args):
     t['findings_severity_by_account_chart'] = []
     for severity in SEVERITIES:
         severity_counts_by_account = []
-        for account in accounts:
+        for _ in accounts:
             severity_counts_by_account.append(len(findings_severity_by_account[finding.account_name][severity['name']]))
 
         t['findings_severity_by_account_chart'].append({
