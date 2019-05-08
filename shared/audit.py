@@ -312,20 +312,22 @@ def audit_users(findings, region):
             'cert_2_last_rotated': parts[21]
         }
 
+        user_age = days_between(collection_date, user['user_creation_time'])
+
         if user['password_enabled'] == 'true':
             if user['mfa_active'] == 'false':
                 findings.add(Finding(
                     region,
                     'USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA',
                     user['user'],
-                    None))
+                    resource_details={'Number of days since user was created': user_age}))
 
             if user['password_last_used'] == 'no_information':
                 findings.add(Finding(
                     region,
                     'USER_HAS_NEVER_LOGGED_IN',
                     user['user'],
-                    None))
+                    resource_details={'Number of days since user was created': user_age}))
             else:
                 password_last_used_days = days_between(collection_date, user['password_last_used'])
                 if password_last_used_days > MAX_DAYS_SINCE_LAST_USAGE:
@@ -333,22 +335,33 @@ def audit_users(findings, region):
                         region,
                         'USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS',
                         user['user'],
-                        resource_details={'Number of days since last login': password_last_used_days}))
+                        resource_details={
+                            'Number of days since user was created': user_age,
+                            'Number of days since last login': password_last_used_days}))
 
         if user['access_key_1_active'] == "true" and user['access_key_2_active'] == "true":
+            age_of_key1 = days_between(collection_date, user['access_key_1_last_rotated'])
+            age_of_key2 = days_between(collection_date, user['access_key_2_last_rotated'])
+
             findings.add(Finding(
                 region,
                 'USER_HAS_TWO_ACCESS_KEYS',
                 user['user'],
-                None))
+                resource_details={
+                            'Number of days since key1 was rotated': age_of_key1,
+                            'Number of days since key2 was rotated': age_of_key2}))
 
         if user['access_key_1_active'] == "true":
+            age_of_key = days_between(collection_date, user['access_key_1_last_rotated'])
+
             if user['access_key_1_last_used_date'] == "N/A":
                 findings.add(Finding(
                     region,
                     'USER_HAS_UNUSED_ACCESS_KEY',
                     user['user'],
-                    resource_details={'Unused key': 1}))
+                    resource_details={
+                        'Unused key': 1,
+                        'Number of days since key was rotated': age_of_key}))
             else:
                 days_since_key_use = days_between(collection_date, user['access_key_1_last_used_date'])
                 if days_since_key_use > MAX_DAYS_SINCE_LAST_USAGE:
@@ -356,14 +369,19 @@ def audit_users(findings, region):
                         region,
                         'USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS',
                         user['user'],
-                        resource_details={'Days since key 1 used:': days_since_key_use}))
+                        resource_details={
+                            'Days since key 1 used:': days_since_key_use,
+                            'Number of days since key was rotated': age_of_key}))
         if user['access_key_2_active'] == "true":
+            age_of_key = days_between(collection_date, user['access_key_2_last_rotated'])
             if user['access_key_2_last_used_date'] == "N/A":
                 findings.add(Finding(
                     region,
                     'USER_HAS_UNUSED_ACCESS_KEY',
                     user['user'],
-                    resource_details={'Unused key': 2}))
+                    resource_details={
+                        'Unused key': 2,
+                        'Number of days since key was rotated': age_of_key}))
             else:
                 days_since_key_use = days_between(collection_date, user['access_key_2_last_used_date'])
                 if days_since_key_use > MAX_DAYS_SINCE_LAST_USAGE:
@@ -371,7 +389,9 @@ def audit_users(findings, region):
                         region,
                         'USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS',
                         user['user'],
-                        resource_details={'Days since key 2 used:': days_since_key_use}))
+                        resource_details={
+                            'Days since key 2 used:': days_since_key_use,
+                            'Number of days since key was rotated': age_of_key}))
 
 
 def audit_route53(findings, region):
