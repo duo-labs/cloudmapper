@@ -197,9 +197,28 @@ def get_account_stats(account, all_resources=False):
             if ('region' in resource) and (resource['region'] != region.name):
                 continue
 
-            # Normal path
-            stats[resource['name']][region.name] = sum(pyjq.all(resource['query'],
-                                                                query_aws(region.account, resource['source'], region)))
+            # S3 buckets require special code to identify their location
+            if resource['name'] == 'S3 buckets':
+                if region.name == 'us-east-1':
+                    buckets = pyjq.all('.Buckets[].Name', query_aws(region.account, 's3-list-buckets', region))
+                    for bucket in buckets:
+                        # Get the bucket's location
+                        bucket_region = get_parameter_file(region, 's3', 'get-bucket-location', bucket)['LocationConstraint']
+
+                        # Convert the value to a name.
+                        # See https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
+                        if bucket_region is None:
+                            bucket_region = 'us-east-1'
+                        elif bucket_region == 'EU':
+                            bucket_region = 'eu-west-1'
+
+                        # Increment the count
+                        tmp = stats[resource['name']].get(bucket_region, 0)
+                        stats[resource['name']][bucket_region] = tmp + 1
+            else:
+                # Normal path
+                stats[resource['name']][region.name] = sum(pyjq.all(resource['query'],
+                                                                    query_aws(region.account, resource['source'], region)))
 
     return stats
 

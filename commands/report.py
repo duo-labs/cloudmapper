@@ -203,7 +203,7 @@ def report(accounts, config, args):
 
     print('* Getting public resource data')
     # TODO Need to cache this data as this can take a long time
-    t['public_network_resource_type_names'] = ['ec2', 'elb', 'rds', 'autoscaling', 'cloudfront', 'apigateway']
+    t['public_network_resource_type_names'] = ['ec2', 'elb', 'elbv2', 'rds', 'redshift', 'ecs', 'autoscaling', 'cloudfront', 'apigateway']
     t['public_network_resource_types'] = {}
 
     t['public_ports'] = []
