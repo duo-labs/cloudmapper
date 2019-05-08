@@ -252,6 +252,36 @@ SQS_PUBLIC:
   severity: Medium
   group: SQS
 
+SNS_PUBLIC:
+  title: SNS is publicly accesible
+  description: This may allow an attacker to read or write messages to this queue.
+  severity: Medium
+  group: SNS
+
+SG_CIDR_OVERLAPS:
+  title: Security Group overlaps
+  description: This often happens when one attempts to restrict access, then opens up the access further.
+  severity: Low
+  group: SecurityGroup
+
+SG_CIDR_UNNEEDED:
+  title: Security Group CIDR unneeded
+  description: The CIDR in the Security Group cannot be blocked, so including it is not necessary.
+  severity: Info
+  group: SecurityGroup
+
+SG_CIDR_UNEXPECTED:
+  title: Security Group CIDR unexpected
+  description: The CIDR in the Security Group is formatted oddly.
+  severity: Info
+  group: SecurityGroup
+
+SG_LARGE_CIDR:
+  title: Security Group CIDR contains large IP range
+  description: The CIDR in a Security Group in the account contains a large IP range, defeating the purpose of restricting access with a Security Group
+  severity: Info
+  group: SecurityGroup
+
 LIGHTSAIL_IN_USE:
   title: Lightsail in use
   description: There is nothing wrong with Lightsail, but it does not tend to be used in enterprises. The instances often were created while testing something and forgotten about.

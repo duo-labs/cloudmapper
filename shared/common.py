@@ -99,6 +99,22 @@ def is_external_cidr(cidr):
     return True
 
 
+def is_unblockable_cidr(cidr):
+    ipnetwork = IPNetwork(cidr)
+    if (
+            ipnetwork in IPNetwork('169.254.0.0/16') or  # link local
+            ipnetwork in IPNetwork('127.0.0.0/8') or  # loopback
+            ipnetwork in IPNetwork('192.0.2.0/24') or  # Test network from RFC 5737
+            ipnetwork in IPNetwork('198.51.100.0/24') or  # Test network
+            ipnetwork in IPNetwork('203.0.113.0/24') or  # Test network
+            ipnetwork in IPNetwork('224.0.0.0/4') or  # class D multicast
+            ipnetwork in IPNetwork('240.0.0.0/5') or  # class E reserved
+            ipnetwork in IPNetwork('248.0.0.0/5') or  # reserved
+            ipnetwork in IPNetwork('255.255.255.255/32')  # broadcast
+    ):
+        return True
+    return False
+
 def get_regions(account, outputfilter={}):
     # aws ec2 describe-regions
     region_data = query_aws(account, "describe-regions")

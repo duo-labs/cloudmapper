@@ -5,7 +5,8 @@ import traceback
 
 from policyuniverse.policy import Policy
 
-from shared.common import make_list, get_regions
+from netaddr import IPNetwork
+from shared.common import make_list, get_regions, is_unblockable_cidr, is_external_cidr
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
@@ -594,9 +595,63 @@ def audit_ec2(findings, region):
 
 def audit_sg(findings, region):
     # TODO Check if security groups allow large CIDR range (ex. 1.2.3.4/3)
-    # TODO Check if an SG allows overlapping CIDRs, such as 10.0.0.0/8 and then 0.0.0.0/0
     # TODO Check if an SG restricts IPv4 and then opens IPv6 or vice versa.
-    pass
+
+    cidrs = {}
+    sg_json = query_aws(region.account, 'ec2-describe-security-groups', region)
+    sgs = pyjq.all('.SecurityGroups[]', sg_json)
+    for sg in sgs:
+        cidr_and_name_list = pyjq.all('.IpPermissions[].IpRanges[]|[.CidrIp,.Description]', sg)
+        for cidr, name in cidr_and_name_list:
+            if not is_external_cidr(cidr):
+                continue
+
+            if is_unblockable_cidr(cidr):
+                findings.add(Finding(
+                    region,
+                    'SG_CIDR_UNNEEDED',
+                    sg['GroupId'],
+                    resource_details={'cidr': cidr}))
+                continue
+
+            if cidr.startswith('0.0.0.0') and not cidr.endswith('/0'):
+                findings.add(Finding(
+                    region,
+                    'SG_CIDR_UNEXPECTED',
+                    sg['GroupId'],
+                    resource_details={'cidr': cidr}))
+                continue
+
+            if cidr == '0.0.0.0/0':
+                continue
+
+            cidrs[cidr] = cidrs.get(cidr, set())
+            cidrs[cidr].add(sg['GroupId'])
+
+        for ip_permissions in sg['IpPermissions']:
+            cidrs_seen = set()
+            for ip_ranges in ip_permissions['IpRanges']:
+                if 'CidrIp' not in ip_ranges:
+                    continue
+                cidr = ip_ranges['CidrIp']
+                for cidr_seen in cidrs_seen:
+                    if (IPNetwork(cidr_seen) in IPNetwork(cidr) or
+                            IPNetwork(cidr) in IPNetwork(cidr_seen)):
+                        findings.add(Finding(
+                            region,
+                            'SG_CIDR_OVERLAPS',
+                            sg['GroupId'],
+                            resource_details={'cidr1': cidr, 'cidr2': cidr_seen}))
+                cidrs_seen.add(cidr)
+
+    for cidr in cidrs:
+        ip = IPNetwork(cidr)
+        if ip.size > 2048:
+            findings.add(Finding(
+                region,
+                'SG_LARGE_CIDR',
+                cidr,
+                resource_details={'size': ip.size, 'security_groups': cidrs[cidr]}))
 
 
 def audit_lambda(findings, region):

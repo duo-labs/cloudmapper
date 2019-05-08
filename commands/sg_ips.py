@@ -6,30 +6,15 @@ import pyjq
 from shared.common import parse_arguments, query_aws, get_regions, is_external_cidr
 from shared.nodes import Account, Region
 
+# TODO: Considering removing this command. The warnings now live in the audit code.
+# The creation of the map and table of locations is all this does now, which is both
+# not very valuable, and is difficult to setup (requires matplotlib, basemap data, and geoip data)
+
 __description__ = "Find all IPs are that are given trusted access via Security Groups"
-
-
-def is_unneeded_cidr(cidr):
-    ipnetwork = IPNetwork(cidr)
-    if (
-            ipnetwork in IPNetwork('169.254.0.0/16') or  # link local
-            ipnetwork in IPNetwork('127.0.0.0/8') or  # loopback
-            ipnetwork in IPNetwork('192.0.2.0/24') or  # Test network from RFC 5737
-            ipnetwork in IPNetwork('198.51.100.0/24') or  # Test network
-            ipnetwork in IPNetwork('203.0.113.0/24') or  # Test network
-            ipnetwork in IPNetwork('224.0.0.0/4') or  # class D multicast
-            ipnetwork in IPNetwork('240.0.0.0/5') or  # class E reserved
-            ipnetwork in IPNetwork('248.0.0.0/5') or  # reserved
-            ipnetwork in IPNetwork('255.255.255.255/32')  # broadcast
-    ):
-        return True
-    return False
-
 
 def get_cidrs_for_account(account, cidrs):
     account = Account(None, account)
 
-    # TODO Need to use CloudMapper's prepare to identify trusted IPs that are actually in use.
     for region_json in get_regions(account):
         region = Region(account, region_json)
         sg_json = query_aws(account, "ec2-describe-security-groups", region)
