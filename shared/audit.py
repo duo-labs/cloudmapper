@@ -6,37 +6,9 @@ import traceback
 from policyuniverse.policy import Policy
 
 from netaddr import IPNetwork
-from shared.common import make_list, get_regions, is_unblockable_cidr, is_external_cidr
+from shared.common import make_list, get_regions, is_unblockable_cidr, is_external_cidr, Finding
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
-
-
-class Finding(object):
-    region = None
-    issue_id = None
-    resource_id = None
-    resource_details = None
-
-    def __init__(self, region, issue_id, resource_id, resource_details=None):
-        self.region = region
-        self.issue_id = issue_id
-        self.resource_id = resource_id
-        self.resource_details = resource_details
-
-    def __str__(self):
-        return json.dumps({
-            'account_id': self.region.account.local_id,
-            'account_name': self.region.account.name,
-            'region': self.region.name,
-            'issue': self.issue_id,
-            'resource': self.resource_id,
-            'details': self.resource_details
-        })
-
-    @property
-    def account_name(self):
-        return self.region.account.name
-
 
 class Findings(object):
     findings = None
@@ -54,7 +26,6 @@ class Findings(object):
     
     def __len__(self):
         return len(self.findings)
-
 
 def audit_s3_buckets(findings, region):
     buckets_json = query_aws(region.account, "s3-list-buckets", region)
