@@ -5,8 +5,9 @@
 # group: Used to group these finding types in the report
 
 EXCEPTION:
-  title: An exception occurred during the audit
-  severity: High
+  title: An exception occurred during the audit. 
+  description: Other issues cannot be checked for until this is fixed.
+  severity: Critical
   group: ERROR
 
 S3_PUBLIC_POLICY_GETOBJECT_ONLY:

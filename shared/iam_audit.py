@@ -8,7 +8,7 @@ import os.path
 from policyuniverse.policy import Policy
 
 from netaddr import IPNetwork
-from shared.common import Finding, make_list, log_info, log_warning
+from shared.common import Finding, make_list, log_info, log_warning, get_us_east_1
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
@@ -93,118 +93,156 @@ def record_admin(admins, account_name, actor_type, actor_name):
     admins.append({'account': account_name, 'type': actor_type, 'name': actor_name})
 
 
-def find_admins(accounts, config, findings):
+def check_for_bad_policy(findings, region, arn, policy_text):
+    for statement in make_list(policy_text['Statement']):
+        # Checking for signatures of the bad MFA policy from
+        # https://web.archive.org/web/20170602002425/https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_users-self-manage-mfa-and-creds.html
+        # and
+        # https://github.com/awsdocs/iam-user-guide/blob/cfe14c674c494d07ba0ab952fe546fdd587da65d/doc_source/id_credentials_mfa_enable_virtual.md#permissions-required
+        if statement.get('Sid', '') == 'AllowIndividualUserToManageTheirOwnMFA' or statement.get('Sid', '') == 'AllowIndividualUserToViewAndManageTheirOwnMFA':
+            if 'iam:DeactivateMFADevice' in make_list(statement.get('Action', [])):
+                findings.add(Finding(
+                    region,
+                    'BAD_MFA_POLICY',
+                    arn,
+                    policy_text))
+                return
+        elif statement.get('Sid', '') == 'BlockAnyAccessOtherThanAboveUnlessSignedInWithMFA':
+            if 'iam:*' in make_list(statement.get('NotAction', [])):
+                findings.add(Finding(
+                    region,
+                    'BAD_MFA_POLICY',
+                    arn,
+                    policy_text))
+                return
+
+
+def find_admins(accounts, findings):
     admins = []
     for account in accounts:
-        location = {'account': account['name']}
+        account = Account(None, account)
+        region = get_us_east_1(account)
+        admins.extend(find_admins_in_account(region, findings))
 
-        try:
-            file_name = 'account-data/{}/{}/{}'.format(
-                account['name'],
-                'us-east-1',
-                'iam-get-account-authorization-details.json')
-            iam = json.load(open(file_name))
-        except:
-            if not os.path.exists('account-data/{}/'.format(account['name'])):
-                # Account has not been collected from, so silently skip it
+    return admins
+
+
+def find_admins_in_account(region, findings):
+    account = region.account
+    location = {'account': account.name}
+
+    admins = []
+
+    try:
+        file_name = 'account-data/{}/{}/{}'.format(
+            account.name,
+            'us-east-1',
+            'iam-get-account-authorization-details.json')
+        iam = json.load(open(file_name))
+    except:
+        if not os.path.exists('account-data/{}/'.format(account.name)):
+            # Account has not been collected from, so silently skip it
+            return []
+        log_error('Problem opening iam data, skipping account', location, [file_name])
+        return []
+
+    admin_policies = []
+    policy_action_counts = {}
+    for policy in iam['Policies']:
+        location['policy'] = policy['Arn']
+        policy_doc = get_current_policy_doc(policy)
+
+        check_for_bad_policy(findings, region, policy['Arn'], policy_doc)
+
+        policy_action_counts[policy['Arn']] = policy_action_count(policy_doc, location)
+
+        if is_admin_policy(policy_doc, location):
+            admin_policies.append(policy['Arn'])
+            if ('arn:aws:iam::aws:policy/AdministratorAccess' in policy['Arn'] or
+                    'arn:aws:iam::aws:policy/IAMFullAccess' in policy['Arn']):
+                # Ignore the admin policies that are obviously admin
                 continue
-            log_error('Problem opening iam data, skipping account', location, [file_name])
-            continue
+            if 'arn:aws:iam::aws:policy' in policy['Arn']:
+                # Detects the deprecated `AmazonElasticTranscoderFullAccess`
+                log_warning('AWS managed policy allows admin', location, [policy_doc])
+                continue
+            log_warning('Custom policy allows admin', location, [policy_doc])
+    location.pop('policy', None)
 
-        admin_policies = []
-        policy_action_counts = {}
-        for policy in iam['Policies']:
-            location['policy'] = policy['Arn']
-            policy_doc = get_current_policy_doc(policy)
-            policy_action_counts[policy['Arn']] = policy_action_count(policy_doc, location)
+    # Identify roles that allow admin access
+    for role in iam['RoleDetailList']:
+        location['role'] = role['Arn']
+        reasons = []
 
+        # Check if this role is an admin
+        for policy in role['AttachedManagedPolicies']:
+            if policy['PolicyArn'] in admin_policies:
+                reasons.append('Attached managed policy: {}'.format(policy['PolicyArn']))
+        for policy in role['RolePolicyList']:
+            policy_doc = policy['PolicyDocument']
             if is_admin_policy(policy_doc, location):
-                admin_policies.append(policy['Arn'])
-                if ('arn:aws:iam::aws:policy/AdministratorAccess' in policy['Arn'] or
-                        'arn:aws:iam::aws:policy/IAMFullAccess' in policy['Arn']):
-                    # Ignore the admin policies that are obviously admin
+                reasons.append('Custom policy: {}'.format(policy['PolicyName']))
+                log_warning('Role has custom policy allowing admin', location, [policy_doc])
+
+        if len(reasons) != 0:
+            for stmt in role['AssumeRolePolicyDocument']['Statement']:
+                if stmt['Effect'] != 'Allow':
+                    log_warning('Unexpected Effect in AssumeRolePolicyDocument', location, [stmt])
                     continue
-                if 'arn:aws:iam::aws:policy' in policy['Arn']:
-                    # Detects the deprecated `AmazonElasticTranscoderFullAccess`
-                    log_warning('AWS managed policy allows admin', location, [policy_doc])
+
+                if stmt['Action'] == 'sts:AssumeRole':
+                    if 'AWS' not in stmt['Principal'] or len(stmt['Principal']) != 1:
+                        log_warning('Unexpected Principal in AssumeRolePolicyDocument', location, [stmt['Principal']])
+                elif stmt['Action'] == 'sts:AssumeRoleWithSAML':
                     continue
-                log_warning('Custom policy allows admin', location, [policy_doc])
-        location.pop('policy', None)
+                else:
+                    log_warning('Unexpected Action in AssumeRolePolicyDocument', location, [stmt])
+            log_info('Role is admin', location, reasons)
+            record_admin(admins, account.name, 'role', role['RoleName'])
+        # TODO Should check users or other roles allowed to assume this role to show they are admins
+    location.pop('role', None)
 
-        # Identify roles that allow admin access
-        for role in iam['RoleDetailList']:
-            location['role'] = role['Arn']
-            reasons = []
+    # Identify groups that allow admin access
+    admin_groups = []
+    for group in iam['GroupDetailList']:
+        location['group'] = group['Arn']
+        is_admin = False
+        for policy in group['AttachedManagedPolicies']:
+            if policy['PolicyArn'] in admin_policies:
+                is_admin = True
+                if 'admin' not in group['Arn'].lower():
+                    log_warning('Group is admin, but name does not indicate it is', location)
+        for policy in group['GroupPolicyList']:
+            policy_doc = policy['PolicyDocument']
+            if is_admin_policy(policy_doc, location):
+                is_admin = True
+                log_warning('Group has custom policy allowing admin', location, [policy_doc])
+        if is_admin:
+            admin_groups.append(group['GroupName'])
+    location.pop('group', None)
 
-            # Check if this role is an admin
-            for policy in role['AttachedManagedPolicies']:
-                if policy['PolicyArn'] in admin_policies:
-                    reasons.append('Attached managed policy: {}'.format(policy['PolicyArn']))
-            for policy in role['RolePolicyList']:
-                policy_doc = policy['PolicyDocument']
-                if is_admin_policy(policy_doc, location):
-                    reasons.append('Custom policy: {}'.format(policy['PolicyName']))
-                    log_warning('Role has custom policy allowing admin', location, [policy_doc])
+    # Check users
+    for user in iam['UserDetailList']:
+        location['user'] = user['UserName']
+        reasons = []
 
-            if len(reasons) != 0:
-                for stmt in role['AssumeRolePolicyDocument']['Statement']:
-                    if stmt['Effect'] != 'Allow':
-                        log_warning('Unexpected Effect in AssumeRolePolicyDocument', location, [stmt])
-                        continue
+        # Check the different ways in which the user could be an admin
+        for policy in user['AttachedManagedPolicies']:
+            if policy['PolicyArn'] in admin_policies:
+                reasons.append('Attached managed policy: {}'.format(policy['PolicyArn']))
+        for policy in user.get('UserPolicyList', []):
+            policy_doc = policy['PolicyDocument']
+            if is_admin_policy(policy_doc, location):
+                reasons.append('Custom user policy: {}'.format(policy['PolicyName']))
+                log_warning('User has custom policy allowing admin', location)
+        for group in user['GroupList']:
+            if group in admin_groups:
+                reasons.append('In admin group: {}'.format(group))
 
-                    if stmt['Action'] == 'sts:AssumeRole':
-                        if 'AWS' not in stmt['Principal'] or len(stmt['Principal']) != 1:
-                            log_warning('Unexpected Principal in AssumeRolePolicyDocument', location, [stmt['Principal']])
-                    elif stmt['Action'] == 'sts:AssumeRoleWithSAML':
-                        continue
-                    else:
-                        log_warning('Unexpected Action in AssumeRolePolicyDocument', location, [stmt])
-                log_info('Role is admin', location, reasons)
-                record_admin(admins, account['name'], 'role', role['RoleName'])
-            # TODO Should check users or other roles allowed to assume this role to show they are admins
-        location.pop('role', None)
+        # Log them if they are an admin
+        if len(reasons) != 0:
+            log_info('User is admin', location, reasons)
+            record_admin(admins, account.name, 'user', user['UserName'])
 
-        # Identify groups that allow admin access
-        admin_groups = []
-        for group in iam['GroupDetailList']:
-            location['group'] = group['Arn']
-            is_admin = False
-            for policy in group['AttachedManagedPolicies']:
-                if policy['PolicyArn'] in admin_policies:
-                    is_admin = True
-                    if 'admin' not in group['Arn'].lower():
-                        log_warning('Group is admin, but name does not indicate it is', location)
-            for policy in group['GroupPolicyList']:
-                policy_doc = policy['PolicyDocument']
-                if is_admin_policy(policy_doc, location):
-                    is_admin = True
-                    log_warning('Group has custom policy allowing admin', location, [policy_doc])
-            if is_admin:
-                admin_groups.append(group['GroupName'])
-        location.pop('group', None)
-
-        # Check users
-        for user in iam['UserDetailList']:
-            location['user'] = user['UserName']
-            reasons = []
-
-            # Check the different ways in which the user could be an admin
-            for policy in user['AttachedManagedPolicies']:
-                if policy['PolicyArn'] in admin_policies:
-                    reasons.append('Attached managed policy: {}'.format(policy['PolicyArn']))
-            for policy in user.get('UserPolicyList', []):
-                policy_doc = policy['PolicyDocument']
-                if is_admin_policy(policy_doc, location):
-                    reasons.append('Custom user policy: {}'.format(policy['PolicyName']))
-                    log_warning('User has custom policy allowing admin', location)
-            for group in user['GroupList']:
-                if group in admin_groups:
-                    reasons.append('In admin group: {}'.format(group))
-
-            # Log them if they are an admin
-            if len(reasons) != 0:
-                log_info('User is admin', location, reasons)
-                record_admin(admins, account['name'], 'user', user['UserName'])
-
-        location.pop('user', None)
+    location.pop('user', None)
     return admins
