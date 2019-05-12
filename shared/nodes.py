@@ -350,7 +350,10 @@ class Elb(Leaf):
         tags = get_parameter_file(self.region, 'elb', 'describe-tags', self._json_blob['LoadBalancerName']) 
         if tags is None:
             return []
-        return tags['TagDescriptions']['Tags']
+        descriptions = tags['TagDescriptions']
+        if descriptions is None or len(descriptions) == 0:
+            return []
+        return descriptions[0]['Tags']
 
     def set_subnet(self, subnet):
         self._subnet = subnet
@@ -401,7 +404,10 @@ class Elbv2(Leaf):
         tags = get_parameter_file(self.region, 'elbv2', 'describe-tags', self._json_blob['LoadBalancerName']) 
         if tags is None:
             return []
-        return tags['TagDescriptions']['Tags']
+        descriptions = tags['TagDescriptions']
+        if descriptions is None or len(descriptions) == 0:
+            return []
+        return descriptions[0]['Tags']
 
     def set_subnet(self, subnet):
         self._subnet = subnet
