@@ -593,6 +593,7 @@ class Ecs(Leaf):
         for detail in pyjq.all('.attachments[].details[]', self._json_blob):
             if detail['name'] == 'subnetId':
                 return [detail['value']]
+        return []
 
     @property
     def tags(self):
