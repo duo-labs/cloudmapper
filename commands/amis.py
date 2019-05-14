@@ -50,7 +50,7 @@ def amis(args, accounts):
                         "  aws ec2 describe-regions | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws --region {} ec2 describe-images --executable-users all > {}/ec2-describe-images.json'\n"
                         )
 
-    print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+    print('\t'.join([
         'Account Name',
         'Region Name',
         'Instance Id',
@@ -58,7 +58,7 @@ def amis(args, accounts):
         'AMI ID',
         'Is Public',
         'AMI Description',
-        'AMI Owner'))
+        'AMI Owner'])
 
     with scandir('data/aws/') as it:
         for region in it:
@@ -75,7 +75,7 @@ def amis(args, accounts):
                 instances = query_aws(account, "ec2-describe-instances", region)
                 resource_filter = '.Reservations[].Instances[] | select(.State.Name == "running")'
                 if args.instance_filter != '':
-                    resource_filter += '|{}'.format(args.instance_filter)
+                    resource_filter = '|'.join([resource_filter, args.instance_filter])
                 instances = pyjq.all(resource_filter, instances)
 
                 account_images = query_aws(account, "ec2-describe-images", region)
@@ -96,7 +96,7 @@ def amis(args, accounts):
                                 image_description = image.get('ImageLocation', '')
                         owner = image.get('OwnerId', '')
 
-                    print("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(
+                    print('\t'.join([
                         account.name,
                         region.name,
                         instance['InstanceId'],
@@ -104,7 +104,7 @@ def amis(args, accounts):
                         image_id,
                         is_public_image,
                         image_description,
-                        owner))
+                        owner])
 
 
 def run(arguments):
