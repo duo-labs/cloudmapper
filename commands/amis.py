@@ -58,7 +58,7 @@ def amis(args, accounts):
         'AMI ID',
         'Is Public',
         'AMI Description',
-        'AMI Owner'])
+        'AMI Owner']))
 
     with scandir('data/aws/') as it:
         for region in it:
@@ -104,7 +104,7 @@ def amis(args, accounts):
                         image_id,
                         is_public_image,
                         image_description,
-                        owner])
+                        owner]))
 
 
 def run(arguments):
