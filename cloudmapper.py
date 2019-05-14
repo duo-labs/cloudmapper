@@ -25,7 +25,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 This script manages CloudMapper, a tool for analyzing AWS environments.
 """
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import sys
 import pkgutil
 import importlib
@@ -39,7 +42,7 @@ def show_help(commands):
         sys.argv[0], "|".join(sorted(commands.keys()))))
     for command, module in sorted(commands.items()):
         print("  {}: {}".format(command, module.__description__))
-    exit(-1)
+    sys.exit(-1)
 
 
 def main():
@@ -49,12 +52,11 @@ def main():
     # TODO: This adds half a second to the start time. Is there a smarter way
     # to do this?
     commands = {}
-    commands_paths = ['commands', 'private_commands']
+    commands_paths = ('commands', 'private_commands')
     for commands_path in commands_paths:
-        for importer, command_name, _ in pkgutil.iter_modules([commands_path]):
-            full_package_name = '%s.%s' % (commands_path, command_name)
-            module = importlib.import_module(full_package_name)
-            commands[command_name] = module
+        path_iter = pkgutil.iter_modules([commands_path])
+        for _, command_name, _ in path_iter:
+            commands[command_name] = importlib.import_module('.'.join([commands_path, command_name]))
 
     # Parse command
     if len(sys.argv) <= 1:
