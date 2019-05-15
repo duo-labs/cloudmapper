@@ -27,10 +27,13 @@ import json
 import operator
 import itertools
 import argparse
-import pyjq
 import copy
 import urllib.parse
+import sys
+
+import pyjq
 from netaddr import IPNetwork, IPAddress
+
 from shared.common import get_account, get_regions, is_external_cidr
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, Lambda, Redshift, ElasticSearch, Cidr, Connection
@@ -107,7 +110,11 @@ def get_ecs_tasks(region):
     for clusterArn in clusters.get('clusterArns', []):
         tasks_json = get_parameter_file(region, 'ecs', 'list-tasks', clusterArn)
         for taskArn in tasks_json['taskArns']:
-            task_path = 'account-data/{}/{}/{}/{}/{}'.format(region.account.name, region.region.name, 'ecs-describe-tasks', urllib.parse.quote_plus(clusterArn), urllib.parse.quote_plus(taskArn))
+            task_path = 'account-data/{}/{}/{}/{}/{}'.format(region.account.name,
+                                                             region.region.name,
+                                                             'ecs-describe-tasks',
+                                                             urllib.parse.quote_plus(clusterArn),
+                                                             urllib.parse.quote_plus(taskArn))
             task = json.load(open(task_path))
             tasks.append(task['tasks'][0])
     return tasks
@@ -153,7 +160,7 @@ def get_external_cidrs(account, config):
                     unique_cidrs[cidr] = 1
 
     # Remove private CIDR ranges
-    for cidr in unique_cidrs.keys():
+    for cidr in unique_cidrs:
         if is_external_cidr(cidr):
             # It's something else, so add it
             external_cidrs.append(Cidr(cidr, get_cidr_name(cidr, config)))
@@ -301,7 +308,7 @@ def build_data_structure(account_data, config, outputfilter):
     log("Building data for account {} ({})".format(account.name, account.local_id))
 
     cytoscape_json.append(account.cytoscape_data())
-    
+
     # Iterate through each region and add all the VPCs, AZs, and Subnets
     for region_json in get_regions(account, outputfilter):
         nodes = {}
@@ -336,7 +343,7 @@ def build_data_structure(account_data, config, outputfilter):
         for ec2_json in get_ec2s(region):
             node = Ec2(region, ec2_json, outputfilter["collapse_by_tag"], outputfilter["collapse_asgs"])
             nodes[node.arn] = node
-        
+
         # RDS nodes
         for rds_json in get_rds_instances(region):
             node = Rds(region, rds_json)
@@ -348,7 +355,7 @@ def build_data_structure(account_data, config, outputfilter):
         for elb_json in get_elbs(region):
             node = Elb(region, elb_json)
             nodes[node.arn] = node
-        
+
         for elb_json in get_elbv2s(region):
             node = Elbv2(region, elb_json)
             nodes[node.arn] = node
@@ -362,7 +369,7 @@ def build_data_structure(account_data, config, outputfilter):
         for ecs_json in get_ecs_tasks(region):
             node = Ecs(region, ecs_json)
             nodes[node.arn] = node
-        
+
         # Lambda functions
         for lambda_json in get_lambda_functions(region):
             node = Lambda(region, lambda_json)
@@ -392,12 +399,12 @@ def build_data_structure(account_data, config, outputfilter):
                     for pair in conditions:
                         # Given ["Team","Dev"], see if it matches one of the tags in the node
                         for tag in node.tags:
-                            if tag.get('Key','') == pair[0] and tag.get('Value','') == pair[1]:
+                            if tag.get('Key', '') == pair[0] and tag.get('Value', '') == pair[1]:
                                 condition_matches += 1
                     # We have a match if all of the conditions matched
                     if condition_matches == len(conditions):
                         has_match = True
-                
+
                 # If there were no matches, remove the node
                 if not has_match:
                     del nodes[node_id]
@@ -416,7 +423,7 @@ def build_data_structure(account_data, config, outputfilter):
             for vpc in region.children:
                 if vpc.has_leaves:
                     cytoscape_json.append(vpc.cytoscape_data())
-                
+
                     vpc_children_to_remove = set()
                     for vpc_child in vpc.children:
                         if vpc_child.has_leaves:
@@ -425,7 +432,7 @@ def build_data_structure(account_data, config, outputfilter):
                             elif vpc_child.node_type != 'az':
                                 # Add VPC children that are not AZs, such as Gateway endpoints
                                 cytoscape_json.append(vpc_child.cytoscape_data())
-                        
+
                             az_children_to_remove = set()
                             for subnet in vpc_child.children:
                                 if subnet.has_leaves:
@@ -525,7 +532,7 @@ def build_data_structure(account_data, config, outputfilter):
                 for c in connections:
                     if c.source.node_type == 'ip' and c.source.arn == cidr_string:
                         connections_to_remove.append(c)
-                
+
                 # Create new connections to the new node
                 for c in connections_to_remove:
                     r = connections[c]
@@ -641,9 +648,9 @@ def run(arguments):
     try:
         config = json.load(open(args.config))
     except IOError:
-        exit("ERROR: Unable to load config file \"{}\"".format(args.config))
+        sys.exit("ERROR: Unable to load config file \"{}\"".format(args.config))
     except ValueError as e:
-        exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
+        sys.exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
     account = get_account(args.account_name, config, args.config)
 
     prepare(account, config, outputfilter)
