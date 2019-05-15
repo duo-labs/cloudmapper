@@ -1,7 +1,10 @@
 from __future__ import print_function
+
 import sys
 import argparse
+
 from shared.common import parse_arguments, get_account_stats
+
 
 __description__ = "Print counts of resources for accounts"
 
@@ -13,7 +16,6 @@ def output_image(accounts, account_stats, resource_names, output_image_file):
     import pandas as pd
     import seaborn as sns
     import matplotlib.pyplot as plt
-    from pandas.plotting import table
 
     # Reverse order of accounts so they appear in the graph correctly
     accounts = list(reversed(accounts))
@@ -47,13 +49,13 @@ def output_image(accounts, account_stats, resource_names, output_image_file):
     print('Image saved to {}'.format(output_image_file), file=sys.stderr)
 
 
-def stats(accounts, config, args):
-    '''Collect stats'''
+def stats(accounts, args):
+    """Collect stats"""
 
     # Collect counts
     account_stats = {}
     for account in accounts:
-        account_stats[account['name']] = get_account_stats(account,args.stats_all_resources)
+        account_stats[account['name']] = get_account_stats(account, args.stats_all_resources)
         resource_names = account_stats[account['name']]['keys']
 
     # Print header
@@ -90,6 +92,6 @@ def run(arguments):
         default=False,
         dest='stats_all_resources')
 
-    args, accounts, config = parse_arguments(arguments, parser)
+    args, accounts, _ = parse_arguments(arguments, parser)
 
-    stats(accounts, config, args)
+    stats(accounts, args)
