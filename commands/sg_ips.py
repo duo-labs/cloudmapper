@@ -1,5 +1,7 @@
 from collections import OrderedDict
 from os import path
+import sys
+
 from netaddr import IPNetwork
 import pyjq
 
@@ -23,10 +25,6 @@ def get_cidrs_for_account(account, cidrs):
             cidr_and_name_list = pyjq.all('.IpPermissions[].IpRanges[]|[.CidrIp,.Description]', sg)
             for cidr, name in cidr_and_name_list:
                 if not is_external_cidr(cidr):
-                    continue
-
-                if is_unneeded_cidr(cidr):
-                    print('WARNING: Unneeded cidr used {} in {}'.format(cidr, sg['GroupId']))
                     continue
 
                 if cidr.startswith('0.0.0.0') and not cidr.endswith('/0'):
@@ -58,7 +56,7 @@ def sg_ips(accounts):
 
     try:
         from mpl_toolkits.basemap import Basemap
-    except:
+    except Exception:
         print("ERROR: You must install basemap for mpl_toolkits. There is no pip for it.")
         print("See https://matplotlib.org/basemap/users/installing.html")
         print("\nSteps:")
@@ -69,8 +67,7 @@ def sg_ips(accounts):
         print("python setup.py install")
         print("cd ..")
         print("rm -rf basemap-1.1.0*")
-        print("cd ..")
-        exit(-1)
+        sys.exit("cd ..")
 
     import geoip2.database
     import matplotlib as mpl
@@ -86,7 +83,7 @@ def sg_ips(accounts):
     try:
         asn_reader = geoip2.database.Reader('./data/GeoLite2-ASN.mmdb')
         city_reader = geoip2.database.Reader('./data/GeoLite2-City.mmdb')
-    except:
+    except Exception:
         # geoip files do not exist.  Tell the user.
         print("ERROR: You must download the geoip files GeoLite2-ASN.mmdb and GeoLite2-City.mmdb")
         print("from https://dev.maxmind.com/geoip/geoip2/geolite2/ and put them in ./data/")
@@ -104,8 +101,7 @@ def sg_ips(accounts):
         print("rm -rf GeoLite2-City_*")
         print("rm -rf GeoLite2-ASN_*")
         print("rm -rf GeoLite2-*.tar.gz")
-        print("cd ..")
-        exit(-1)
+        sys.exit("cd ..")
 
     # Dictionary containing cidr as the key, and the security group descriptions
     # as set for the value
