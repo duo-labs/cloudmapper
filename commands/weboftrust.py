@@ -1,9 +1,11 @@
 import argparse
-from os import path, listdir
+from os import path, scandir
 import json
+import urllib.parse
+import sys
+
 import yaml
 import pyjq
-import urllib.parse
 
 from shared.common import parse_arguments, make_list, query_aws, get_regions
 
@@ -118,7 +120,7 @@ def is_admin_policy(policy_doc):
         if stmt['Effect'] == 'Allow':
             actions = make_list(stmt.get('Action', []))
             for action in actions:
-                if action == '*' or action == '*:*' or action == 'iam:*':
+                if action in ('*', '*:*', 'iam:*'):
                     return True
     return False
 
@@ -139,7 +141,6 @@ def get_vpc_peerings(account, nodes, connections):
                 peered_account = Account(account_id=vpc_peering['RequesterVpcInfo']['OwnerId'])
                 nodes[peered_account.id] = peered_account
                 connections[Connection(account, peered_account, "vpc")] = []
-    return
 
 
 def get_direct_connects(account, nodes, connections):
@@ -152,7 +153,6 @@ def get_direct_connects(account, nodes, connections):
             # TODO: I could get a slightly nicer name if I had data for `directconnect describe-locations`
             nodes[name] = location
             connections[Connection(account, location, "directconnect")] = []
-    return
 
 
 def get_iam_trusts(account, nodes, connections, connections_to_get):
@@ -203,7 +203,7 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                     for p in pyjq.all('.Policies[]', iam):
                         if p['Arn'] == m['PolicyArn']:
                             for policy_doc in p['PolicyVersionList']:
-                                if policy_doc['IsDefaultVersion'] == True:
+                                if policy_doc['IsDefaultVersion']:
                                     if is_admin_policy(policy_doc['Document']):
                                         access_type = 'admin'
                 for policy in role['RolePolicyList']:
@@ -214,50 +214,50 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                 if ((access_type == 'admin' and connections_to_get['admin']) or
                         (access_type != 'admin' and connections_to_get['iam_nonadmin'])):
                     connections[Connection(node, account, access_type)] = []
-    return
 
 
 def get_s3_trusts(account, nodes, connections):
     policy_dir = './account-data/{}/us-east-1/s3-get-bucket-policy/'.format(account.name)
-    for s3_policy_file in [f for f in listdir(policy_dir) if path.isfile(path.join(policy_dir, f)) and path.getsize(path.join(policy_dir, f)) > 4]:
-        s3_policy = json.load(open(path.join(policy_dir, s3_policy_file)))
-        s3_policy = json.loads(s3_policy['Policy'])
-        s3_bucket_name = urllib.parse.unquote_plus(s3_policy_file)
-        for s in s3_policy['Statement']:
-            principals = s.get('Principal', None)
-            if principals is None:
-                if s.get('NotPrincipal', None) is not None:
-                    print("WARNING: Use of NotPrincipal in {} for {}: {}".format(account.name, s3_bucket_name, s))
+    with scandir(policy_dir) as it:
+        policy_it = (f.name for f in it if f.is_file() and f.stat().st_size > 4)
+        for s3_policy_file in policy_it:
+            s3_policy = json.load(open(path.join(policy_dir, s3_policy_file)))
+            s3_policy = json.loads(s3_policy['Policy'])
+            s3_bucket_name = urllib.parse.unquote_plus(s3_policy_file)
+            for s in s3_policy['Statement']:
+                principals = s.get('Principal')
+                if principals is None:
+                    if s.get('NotPrincipal') is not None:
+                        print("WARNING: Use of NotPrincipal in {} for {}: {}".format(account.name, s3_bucket_name, s))
+                        continue
+                    print('WARNING: Malformed statement in {} for {}: {}'.format(account.name, s3_bucket_name, s))
                     continue
-                print('WARNING: Malformed statement in {} for {}: {}'.format(account.name, s3_bucket_name, s))
-                continue
 
-            for principal in principals:
-                assume_role_nodes = set()
-                if principal == 'AWS':
-                    trusts = principals[principal]
-                    if not isinstance(trusts, list):
-                        trusts = [trusts]
-                    for trust in trusts:
-                        if "arn:aws" not in trust:
-                            # The role can simply be something like "*"
-                            continue
-                        parts = trust.split(':')
-                        account_id = parts[4]
-                        assume_role_nodes.add(Account(account_id=account_id))
-                for node in assume_role_nodes:
-                    if nodes.get(node.id, None) is None:
-                        nodes[node.id] = node
-                    access_type = 's3_read'
-                    actions = s['Action']
-                    if not isinstance(actions, list):
-                        actions = [actions]
-                    for action in actions:
-                        if not action.startswith('s3:List') and not action.startswith('s3:Get'):
-                            access_type = 's3'
-                            break
-                    connections[Connection(node, account, access_type)] = []
-    return
+                for principal in principals:
+                    assume_role_nodes = set()
+                    if principal == 'AWS':
+                        trusts = principals[principal]
+                        if not isinstance(trusts, list):
+                            trusts = [trusts]
+                        for trust in trusts:
+                            if "arn:aws" not in trust:
+                                # The role can simply be something like "*"
+                                continue
+                            parts = trust.split(':')
+                            account_id = parts[4]
+                            assume_role_nodes.add(Account(account_id=account_id))
+                    for node in assume_role_nodes:
+                        if nodes.get(node.id) is None:
+                            nodes[node.id] = node
+                        access_type = 's3_read'
+                        actions = s['Action']
+                        if not isinstance(actions, list):
+                            actions = [actions]
+                        for action in actions:
+                            if not action.startswith('s3:List') and not action.startswith('s3:Get'):
+                                access_type = 's3'
+                                break
+                        connections[Connection(node, account, access_type)] = []
 
 
 def get_nodes_and_connections(account_data, nodes, connections, args):
@@ -367,10 +367,10 @@ def weboftrust(args, accounts, config):
         if c.source.id == c.target.id:
             # Ensure we don't add connections with the same nodes on either side
             continue
-        if c._type != 'admin' and connections.get(Connection(c.source, c.target, 'admin'), False) is not False:
+        if c._type != 'admin' and connections.get(Connection(c.source, c.target, 'admin')) is not None:
             # Don't show an iam connection if we have an admin connection between the same nodes
             continue
-        if (c._type == 's3_read') and (connections.get(Connection(c.source, c.target, 's3'), False) is not False):
+        if c._type == 's3_read' and (connections.get(Connection(c.source, c.target, 's3')) is not None):
             # Don't show an s3 connection if we have an iam or admin connection between the same nodes
             continue
         #print('{} -> {}'.format(c.source.id, c.target.id))
@@ -392,8 +392,7 @@ def run(arguments):
     args, accounts, config = parse_arguments(arguments, parser)
 
     if args.network_only and args.admin_only:
-        print("ERROR: You cannot use network_only and admin_only at the same time")
-        exit(-1)
+        sys.exit("ERROR: You cannot use network_only and admin_only at the same time")
 
     cytoscape_json = weboftrust(args, accounts, config)
     with open('web/data.json', 'w') as outfile:
