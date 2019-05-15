@@ -1,4 +1,5 @@
 from __future__ import print_function
+
 from shared.common import parse_arguments, get_regions
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
@@ -7,7 +8,7 @@ from shared.nodes import Account, Region
 __description__ = "Map API Gateway end-points"
 
 
-def api_endpoints(accounts, config):
+def api_endpoints(accounts):
     for account in accounts:
         account = Account(None, account)
         for region_json in get_regions(account):
@@ -17,7 +18,8 @@ def api_endpoints(accounts, config):
             json_blob = query_aws(region.account, 'apigateway-get-rest-apis', region)
             if json_blob is None:
                 continue
-            for api in json_blob.get('items', []):
+            items = json_blob.get('items', [])
+            for api in items:
                 rest_id = api['id']
                 deployments = get_parameter_file(region, 'apigateway', 'get-deployments', rest_id)
                 if deployments is None:
@@ -41,5 +43,5 @@ def api_endpoints(accounts, config):
 
 
 def run(arguments):
-    _, accounts, config = parse_arguments(arguments)
-    api_endpoints(accounts, config)
+    _, accounts, _ = parse_arguments(arguments)
+    api_endpoints(accounts)
