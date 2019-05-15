@@ -1,8 +1,10 @@
 import os.path
 import json
 import re
+
 from policyuniverse.policy import Policy
-from shared.common import parse_arguments, make_list, log_info, log_warning
+from shared.common import parse_arguments, make_list, log_info, log_warning, log_error
+
 
 __description__ = "Find admins in accounts"
 
@@ -24,13 +26,13 @@ def action_matches(action_from_policy, actions_to_match_against):
     return False
 
 
-def policy_action_count(policy_doc, location):
+def policy_action_count(policy_doc):
     # Counts how many unrestricted actions a policy grants
     policy = Policy(policy_doc)
     actions_count = 0
     for stmt in policy.statements:
         if (stmt.effect == 'Allow' and
-                len(stmt.condition_entries) == 0 and
+                not stmt.condition_entries and
                 stmt.resources == set('*')):
             actions_count += len(stmt.actions_expanded)
     return actions_count
@@ -55,28 +57,27 @@ def is_admin_policy(policy_doc, location):
 
             actions = make_list(stmt.get('Action', []))
             for action in actions:
-                if action == '*' or action == '*:*' or action == 'iam:*':
+                if action in ('*', '*:*', 'iam:*'):
                     if stmt.get('Resource', '') != '*':
                         log_warning('Admin policy not using a Resource of *', location, [stmt.get('Resource', '')])
                     return True
                 # Look for privilege escalations
                 if stmt.get('Resource', '') == '*' and stmt.get('Condition', '') == '' and (
-                    action_matches(action, [
-                        'iam:PutRolePolicy',
-                        'iam:AddUserToGroup',
-                        'iam:AddRoleToInstanceProfile',
-                        'iam:AttachGroupPolicy',
-                        'iam:AttachRolePolicy',
-                        'iam:AttachUserPolicy',
-                        'iam:ChangePassword',
-                        'iam:CreateAccessKey',
-                        # Check for the rare possibility that an actor has a Deny policy on themselves,
-                        # so they try to escalate privs by removing that policy
-                        'iam:DeleteUserPolicy',
-                        'iam:DetachGroupPolicy',
-                        'iam:DetachRolePolicy',
-                        'iam:DetachUserPolicy']
-                    )
+                        action_matches(action, [
+                            'iam:PutRolePolicy',
+                            'iam:AddUserToGroup',
+                            'iam:AddRoleToInstanceProfile',
+                            'iam:AttachGroupPolicy',
+                            'iam:AttachRolePolicy',
+                            'iam:AttachUserPolicy',
+                            'iam:ChangePassword',
+                            'iam:CreateAccessKey',
+                            # Check for the rare possibility that an actor has a Deny policy on themselves,
+                            # so they try to escalate privs by removing that policy
+                            'iam:DeleteUserPolicy',
+                            'iam:DetachGroupPolicy',
+                            'iam:DetachRolePolicy',
+                            'iam:DetachUserPolicy'])
                 ):
                     return True
 
@@ -87,7 +88,7 @@ def record_admin(admins, account_name, actor_type, actor_name):
     admins.append({'account': account_name, 'type': actor_type, 'name': actor_name})
 
 
-def find_admins(accounts, config):
+def find_admins(accounts):
     admins = []
     for account in accounts:
         location = {'account': account['name']}
@@ -98,7 +99,7 @@ def find_admins(accounts, config):
                 'us-east-1',
                 'iam-get-account-authorization-details.json')
             iam = json.load(open(file_name))
-        except:
+        except Exception:
             if not os.path.exists('account-data/{}/'.format(account['name'])):
                 # Account has not been collected from, so silently skip it
                 continue
@@ -108,9 +109,8 @@ def find_admins(accounts, config):
         admin_policies = []
         policy_action_counts = {}
         for policy in iam['Policies']:
-            location['policy'] = policy['Arn']
             policy_doc = get_current_policy_doc(policy)
-            policy_action_counts[policy['Arn']] = policy_action_count(policy_doc, location)
+            policy_action_counts[policy['Arn']] = policy_action_count(policy_doc)
 
             if is_admin_policy(policy_doc, location):
                 admin_policies.append(policy['Arn'])
@@ -212,8 +212,8 @@ def get_account_name_from_id(accounts, account_id):
 
 
 def run(arguments):
-    _, accounts, config = parse_arguments(arguments)
-    admins = find_admins(accounts, config)
+    _, accounts, _ = parse_arguments(arguments)
+    admins = find_admins(accounts)
 
     for admin in admins:
         print("{}\t{}\t{}".format(admin['account'], admin['type'], admin['name']))
