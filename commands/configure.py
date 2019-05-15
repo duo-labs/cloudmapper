@@ -1,7 +1,10 @@
 import json
 import os.path
-import netaddr
 import argparse
+import sys
+
+import netaddr
+
 
 __description__ = "Add and remove items from the config file"
 
@@ -23,7 +26,7 @@ def configure(action, arguments):
         try:
             netaddr.IPNetwork(arguments.cidr)
         except netaddr.core.AddrFormatError:
-            exit("ERROR: CIDR is not valid")
+            sys.exit("ERROR: CIDR is not valid")
             return
         config['cidrs'][str(arguments.cidr)] = {
             "name": str(arguments.name),
@@ -53,10 +56,9 @@ def configure(action, arguments):
 
 
 def run(arguments):
-    if len(arguments) == 0:
-        exit("ERROR: Missing action for configure.\n"
+    if not arguments:
+        sys.exit("ERROR: Missing action for configure.\n"
              "Usage: [add-cidr|add-account|remove-cidr|remove-account]")
-        return
     action = arguments[0]
     arguments = arguments[1:]
     parser = argparse.ArgumentParser()
