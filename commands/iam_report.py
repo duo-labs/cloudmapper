@@ -1,13 +1,15 @@
 from __future__ import print_function
+
 import argparse
 import json
 import datetime
 import os.path
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 from six import add_metaclass
-from jinja2 import Template
 
+from jinja2 import Template
 from policyuniverse.policy import Policy
+
 from shared.common import parse_arguments, get_regions
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
@@ -23,7 +25,7 @@ def tolink(s):
     return s
 
 
-def load_credential_report():
+def load_credential_report(region):
     users = []
 
     json_blob = query_aws(region.account, "iam-get-credential-report", region)
@@ -41,7 +43,7 @@ def load_credential_report():
     # cert_2_active,cert_2_last_rotated
     for line in csv_lines:
         parts = line.split(',')
-        user = {
+        users.append({
             'user': parts[0],
             'arn': parts[1],
             'user_creation_time': parts[2],
@@ -64,8 +66,7 @@ def load_credential_report():
             'cert_1_last_rotated': parts[19],
             'cert_2_active': parts[20],
             'cert_2_last_rotated': parts[21]
-        }
-        users.append[user]
+        })
     return users
 
 
@@ -106,7 +107,7 @@ def html_service_chart(principal, services_used, services_granted):
     chartid = 'serviceChart' + principal
     return ('<div style="width:30%"><canvas id="{}" width="100" height="15"></canvas></div>'
             + '<script>makeServiceUnusedChart("{}", {}, {});</script>').format(
-        chartid, chartid, services_used, services_granted - services_used)
+                chartid, chartid, services_used, services_granted - services_used)
 
 
 @add_metaclass(ABCMeta)
@@ -337,7 +338,7 @@ def build_cytoscape_graph(iam_graph):
     return cytoscape_json
 
 
-def iam_report(accounts, config, args):
+def iam_report(accounts, args):
     '''Create IAM report'''
     principal_stats = {}
     json_account_auth_details = None
@@ -591,6 +592,6 @@ def run(arguments):
         help="Do not create and display a graph",
         dest='show_graph', action='store_true')
     parser.set_defaults(show_graph=False)
-    args, accounts, config = parse_arguments(arguments, parser)
+    args, accounts, _ = parse_arguments(arguments, parser)
 
-    iam_report(accounts, config, args)
+    iam_report(accounts, args)
