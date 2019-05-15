@@ -7,12 +7,16 @@ from shutil import rmtree
 import logging
 import json
 import time
+import urllib.parse
+import sys
+
 import boto3
+from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
 import yaml
 import pyjq
-import urllib.parse
-from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
+
 from shared.common import get_account, custom_serializer
+
 
 __description__ = "Run AWS API calls to collect data from the account"
 
@@ -66,7 +70,7 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
     # TODO: Decorate this with rate limiters from
     # https://github.com/Netflix-Skunkworks/cloudaux/blob/master/cloudaux/aws/decorators.py
 
-    data = None
+    data = {}
     if os.path.isfile(outputfile):
         # Data already collected, so skip
         print("  Response already collected at {}".format(outputfile), flush=True)
@@ -169,11 +173,9 @@ def collect(arguments):
         sts.get_caller_identity()
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
-            print("ERROR: sts.get_caller_identity failed with InvalidClientTokenId. Likely cause is no AWS credentials are set.", flush=True)
-            exit(-1)
+            sys.exit("ERROR: sts.get_caller_identity failed with InvalidClientTokenId. Likely cause is no AWS credentials are set.", flush=True)
         else:
-            print("ERROR: Unknown exception when trying to call sts.get_caller_identity: {}".format(e), flush=True)
-            exit(-1)
+            sys.exit("ERROR: Unknown exception when trying to call sts.get_caller_identity: {}".format(e), flush=True)
 
     # Ensure we can make iam calls
     iam = session.client('iam')
@@ -181,18 +183,15 @@ def collect(arguments):
         iam.get_user(UserName='test')
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
-            print("ERROR: AWS doesn't allow you to make IAM calls from a session without MFA, and the collect command gathers IAM data.  Please use MFA or don't use a session. With aws-vault, specify `--no-session` on your `exec`.", flush=True)
-            exit(-1)
+            sys.exit("ERROR: AWS doesn't allow you to make IAM calls from a session without MFA, and the collect command gathers IAM data.  Please use MFA or don't use a session. With aws-vault, specify `--no-session` on your `exec`.")
         if 'NoSuchEntity' in str(e):
             # Ignore, we're just testing that our creds work
             pass
         else:
             print("ERROR: Ensure your creds are valid.", flush=True)
-            print(e, flush=True)
-            exit(-1)
+            sys.exit(e)
     except NoCredentialsError:
-        print("ERROR: No AWS credentials configured.", flush=True)
-        exit(-1)
+        sys.exit("ERROR: No AWS credentials configured.")
 
     print("* Getting region names", flush=True)
     ec2 = session.client('ec2')
@@ -208,7 +207,7 @@ def collect(arguments):
     # TODO: Identify these from boto
     universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 's3control', 'cloudfront', 'organizations']
 
-    with open("collect_commands.yaml", 'r') as f:
+    with open("collect_commands.yaml") as f:
         collect_commands = yaml.safe_load(f)
 
     for runner in collect_commands:
@@ -242,11 +241,11 @@ def collect(arguments):
                     # Look for any dynamic values (ones that jq parse a file)
                     if '|' in parameter['Value']:
                         dynamic_parameter = parameter['Name']
-            
+
             if runner.get('Custom_collection', False):
                 # The data to collect for this function is too complicated for my existing code,
                 # so I have to write custom code.
-                if runner['Service']=='ecs' and runner['Request']=='describe-tasks':
+                if runner['Service'] == 'ecs' and runner['Request'] == 'describe-tasks':
                     action_path = filepath
                     make_directory(action_path)
 
@@ -260,7 +259,10 @@ def collect(arguments):
                             cluster_path = action_path + '/' + urllib.parse.quote_plus(clusterArn)
                             make_directory(cluster_path)
 
-                            list_tasks_file = 'account-data/{}/{}/{}/{}'.format(account_dir, region['RegionName'], 'ecs-list-tasks', urllib.parse.quote_plus(clusterArn))
+                            list_tasks_file = 'account-data/{}/{}/{}/{}'.format(account_dir,
+                                                                                region['RegionName'],
+                                                                                'ecs-list-tasks',
+                                                                                urllib.parse.quote_plus(clusterArn))
 
                             with open(list_tasks_file, 'r') as f2:
                                 list_tasks = json.load(f2)
@@ -335,13 +337,10 @@ def collect(arguments):
 
     # Print summary
     print("--------------------------------------------------------------------")
-    failures = []
-    for call_summary in summary:
-        if 'exception' in call_summary:
-            failures.append(call_summary)
+    failures = [x for x in summary if 'exception' in x]
 
     print("Summary: {} APIs called. {} errors".format(len(summary), len(failures)))
-    if len(failures) > 0:
+    if failures:
         print("Failures:")
         for call_summary in failures:
             print("  {}.{}({}): {}".format(call_summary['service'], call_summary['action'], call_summary['parameters'], call_summary['exception']))
@@ -363,9 +362,9 @@ def run(arguments):
         try:
             config = json.load(open(args.config))
         except IOError:
-            exit("ERROR: Unable to load config file \"{}\"".format(args.config))
+            sys.exit("ERROR: Unable to load config file \"{}\"".format(args.config))
         except ValueError as e:
-            exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
+            sys.exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
         args.account_name = get_account(args.account_name, config, args.config)['name']
 
     collect(args)
