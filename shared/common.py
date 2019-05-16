@@ -1,10 +1,12 @@
 from __future__ import print_function
+
 import argparse
 import json
 import datetime
-import pyjq
-import yaml
 import sys
+
+import yaml
+import pyjq
 from netaddr import IPNetwork
 
 from shared.nodes import Account, Region
@@ -47,23 +49,25 @@ class Severity:
 LOG_LEVEL = Severity.INFO
 
 
-def log_debug(msg, location=None, reasons=[]):
+def log_debug(msg, location=None, reasons=None):
     log_issue(Severity.DEBUG, msg, location, reasons)
 
 
-def log_info(msg, location=None, reasons=[]):
+def log_info(msg, location=None, reasons=None):
     log_issue(Severity.INFO, msg, location, reasons)
 
 
-def log_warning(msg, location=None, reasons=[]):
+def log_warning(msg, location=None, reasons=None):
     log_issue(Severity.WARN, msg, location, reasons)
 
 
-def log_error(msg, location=None, reasons=[]):
+def log_error(msg, location=None, reasons=None):
     log_issue(Severity.ERROR, msg, location, reasons)
 
 
-def log_issue(severity, msg, location=None, reasons=[]):
+def log_issue(severity, msg, location=None, reasons=None):
+    if reasons is None:
+        reasons = []
     if severity >= LOG_LEVEL:
         json_issue = {
             'Severity': Severity.string(severity),
@@ -101,25 +105,24 @@ def is_external_cidr(cidr):
 
 def is_unblockable_cidr(cidr):
     ipnetwork = IPNetwork(cidr)
-    if (
-            ipnetwork in IPNetwork('169.254.0.0/16') or  # link local
-            ipnetwork in IPNetwork('127.0.0.0/8') or  # loopback
-            ipnetwork in IPNetwork('192.0.2.0/24') or  # Test network from RFC 5737
-            ipnetwork in IPNetwork('198.51.100.0/24') or  # Test network
-            ipnetwork in IPNetwork('203.0.113.0/24') or  # Test network
-            ipnetwork in IPNetwork('224.0.0.0/4') or  # class D multicast
-            ipnetwork in IPNetwork('240.0.0.0/5') or  # class E reserved
-            ipnetwork in IPNetwork('248.0.0.0/5') or  # reserved
-            ipnetwork in IPNetwork('255.255.255.255/32')  # broadcast
-    ):
-        return True
-    return False
+    return ipnetwork in (IPNetwork('169.254.0.0/16'),  # link local
+                         IPNetwork('127.0.0.0/8'),  # loopback
+                         IPNetwork('192.0.2.0/24'),  # Test network from RFC 5737
+                         IPNetwork('198.51.100.0/24'),  # Test network
+                         IPNetwork('203.0.113.0/24'), # Test network
+                         IPNetwork('224.0.0.0/4'),  # class D multicast
+                         IPNetwork('240.0.0.0/5'),  # class E reserved
+                         IPNetwork('248.0.0.0/5'),  # reserved
+                         IPNetwork('255.255.255.255/32')  # broadcast
+                        )
 
-def get_regions(account, outputfilter={}):
+def get_regions(account, outputfilter=None):
     # aws ec2 describe-regions
     region_data = query_aws(account, "describe-regions")
 
     region_filter = ""
+    if outputfilter is None:
+        outputfilter = {}
     if "regions" in outputfilter:
         region_filter = "| select(.RegionName | contains({}))".format(outputfilter["regions"])
 
@@ -129,18 +132,19 @@ def get_regions(account, outputfilter={}):
 
 def get_account(account_name, config=None, config_filename="config.json.demo"):
     if config is None:
-        config = json.load(open(config_filename))
+        with open(config_filename) as config_json:
+            config = json.load(config_json)
 
     for account in config["accounts"]:
         if account["name"] == account_name:
             return account
-        if account_name is None and account.get("default", False):
+        if account_name is None and account.get("default"):
             return account
 
     # Else could not find account
     if account_name is None:
-        exit("ERROR: Must specify an account, or set one in {} as a default".format(config_filename))
-    exit("ERROR: Account named \"{}\" not found in {}".format(account_name, config_filename))
+        sys.exit("ERROR: Must specify an account, or set one in {} as a default".format(config_filename))
+    sys.exit("ERROR: Account named \"{}\" not found in {}".format(account_name, config_filename))
 
 
 def parse_arguments(arguments, parser=None):
@@ -162,9 +166,9 @@ def parse_arguments(arguments, parser=None):
     try:
         config = json.load(open(args.config))
     except IOError:
-        exit("ERROR: Unable to load config file \"{}\"".format(args.config))
+        sys.exit("ERROR: Unable to load config file \"{}\"".format(args.config))
     except ValueError as e:
-        exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
+        sys.exit("ERROR: Config file \"{}\" could not be loaded ({}), see config.json.demo for an example".format(args.config, e))
 
     # Get accounts
     account_names = args.accounts.split(',')
@@ -184,7 +188,7 @@ def parse_arguments(arguments, parser=None):
 def get_account_stats(account, all_resources=False):
     """Returns stats for an account"""
 
-    with open("stats_config.yaml", 'r') as f:
+    with open("stats_config.yaml") as f:
         resources = yaml.safe_load(f)
 
     account = Account(None, account)
@@ -194,7 +198,7 @@ def get_account_stats(account, all_resources=False):
     stats['keys'] = []
     for resource in resources:
         # If the resource is marked as verbose, and we're not showing all resources, skip it.
-        if resource.get('verbose',False) and not all_resources:
+        if resource.get('verbose') and not all_resources:
             continue
         stats['keys'].append(resource['name'])
         stats[resource['name']] = {}
@@ -203,11 +207,11 @@ def get_account_stats(account, all_resources=False):
         region = Region(account, region_json)
 
         for resource in resources:
-            if resource.get('verbose',False) and not all_resources:
+            if resource.get('verbose') and not all_resources:
                 continue
 
             # Skip global services (just CloudFront)
-            if ('region' in resource) and (resource['region'] != region.name):
+            if 'region' in resource and resource['region'] != region.name:
                 continue
 
             # S3 buckets require special code to identify their location
