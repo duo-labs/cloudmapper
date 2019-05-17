@@ -70,7 +70,7 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
     # TODO: Decorate this with rate limiters from
     # https://github.com/Netflix-Skunkworks/cloudaux/blob/master/cloudaux/aws/decorators.py
 
-    data = {}
+    data = None
     if os.path.isfile(outputfile):
         # Data already collected, so skip
         print("  Response already collected at {}".format(outputfile), flush=True)
@@ -191,7 +191,7 @@ def collect(arguments):
             pass
         else:
             print("ERROR: Ensure your creds are valid.", flush=True)
-            print(e, flsuh=True)
+            print(e, flush=True)
             sys.exit(-1)
     except NoCredentialsError:
         print("ERROR: No AWS credentials configured.", flush=True)
