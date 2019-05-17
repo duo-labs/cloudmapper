@@ -392,7 +392,8 @@ def run(arguments):
     args, accounts, config = parse_arguments(arguments, parser)
 
     if args.network_only and args.admin_only:
-        sys.exit("ERROR: You cannot use network_only and admin_only at the same time")
+        print("ERROR: You cannot use network_only and admin_only at the same time")
+        sys.exit(-1)
 
     cytoscape_json = weboftrust(args, accounts, config)
     with open('web/data.json', 'w') as outfile:
