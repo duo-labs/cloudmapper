@@ -173,9 +173,10 @@ def collect(arguments):
         sts.get_caller_identity()
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
-            sys.exit("ERROR: sts.get_caller_identity failed with InvalidClientTokenId. Likely cause is no AWS credentials are set.", flush=True)
+            print("ERROR: sts.get_caller_identity failed with InvalidClientTokenId. Likely cause is no AWS credentials are set.", flush=True)
         else:
-            sys.exit("ERROR: Unknown exception when trying to call sts.get_caller_identity: {}".format(e), flush=True)
+            print("ERROR: Unknown exception when trying to call sts.get_caller_identity: {}".format(e), flush=True)
+        sys.exit(-1)
 
     # Ensure we can make iam calls
     iam = session.client('iam')
@@ -183,15 +184,18 @@ def collect(arguments):
         iam.get_user(UserName='test')
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
-            sys.exit("ERROR: AWS doesn't allow you to make IAM calls from a session without MFA, and the collect command gathers IAM data.  Please use MFA or don't use a session. With aws-vault, specify `--no-session` on your `exec`.")
+            print("ERROR: AWS doesn't allow you to make IAM calls from a session without MFA, and the collect command gathers IAM data.  Please use MFA or don't use a session. With aws-vault, specify `--no-session` on your `exec`.", flush=True)
+            sys.exit(-1)
         if 'NoSuchEntity' in str(e):
             # Ignore, we're just testing that our creds work
             pass
         else:
             print("ERROR: Ensure your creds are valid.", flush=True)
-            sys.exit(e)
+            print(e, flsuh=True)
+            sys.exit(-1)
     except NoCredentialsError:
-        sys.exit("ERROR: No AWS credentials configured.")
+        print("ERROR: No AWS credentials configured.", flush=True)
+        sys.exit(-1)
 
     print("* Getting region names", flush=True)
     ec2 = session.client('ec2')
