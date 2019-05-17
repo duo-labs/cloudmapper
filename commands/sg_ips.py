@@ -67,7 +67,8 @@ def sg_ips(accounts):
         print("python setup.py install")
         print("cd ..")
         print("rm -rf basemap-1.1.0*")
-        sys.exit("cd ..")
+        print("cd ..")
+        sys.exit(-1)
 
     import geoip2.database
     import matplotlib as mpl
@@ -101,7 +102,8 @@ def sg_ips(accounts):
         print("rm -rf GeoLite2-City_*")
         print("rm -rf GeoLite2-ASN_*")
         print("rm -rf GeoLite2-*.tar.gz")
-        sys.exit("cd ..")
+        print("cd ..")
+        sys.exit(-1)
 
     # Dictionary containing cidr as the key, and the security group descriptions
     # as set for the value
