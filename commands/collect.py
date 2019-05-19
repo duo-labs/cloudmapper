@@ -281,6 +281,42 @@ def collect(arguments):
                                         runner.get('Check', None),
                                         summary)
 
+                # ECS services custom collect
+                if runner['Service']=='ecs' and runner['Request']=='describe-services':
+                    action_path = filepath
+                    make_directory(action_path)
+
+                    # Read the ecs-list-clusters.json file
+                    list_clusters_file = 'account-data/{}/{}/{}'.format(account_dir, region['RegionName'], 'ecs-list-clusters.json')
+                    with open(list_clusters_file, 'r') as f:
+                        list_clusters = json.load(f)
+
+                        # For each cluster, read the `ecs list-services`
+                        for clusterArn in list_clusters['clusterArns']:
+                            cluster_path = action_path + '/' + urllib.parse.quote_plus(clusterArn)
+                            make_directory(cluster_path)
+
+                            list_tasks_file = 'account-data/{}/{}/{}/{}'.format(account_dir, region['RegionName'], 'ecs-list-services', urllib.parse.quote_plus(clusterArn))
+
+                            with open(list_tasks_file, 'r') as f2:
+                                list_tasks = json.load(f2)
+
+                                # For each task, call `ecs describe-services` using the `cluster` and `service` as arguments
+                                for serviceArn in list_tasks['serviceArns']:
+                                    outputfile = action_path + '/' + urllib.parse.quote_plus(clusterArn) + '/' + urllib.parse.quote_plus(serviceArn)
+
+                                    call_parameters = {}
+                                    call_parameters['cluster'] = clusterArn
+                                    call_parameters['services'] = [serviceArn]
+
+                                    call_function(
+                                        outputfile,
+                                        handler,
+                                        method_to_call,
+                                        call_parameters,
+                                        runner.get('Check', None),
+                                        summary)
+
             elif dynamic_parameter is not None:
                 # Set up directory for the dynamic value
                 make_directory(filepath)

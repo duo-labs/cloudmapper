@@ -33,7 +33,7 @@ import urllib.parse
 from netaddr import IPNetwork, IPAddress
 from shared.common import get_account, get_regions, is_external_cidr
 from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, Lambda, Redshift, ElasticSearch, Cidr, Connection
+from shared.nodes import Account, Region, Vpc, Az, Subnet, Ec2, Elb, Elbv2, Rds, VpcEndpoint, Ecs, EcsService, Lambda, Redshift, ElasticSearch, Cidr, Connection
 
 __description__ = "Generate network connection information file"
 
@@ -111,6 +111,18 @@ def get_ecs_tasks(region):
             task = json.load(open(task_path))
             tasks.append(task['tasks'][0])
     return tasks
+
+
+def get_ecs_services(region):
+    services = []
+    clusters = query_aws(region.account, "ecs-list-clusters", region.region)
+    for clusterArn in clusters.get('clusterArns', []):
+        services_json = get_parameter_file(region, 'ecs', 'list-services', clusterArn)
+        for serviceArn in services_json['serviceArns']:
+            service_path = 'account-data/{}/{}/{}/{}/{}'.format(region.account.name, region.region.name, 'ecs-describe-services', urllib.parse.quote_plus(clusterArn), urllib.parse.quote_plus(serviceArn))
+            service = json.load(open(service_path))
+            services.append(service['services'][0])
+    return services
 
 
 def get_lambda_functions(region):
@@ -359,10 +371,15 @@ def build_data_structure(account_data, config, outputfilter):
             nodes[node.arn] = node
 
         # ECS tasks
-        for ecs_json in get_ecs_tasks(region):
-            node = Ecs(region, ecs_json)
+        # for ecs_json in get_ecs_tasks(region):
+        #     node = Ecs(region, ecs_json)
+        #     nodes[node.arn] = node
+
+        # ECS services
+        for ecs_json in get_ecs_services(region):
+            node = EcsService(region, ecs_json)
             nodes[node.arn] = node
-        
+
         # Lambda functions
         for lambda_json in get_lambda_functions(region):
             node = Lambda(region, lambda_json)

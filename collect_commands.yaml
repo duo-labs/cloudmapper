@@ -342,6 +342,16 @@
 - Service: ecs
   Request: describe-tasks
   Custom_collection: True
+- Service: ecs
+  Request: list-services
+  Parameters:
+    - Name: cluster
+      Value: ecs-list-clusters.json|.clusterArns[]
+    - Name: schedulingStrategy
+      Value: "REPLICA"
+- Service: ecs
+  Request: describe-services
+  Custom_collection: True
 - Service: eks
   Request: describe-cluster
 - Service: logs

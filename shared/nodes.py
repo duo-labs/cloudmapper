@@ -568,6 +568,7 @@ class VpcEndpoint(Leaf):
         super(VpcEndpoint, self).__init__(self._parent, json_blob)
 
 
+# Ecs task
 class Ecs(Leaf):
     @property
     def ips(self):
@@ -628,6 +629,37 @@ class Ecs(Leaf):
         self._name = truncate(json_blob["taskDefinitionArn"].split('task-definition/')[1])
         super(Ecs, self).__init__(parent, json_blob)
         self.json['ips'] = self.ips
+
+
+# Ecs service
+class EcsService(Leaf):
+    @property
+    def ips(self):
+        return []
+
+    @property
+    def subnets(self):
+        return pyjq.all('.networkConfiguration.awsvpcConfiguration.subnets[]', self._json_blob)
+
+    @property
+    def tags(self):
+        return pyjq.all('.tags[]', self._json_blob)
+
+    @property
+    def is_public(self):
+        return False
+
+    @property
+    def security_groups(self):
+        return pyjq.all('.networkConfiguration.awsvpcConfiguration.securityGroups[]', self._json_blob)
+
+    def __init__(self, parent, json_blob):
+        self._type = "ecs"
+
+        self._local_id = json_blob["serviceArn"]
+        self._arn = json_blob['serviceArn']
+        self._name = truncate(json_blob["serviceName"])
+        super(EcsService, self).__init__(parent, json_blob)
 
 
 class Lambda(Leaf):
