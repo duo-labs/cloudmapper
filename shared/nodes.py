@@ -387,7 +387,7 @@ class Elb(Leaf):
             self._local_id,
             parent.local_id)
 
-        self._name = json_blob["LoadBalancerName"]
+        self._name = json_blob["DNSName"]
         super(Elb, self).__init__(parent, json_blob)
 
 
@@ -440,7 +440,7 @@ class Elbv2(Leaf):
             self._local_id,
             parent.local_id)
 
-        self._name = json_blob["LoadBalancerName"]
+        self._name = json_blob["DNSName"]
         super(Elbv2, self).__init__(parent, json_blob)
 
 
