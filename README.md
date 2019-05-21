@@ -82,7 +82,12 @@ This will allow you to define the different AWS accounts you use in your environ
 
 ## 2. Collect data about the account
 
-This step uses the CLI to make `describe` and `list` calls and records the json in the folder specified by the account name under `account-data`.
+This step uses the CLI to make `describe` and `list` calls and records the json in the folder specified by the account name under `account-data`. Notice you can use `--profile` as you would use in awscli. If omited default profile will be used.
+
+```
+python cloudmapper.py collect --account `account-data` --profile awscliprofile
+```
+
 
 ### AWS Privileges required
 You must have AWS credentials configured that can be used by the CLI with read permissions for the different metadata to collect.  I recommend using [aws-vault](https://github.com/99designs/aws-vault).  CloudMapper will collect IAM information, which means you MUST use MFA.  Only the `collect` step requires AWS access.
@@ -132,6 +137,23 @@ python cloudmapper.py collect --account my_account
 
 
 If you want to add your own private commands, you can create a `private_commands` directory and add them there.
+
+## 3. Prepare for visualization.
+Once you have collected your data, prepare it.
+You can restrict it to a single region with --regions, a single vpc with --vpc-ids etcs.
+```
+python cloudmapper.py prepare -h
+usage: cloudmapper.py [-h] [--config CONFIG] [--account ACCOUNT_NAME]
+                      [--regions REGIONS] [--vpc-ids VPC_IDS]
+                      [--vpc-names VPC_NAMES] [--tags TAGS] [--internal-edges]
+                      [--no-internal-edges] [--inter-rds-edges]
+                      [--no-inter-rds-edges] [--read-replicas]
+                      [--no-read-replicas] [--azs] [--no-azs]
+                      [--collapse-by-tag COLLAPSE_BY_TAG] [--collapse-asgs]
+                      [--no-collapse-asgs]
+ex:
+python cloudmapper.py prepare --region us-west-2
+```
 
 Licenses
 --------
