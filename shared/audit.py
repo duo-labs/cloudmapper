@@ -625,8 +625,8 @@ def audit_sg(findings, region):
             if cidr == '0.0.0.0/0':
                 continue
 
-            cidrs[cidr] = cidrs.get(cidr, set())
-            cidrs[cidr].add(sg['GroupId'])
+            cidrs[cidr] = cidrs.get(cidr, list())
+            cidrs[cidr].append(sg['GroupId'])
 
         for ip_permissions in sg['IpPermissions']:
             cidrs_seen = set()
