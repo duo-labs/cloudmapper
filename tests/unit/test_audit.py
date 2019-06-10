@@ -36,5 +36,6 @@ class TestAudit(unittest.TestCase):
             'SQS_PUBLIC',
             'SNS_PUBLIC',
             'BAD_MFA_POLICY',
+            'IAM_CUSTOM_POLICY_ALLOWS_ADMIN',
             'KAFKA_IN_USE']))
 
