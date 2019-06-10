@@ -325,8 +325,3 @@ LIGHTSAIL_IN_USE:
   severity: Info
   group: Lightsail
 
-KAFKA_IN_USE:
-  title: Kafka in use
-  description: The AWS Kafka service has no in-transit encrypt and therefore should not be used.
-  severity: Low
-  group: Kafka

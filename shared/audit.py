@@ -771,19 +771,6 @@ def audit_lightsail(findings, region):
             resource_details={'load balancer count': len(json_blob['loadBalancers'])}))
 
 
-def audit_kafka(findings, region):
-    # Kafka provides no in-transit encryption, so alert on any use
-    json_blob = query_aws(region.account, "kafka-list-clusters", region)
-    if json_blob is None:
-        # Service not supported in the region
-        return
-    if len(json_blob.get('ClusterInfoList', [])) > 0:
-        findings.add(Finding(
-            region,
-            'KAFKA_IN_USE',
-            None,
-            resource_details={'cluster count': len(json_blob['ClusterInfoList'])}))
-
 def audit(accounts):
     findings = Findings()
 
@@ -819,7 +806,6 @@ def audit(accounts):
                 audit_sqs(findings, region)
                 audit_sns(findings, region)
                 audit_lightsail(findings, region)
-                audit_kafka(findings, region)
             except Exception as e:
                 findings.add(Finding(
                     region,
