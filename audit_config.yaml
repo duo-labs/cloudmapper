@@ -5,8 +5,9 @@
 # group: Used to group these finding types in the report
 
 EXCEPTION:
-  title: An exception occurred during the audit
-  severity: High
+  title: An exception occurred during the audit. 
+  description: Other issues cannot be checked for until this is fixed.
+  severity: Critical
   group: ERROR
 
 S3_PUBLIC_POLICY_GETOBJECT_ONLY:
@@ -146,6 +147,42 @@ BAD_MFA_POLICY:
   severity: High
   is_global: True
   group: IAM
+
+IAM_NOTACTION_ALLOW:
+  title: Use of NotAction in an Allow statement
+  description: Using NotAction in an Allow policy almost always results in unwanted actions being allowed and should be avoided.
+  severity: Medium
+  is_global: True
+  group: IAM
+
+IAM_MANAGED_POLICY_UNINTENTIONALLY_ALLOWING_ADMIN:
+  title: Managed policy is allowing admin
+  description: This finding is primarily for the deprecated AmazonElasticTranscoderFullAccess policy that was found to grant admin privileges.
+  severity: Medium
+  is_global: True
+  group: IAM
+
+IAM_CUSTOM_POLICY_ALLOWS_ADMIN:
+  title: Custom policy allows admin
+  description: Instead of using the AdministratorAccess policy, a custom policy was created that does the same thing, or allows escalation to the same thing.
+  severity: Low
+  is_global: True
+  group: IAM
+
+IAM_UNEXPECTED_FORMAT:
+  title: Unexpected formatting of IAM policy
+  description: IAM policies can be written to do things that are unexpected. This catch-all issue identifies anything unexpected in a policy.
+  severity: Low
+  is_global: True
+  group: IAM
+
+IAM_NAME_DOES_NOT_INDICATE_ADMIN:
+  title: Name does not indicate admin
+  description: This IAM Group grants admin privileges, but the name does not indicate it is for admins.
+  severity: Low
+  is_global: True
+  group: IAM
+
 
 DOMAIN_NOT_SET_TO_RENEW:
   title: Domain not set to autorenew
@@ -293,6 +330,3 @@ KAFKA_IN_USE:
   description: The AWS Kafka service has no in-transit encrypt and therefore should not be used.
   severity: Low
   group: Kafka
-
-
-

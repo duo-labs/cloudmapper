@@ -6,37 +6,10 @@ import traceback
 from policyuniverse.policy import Policy
 
 from netaddr import IPNetwork
-from shared.common import make_list, get_regions, is_unblockable_cidr, is_external_cidr
+from shared.common import make_list, get_regions, is_unblockable_cidr, is_external_cidr, Finding
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
-
-
-class Finding(object):
-    region = None
-    issue_id = None
-    resource_id = None
-    resource_details = None
-
-    def __init__(self, region, issue_id, resource_id, resource_details=None):
-        self.region = region
-        self.issue_id = issue_id
-        self.resource_id = resource_id
-        self.resource_details = resource_details
-
-    def __str__(self):
-        return json.dumps({
-            'account_id': self.region.account.local_id,
-            'account_name': self.region.account.name,
-            'region': self.region.name,
-            'issue': self.issue_id,
-            'resource': self.resource_id,
-            'details': self.resource_details
-        })
-
-    @property
-    def account_name(self):
-        return self.region.account.name
-
+from shared.iam_audit import find_admins_in_account
 
 class Findings(object):
     findings = None
@@ -54,7 +27,6 @@ class Findings(object):
     
     def __len__(self):
         return len(self.findings)
-
 
 def audit_s3_buckets(findings, region):
     buckets_json = query_aws(region.account, "s3-list-buckets", region)
@@ -145,38 +117,8 @@ def audit_guardduty(findings, region):
                 None,
                 None))
 
-
-def check_for_bad_policy(findings, region, arn, policy_text):
-    for statement in make_list(policy_text['Statement']):
-        # Checking for signatures of the bad MFA policy from
-        # https://web.archive.org/web/20170602002425/https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_users-self-manage-mfa-and-creds.html
-        # and
-        # https://github.com/awsdocs/iam-user-guide/blob/cfe14c674c494d07ba0ab952fe546fdd587da65d/doc_source/id_credentials_mfa_enable_virtual.md#permissions-required
-        if statement.get('Sid', '') == 'AllowIndividualUserToManageTheirOwnMFA' or statement.get('Sid', '') == 'AllowIndividualUserToViewAndManageTheirOwnMFA':
-            if 'iam:DeactivateMFADevice' in make_list(statement.get('Action', [])):
-                findings.add(Finding(
-                    region,
-                    'BAD_MFA_POLICY',
-                    arn,
-                    policy_text))
-                return
-        elif statement.get('Sid', '') == 'BlockAnyAccessOtherThanAboveUnlessSignedInWithMFA':
-            if 'iam:*' in make_list(statement.get('NotAction', [])):
-                findings.add(Finding(
-                    region,
-                    'BAD_MFA_POLICY',
-                    arn,
-                    policy_text))
-                return
-
-
-def audit_iam_policies(findings, region):
-    json_blob = query_aws(region.account, "iam-get-account-authorization-details", region)
-    for policy in json_blob['Policies']:
-        for policy_version in policy['PolicyVersionList']:
-            if policy_version['IsDefaultVersion']:
-                check_for_bad_policy(findings, region, policy['Arn'], policy_version['Document'])
-
+def audit_iam(findings, region):
+    find_admins_in_account(region, findings)
 
 def audit_cloudtrail(findings, region):
     json_blob = query_aws(region.account, "cloudtrail-describe-trails", region)
@@ -854,7 +796,7 @@ def audit(accounts):
                 if region.name == 'us-east-1':
                     audit_s3_buckets(findings, region)
                     audit_cloudtrail(findings, region)
-                    audit_iam_policies(findings, region)
+                    audit_iam(findings, region.account)
                     audit_password_policy(findings, region)
                     audit_root_user(findings, region)
                     audit_users(findings, region)

@@ -104,6 +104,45 @@
     ],
     "RoleDetailList": [
         {
+            "Arn": "arn:aws:iam::123456789012:role/service-role/bad_role",
+            "AssumeRolePolicyDocument": {
+                "Statement": [
+                    {
+                        "Action": "sts:AssumeRole",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": "*"
+                        }
+                    }
+                ],
+                "Version": "2012-10-17"
+            },
+            "AttachedManagedPolicies": [],
+            "CreateDate": "2018-11-20T17:14:45+00:00",
+            "InstanceProfileList": [],
+            "Path": "/service-role/",
+            "RoleId": "AROAIBATWWYQXZTTALNCE",
+            "RoleName": "bad_role",
+            "RolePolicyList": [
+                {
+                    "PolicyDocument": {
+                        "Statement": [
+                            {
+                                "Action": [
+                                    "*"
+                                ],
+                                "Effect": "Allow",
+                                "Resource": "*"
+                            }
+                        ],
+                        "Version": "2012-10-17"
+                    },
+                    "PolicyName": "dostuff"
+                }
+            ],
+            "Tags": []
+        },
+        {
             "Arn": "arn:aws:iam::123456789012:role/service-role/level1",
             "AssumeRolePolicyDocument": {
                 "Statement": [
