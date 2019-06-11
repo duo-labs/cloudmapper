@@ -14,6 +14,7 @@ from shared.query import query_aws, get_parameter_file
 
 
 class Severity:
+    # For logging
     DEBUG = 0
     INFO = 1
     WARN = 2
@@ -76,6 +77,34 @@ def log_issue(severity, msg, location=None, reasons=None):
             'Reasons': reasons
         }
         print(json.dumps(json_issue, sort_keys=True), file=sys.stderr)
+
+
+class Finding(object):
+    '''Used for auditing'''
+    region = None
+    issue_id = None
+    resource_id = None
+    resource_details = None
+
+    def __init__(self, region, issue_id, resource_id, resource_details=None):
+        self.region = region
+        self.issue_id = issue_id
+        self.resource_id = resource_id
+        self.resource_details = resource_details
+
+    def __str__(self):
+        return json.dumps({
+            'account_id': self.region.account.local_id,
+            'account_name': self.region.account.name,
+            'region': self.region.name,
+            'issue': self.issue_id,
+            'resource': self.resource_id,
+            'details': self.resource_details
+        })
+
+    @property
+    def account_name(self):
+        return self.region.account.name
 
 
 def custom_serializer(x):
@@ -291,3 +320,5 @@ def get_access_advisor_active_counts(account, max_age=90):
             account_stats[principal_type]['active'] += 1
 
     return account_stats
+
+
