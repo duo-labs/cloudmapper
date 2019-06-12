@@ -131,3 +131,9 @@
 - name: 'Spotinst'
   source: 'https://help.spotinst.com/hc/en-us/articles/360000343509-Functions-Permissions-Model-IAM-Role-'
   accounts: ['922761411349']
+- name: 'Fivetran'
+  source: 'https://fivetran.com/docs/logs/cloudwatch/setup-guide'
+  accounts: ['834469178297']
+- name: 'Databricks'
+  source: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html'
+  accounts: ['414351767826']
