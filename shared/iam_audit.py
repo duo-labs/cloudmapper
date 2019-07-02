@@ -42,7 +42,7 @@ def policy_action_count(policy_doc, location):
     return actions_count
 
 
-def is_admin_policy(policy_doc, location):
+def is_admin_policy(policy_doc, location, findings, region):
     # This attempts to identify policies that directly allow admin privs, or indirectly through possible
     # privilege escalation (ex. iam:PutRolePolicy to add an admin policy to itself).
     # It is a best effort. It will have false negatives, meaning it may not identify an admin policy
@@ -162,7 +162,7 @@ def find_admins_in_account(region, findings):
 
         policy_action_counts[policy['Arn']] = policy_action_count(policy_doc, location)
 
-        if is_admin_policy(policy_doc, location):
+        if is_admin_policy(policy_doc, location, findings, region):
             admin_policies.append(policy['Arn'])
             if ('arn:aws:iam::aws:policy/AdministratorAccess' in policy['Arn'] or
                     'arn:aws:iam::aws:policy/IAMFullAccess' in policy['Arn']):
@@ -194,7 +194,7 @@ def find_admins_in_account(region, findings):
                 reasons.append('Attached managed policy: {}'.format(policy['PolicyArn']))
         for policy in role['RolePolicyList']:
             policy_doc = policy['PolicyDocument']
-            if is_admin_policy(policy_doc, location):
+            if is_admin_policy(policy_doc, location, findings, region):
                 reasons.append('Custom policy: {}'.format(policy['PolicyName']))
                 findings.add(Finding(
                     region,
@@ -256,7 +256,7 @@ def find_admins_in_account(region, findings):
                         None))
         for policy in group['GroupPolicyList']:
             policy_doc = policy['PolicyDocument']
-            if is_admin_policy(policy_doc, location):
+            if is_admin_policy(policy_doc, location, findings, region):
                 is_admin = True
                 findings.add(Finding(
                     region,
@@ -280,7 +280,7 @@ def find_admins_in_account(region, findings):
                 reasons.append('Attached managed policy: {}'.format(policy['PolicyArn']))
         for policy in user.get('UserPolicyList', []):
             policy_doc = policy['PolicyDocument']
-            if is_admin_policy(policy_doc, location):
+            if is_admin_policy(policy_doc, location, findings, region):
                 reasons.append('Custom user policy: {}'.format(policy['PolicyName']))
                 findings.add(Finding(
                     region,

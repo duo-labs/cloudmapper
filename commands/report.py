@@ -3,6 +3,7 @@ import argparse
 import json
 import yaml
 import os.path
+import pprint
 from jinja2 import Template
 
 from shared.common import parse_arguments, get_regions, get_account_stats, get_collection_date, get_access_advisor_active_counts
@@ -19,6 +20,7 @@ COLOR_PALETTE = [
 
 SEVERITIES = [
     {'name': 'High', 'color': 'rgba(216, 91, 84, 1)'},  # Red
+    {'name': 'Critical', 'color': 'rgba(216, 91, 84, 1)'},  # Red
     {'name': 'Medium', 'color': 'rgba(252, 209, 83, 1)'},  # Orange
     {'name': 'Low', 'color': 'rgba(255, 255, 102, 1)'},  # Yellow
     {'name': 'Info', 'color': 'rgba(154, 214, 156, 1)'},  # Green
@@ -260,8 +262,11 @@ def report(accounts, config, args):
 
         for finding in findings:
             conf = audit_config[finding.issue_id]
-            count = findings_severity_by_account[finding.account_name][conf['severity']].get(finding.issue_id, 0)
-            findings_severity_by_account[finding.account_name][conf['severity']][finding.issue_id] = count + 1
+            sev = conf['severity']
+            count = 0
+            if sev in findings_severity_by_account[finding.account_name]:
+                count = findings_severity_by_account[finding.account_name][sev].get(finding.issue_id, 0)
+            findings_severity_by_account[finding.account_name][sev][finding.issue_id] = count + 1
 
     t['findings_severity_by_account_chart'] = []
     for severity in SEVERITIES:
@@ -338,9 +343,10 @@ def report(accounts, config, args):
         region_hits = account_hits['regions'].get(finding.region.name, {
             'hits': []})
 
+        pprint.pprint(finding.resource_details)
         region_hits['hits'].append({
             'resource': finding.resource_id,
-            'details': json.dumps(finding.resource_details, indent=4)
+            #'details': json.dumps(finding.resource_details, indent=4)
         })
 
         account_hits['regions'][finding.region.name] = region_hits
