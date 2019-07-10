@@ -171,6 +171,9 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                 if "saml-provider/okta" in principal['Federated'].lower():
                     node = Account(json_blob={'id': 'okta', 'name': 'okta', 'type': 'Okta'})
                     assume_role_nodes.add(node)
+                elif "saml-provider/onelogin" in principal['Federated'].lower():
+                    node = Account(json_blob={'id': 'onelogin', 'name': 'onelogin', 'type': 'Onelogin'})
+                    assume_role_nodes.add(node)
                 elif "saml-provider/adfs" in principal['Federated'].lower():
                     node = Account(json_blob={'id': 'adfs', 'name': 'adfs', 'type': 'ADFS'})
                     assume_role_nodes.add(node)

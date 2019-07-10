@@ -137,3 +137,9 @@
 - name: 'Sumo Logic'
   source: 'https://help.sumologic.com/03Send-Data/Sources/02Sources-for-Hosted-Collectors/Amazon-Web-Services/Grant-Access-to-an-AWS-Product'
   accounts: ['926226587429']
+- name: 'Bridgecrew'
+  accounts: ['890234264427']
+  Source: 'https://bridgecrew.cloud'
+- name: 'Lacework'
+  accounts: ['434813966438']
+  Source: 'https://support.lacework.com/hc/en-us/articles/360017546933-Getting-Started'
