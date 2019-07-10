@@ -316,11 +316,11 @@ class Ec2(Leaf):
     def __init__(self, parent, json_blob, collapse_by_tag=None, collapse_asgs=True):
         autoscaling_name = []
         if collapse_asgs:
-            autoscaling_name = pyjq.all('.Tags[] | select(.Key == "aws:autoscaling:groupName") | .Value', json_blob)
+            autoscaling_name = pyjq.all('.Tags[]? | select(.Key == "aws:autoscaling:groupName") | .Value', json_blob)
 
         collapse_by_tag_value = []
         if collapse_by_tag:
-            collapse_by_tag_value = pyjq.all('.Tags[] | select(.Key == "{}") | .Value'.format(collapse_by_tag), json_blob)
+            collapse_by_tag_value = pyjq.all('.Tags[]? | select(.Key == "{}") | .Value'.format(collapse_by_tag), json_blob)
 
         if autoscaling_name != []:
             self._type = "autoscaling"
@@ -376,7 +376,7 @@ class Elb(Leaf):
 
     @property
     def security_groups(self):
-        return pyjq.all('.SecurityGroups[]', self._json_blob)
+        return pyjq.all('.SecurityGroups[]?', self._json_blob)
 
     def __init__(self, parent, json_blob):
         self._type = "elb"
@@ -429,7 +429,7 @@ class Elbv2(Leaf):
 
     @property
     def security_groups(self):
-        return pyjq.all('.SecurityGroups[]', self._json_blob)
+        return pyjq.all('.SecurityGroups[]?', self._json_blob)
 
     def __init__(self, parent, json_blob):
         self._type = "elbv2"

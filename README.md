@@ -24,7 +24,7 @@ On macOS:
 
 ```
 # clone the repo
-git clone git@github.com:duo-labs/cloudmapper.git
+git clone https://github.com/duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
 brew install autoconf automake libtool jq awscli python3 pipenv
 cd cloudmapper/
@@ -35,7 +35,7 @@ pipenv shell
 On Linux:
 ```
 # clone the repo
-git clone git@github.com:duo-labs/cloudmapper.git
+git clone https://github.com/duo-labs/cloudmapper.git
 # (AWS Linux, Centos, Fedora, RedHat etc.):
 # sudo yum install autoconf automake libtool python3-devel.x86_64 python3-tkinter python-pip jq awscli
 # (Debian, Ubuntu etc.):
@@ -92,21 +92,6 @@ You must have the following privileges (these grant various read access of metad
 - `arn:aws:iam::aws:policy/SecurityAudit`
 - `arn:aws:iam::aws:policy/job-function/ViewOnlyAccess`
 
-And also:
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "lightsail:GetLoadBalancers"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
-        }
-    ]
-}
-```
 
 ### Collect the data
 

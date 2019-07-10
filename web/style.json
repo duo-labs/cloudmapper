@@ -707,6 +707,18 @@
             "height": 100
         }
     },
+    {
+        "selector": "[type = \"Sumo Logic\"]",
+
+        "css": {
+            "background-opacity": 0,
+            "background-image": "./icons/logos/sumologic.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
     
     
     

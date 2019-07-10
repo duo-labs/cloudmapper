@@ -7,6 +7,6 @@ nosetests tests/unit \
 --with-coverage \
 --cover-package=commands \
 --cover-package=shared \
---cover-min-percentage=75 \
+--cover-min-percentage=60 \
 --cover-html \
 --cover-html-dir=htmlcov

@@ -131,3 +131,9 @@
 - name: 'Spotinst'
   source: 'https://help.spotinst.com/hc/en-us/articles/360000343509-Functions-Permissions-Model-IAM-Role-'
   accounts: ['922761411349']
+- name: 'Redlock'
+  source: 'https://docs.paloaltonetworks.com/redlock/redlock-admin/connect-your-cloud-platform-to-redlock/onboard-your-aws-account/set-up-your-aws-account.html'
+  accounts: ['188619942792']
+- name: 'Sumo Logic'
+  source: 'https://help.sumologic.com/03Send-Data/Sources/02Sources-for-Hosted-Collectors/Amazon-Web-Services/Grant-Access-to-an-AWS-Product'
+  accounts: ['926226587429']
