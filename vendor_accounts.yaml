@@ -143,3 +143,7 @@
 - name: 'Lacework'
   accounts: ['434813966438']
   Source: 'https://support.lacework.com/hc/en-us/articles/360017546933-Getting-Started'
+- name: 'Onelogin'
+  accounts: ['842984801698']
+  Source: 'https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010344'
+
