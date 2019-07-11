@@ -14,30 +14,39 @@ def api_endpoints(accounts, config):
             region = Region(account, region_json)
 
             # Look for API Gateway
-            json_blob = query_aws(region.account, 'apigateway-get-rest-apis', region)
+            json_blob = query_aws(region.account, "apigateway-get-rest-apis", region)
             if json_blob is None:
                 continue
-            for api in json_blob.get('items', []):
-                rest_id = api['id']
-                deployments = get_parameter_file(region, 'apigateway', 'get-deployments', rest_id)
+            for api in json_blob.get("items", []):
+                rest_id = api["id"]
+                deployments = get_parameter_file(
+                    region, "apigateway", "get-deployments", rest_id
+                )
                 if deployments is None:
                     continue
-                for deployment in deployments['items']:
-                    deployment_id = deployment['id']
-                    stages = get_parameter_file(region, 'apigateway', 'get-stages', rest_id)
+                for deployment in deployments["items"]:
+                    deployment_id = deployment["id"]
+                    stages = get_parameter_file(
+                        region, "apigateway", "get-stages", rest_id
+                    )
                     if stages is None:
                         continue
-                    for stage in stages['item']:
-                        if stage['deploymentId'] == deployment_id:
-                            resources = get_parameter_file(region, 'apigateway', 'get-resources', rest_id)
+                    for stage in stages["item"]:
+                        if stage["deploymentId"] == deployment_id:
+                            resources = get_parameter_file(
+                                region, "apigateway", "get-resources", rest_id
+                            )
                             if resources is None:
                                 continue
-                            for resource in resources['items']:
-                                print('{}.execute-api.{}.amazonaws.com/{}{}'.format(
-                                    api['id'],
-                                    region.name,
-                                    stage['stageName'],
-                                    resource['path']))
+                            for resource in resources["items"]:
+                                print(
+                                    "{}.execute-api.{}.amazonaws.com/{}{}".format(
+                                        api["id"],
+                                        region.name,
+                                        stage["stageName"],
+                                        resource["path"],
+                                    )
+                                )
 
 
 def run(arguments):
