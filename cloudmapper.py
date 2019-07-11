@@ -30,7 +30,7 @@ import sys
 import pkgutil
 import importlib
 
-__version__ = "2.5.6"
+__version__ = "2.5.7"
 
 
 def show_help(commands):
