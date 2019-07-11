@@ -58,7 +58,7 @@ def audit_s3_buckets(findings, region):
                 region,
                 'EXCEPTION',
                 bucket,
-                resource_details={'policy': policy_string, 'exception': e, 'location': 'Exception checking policy of S3 bucket'}))
+                resource_details={'policy': policy_string, 'exception': str(e), 'location': 'Exception checking policy of S3 bucket'}))
         # Check ACL
         try:
             file_json = get_parameter_file(region, 's3', 'get-bucket-acl', bucket)
@@ -76,7 +76,7 @@ def audit_s3_buckets(findings, region):
                 region,
                 'EXCEPTION',
                 bucket,
-                resource_details={'grant': grant, 'exception': e, 'location': 'Exception checking ACL of S3 bucket'}))
+                resource_details={'grant': grant, 'exception': str(e), 'location': 'Exception checking ACL of S3 bucket'}))
 
 
 def audit_s3_block_policy(findings, region):
