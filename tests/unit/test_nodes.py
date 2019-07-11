@@ -34,14 +34,17 @@ class TestNodes(unittest.TestCase):
 
     def test_truncate(self):
         assert_equal("hello", truncate("hello"))
-        assert_equal("012345678900123456789001234567890012345..", truncate("0123456789001234567890012345678900123456789001234567890"))
+        assert_equal(
+            "012345678900123456789001234567890012345..",
+            truncate("0123456789001234567890012345678900123456789001234567890"),
+        )
 
     def test_is_public_ip(self):
         assert_true(is_public_ip("1.1.1.1"))
         assert_false(is_public_ip("10.0.0.0"))
 
     def test_Account(self):
-        json_blob = {u'id': 111111111111, u'name': u'prod'}
+        json_blob = {u"id": 111111111111, u"name": u"prod"}
         account = Account(None, json_blob)
         assert_equal(111111111111, account.local_id)
         assert_equal("prod", account.name)
@@ -51,5 +54,15 @@ class TestNodes(unittest.TestCase):
         assert_equal("prod", get_name(json_blob, "name"))
         assert_false(account.has_leaves)
         assert_equal([], account.leaves)
-        assert_equal({'data': {'node_data': {'id': 111111111111, 'name': 'prod'}, 'local_id': 111111111111,
-                               'type': 'account', 'id': 'arn:aws:::111111111111:', 'name': u'prod'}}, account.cytoscape_data())
+        assert_equal(
+            {
+                "data": {
+                    "node_data": {"id": 111111111111, "name": "prod"},
+                    "local_id": 111111111111,
+                    "type": "account",
+                    "id": "arn:aws:::111111111111:",
+                    "name": u"prod",
+                }
+            },
+            account.cytoscape_data(),
+        )
