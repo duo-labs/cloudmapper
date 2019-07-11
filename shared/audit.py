@@ -53,7 +53,6 @@ def audit_s3_buckets(findings, region):
                             'S3_PUBLIC_POLICY',
                             bucket,
                             resource_details=policy_string))
-                        region, issue_id, resource_id, resource_details
         except Exception as e:
             findings.add(Finding(
                 region,
