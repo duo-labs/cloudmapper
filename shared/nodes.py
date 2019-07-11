@@ -681,8 +681,10 @@ class Redshift(Leaf):
     def ips(self):
         ips = []
         for cluster_node in self._json_blob['ClusterNodes']:
-            ips.append(cluster_node['PrivateIPAddress'])
-            ips.append(cluster_node['PublicIPAddress'])
+            if 'PrivateIPAddress' in cluster_node:
+                ips.append(cluster_node['PrivateIPAddress'])
+            if 'PublicIPAddress' in cluster_node:
+                ips.append(cluster_node['PublicIPAddress'])
         return ips
 
     @property
