@@ -315,7 +315,11 @@ def get_collection_date(account):
     json_blob = query_aws(
         account_struct, "iam-get-credential-report", get_us_east_1(account_struct)
     )
+    if not json_blob:
+        raise Exception("File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for this account.")
+
     # GeneratedTime looks like "2019-01-30T15:43:24+00:00"
+    # so extract the data part "2019-01-30"
     return json_blob["GeneratedTime"][:10]
 
 
