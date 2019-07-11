@@ -667,7 +667,7 @@ def audit_sg(findings, region):
     sgs = pyjq.all(".SecurityGroups[]", sg_json)
     for sg in sgs:
         cidr_and_name_list = pyjq.all(
-            ".IpPermissions[].IpRanges[]|[.CidrIp,.Description]", sg
+            ".IpPermissions[]?.IpRanges[]|[.CidrIp,.Description]", sg
         )
         for cidr, name in cidr_and_name_list:
             if not is_external_cidr(cidr):
@@ -701,9 +701,9 @@ def audit_sg(findings, region):
             cidrs[cidr] = cidrs.get(cidr, list())
             cidrs[cidr].append(sg["GroupId"])
 
-        for ip_permissions in sg["IpPermissions"]:
+        for ip_permissions in sg.get("IpPermissions", []):
             cidrs_seen = set()
-            for ip_ranges in ip_permissions["IpRanges"]:
+            for ip_ranges in ip_permissions.get("IpRanges", []):
                 if "CidrIp" not in ip_ranges:
                     continue
                 cidr = ip_ranges["CidrIp"]

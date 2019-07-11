@@ -143,7 +143,7 @@ def get_public_nodes(account, config, use_cache=False):
         ingress = pyjq.all(".[]", edge.get("node_data", {}))
 
         sg_group_allowing_all_protocols = pyjq.first(
-            'select(.IpPermissions[]|.IpProtocol=="-1")|.GroupId', ingress, None
+            'select(.IpPermissions[]?|.IpProtocol=="-1")|.GroupId', ingress, None
         )
         public_sgs = {}
         if sg_group_allowing_all_protocols is not None:
@@ -161,7 +161,7 @@ def get_public_nodes(account, config, use_cache=False):
             port_ranges = []
             for sg in ingress:
                 sg_port_ranges = []
-                for ip_permission in sg["IpPermissions"]:
+                for ip_permission in sg.get("IpPermissions", []):
                     selection = 'select((.IpProtocol=="tcp") or (.IpProtocol=="udp")) | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
                     sg_port_ranges.extend(
                         pyjq.all(
