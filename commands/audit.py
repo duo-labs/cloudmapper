@@ -13,7 +13,7 @@ def audit_command(accounts, config, args):
 
     findings = audit(accounts)
 
-    with open("audit_config.yaml", 'r') as f:
+    with open("audit_config.yaml", "r") as f:
         audit_config = yaml.safe_load(f)
     # TODO: Check the file is formatted correctly
 
@@ -23,17 +23,25 @@ def audit_command(accounts, config, args):
         if args.json:
             print(finding)
         else:
-            print('{} - {} ({}) - {}: {}'.format(
-                conf['severity'].upper(),
-                finding.region.account.name,
-                finding.region.name,
-                conf['title'],
-                finding.resource_id))
+            print(
+                "{} - {} ({}) - {}: {}".format(
+                    conf["severity"].upper(),
+                    finding.region.account.name,
+                    finding.region.name,
+                    conf["title"],
+                    finding.resource_id,
+                )
+            )
 
 
 def run(arguments):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--json", help="Print the json of the issues", default=False, action='store_true')
+    parser.add_argument(
+        "--json",
+        help="Print the json of the issues",
+        default=False,
+        action="store_true",
+    )
     args, accounts, config = parse_arguments(arguments, parser)
 
     audit_command(accounts, config, args)

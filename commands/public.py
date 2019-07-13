@@ -13,7 +13,7 @@ def public(accounts, config):
         for public_node in public_nodes:
             print(json.dumps(public_node, indent=4, sort_keys=True))
         for warning in warnings:
-            print('WARNING: {}'.format(warning), file=sys.stderr)
+            print("WARNING: {}".format(warning), file=sys.stderr)
 
 
 def run(arguments):

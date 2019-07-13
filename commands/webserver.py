@@ -48,7 +48,7 @@ class RootedHTTPServerV6(RootedHTTPServer, object):
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
         path = posixpath.normpath(urllib.parse.unquote(path))
-        words = path.split('/')
+        words = path.split("/")
         words = [_f for _f in words if _f]
         path = self.base_path
         for word in words:
@@ -56,8 +56,8 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
             _, word = os.path.split(word)
             if word in (os.curdir, os.pardir):
                 continue
-            if '?' in word:
-                word = word[0:word.index('?')]
+            if "?" in word:
+                word = word[0 : word.index("?")]
             path = os.path.join(path, word)
         return path
 
@@ -72,36 +72,35 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
 
 
 def run(arguments):
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument(
-        "--port",
-        help="Port to listen on",
-        default=8000,
-        type=int)
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("--port", help="Port to listen on", default=8000, type=int)
     parser.add_argument(
         "--public",
-        dest='is_public',
+        dest="is_public",
         help="Allow connections from 0.0.0.0 (or :: if --ipv6 was provided) as opposed to only localhost",
-        action='store_true')
+        action="store_true",
+    )
     parser.add_argument(
-        "--ipv6",
-        dest='is_ipv6',
-        help="Listen on IPv6",
-        action='store_true')
+        "--ipv6", dest="is_ipv6", help="Listen on IPv6", action="store_true"
+    )
     parser.set_defaults(is_public=False, is_ipv6=False)
     args = parser.parse_args(arguments)
 
     if args.is_public:
-        listening_host = '::' if args.is_ipv6 else '0.0.0.0'
+        listening_host = "::" if args.is_ipv6 else "0.0.0.0"
     else:
-        listening_host = '::1' if args.is_ipv6 else '127.0.0.1'
+        listening_host = "::1" if args.is_ipv6 else "127.0.0.1"
 
     Handler = MyHTTPRequestHandler
-    Handler.extensions_map['.svg'] = 'image/svg+xml'
+    Handler.extensions_map[".svg"] = "image/svg+xml"
 
     if args.is_ipv6:
         httpd = RootedHTTPServerV6("web", (listening_host, args.port), Handler)
     else:
         httpd = RootedHTTPServer("web", (listening_host, args.port), Handler)
-    print("CloudMapper serving web directory on {}:{}".format(listening_host, args.port))
+    print(
+        "CloudMapper serving web directory on {}:{}".format(listening_host, args.port)
+    )
     httpd.serve_forever()
