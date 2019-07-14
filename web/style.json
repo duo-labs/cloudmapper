@@ -733,6 +733,19 @@
         }
     },
     {
+        "selector": "[type = \"nOps\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/nops.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
         "selector": "[type = \"Lacework\"]",
 
         "css": {
