@@ -146,4 +146,6 @@
 - name: 'Onelogin'
   accounts: ['842984801698']
   Source: 'https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010344'
-
+- name: 'nOps'
+  accounts: ['202279780353']
+  source: 'https://help.nops.io/manual_setup'
