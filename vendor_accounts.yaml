@@ -11,6 +11,8 @@
 # Note the `name` is referenced in ./web/style.json which then references an
 # image file in ./web/icons/logos/ for these vendors to display in the 
 # web-of-trust view.
+#
+# Some of these were found originally from https://github.com/dagrz/aws_pwn/blob/master/miscellanea/integrations.txt 
 
 - name: Cloudhealth
   source: 'https://github.com/mozilla/security/blob/master/operations/cloudformation-templates/cloudhealth_iam_role.json'
@@ -67,8 +69,6 @@
   type: 'aws'
   source: 'https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-getting-started.html#step-2'
   accounts: ['386209384616']
-
-  # The following are from https://github.com/dagrz/aws_pwn/blob/master/miscellanea/integrations.txt and still need logos
 - name: 'dome9'
   source: 'http://support.dome9.com/knowledgebase/articles/796419-convert-dome9-aws-account-connection-from-iam-user'
   accounts: ['634729597623']
@@ -149,3 +149,9 @@
 - name: 'nOps'
   accounts: ['202279780353']
   source: 'https://help.nops.io/manual_setup'
+- name: 'Fivetran'
+  source: 'https://fivetran.com/docs/logs/cloudwatch/setup-guide'
+  accounts: ['834469178297']
+- name: 'Databricks'
+  source: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html'
+  accounts: ['414351767826']
