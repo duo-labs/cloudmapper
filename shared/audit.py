@@ -729,7 +729,7 @@ def audit_sg(findings, region):
                     region,
                     "SG_LARGE_CIDR",
                     cidr,
-                    resource_details={"size": ip.size, "security_groups": cidrs[cidr]},
+                    resource_details={"size": ip.size, "security_groups": list(cidrs[cidr])},
                 )
             )
 
