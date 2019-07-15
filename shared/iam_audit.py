@@ -12,6 +12,11 @@ from shared.common import Finding, make_list, get_us_east_1
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
+KNOWN_BAD_POLICIES = {
+    "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
+    "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV2 instead"
+
+}
 
 def get_current_policy_doc(policy):
     for doc in policy["PolicyVersionList"]:
@@ -220,6 +225,19 @@ def find_admins_in_account(region, findings):
                 reasons.append(
                     "Attached managed policy: {}".format(policy["PolicyArn"])
                 )
+            if policy["PolicyArn"] in KNOWN_BAD_POLICIES:
+                findings.add(
+                    Finding(
+                        region,
+                        "IAM_KNOWN_BAD_POLICY",
+                        role["Arn"],
+                        resource_details={
+                            "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
+                            "policy": policy["PolicyArn"],
+                        },
+                    )
+                )
+
         for policy in role["RolePolicyList"]:
             policy_doc = policy["PolicyDocument"]
             if is_admin_policy(policy_doc, location, findings, region):
@@ -301,6 +319,18 @@ def find_admins_in_account(region, findings):
                             None,
                         )
                     )
+            if policy["PolicyArn"] in KNOWN_BAD_POLICIES:
+                findings.add(
+                    Finding(
+                        region,
+                        "IAM_KNOWN_BAD_POLICY",
+                        role["Arn"],
+                        resource_details={
+                            "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
+                            "policy": policy["PolicyArn"],
+                        },
+                    )
+                )
         for policy in group["GroupPolicyList"]:
             policy_doc = policy["PolicyDocument"]
             if is_admin_policy(policy_doc, location, findings, region):
@@ -330,6 +360,18 @@ def find_admins_in_account(region, findings):
             if policy["PolicyArn"] in admin_policies:
                 reasons.append(
                     "Attached managed policy: {}".format(policy["PolicyArn"])
+                )
+            if policy["PolicyArn"] in KNOWN_BAD_POLICIES:
+                findings.add(
+                    Finding(
+                        region,
+                        "IAM_KNOWN_BAD_POLICY",
+                        role["Arn"],
+                        resource_details={
+                            "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
+                            "policy": policy["PolicyArn"],
+                        },
+                    )
                 )
         for policy in user.get("UserPolicyList", []):
             policy_doc = policy["PolicyDocument"]

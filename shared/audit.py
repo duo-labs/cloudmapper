@@ -932,7 +932,7 @@ def audit(accounts):
                 if region.name == "us-east-1":
                     audit_s3_buckets(findings, region)
                     audit_cloudtrail(findings, region)
-                    audit_iam(findings, region.account)
+                    audit_iam(findings, region)
                     audit_password_policy(findings, region)
                     audit_root_user(findings, region)
                     audit_users(findings, region)
