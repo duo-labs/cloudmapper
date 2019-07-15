@@ -41,6 +41,7 @@ class TestAudit(unittest.TestCase):
                     "SNS_PUBLIC",
                     "BAD_MFA_POLICY",
                     "IAM_CUSTOM_POLICY_ALLOWS_ADMIN",
+                    "IAM_KNOWN_BAD_POLICY"
                 ]
             ),
         )

@@ -148,6 +148,13 @@ BAD_MFA_POLICY:
   is_global: True
   group: IAM
 
+IAM_KNOWN_BAD_POLICY:
+  title: Known bad policy used
+  description: AWS has provided flawed policies to customers. These are either deprecated or no longer advised.
+  severity: High
+  is_global: True
+  group: IAM
+
 IAM_NOTACTION_ALLOW:
   title: Use of NotAction in an Allow statement
   description: Using NotAction in an Allow policy almost always results in unwanted actions being allowed and should be avoided.
