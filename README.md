@@ -14,8 +14,8 @@ CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The 
 
 
 <img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" width=50% alt="Report screenshot">
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" width=50% alt="Findings summary">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" width=40% alt="Report screenshot" style="float: left">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" width=40% alt="Findings summary" style="float: left">
 <img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings.png" width=50% alt="Findings">
 <img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=50% alt="Command-line audit">
 <img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=50% alt="Command-line public command">
