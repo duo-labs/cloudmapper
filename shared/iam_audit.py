@@ -140,14 +140,14 @@ def check_for_bad_policy(findings, region, arn, policy_text):
             == "AllowIndividualUserToViewAndManageTheirOwnMFA"
         ):
             if "iam:DeactivateMFADevice" in make_list(statement.get("Action", [])):
-                findings.add(Finding(region, "BAD_MFA_POLICY", arn, policy_text))
+                findings.add(Finding(region, "IAM_BAD_MFA_POLICY", arn, policy_text))
                 return
         elif (
             statement.get("Sid", "")
             == "BlockAnyAccessOtherThanAboveUnlessSignedInWithMFA"
         ):
             if "iam:*" in make_list(statement.get("NotAction", [])):
-                findings.add(Finding(region, "BAD_MFA_POLICY", arn, policy_text))
+                findings.add(Finding(region, "IAM_BAD_MFA_POLICY", arn, policy_text))
                 return
 
 
@@ -254,23 +254,39 @@ def find_admins_in_account(region, findings):
                     )
                 )
 
-        if len(reasons) != 0:
-            for stmt in role["AssumeRolePolicyDocument"]["Statement"]:
-                if stmt["Effect"] != "Allow":
-                    findings.add(
-                        Finding(
-                            region,
-                            "IAM_UNEXPECTED_FORMAT",
-                            role["Arn"],
-                            resource_details={
-                                "comment": "Unexpected Effect in AssumeRolePolicyDocument",
-                                "statement": stmt,
-                            },
-                        )
+        # Check if role is accessible from anywhere
+        policy = Policy(role["AssumeRolePolicyDocument"])
+        if policy.is_internet_accessible():
+            findings.add(
+                Finding(
+                    region,
+                    "IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE",
+                    role["Arn"],
+                    resource_details={
+                        "statement": role["AssumeRolePolicyDocument"],
+                    },
+                )
+            )
+    
+        # Check if anything looks malformed
+        for stmt in role["AssumeRolePolicyDocument"]["Statement"]:
+            if stmt["Effect"] != "Allow":
+                findings.add(
+                    Finding(
+                        region,
+                        "IAM_UNEXPECTED_FORMAT",
+                        role["Arn"],
+                        resource_details={
+                            "comment": "Unexpected Effect in AssumeRolePolicyDocument",
+                            "statement": stmt,
+                        },
                     )
-                    continue
+                )
+                continue
 
-                if stmt["Action"] == "sts:AssumeRole":
+            if stmt["Action"] == "sts:AssumeRole":
+                if len(reasons) != 0:
+                    # Admin assumption should be done by users or roles, not by AWS services
                     if "AWS" not in stmt["Principal"] or len(stmt["Principal"]) != 1:
                         findings.add(
                             Finding(
@@ -278,27 +294,28 @@ def find_admins_in_account(region, findings):
                                 "IAM_UNEXPECTED_FORMAT",
                                 role["Arn"],
                                 resource_details={
-                                    "comment": "Unexpected Principal in AssumeRolePolicyDocument",
+                                    "comment": "Unexpected Principal in AssumeRolePolicyDocument for an admin",
                                     "Principal": stmt["Principal"],
                                 },
                             )
                         )
-                elif stmt["Action"] == "sts:AssumeRoleWithSAML":
-                    continue
-                else:
-                    findings.add(
-                        Finding(
-                            region,
-                            "IAM_UNEXPECTED_FORMAT",
-                            role["Arn"],
-                            resource_details={
-                                "comment": "Unexpected Action in AssumeRolePolicyDocument",
-                                "statement": [stmt],
-                            },
-                        )
+            elif stmt["Action"] == "sts:AssumeRoleWithSAML":
+                continue
+            else:
+                findings.add(
+                    Finding(
+                        region,
+                        "IAM_UNEXPECTED_FORMAT",
+                        role["Arn"],
+                        resource_details={
+                            "comment": "Unexpected Action in AssumeRolePolicyDocument",
+                            "statement": [stmt],
+                        },
                     )
+                )
 
-            record_admin(admins, account.name, "role", role["RoleName"])
+            if len(reasons) != 0:
+                record_admin(admins, account.name, "role", role["RoleName"])
         # TODO Should check users or other roles allowed to assume this role to show they are admins
     location.pop("role", None)
 
