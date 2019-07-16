@@ -84,7 +84,7 @@ def report(accounts, config, args):
             {
                 "name": account["name"],
                 "id": account["id"],
-                "collection_date": get_collection_date(account),
+                "collection_date": get_collection_date(account)[:10],
             }
         )
 

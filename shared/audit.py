@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 import pyjq
 import traceback
 
@@ -12,6 +11,8 @@ from shared.common import (
     is_unblockable_cidr,
     is_external_cidr,
     Finding,
+    get_collection_date,
+    days_between
 )
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
@@ -235,14 +236,6 @@ def audit_root_user(findings, region):
 
 def audit_users(findings, region):
     MAX_DAYS_SINCE_LAST_USAGE = 90
-
-    def days_between(s1, s2):
-        """s1 and s2 are date strings, such as 2018-04-08T23:33:20+00:00 """
-        time_format = "%Y-%m-%dT%H:%M:%S"
-
-        d1 = datetime.strptime(s1.split("+")[0], time_format)
-        d2 = datetime.strptime(s2.split("+")[0], time_format)
-        return abs((d1 - d2).days)
 
     # TODO: Convert all of this into a table
 
@@ -635,6 +628,23 @@ def audit_ec2(findings, region):
                 # Ignore EC2's that are off
                 continue
 
+            # Check for old instances
+            if instance.get("LaunchTime", "") != "":
+                MAX_RESOURCE_AGE_DAYS = 365
+                collection_date = get_collection_date(region.account)
+                launch_time = instance["LaunchTime"].split(".")[0]
+                age_in_days = days_between(launch_time, collection_date)
+                if age_in_days > MAX_RESOURCE_AGE_DAYS:
+                    findings.add(Finding(
+                        region, 
+                        "EC2_OLD", 
+                        instance["InstanceId"],
+                        resource_details={
+                            "Age in days": age_in_days
+                        },
+                    ))
+
+            # Check for EC2 Classic
             if "vpc" not in instance.get("VpcId", ""):
                 findings.add(Finding(region, "EC2_CLASSIC", instance["InstanceId"]))
 
