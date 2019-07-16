@@ -141,7 +141,7 @@ USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS:
   is_global: True
   group: IAM
 
-BAD_MFA_POLICY:
+IAM_BAD_MFA_POLICY:
   title: Incorrect policy used to attempt to enforce MFA
   description: AWS had advised incorrect policies for enforcing MFA which allowed an attacker, if they compromised keys that were protected by this policy, to remove the MFA policy from themselves, or remove the existing MFA device and add their own.
   severity: High
@@ -159,6 +159,13 @@ IAM_NOTACTION_ALLOW:
   title: Use of NotAction in an Allow statement
   description: Using NotAction in an Allow policy almost always results in unwanted actions being allowed and should be avoided.
   severity: Medium
+  is_global: True
+  group: IAM
+
+IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE:
+  title: IAM role allows assumption from anywhere
+  description: The IAM role's trust policy allows any other account to assume it.
+  severity: High
   is_global: True
   group: IAM
 
