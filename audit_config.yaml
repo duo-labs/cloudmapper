@@ -279,6 +279,12 @@ EC2_CLASSIC:
   severity: Info
   group: EC2
 
+EC2_OLD:
+  title: Old EC2
+  description: EC2 runnning that was launched more than 365 days ago.
+  severity: Info
+  group: EC2
+
 LAMBDA_PUBLIC:
   title: Lambda is internet accessible
   description: Lambdas should not be publicly callable. Other resources, such as an API Gateway should be used to call the Lambda.
