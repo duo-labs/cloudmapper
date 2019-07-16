@@ -12,15 +12,15 @@
     
     <title>CloudMapper AWS Security Report</title>
     
-    <link href="../css/bootstrap.css" rel="stylesheet">
-    <link href="../css/lato.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/lato.css" rel="stylesheet">
 
-    <link href="../css/report.css" rel="stylesheet">
+    <link href="/css/report.css" rel="stylesheet">
 
-    <script src="../js/chart.js"></script>
-    <script src="../js/report.js"></script>
+    <script src="/js/chart.js"></script>
+    <script src="/js/report.js"></script>
 
-    <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 64x64" type="image/vnd.microsoft.icon">
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 64x64" type="image/vnd.microsoft.icon">
 </head>
 
 <body>
@@ -52,7 +52,7 @@
 <table id='accounts'>
     <tr><th>Account name</th><th>Account ID</th><th>Collection date</th></tr>
     
-        <tr><td>test<td>954574370272<td>2019-01-23</tr>
+        <tr><td>demo<td>123456789012<td>2019-05-07</tr>
     
 </table>
 
@@ -61,7 +61,7 @@
 <h3>Resource counts</h3>
 
 <div><canvas id="resource_counts"></canvas></div>
-<script>makeChart("resource_counts", ['test'], [{'label': 'S3 buckets', 'data': [7], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': 'EC2 instances', 'data': [6], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'ELBs', 'data': [0], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'ELBv2s', 'data': [2], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'RDS instances', 'data': [2], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'Redshift clusters', 'data': [0], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'ElasticSearch domains', 'data': [0], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'Elasticache clusters', 'data': [0], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'SNS topics', 'data': [2], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'SQS queues', 'data': [1], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'CloudFronts', 'data': [0], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'Autoscaling groups', 'data': [2], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'ElasticBeanstalks', 'data': [0], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': 'Firehose streams', 'data': [0], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'Glacier vaults', 'data': [0], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'KMS keys', 'data': [20], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'Lambda functions', 'data': [0], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("resource_counts", ['demo'], [{'label': 'S3 buckets', 'data': [1], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': 'EC2 instances', 'data': [3], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'ELBs', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'ELBv2s', 'data': [1], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'RDS instances', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'Redshift clusters', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'ElasticSearch domains', 'data': [1], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'Elasticache clusters', 'data': [0], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'SNS topics', 'data': [2], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'SQS queues', 'data': [1], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'CloudFronts', 'data': [0], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'Autoscaling groups', 'data': [0], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'ElasticBeanstalks', 'data': [0], 'backgroundColor': 'rgba(191,67,66,1)', 'borderWidth': 1}, {'label': 'Firehose streams', 'data': [0], 'backgroundColor': 'rgba(231,215,193,1)', 'borderWidth': 1}, {'label': 'Glacier vaults', 'data': [0], 'backgroundColor': 'rgba(167,138,127,1)', 'borderWidth': 1}, {'label': 'KMS keys', 'data': [0], 'backgroundColor': 'rgba(201,213,181,1)', 'borderWidth': 1}, {'label': 'Lambda functions', 'data': [1], 'backgroundColor': 'rgba(115,87,81,1)', 'borderWidth': 1}, {'label': 'Kafka clusters', 'data': [1], 'backgroundColor': 'rgba(140,28,19,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 
 
@@ -102,6 +102,8 @@
     
         <th class="rotate"><div><span>Lambda functions</span></div></th>
     
+        <th class="rotate"><div><span>Kafka clusters</span></div></th>
+    
     </tr>
 
     
@@ -111,49 +113,49 @@
             <td>
             
             
-            test</td>
+            demo</td>
         
             
             <td class="highlight">
             
             
-            7</td>
+            1</td>
         
             
             <td class="highlight">
             
             
-            6</td>
-        
-            
-            <td class="muted">
-            
-            
-            0</td>
+            3</td>
         
             
             <td class="highlight">
             
             
-            2</td>
+            1</td>
         
             
             <td class="highlight">
             
             
-            2</td>
+            1</td>
         
             
-            <td class="muted">
+            <td class="highlight">
             
             
-            0</td>
+            1</td>
         
             
-            <td class="muted">
+            <td class="highlight">
             
             
-            0</td>
+            1</td>
+        
+            
+            <td class="highlight">
+            
+            
+            1</td>
         
             
             <td class="muted">
@@ -180,40 +182,46 @@
             0</td>
         
             
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
+            <td class="muted">
+            
+            
+            0</td>
+        
+            
             <td class="highlight">
             
             
-            2</td>
-        
-            
-            <td class="muted">
-            
-            
-            0</td>
-        
-            
-            <td class="muted">
-            
-            
-            0</td>
-        
-            
-            <td class="muted">
-            
-            
-            0</td>
+            1</td>
         
             
             <td class="highlight">
             
             
-            20</td>
-        
-            
-            <td class="muted">
-            
-            
-            0</td>
+            1</td>
         
     </tr>
     
@@ -228,106 +236,16 @@
 <table id='regions' class='rotated'>
         <tr><th></th>
         
-            <th class="rotate"><div><span>ap-south-1</span></div></th>
-        
-            <th class="rotate"><div><span>eu-west-3</span></div></th>
-        
-            <th class="rotate"><div><span>eu-north-1</span></div></th>
-        
-            <th class="rotate"><div><span>eu-west-2</span></div></th>
-        
-            <th class="rotate"><div><span>eu-west-1</span></div></th>
-        
-            <th class="rotate"><div><span>ap-northeast-2</span></div></th>
-        
-            <th class="rotate"><div><span>ap-northeast-1</span></div></th>
-        
-            <th class="rotate"><div><span>sa-east-1</span></div></th>
-        
-            <th class="rotate"><div><span>ca-central-1</span></div></th>
-        
-            <th class="rotate"><div><span>ap-southeast-1</span></div></th>
-        
-            <th class="rotate"><div><span>ap-southeast-2</span></div></th>
-        
-            <th class="rotate"><div><span>eu-central-1</span></div></th>
-        
             <th class="rotate"><div><span>us-east-1</span></div></th>
-        
-            <th class="rotate"><div><span>us-east-2</span></div></th>
-        
-            <th class="rotate"><div><span>us-west-1</span></div></th>
-        
-            <th class="rotate"><div><span>us-west-2</span></div></th>
         
         </tr>
     
         
         <tr>
-            <td>test</td>
+            <td>demo</td>
             
                 
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:1<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">S3 buckets:7<br>EC2 instances:3<br>SNS topics:1<br>SQS queues:1<br>KMS keys:7<br></span></div></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">KMS keys:2<br></span></div></td>
-                
-            
-                
-                <td></td>
-                
-            
-                
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">EC2 instances:3<br>ELBv2s:2<br>RDS instances:2<br>SNS topics:1<br>Autoscaling groups:2<br>KMS keys:1<br></span></div></td>
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">S3 buckets:1<br>EC2 instances:3<br>ELBs:1<br>ELBv2s:1<br>RDS instances:1<br>Redshift clusters:1<br>ElasticSearch domains:1<br>SNS topics:2<br>SQS queues:1<br>Lambda functions:1<br>Kafka clusters:1<br></span></div></td>
                 
             
         </tr>
@@ -337,7 +255,7 @@
 
 <h2>IAM</h2>
 <div><canvas id="iam_active"></canvas></div>
-<script>makeChart("iam_active", ['test'], [{'label': 'Active users', 'stack': 'users', 'data': [3], 'backgroundColor': 'rgb(162, 203, 249)', 'borderWidth': 1}, {'label': 'Inactive users', 'stack': 'users', 'data': [2], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}, {'label': 'Active roles', 'stack': 'roles', 'data': [5], 'backgroundColor': 'rgb(139, 214, 140)', 'borderWidth': 1}, {'label': 'Inactive roles', 'stack': 'roles', 'data': [2], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("iam_active", ['demo'], [{'label': 'Active users', 'stack': 'users', 'data': [0], 'backgroundColor': 'rgb(162, 203, 249)', 'borderWidth': 1}, {'label': 'Inactive users', 'stack': 'users', 'data': [0], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}, {'label': 'Active roles', 'stack': 'roles', 'data': [3], 'backgroundColor': 'rgb(139, 214, 140)', 'borderWidth': 1}, {'label': 'Inactive roles', 'stack': 'roles', 'data': [0], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 
 <h2>Public network resources</h2>
@@ -351,7 +269,13 @@
         
             <th class="rotate"><div><span>elb</span></div></th>
         
+            <th class="rotate"><div><span>elbv2</span></div></th>
+        
             <th class="rotate"><div><span>rds</span></div></th>
+        
+            <th class="rotate"><div><span>redshift</span></div></th>
+        
+            <th class="rotate"><div><span>ecs</span></div></th>
         
             <th class="rotate"><div><span>autoscaling</span></div></th>
         
@@ -363,13 +287,25 @@
     
         
         <tr>
-            <td>test</td>
+            <td>demo</td>
+            
+                
+                
+                    <td class="muted">
+                
+                0</td>
             
                 
                 
                     <td class="highlight">
                 
-                3</td>
+                1</td>
+            
+                
+                
+                    <td class="highlight">
+                
+                1</td>
             
                 
                 
@@ -387,7 +323,7 @@
                 
                     <td class="highlight">
                 
-                2</td>
+                1</td>
             
                 
                 
@@ -397,9 +333,15 @@
             
                 
                 
-                    <td class="highlight">
+                    <td class="muted">
                 
-                2</td>
+                0</td>
+            
+                
+                
+                    <td class="muted">
+                
+                0</td>
             
         </tr>
         
@@ -407,24 +349,47 @@
 
 <h3>Counts of public resources by port ranges</h3>
 <div><canvas id="public_ports"></canvas></div>
-<script>makeChart("public_ports", ['test'], [{'label': '22,80,443', 'data': [1], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': '22', 'data': [3], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': '22,3306', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': '80,443', 'data': [2], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("public_ports", ['demo'], [{'label': '443', 'data': [3], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 <hr>
 <h1>Findings Summary</h1>
 
 <h3>Counts of finding types by account</h3>
 <div><canvas id="finding_types_chart"></canvas></div>
-<script>makeChart("finding_types_chart", ['test'], [{'label': 'High', 'data': [0], 'backgroundColor': 'rgba(216, 91, 84, 1)', 'borderWidth': 1}, {'label': 'Medium', 'data': [1], 'backgroundColor': 'rgba(252, 209, 83, 1)', 'borderWidth': 1}, {'label': 'Low', 'data': [4], 'backgroundColor': 'rgba(255, 255, 102, 1)', 'borderWidth': 1}, {'label': 'Info', 'data': [1], 'backgroundColor': 'rgba(154, 214, 156, 1)', 'borderWidth': 1}, {'label': 'Verbose', 'data': [0], 'backgroundColor': 'rgba(133, 163, 198, 1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("finding_types_chart", ['demo'], [{'label': 'Critical', 'data': [0], 'backgroundColor': 'rgba(255, 0, 0, 1)', 'borderWidth': 1}, {'label': 'High', 'data': [2], 'backgroundColor': 'rgba(216, 91, 84, 1)', 'borderWidth': 1}, {'label': 'Medium', 'data': [7], 'backgroundColor': 'rgba(252, 209, 83, 1)', 'borderWidth': 1}, {'label': 'Low', 'data': [8], 'backgroundColor': 'rgba(255, 255, 102, 1)', 'borderWidth': 1}, {'label': 'Info', 'data': [1], 'backgroundColor': 'rgba(154, 214, 156, 1)', 'borderWidth': 1}, {'label': 'Verbose', 'data': [0], 'backgroundColor': 'rgba(133, 163, 198, 1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 <h3>Links to findings</h3>
 
     
 
     
+        <b>High</b>
+        <ul>
+        
+            <li> <a href="#BAD_MFA_POLICY">Incorrect policy used to attempt to enforce MFA</a>
+        
+            <li> <a href="#IAM_KNOWN_BAD_POLICY">Known bad policy used</a>
+        
+        </ul>
+    
+
+    
         <b>Medium</b>
         <ul>
         
+            <li> <a href="#USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA">User has password login, but not MFA</a>
+        
+            <li> <a href="#USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS">User has not logged in for over 90 days</a>
+        
             <li> <a href="#GUARDDUTY_OFF">GuardDuty is not enabled</a>
+        
+            <li> <a href="#ECR_PUBLIC">ECR is public</a>
+        
+            <li> <a href="#REDSHIFT_PUBLIC_IP">Redshift has public IP</a>
+        
+            <li> <a href="#SQS_PUBLIC">SQS is publicly accesible</a>
+        
+            <li> <a href="#SNS_PUBLIC">SNS is publicly accesible</a>
         
         </ul>
     
@@ -433,13 +398,21 @@
         <b>Low</b>
         <ul>
         
+            <li> <a href="#CLOUDTRAIL_NOT_MULTIREGION">CloudTrail is not multiregion</a>
+        
+            <li> <a href="#IAM_CUSTOM_POLICY_ALLOWS_ADMIN">Custom policy allows admin</a>
+        
             <li> <a href="#PASSWORD_POLICY_NOT_SET">Password policy is not set</a>
+        
+            <li> <a href="#ROOT_USER_HAS_ACCESS_KEYS">Root user has access keys</a>
+        
+            <li> <a href="#USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS">User has not used access key for over 90 days</a>
         
             <li> <a href="#USER_HAS_UNUSED_ACCESS_KEY">User has unused access key</a>
         
-            <li> <a href="#S3_ACCESS_BLOCK_ALL_ACCESS_TYPES">S3 Control Access Block is not blocking all access</a>
+            <li> <a href="#USER_HAS_TWO_ACCESS_KEYS">User has two access keys</a>
         
-            <li> <a href="#RDS_PUBLIC_IP">RDS has a public IP address</a>
+            <li> <a href="#S3_ACCESS_BLOCK_OFF">S3 Control Access Block is not on</a>
         
         </ul>
     
@@ -459,7 +432,7 @@
 
 <h3>Counts of findings by account</h3>
 <div><canvas id="findings_chart"></canvas></div>
-<script>makeChart("findings_chart", ['test'], [{'label': 'S3_PUBLIC_POLICY_GETOBJECT_ONLY', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'PASSWORD_POLICY_NOT_SET', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'USER_HAS_UNUSED_ACCESS_KEY', 'data': [2], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'S3_ACCESS_BLOCK_ALL_ACCESS_TYPES', 'data': [1], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'GUARDDUTY_OFF', 'data': [13], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'RDS_PUBLIC_IP', 'data': [2], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("findings_chart", ['demo'], [{'label': 'S3_PUBLIC_POLICY_GETOBJECT_ONLY', 'data': [1], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'CLOUDTRAIL_NOT_MULTIREGION', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'BAD_MFA_POLICY', 'data': [1], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'IAM_KNOWN_BAD_POLICY', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'IAM_CUSTOM_POLICY_ALLOWS_ADMIN', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'PASSWORD_POLICY_NOT_SET', 'data': [1], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'ROOT_USER_HAS_ACCESS_KEYS', 'data': [1], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS', 'data': [2], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'USER_HAS_UNUSED_ACCESS_KEY', 'data': [2], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA', 'data': [1], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS', 'data': [1], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'USER_HAS_TWO_ACCESS_KEYS', 'data': [1], 'backgroundColor': 'rgba(191,67,66,1)', 'borderWidth': 1}, {'label': 'S3_ACCESS_BLOCK_OFF', 'data': [1], 'backgroundColor': 'rgba(231,215,193,1)', 'borderWidth': 1}, {'label': 'GUARDDUTY_OFF', 'data': [1], 'backgroundColor': 'rgba(167,138,127,1)', 'borderWidth': 1}, {'label': 'ECR_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(201,213,181,1)', 'borderWidth': 1}, {'label': 'REDSHIFT_PUBLIC_IP', 'data': [1], 'backgroundColor': 'rgba(115,87,81,1)', 'borderWidth': 1}, {'label': 'SQS_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(140,28,19,1)', 'borderWidth': 1}, {'label': 'SNS_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(109,100,102,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 <hr>
 <h1>Findings</h1>
@@ -479,7 +452,7 @@
     <ul>
     
     
-    <li>test (954574370272)
+    <li>demo (123456789012)
         <ul>
         
 
@@ -488,7 +461,7 @@
             <ol>
                 
                 
-                    <li> publicbuckettest-summitroute
+                    <li> cloudmapper_demo
                     
                 
             </ol>
@@ -498,19 +471,19 @@
     </ul>
     </div>
 
-    <div class="section"><a name="S3_ACCESS_BLOCK_ALL_ACCESS_TYPES"></a>
+    <div class="section"><a name="S3_ACCESS_BLOCK_OFF"></a>
      
-    <h3>S3 Control Access Block is not blocking all access</h3>
+    <h3>S3 Control Access Block is not on</h3>
     <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
-    <b>Issue ID:</b> S3_ACCESS_BLOCK_ALL_ACCESS_TYPES</p>
-    <p>This control prevents S3 buckets from being made public.  Confirm that the exception that has been made is necessary.
+    <b>Issue ID:</b> S3_ACCESS_BLOCK_OFF</p>
+    <p>This control prevents S3 buckets from being made public.  If there are no public S3 buckets in the account this should be turned on.
     <hr>
 
 
     <ul>
     
     
-    <li>test (954574370272)
+    <li>demo (123456789012)
         <ul>
         
 
@@ -521,14 +494,40 @@
                 
                     
                     
-                    <pre>{
-    "PublicAccessBlockConfiguration": {
-        "BlockPublicAcls": true,
-        "BlockPublicPolicy": false,
-        "IgnorePublicAcls": true,
-        "RestrictPublicBuckets": false
-    }
-}</pre>
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>CloudTrail</h2>
+
+
+    <div class="section"><a name="CLOUDTRAIL_NOT_MULTIREGION"></a>
+     
+    <h3>CloudTrail is not multiregion</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> CLOUDTRAIL_NOT_MULTIREGION</p>
+    <p>When CloudTrail was first released, you had to specify which regions to enable it in.  It now defaults to recording audit logs for all regions.  It should be configured for multiregion.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            <li>us-east-1 
+            <ol>
+                
+                
+                    
                     
                 
             </ol>
@@ -542,6 +541,202 @@
 <h2>IAM</h2>
 
 
+    <div class="section"><a name="BAD_MFA_POLICY"></a>
+     
+    <h3>Incorrect policy used to attempt to enforce MFA</h3>
+    <p><b style="background-color: rgba(216, 91, 84, 1)">Severity: High</b><br>
+    <b>Issue ID:</b> BAD_MFA_POLICY</p>
+    <p>AWS had advised incorrect policies for enforcing MFA which allowed an attacker, if they compromised keys that were protected by this policy, to remove the MFA policy from themselves, or remove the existing MFA device and add their own.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> arn:aws:iam::123456789012:policy/BAD_MFA_POLICY
+                    
+                    <pre>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "iam:ListAccountAliases",
+                "iam:ListUsers",
+                "iam:GetAccountSummary"
+            ],
+            "Resource": "*",
+            "Effect": "Allow",
+            "Sid": "AllowAllUsersToListAccounts"
+        },
+        {
+            "Action": [
+                "iam:ChangePassword",
+                "iam:CreateAccessKey",
+                "iam:CreateLoginProfile",
+                "iam:DeleteAccessKey",
+                "iam:DeleteLoginProfile",
+                "iam:GetAccountPasswordPolicy",
+                "iam:GetLoginProfile",
+                "iam:ListAccessKeys",
+                "iam:UpdateAccessKey",
+                "iam:UpdateLoginProfile",
+                "iam:ListSigningCertificates",
+                "iam:DeleteSigningCertificate",
+                "iam:UpdateSigningCertificate",
+                "iam:UploadSigningCertificate",
+                "iam:ListSSHPublicKeys",
+                "iam:GetSSHPublicKey",
+                "iam:DeleteSSHPublicKey",
+                "iam:UpdateSSHPublicKey",
+                "iam:UploadSSHPublicKey"
+            ],
+            "Resource": "arn:aws:iam::123456789012:user/${aws:username}",
+            "Effect": "Allow",
+            "Sid": "AllowIndividualUserToSeeAndManageTheirOwnAccountInformation"
+        },
+        {
+            "Action": [
+                "iam:ListVirtualMFADevices",
+                "iam:ListMFADevices"
+            ],
+            "Resource": [
+                "arn:aws:iam::123456789012:mfa/*",
+                "arn:aws:iam::123456789012:user/${aws:username}"
+            ],
+            "Effect": "Allow",
+            "Sid": "AllowIndividualUserToListTheirOwnMFA"
+        },
+        {
+            "Action": [
+                "iam:CreateVirtualMFADevice",
+                "iam:DeactivateMFADevice",
+                "iam:DeleteVirtualMFADevice",
+                "iam:RequestSmsMfaRegistration",
+                "iam:FinalizeSmsMfaRegistration",
+                "iam:EnableMFADevice",
+                "iam:ResyncMFADevice"
+            ],
+            "Resource": [
+                "arn:aws:iam::123456789012:mfa/${aws:username}",
+                "arn:aws:iam::123456789012:user/${aws:username}"
+            ],
+            "Effect": "Allow",
+            "Sid": "AllowIndividualUserToManageTheirOwnMFA"
+        },
+        {
+            "NotAction": "iam:*",
+            "Resource": "*",
+            "Effect": "Deny",
+            "Condition": {
+                "BoolIfExists": {
+                    "aws:MultiFactorAuthPresent": "false"
+                }
+            },
+            "Sid": "BlockAnyAccessOtherThanAboveUnlessSignedInWithMFA"
+        }
+    ]
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="IAM_KNOWN_BAD_POLICY"></a>
+     
+    <h3>Known bad policy used</h3>
+    <p><b style="background-color: rgba(216, 91, 84, 1)">Severity: High</b><br>
+    <b>Issue ID:</b> IAM_KNOWN_BAD_POLICY</p>
+    <p>AWS has provided flawed policies to customers. These are either deprecated or no longer advised.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> arn:aws:iam::123456789012:role/service-role/bad_role
+                    
+                    <pre>{
+    "comment": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
+    "policy": "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="IAM_CUSTOM_POLICY_ALLOWS_ADMIN"></a>
+     
+    <h3>Custom policy allows admin</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> IAM_CUSTOM_POLICY_ALLOWS_ADMIN</p>
+    <p>Instead of using the AdministratorAccess policy, a custom policy was created that does the same thing, or allows escalation to the same thing.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> arn:aws:iam::123456789012:role/service-role/bad_role
+                    
+                    <pre>{
+    "comment": "Role has custom policy allowing admin",
+    "policy": {
+        "Statement": [
+            {
+                "Action": [
+                    "*"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+            }
+        ],
+        "Version": "2012-10-17"
+    }
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
     <div class="section"><a name="PASSWORD_POLICY_NOT_SET"></a>
      
     <h3>Password policy is not set</h3>
@@ -554,7 +749,7 @@
     <ul>
     
     
-    <li>test (954574370272)
+    <li>demo (123456789012)
         <ul>
         
 
@@ -564,6 +759,85 @@
                 
                 
                     
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="ROOT_USER_HAS_ACCESS_KEYS"></a>
+     
+    <h3>Root user has access keys</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> ROOT_USER_HAS_ACCESS_KEYS</p>
+    <p>The root user should be used only in exceptional cases, and should therefore not use access keys. IAM Users or Roles should be used instead.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    
+                    
+                    <pre>{
+    "Number of access keys": 1
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS"></a>
+     
+    <h3>User has not used access key for over 90 days</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS</p>
+    <p>Access keys that have not been used for a while should be removed as they may have been lost, but still grant access to the account.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> <root_account>
+                    
+                    <pre>{
+    "Days since key 1 used:": 161,
+    "Number of days since key was rotated": 164
+}</pre>
+                    
+                
+                    <li> user
+                    
+                    <pre>{
+    "Days since key 2 used:": 365,
+    "Number of days since key was rotated": 365
+}</pre>
                     
                 
             </ol>
@@ -585,7 +859,7 @@
     <ul>
     
     
-    <li>test (954574370272)
+    <li>demo (123456789012)
         <ul>
         
 
@@ -594,17 +868,126 @@
             <ol>
                 
                 
-                    <li> bobby
+                    <li> auditor_tmp
                     
                     <pre>{
-    "Unused key": 1
+    "Unused key": 1,
+    "Number of days since key was rotated": 0
 }</pre>
                     
                 
-                    <li> peter
+                    <li> user
                     
                     <pre>{
-    "Unused key": 1
+    "Unused key": 1,
+    "Number of days since key was rotated": 0
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA"></a>
+     
+    <h3>User has password login, but not MFA</h3>
+    <p><b style="background-color: rgba(252, 209, 83, 1)">Severity: Medium</b><br>
+    <b>Issue ID:</b> USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA</p>
+    <p>MFA (multi-factor authentication) helps mitigate user account take-over.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> user
+                    
+                    <pre>{
+    "Number of days since user was created": 365
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS"></a>
+     
+    <h3>User has not logged in for over 90 days</h3>
+    <p><b style="background-color: rgba(252, 209, 83, 1)">Severity: Medium</b><br>
+    <b>Issue ID:</b> USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS</p>
+    <p>The user has not used their password login for over 90 days.  The password login should be removed from this user, or the user entirely.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> user
+                    
+                    <pre>{
+    "Number of days since user was created": 365,
+    "Number of days since last login": 365
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="USER_HAS_TWO_ACCESS_KEYS"></a>
+     
+    <h3>User has two access keys</h3>
+    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
+    <b>Issue ID:</b> USER_HAS_TWO_ACCESS_KEYS</p>
+    <p>A user should only have one access key.  The ability to have multiple access keys is only for when an access key is being rolled, and the old one should be removed. The user should identify one access key to use and the other should be removed.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> user
+                    
+                    <pre>{
+    "Number of days since key1 was rotated": 0,
+    "Number of days since key2 was rotated": 365
 }</pre>
                     
                 
@@ -631,144 +1014,12 @@
     <ul>
     
     
-    <li>test (954574370272)
+    <li>demo (123456789012)
         <ul>
         
 
         
-            <li>ap-south-1 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>eu-west-3 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>eu-west-2 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>eu-west-1 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>ap-northeast-2 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>ap-northeast-1 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>sa-east-1 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>ca-central-1 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>ap-southeast-1 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>ap-southeast-2 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>eu-central-1 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>us-east-2 
-            <ol>
-                
-                
-                    
-                    
-                
-            </ol>
-        
-
-        
-            <li>us-west-1 
+            <li>us-east-1 
             <ol>
                 
                 
@@ -783,34 +1034,142 @@
     </div>
 
 
-<h2>RDS</h2>
+<h2>ECR</h2>
 
 
-    <div class="section"><a name="RDS_PUBLIC_IP"></a>
+    <div class="section"><a name="ECR_PUBLIC"></a>
      
-    <h3>RDS has a public IP address</h3>
-    <p><b style="background-color: rgba(255, 255, 102, 1)">Severity: Low</b><br>
-    <b>Issue ID:</b> RDS_PUBLIC_IP</p>
-    <p>Check whether this RDS instance is publicly accessible. Best practice is to put RDS instances in private subnets and not give them public IPs.
+    <h3>ECR is public</h3>
+    <p><b style="background-color: rgba(252, 209, 83, 1)">Severity: Medium</b><br>
+    <b>Issue ID:</b> ECR_PUBLIC</p>
+    <p>The Amazon Elastic Container Registry (ECR) stores docker images. These may contain sensitive information. These are somewhat hard for an attacker to find, but should not be made public.
     <hr>
 
 
     <ul>
     
     
-    <li>test (954574370272)
+    <li>demo (123456789012)
         <ul>
         
 
         
-            <li>us-west-2 
+            <li>us-east-1 
             <ol>
                 
                 
-                    <li> rm1hm5h4o2wq3b0
+                    <li> cloudmapper
+                    
+                    <pre>"{\n  \"Version\" : \"2008-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"AccessControl\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : \"*\",\n    \"Action\" : [ \"ecr:GetDownloadUrlForLayer\", \"ecr:BatchGetImage\", \"ecr:BatchCheckLayerAvailability\", \"ecr:ListImages\", \"ecr:DescribeImages\" ]\n  } ]\n}"</pre>
                     
                 
-                    <li> wd1ea7jukk13ger
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>Redshift</h2>
+
+
+    <div class="section"><a name="REDSHIFT_PUBLIC_IP"></a>
+     
+    <h3>Redshift has public IP</h3>
+    <p><b style="background-color: rgba(252, 209, 83, 1)">Severity: Medium</b><br>
+    <b>Issue ID:</b> REDSHIFT_PUBLIC_IP</p>
+    <p>Redshift databases should be in private subnets. Databases should not have public IPs. You should additionally check if the Security Groups associated with this are allowing it to be publicly accessible.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            <li>us-east-1 
+            <ol>
+                
+                
+                    <li> redshift-cluster-1
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>SQS</h2>
+
+
+    <div class="section"><a name="SQS_PUBLIC"></a>
+     
+    <h3>SQS is publicly accesible</h3>
+    <p><b style="background-color: rgba(252, 209, 83, 1)">Severity: Medium</b><br>
+    <b>Issue ID:</b> SQS_PUBLIC</p>
+    <p>This may allow an attacker to read or write messages to this queue.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            <li>us-east-1 
+            <ol>
+                
+                
+                    <li> demo
+                    
+                    <pre>"{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:123456789012:demo\"}]}"</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>SNS</h2>
+
+
+    <div class="section"><a name="SNS_PUBLIC"></a>
+     
+    <h3>SNS is publicly accesible</h3>
+    <p><b style="background-color: rgba(252, 209, 83, 1)">Severity: Medium</b><br>
+    <b>Issue ID:</b> SNS_PUBLIC</p>
+    <p>This may allow an attacker to read or write messages to this queue.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            <li>us-east-1 
+            <ol>
+                
+                
+                    <li> arn:aws:sns:us-east-1:123456789012:demo_public
+                    
+                    <pre>"{\"Version\":\"2008-10-17\",\"Id\":\"__default_policy_ID\",\"Statement\":[{\"Sid\":\"__default_statement_ID\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":[\"SNS:GetTopicAttributes\",\"SNS:SetTopicAttributes\",\"SNS:AddPermission\",\"SNS:RemovePermission\",\"SNS:DeleteTopic\",\"SNS:Subscribe\",\"SNS:ListSubscriptionsByTopic\",\"SNS:Publish\",\"SNS:Receive\"],\"Resource\":\"arn:aws:sns:us-east-1:123456789012:demo_public\"}]}"</pre>
                     
                 
             </ol>
