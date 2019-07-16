@@ -14,11 +14,16 @@ CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The 
 
 
 <img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" width=40% alt="Report screenshot" style="float: left">
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" width=40% alt="Findings summary" style="float: left">
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings.png" width=50% alt="Findings">
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=50% alt="Command-line audit">
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=50% alt="Command-line public command">
+<table border=0>
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" width=40% alt="Report screenshot">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" width=40% alt="Findings summary">
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings.png" width=40% alt="Findings"><td>
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=40% alt="Command-line audit">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=40% alt="Command-line public command">
+</table>
 
 
 ## Installation
