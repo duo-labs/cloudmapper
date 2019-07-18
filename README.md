@@ -15,7 +15,7 @@ CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The 
 - `audit`: Check for potential misconfigurations.
 - `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
 - `find_admins`: Look at IAM policies to identify admin users and roles and spot potential IAM issues. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
-- `find_unused`: Look for unused resources in the account.  Makes a best effort. Currently finds unused Security Groups.
+- `find_unused`: Look for unused resources in the account.  Finds unused Security Groups, Elastic IPs, network interfaces, and volumes.
 - `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
 - `public`: Find public hosts and port ranges. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_public/).
 - `sg_ips`: Get geoip info on CIDRs trusted in Security Groups. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_sg_ips/).
