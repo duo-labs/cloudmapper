@@ -12,39 +12,31 @@ __description__ = "Find unused resources in accounts"
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)
 
-    # Get the data from the `prepare` command
-    outputfilter = {
-        "internal_edges": True,
-        "read_replicas": True,
-        "inter_rds_edges": True,
-        "azs": False,
-        "collapse_by_tag": None,
-        "collapse_asgs": True,
-        "mute": True,
-    }
     unused_resources = []
     for account in accounts:
         unused_resources_for_account = []
         for region_json in get_regions(Account(None, account)):
             unused_resources_for_region = {}
             used_sgs = set()
-            outputfilter["regions"] = '"{}"'.format(region_json["RegionName"])
-            network = build_data_structure(account, config, outputfilter)
-
-            for edge in pyjq.all('.[].data|select(.type=="edge")', network):
-                for sg in edge.get("node_data", []):
-                    if type(sg) is not list:
-                        used_sgs.add(sg.get("GroupId", None))
 
             region = Region(Account(None, account), region_json)
             defined_sgs = query_aws(
                 Account(None, account), "ec2-describe-security-groups", region
             )
 
+            network_interfaces = query_aws(
+                Account(None, account), "ec2-describe-network-interfaces", region
+            )
+
             defined_sg_set = {}
 
             for sg in pyjq.all(".SecurityGroups[]", defined_sgs):
                 defined_sg_set[sg["GroupId"]] = sg
+
+            for used_sg in pyjq.all(
+                ".NetworkInterfaces[].Groups[].GroupId", network_interfaces
+            ):
+                used_sgs.add(used_sg)
 
             unused_sg_ids = set(defined_sg_set) - used_sgs
             unused_sgs = []
@@ -61,7 +53,7 @@ def run(arguments):
 
             unused_resources_for_account.append(
                 {
-                    "name": region_json["RegionName"],
+                    "region": region_json["RegionName"],
                     "unused_resources": unused_resources_for_region,
                 }
             )
