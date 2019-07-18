@@ -52,6 +52,17 @@ def find_unused_volumes(region):
     return unused_volumes
 
 
+def find_unused_elastic_ips(region):
+    unused_ips = []
+
+    ips = query_aws(region.account, "ec2-describe-addresses", region)
+
+    for ip in pyjq.all(".Addresses[] | select(.AssociationId == null)", ips):
+        unused_ips.append({"id": ip["AllocationId"], "ip": ip["PublicIp"]})
+
+    return unused_ips
+
+
 def add_if_exists(dictionary, key, value):
     if value:
         dictionary[key] = value
@@ -67,6 +78,7 @@ def run(arguments):
             region = Region(Account(None, account), region_json)
 
             unused_resources_for_region = {}
+
             add_if_exists(
                 unused_resources_for_region,
                 "security_groups",
@@ -74,6 +86,11 @@ def run(arguments):
             )
             add_if_exists(
                 unused_resources_for_region, "volumes", find_unused_volumes(region)
+            )
+            add_if_exists(
+                unused_resources_for_region,
+                "elastic_ips",
+                find_unused_elastic_ips(region),
             )
 
             unused_resources_for_account.append(
