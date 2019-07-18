@@ -8,12 +8,11 @@ import json
 
 __description__ = "Find unused resources in accounts"
 
+
 def find_unused_security_groups(region):
     used_sgs = set()
 
-    defined_sgs = query_aws(
-        region.account, "ec2-describe-security-groups", region
-    )
+    defined_sgs = query_aws(region.account, "ec2-describe-security-groups", region)
 
     network_interfaces = query_aws(
         region.account, "ec2-describe-network-interfaces", region
@@ -42,6 +41,22 @@ def find_unused_security_groups(region):
     return unused_sgs
 
 
+def find_unused_volumes(region):
+    unused_volumes = []
+
+    volumes = query_aws(region.account, "ec2-describe-volumes", region)
+
+    for volume in pyjq.all('.Volumes[]|select(.State=="available")', volumes):
+        unused_volumes.append({"id": volume["VolumeId"]})
+
+    return unused_volumes
+
+
+def add_if_exists(dictionary, key, value):
+    if value:
+        dictionary[key] = value
+
+
 def run(arguments):
     _, accounts, config = parse_arguments(arguments)
 
@@ -52,7 +67,14 @@ def run(arguments):
             region = Region(Account(None, account), region_json)
 
             unused_resources_for_region = {}
-            unused_resources_for_region["security_groups"] = find_unused_security_groups(region)
+            add_if_exists(
+                unused_resources_for_region,
+                "security_groups",
+                find_unused_security_groups(region),
+            )
+            add_if_exists(
+                unused_resources_for_region, "volumes", find_unused_volumes(region)
+            )
 
             unused_resources_for_account.append(
                 {
