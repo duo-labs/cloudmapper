@@ -4,6 +4,8 @@ from shared.common import query_aws, get_regions
 from shared.nodes import Account, Region
 
 def find_unused_security_groups(region):
+    # Get the defined security groups, then find all the Security Groups associated with the
+    # ENIs.  Then diff these to find the unused Security Groups.
     used_sgs = set()
 
     defined_sgs = query_aws(region.account, "ec2-describe-security-groups", region)
@@ -37,9 +39,7 @@ def find_unused_security_groups(region):
 
 def find_unused_volumes(region):
     unused_volumes = []
-
     volumes = query_aws(region.account, "ec2-describe-volumes", region)
-
     for volume in pyjq.all('.Volumes[]|select(.State=="available")', volumes):
         unused_volumes.append({"id": volume["VolumeId"]})
 
@@ -48,9 +48,7 @@ def find_unused_volumes(region):
 
 def find_unused_elastic_ips(region):
     unused_ips = []
-
     ips = query_aws(region.account, "ec2-describe-addresses", region)
-
     for ip in pyjq.all(".Addresses[] | select(.AssociationId == null)", ips):
         unused_ips.append({"id": ip["AllocationId"], "ip": ip["PublicIp"]})
 

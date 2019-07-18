@@ -74,3 +74,133 @@ class TestFindUnused(TestCase):
                 find_unused_elastic_ips(self.mock_region),
                 [{"id": "eipalloc-2", "ip": "2.3.4.5"}],
             )
+
+    def test_find_unused_volumes(self):
+        def mocked_query_side_effect(account, query, region):
+            if query == "ec2-describe-volumes":
+                return {
+                    "Volumes": [
+                        {
+                            "Attachments": [
+                                {
+                                    "AttachTime": "2019-03-21T21:03:04+00:00",
+                                    "DeleteOnTermination": True,
+                                    "Device": "/dev/xvda",
+                                    "InstanceId": "i-1234",
+                                    "State": "attached",
+                                    "VolumeId": "vol-1234",
+                                }
+                            ],
+                            "AvailabilityZone": "us-east-1b",
+                            "CreateTime": "2019-03-21T21:03:04.345000+00:00",
+                            "Encrypted": False,
+                            "Iops": 300,
+                            "Size": 100,
+                            "SnapshotId": "snap-1234",
+                            "State": "in-use",
+                            "VolumeId": "vol-1234",
+                            "VolumeType": "gp2",
+                        },
+                        {
+                            "Attachments": [
+                                {
+                                    "AttachTime": "2019-03-21T21:03:04+00:00",
+                                    "DeleteOnTermination": True,
+                                    "Device": "/dev/xvda",
+                                    "InstanceId": "i-2222",
+                                    "State": "attached",
+                                    "VolumeId": "vol-2222",
+                                }
+                            ],
+                            "AvailabilityZone": "us-east-1b",
+                            "CreateTime": "2019-03-21T21:03:04.345000+00:00",
+                            "Encrypted": False,
+                            "Iops": 300,
+                            "Size": 100,
+                            "SnapshotId": "snap-2222",
+                            "State": "available",
+                            "VolumeId": "vol-2222",
+                            "VolumeType": "gp2",
+                        },
+                    ]
+                }
+
+        # Clear cached module so we can mock stuff
+        if "shared.find_unused" in sys.modules:
+            del sys.modules["shared.find_unused"]
+
+        with mock.patch("shared.common.query_aws") as mock_query:
+            mock_query.side_effect = mocked_query_side_effect
+            from shared.find_unused import find_unused_volumes
+
+            assert_equal(find_unused_volumes(self.mock_region), [{"id": "vol-2222"}])
+
+    def test_find_unused_security_groups(self):
+        def mocked_query_side_effect(account, query, region):
+            if query == "ec2-describe-security-groups":
+                return {
+                    "SecurityGroups": [
+                        {
+                            "IpPermissionsEgress": [
+                                {
+                                    "IpProtocol": "-1",
+                                    "PrefixListIds": [],
+                                    "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
+                                    "UserIdGroupPairs": [],
+                                    "Ipv6Ranges": [],
+                                }
+                            ],
+                            "Description": "Public access",
+                            "IpPermissions": [
+                                {
+                                    "PrefixListIds": [],
+                                    "FromPort": 22,
+                                    "IpRanges": [],
+                                    "ToPort": 22,
+                                    "IpProtocol": "tcp",
+                                    "UserIdGroupPairs": [
+                                        {
+                                            "UserId": "123456789012",
+                                            "GroupId": "sg-00000002",
+                                        }
+                                    ],
+                                    "Ipv6Ranges": [],
+                                },
+                                {
+                                    "PrefixListIds": [],
+                                    "FromPort": 443,
+                                    "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
+                                    "ToPort": 443,
+                                    "IpProtocol": "tcp",
+                                    "UserIdGroupPairs": [],
+                                    "Ipv6Ranges": [],
+                                },
+                            ],
+                            "GroupName": "Public",
+                            "VpcId": "vpc-12345678",
+                            "OwnerId": "123456789012",
+                            "GroupId": "sg-00000008",
+                        }
+                    ]
+                }
+            elif query == "ec2-describe-network-interfaces":
+                return {"NetworkInterfaces": []}
+
+        # Clear cached module so we can mock stuff
+        if "shared.find_unused" in sys.modules:
+            del sys.modules["shared.find_unused"]
+
+        with mock.patch("shared.common.query_aws") as mock_query:
+            mock_query.side_effect = mocked_query_side_effect
+            from shared.find_unused import find_unused_security_groups
+
+            assert_equal(
+                find_unused_security_groups(self.mock_region),
+                [
+                    {
+                        "description": "Public access",
+                        "id": "sg-00000008",
+                        "name": "Public",
+                    }
+                ],
+            )
