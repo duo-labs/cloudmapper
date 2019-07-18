@@ -3,6 +3,7 @@ import pyjq
 from shared.common import query_aws, get_regions
 from shared.nodes import Account, Region
 
+
 def find_unused_security_groups(region):
     # Get the defined security groups, then find all the Security Groups associated with the
     # ENIs.  Then diff these to find the unused Security Groups.
@@ -55,9 +56,25 @@ def find_unused_elastic_ips(region):
     return unused_ips
 
 
+def find_unused_network_interfaces(region):
+    unused_network_interfaces = []
+    network_interfaces = query_aws(
+        region.account, "ec2-describe-network-interfaces", region
+    )
+    for network_interface in pyjq.all(
+        '.NetworkInterfaces[]|select(.Status=="available")', network_interfaces
+    ):
+        unused_network_interfaces.append(
+            {"id": network_interface["NetworkInterfaceId"]}
+        )
+
+    return unused_network_interfaces
+
+
 def add_if_exists(dictionary, key, value):
     if value:
         dictionary[key] = value
+
 
 def find_unused_resources(accounts):
     unused_resources = []
@@ -80,6 +97,11 @@ def find_unused_resources(accounts):
                 unused_resources_for_region,
                 "elastic_ips",
                 find_unused_elastic_ips(region),
+            )
+            add_if_exists(
+                unused_resources_for_region,
+                "network_interfaces",
+                find_unused_network_interfaces(region),
             )
 
             unused_resources_for_account.append(

@@ -204,3 +204,70 @@ class TestFindUnused(TestCase):
                     }
                 ],
             )
+
+    def test_find_unused_security_groups(self):
+        def mocked_query_side_effect(account, query, region):
+            if query == "ec2-describe-network-interfaces":
+                return {
+                    "NetworkInterfaces": [
+                        {
+                            "Association": {
+                                "IpOwnerId": "amazon",
+                                "PublicDnsName": "ec2-3-80-3-41.compute-1.amazonaws.com",
+                                "PublicIp": "3.80.3.41",
+                            },
+                            "Attachment": {
+                                "AttachTime": "2018-11-27T03:36:34+00:00",
+                                "AttachmentId": "eni-attach-08ac3da5d33fc7a02",
+                                "DeleteOnTermination": False,
+                                "DeviceIndex": 1,
+                                "InstanceOwnerId": "501673713797",
+                                "Status": "attached",
+                            },
+                            "AvailabilityZone": "us-east-1f",
+                            "Description": "arn:aws:ecs:us-east-1:653711331788:attachment/ed8fed01-82d0-4bf6-86cf-fe3115c23ab8",
+                            "Groups": [
+                                {"GroupId": "sg-00000008", "GroupName": "Public"}
+                            ],
+                            "InterfaceType": "interface",
+                            "Ipv6Addresses": [],
+                            "MacAddress": "16:2f:d0:d6:ed:28",
+                            "NetworkInterfaceId": "eni-00000001",
+                            "OwnerId": "653711331788",
+                            "PrivateDnsName": "ip-172-31-48-168.ec2.internal",
+                            "PrivateIpAddress": "172.31.48.168",
+                            "PrivateIpAddresses": [
+                                {
+                                    "Association": {
+                                        "IpOwnerId": "amazon",
+                                        "PublicDnsName": "ec2-3-80-3-41.compute-1.amazonaws.com",
+                                        "PublicIp": "3.80.3.41",
+                                    },
+                                    "Primary": True,
+                                    "PrivateDnsName": "ip-172-31-48-168.ec2.internal",
+                                    "PrivateIpAddress": "172.31.48.168",
+                                }
+                            ],
+                            "RequesterId": "578734482556",
+                            "RequesterManaged": True,
+                            "SourceDestCheck": True,
+                            "Status": "available",
+                            "SubnetId": "subnet-00000001",
+                            "TagSet": [],
+                            "VpcId": "vpc-12345678",
+                        }
+                    ]
+                }
+
+        # Clear cached module so we can mock stuff
+        if "shared.find_unused" in sys.modules:
+            del sys.modules["shared.find_unused"]
+
+        with mock.patch("shared.common.query_aws") as mock_query:
+            mock_query.side_effect = mocked_query_side_effect
+            from shared.find_unused import find_unused_network_interfaces
+
+            assert_equal(
+                find_unused_network_interfaces(self.mock_region),
+                [{"id": "eni-00000001"}],
+            )
