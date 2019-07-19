@@ -39,8 +39,11 @@ class TestAudit(unittest.TestCase):
                     "ECR_PUBLIC",
                     "SQS_PUBLIC",
                     "SNS_PUBLIC",
-                    "BAD_MFA_POLICY",
+                    "IAM_BAD_MFA_POLICY",
                     "IAM_CUSTOM_POLICY_ALLOWS_ADMIN",
+                    "IAM_KNOWN_BAD_POLICY",
+                    "IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE",
+                    "EC2_OLD"
                 ]
             ),
         )

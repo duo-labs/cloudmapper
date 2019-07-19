@@ -51,6 +51,11 @@ $(window).on('load', function(){
             },
             style: stylefile[0]
         });
+    })
+    .fail(function(e) {
+        if (e.status == 404) {
+            alert("Failed to fetch data!\nPlease run cloudmapper.py prepare before using webserver");
+        }
     });
 }); // Page loaded
 

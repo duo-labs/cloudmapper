@@ -4,15 +4,44 @@ CloudMapper
 
 CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality, including auditing for security issues.
 
-*Network mapping demo: https://duo-labs.github.io/cloudmapper/*
+- [Network mapping demo](https://duo-labs.github.io/cloudmapper/)
+- [Report demo](https://duo-labs.github.io/cloudmapper/account-data/report.html)
+- [Intro post](https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool)
+- [Post to show usage in spotting misconfigurations](https://duo.com/blog/spotting-misconfigurations-with-cloudmapper)
 
-*Report demo: https://duo-labs.github.io/cloudmapper/account-data/report.html*
+# Commands
 
-*Intro post: https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool*
+- `api_endpoints`: List the URLs that can be called via API Gateway.
+- `audit`: Check for potential misconfigurations.
+- `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
+- `find_admins`: Look at IAM policies to identify admin users and roles and spot potential IAM issues. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
+- `find_unused`: Look for unused resources in the account.  Finds unused Security Groups, Elastic IPs, network interfaces, and volumes.
+- `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
+- `public`: Find public hosts and port ranges. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_public/).
+- `sg_ips`: Get geoip info on CIDRs trusted in Security Groups. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_sg_ips/).
+- `stats`: Show counts of resources for accounts. More details [here](https://summitroute.com/blog/2018/06/06/cloudmapper_stats/).
+- `weboftrust`: Show Web Of Trust. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_wot/).
+- `report`: Generate HTML report. Includes summary of the accounts and audit findings. More details [here](https://summitroute.com/blog/2019/03/04/cloudmapper_report_generation/).
+- `iam_report`: Generate HTML report for the IAM information of an account. More details [here](https://summitroute.com/blog/2019/03/11/cloudmapper_iam_report_command/).
 
-*Post to show usage in spotting misconfigurations: https://duo.com/blog/spotting-misconfigurations-with-cloudmapper*
 
-![Demo screenshot](docs/images/ideal_layout.png "Demo screenshot")
+If you want to add your own private commands, you can create a `private_commands` directory and add them there.
+
+# Screenshots
+
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
+<table border=0>
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" alt="Report screenshot">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" alt="Findings summary">
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings.png" alt="Findings">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/iam_report-inactive_and_detail.png" alt="IAM report">
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_audit.png" alt="Command-line audit">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_public.png" alt="Command-line public command">
+</table>
+
 
 ## Installation
 
@@ -101,22 +130,10 @@ Collecting the data is done as follows:
 python cloudmapper.py collect --account my_account
 ```
 
-# Commands
+### Alternatives
+For network diagrams, you may want to try https://github.com/lyft/cartography or https://github.com/anaynayak/aws-security-viz
 
-- `api_endpoints`: List the URLs that can be called via API Gateway.
-- `audit`: Check for potential misconfigurations.
-- `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
-- `find_admins`: Look at IAM policies to identify admin users and roles and spot potential IAM issues. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
-- `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
-- `public`: Find public hosts and port ranges. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_public/).
-- `sg_ips`: Get geoip info on CIDRs trusted in Security Groups. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_sg_ips/).
-- `stats`: Show counts of resources for accounts. More details [here](https://summitroute.com/blog/2018/06/06/cloudmapper_stats/).
-- `weboftrust`: Show Web Of Trust. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_wot/).
-- `report`: Generate HTML report. Includes summary of the accounts and audit findings. More details [here](https://summitroute.com/blog/2019/03/04/cloudmapper_report_generation/).
-- `iam_report`: Generate HTML report for the IAM information of an account. More details [here](https://summitroute.com/blog/2019/03/11/cloudmapper_iam_report_command/).
-
-
-If you want to add your own private commands, you can create a `private_commands` directory and add them there.
+For auditng and other AWS security tools see https://github.com/toniblyx/my-arsenal-of-aws-security-tools
 
 Licenses
 --------
