@@ -18,7 +18,7 @@
   source: 'https://github.com/mozilla/security/blob/master/operations/cloudformation-templates/cloudhealth_iam_role.json'
   accounts: ['454464851268']
 - name: 'SegmentIO'
-  source: 'https://segment.com/docs/destinations/amazon-s3/'
+  source: ['https://segment.com/docs/destinations/amazon-s3/', 'https://segment.com/docs/destinations/amazon-kinesis/']
   accounts: ['107630771604','595280932656']
 - name: 'StackDriver'
   source: 'https://web.archive.org/web/20150423044518/https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account'
