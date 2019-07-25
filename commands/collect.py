@@ -444,6 +444,8 @@ def collect(arguments):
                     call_summary["exception"],
                 )
             )
+        # Ensure errors can be detected
+        exit(-1)
 
 
 def run(arguments):
