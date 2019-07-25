@@ -151,8 +151,27 @@ This will allow you to define the different AWS accounts you use in your environ
 You may find that you don't care about some of audit items. You may want to ignore the check entirely, or just specific resources.  Copy `config/audit_config_override.yaml.example` to `config/audit_config_override.yaml` and edit the file based on the comments in there.
 
 
+# Using a Docker container
+The docker container that is created is meant to be used interactively.
 
-### Alternatives
+```
+docker build -t cloudmapper .
+aws-vault exec YOUR_PROFILE --server --
+docker run -p 8000:8000 -it cloudmapper /bin/bash
+```
+
+You shoudl replace `YOUR_PROFILE` with the profile you've configured for aws-vult. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
+
+```
+pipenv shell
+python cloudmapper.py report --accout demo
+python cloudmapper.py webserver --public
+```
+
+You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html
+
+
+# Alternatives
 For network diagrams, you may want to try https://github.com/lyft/cartography or https://github.com/anaynayak/aws-security-viz
 
 For auditng and other AWS security tools see https://github.com/toniblyx/my-arsenal-of-aws-security-tools
