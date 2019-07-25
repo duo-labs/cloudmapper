@@ -81,11 +81,15 @@ pipenv shell
 A small set of demo data is provided.  This will display the same environment as the demo site https://duo-labs.github.io/cloudmapper/ 
 
 ```
+# Generate the data for the network map
 python cloudmapper.py prepare --config config.json.demo --account demo
+# Generate a report
+python cloudmapper.py report --config config.json.demo --account demo
 python cloudmapper.py webserver
 ```
 
 This will run a local webserver at http://127.0.0.1:8000/
+View the network map from that link, or view the report at http://127.0.0.1:8000/account-data/report.html
 
 
 # Setup
@@ -95,19 +99,7 @@ This will run a local webserver at http://127.0.0.1:8000/
 
 ## 1. Configure your account
 
-### Option 1: Edit config file manually
 Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names. A CIDR is an IP range such as `1.2.3.4/32` which means only the IP `1.2.3.4`.
-
-### Option 2: Generate config file
-CloudMapper has commands to configure your account:
-
-```
-python cloudmapper.py configure {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
-python cloudmapper.py configure {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
-```
-
-This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
-
 
 ## 2. Collect data about the account
 
@@ -129,6 +121,36 @@ Collecting the data is done as follows:
 ```
 python cloudmapper.py collect --account my_account
 ```
+
+## Analyze the data
+From here, try running the different commands, such as:
+
+```
+python cloudmapper.py report --account my_account
+python cloudmapper.py webserver
+```
+
+Then view the report in your browser at 127.0.0.1:8000/account-data/report.html
+
+
+
+## Further configuration
+
+### Generating a config file
+Instead of modifying `config.json` directly, there is a command to configure the data there, in case that is needed:
+
+```
+python cloudmapper.py configure {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
+python cloudmapper.py configure {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
+```
+
+This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
+
+
+### Using audit config overrides
+You may find that you don't care about some of audit items. You may want to ignore the check entirely, or just specific resources.  Copy `config/audit_config_override.yaml.example` to `config/audit_config_override.yaml` and edit the file based on the comments in there.
+
+
 
 ### Alternatives
 For network diagrams, you may want to try https://github.com/lyft/cartography or https://github.com/anaynayak/aws-security-viz
