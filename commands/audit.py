@@ -2,8 +2,7 @@ import argparse
 import yaml
 
 from shared.common import parse_arguments
-from shared.audit import audit
-
+from shared.audit import audit, load_audit_config, finding_is_filtered
 
 __description__ = "Identify potential issues such as public S3 buckets"
 
@@ -12,14 +11,15 @@ def audit_command(accounts, config, args):
     """Audit the accounts"""
 
     findings = audit(accounts)
-
-    with open("audit_config.yaml", "r") as f:
-        audit_config = yaml.safe_load(f)
-    # TODO: Check the file is formatted correctly
+    audit_config = load_audit_config()
 
     # Print findings
     for finding in findings:
         conf = audit_config[finding.issue_id]
+
+        if finding_is_filtered(finding, conf):
+            continue
+
         if args.json:
             print(finding)
         else:

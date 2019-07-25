@@ -14,7 +14,7 @@ from shared.common import (
 )
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
-from shared.audit import audit
+from shared.audit import audit, load_audit_config, finding_is_filtered
 
 __description__ = "Create report"
 
@@ -301,8 +301,7 @@ def report(accounts, config, args):
     print("* Auditing accounts")
     findings = audit(accounts)
 
-    with open("audit_config.yaml", "r") as f:
-        audit_config = yaml.safe_load(f)
+    audit_config = load_audit_config()
 
     t["findings_severity_by_account_chart"] = []
 
@@ -317,6 +316,9 @@ def report(accounts, config, args):
 
         for finding in findings:
             conf = audit_config[finding.issue_id]
+            if finding_is_filtered(finding, conf):
+                continue
+
             count = findings_severity_by_account[finding.account_name][
                 conf["severity"]
             ].get(finding.issue_id, 0)
