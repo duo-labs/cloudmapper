@@ -1,4 +1,6 @@
 import json
+import yaml
+from os.path import exists
 import pyjq
 import traceback
 import re
@@ -48,6 +50,22 @@ def finding_is_filtered(finding, conf):
             return True
 
     return False
+
+
+def load_audit_config():
+    with open("audit_config.yaml", "r") as f:
+        audit_config = yaml.safe_load(f)
+    # TODO: Check the file is formatted correctly
+
+    if exists("config/audit_config_override.yaml"):
+        with open("config/audit_config_override.yaml", "r") as f:
+            audit_override = yaml.safe_load(f)
+
+            # Over-write the values from audit_config
+            for finding_id in audit_override:
+                for k in audit_override[finding_id]:
+                    audit_config[finding_id][k] = audit_override[finding_id][k]
+    return audit_config
 
 
 def audit_s3_buckets(findings, region):
