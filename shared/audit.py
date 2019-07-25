@@ -1,6 +1,7 @@
 import json
 import pyjq
 import traceback
+import re
 
 from policyuniverse.policy import Policy
 
@@ -35,6 +36,18 @@ class Findings(object):
 
     def __len__(self):
         return len(self.findings)
+
+
+def finding_is_filtered(finding, conf):
+    if conf['severity'] == 'Mute':
+        return True
+
+    for resource_to_ignore in conf.get('ignore_resources', []):
+        ignore_regex = re.compile("^"+resource_to_ignore+"$")
+        if re.search(ignore_regex, finding.resource_id):
+            return True
+
+    return False
 
 
 def audit_s3_buckets(findings, region):
