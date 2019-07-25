@@ -34,7 +34,7 @@ def find_unused_security_groups(region):
         "azs": False,
         "collapse_by_tag": None,
         "collapse_asgs": True,
-        "mute": True
+        "mute": True,
     }
     nodes = get_resource_nodes(region, outputfilter)
 
