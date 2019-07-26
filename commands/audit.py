@@ -1,5 +1,6 @@
 import argparse
 import yaml
+import json
 
 from shared.common import parse_arguments
 from shared.audit import audit, load_audit_config, finding_is_filtered
@@ -21,7 +22,9 @@ def audit_command(accounts, config, args):
             continue
 
         if args.json:
-            print(finding)
+            finding = json.loads(str(finding))
+            finding['finding_type_metadata']= conf
+            print(json.dumps(finding))
         else:
             print(
                 "{} - {} ({}) - {}: {}".format(
