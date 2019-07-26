@@ -25,6 +25,19 @@ def audit_command(accounts, config, args):
             finding = json.loads(str(finding))
             finding['finding_type_metadata']= conf
             print(json.dumps(finding))
+        elif args.markdown:
+            print(
+                "*Audit Finding: [{}] - {}*\\nAccount: {} ({}) - {}\\nDescription: {}\\nResource: `{}`\\nDetails:```{}```".format(
+                    conf["severity"].upper(),
+                    conf["title"],
+                    finding.region.account.name,
+                    finding.region.account.local_id,
+                    finding.region.name,
+                    conf["description"],
+                    finding.resource_id,
+                    str(finding.resource_details).replace('\n', '\\n')
+                )
+            )
         else:
             print(
                 "{} - {} ({}) - {}: {}".format(
@@ -42,6 +55,12 @@ def run(arguments):
     parser.add_argument(
         "--json",
         help="Print the json of the issues",
+        default=False,
+        action="store_true",
+    )
+    parser.add_argument(
+        "--markdown",
+        help="Print issue as markdown (for Slack)",
         default=False,
         action="store_true",
     )
