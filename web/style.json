@@ -707,9 +707,96 @@
             "height": 100
         }
     },
-    
-    
-    
+    {
+        "selector": "[type = \"Sumo Logic\"]",
+
+        "css": {
+            "background-opacity": 0,
+            "background-image": "./icons/logos/sumologic.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Bridgecrew\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/bridgecrew.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"nOps\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/nops.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Fivetran\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/fivetran.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Databricks\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/databricks.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Lacework\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/lacework.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Onelogin\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/onelogin.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
 
     {
         "selector": "[type = \"user\"]",

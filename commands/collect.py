@@ -1,4 +1,3 @@
-
 import os.path
 import os
 import glob
@@ -24,7 +23,7 @@ MAX_RETRIES = 3
 
 
 def snakecase(s):
-    return s.replace('-', '_')
+    return s.replace("-", "_")
 
 
 def get_identifier_from_parameter(parameter):
@@ -76,7 +75,11 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
         print("  Response already collected at {}".format(outputfile), flush=True)
         return
 
-    call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call, 'parameters': parameters}
+    call_summary = {
+        "service": handler.meta.service_model.service_name,
+        "action": method_to_call,
+        "parameters": parameters,
+    }
 
     print("  Making call for {}".format(outputfile), flush=True)
     try:
@@ -98,58 +101,83 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
                 data = function(**parameters)
 
             if check is not None:
-                if data[check[0]['Name']] == check[0]['Value']:
+                if data[check[0]["Name"]] == check[0]["Value"]:
                     continue
                 if retries == MAX_RETRIES - 1:
-                    raise Exception("Check value {} never set as {} in response".format(check['Name'], check['Value']))
+                    raise Exception(
+                        "Check value {} never set as {} in response".format(
+                            check["Name"], check["Value"]
+                        )
+                    )
                 print("  Sleeping and retrying")
                 time.sleep(3)
             else:
                 break
 
     except ClientError as e:
-        if 'NoSuchBucketPolicy' in str(e):
+        if "NoSuchBucketPolicy" in str(e):
             # This error occurs when you try to get the bucket policy for a bucket that has no bucket policy, so this can be ignored.
-            print('  - No bucket policy')
-        elif 'NoSuchPublicAccessBlockConfiguration' in str(e):
+            print("  - No bucket policy")
+        elif "NoSuchPublicAccessBlockConfiguration" in str(e):
             # This error occurs when you try to get the account Public Access Block policy for an account that has none, so this can be ignored.
-            print('  - No public access block set')
-        elif 'ServerSideEncryptionConfigurationNotFoundError' in str(e) and call_summary['service'] == 's3' and call_summary['action'] == 'get_bucket_encryption':
-            print('  - No encryption set')
-        elif 'NoSuchEntity' in str(e) and call_summary['action'] == 'get_account_password_policy':
-            print('  - No password policy set')
-        elif 'AccessDeniedException' in str(e) and call_summary['service'] == 'organizations' and call_summary['action'] == 'list_accounts':
-            print('  - Denied, which likely means this is not the organization root')
-        elif 'RepositoryPolicyNotFoundException' in str(e) and call_summary['service'] == 'ecr' and call_summary['action'] == 'get_repository_policy':
-            print('  - No policy exists')
-        elif 'ResourceNotFoundException' in str(e) and call_summary['service'] == 'lambda' and call_summary['action'] == 'get_policy':
-            print('  - No policy exists')
+            print("  - No public access block set")
+        elif (
+            "ServerSideEncryptionConfigurationNotFoundError" in str(e)
+            and call_summary["service"] == "s3"
+            and call_summary["action"] == "get_bucket_encryption"
+        ):
+            print("  - No encryption set")
+        elif (
+            "NoSuchEntity" in str(e)
+            and call_summary["action"] == "get_account_password_policy"
+        ):
+            print("  - No password policy set")
+        elif (
+            "AccessDeniedException" in str(e)
+            and call_summary["service"] == "organizations"
+            and call_summary["action"] == "list_accounts"
+        ):
+            print("  - Denied, which likely means this is not the organization root")
+        elif (
+            "RepositoryPolicyNotFoundException" in str(e)
+            and call_summary["service"] == "ecr"
+            and call_summary["action"] == "get_repository_policy"
+        ):
+            print("  - No policy exists")
+        elif (
+            "ResourceNotFoundException" in str(e)
+            and call_summary["service"] == "lambda"
+            and call_summary["action"] == "get_policy"
+        ):
+            print("  - No policy exists")
         else:
-            print('ClientError: {}'.format(e), flush=True)
-            call_summary['exception'] = e
+            print("ClientError: {}".format(e), flush=True)
+            call_summary["exception"] = e
     except EndpointConnectionError as e:
-        print('EndpointConnectionError: {}'.format(e), flush=True)
-        call_summary['exception'] = e
+        print("EndpointConnectionError: {}".format(e), flush=True)
+        call_summary["exception"] = e
     except Exception as e:
-        print('Exception: {}'.format(e), flush=True)
-        call_summary['exception'] = e
+        print("Exception: {}".format(e), flush=True)
+        call_summary["exception"] = e
 
     # Remove unused values
     if data is not None:
-        data.pop('ResponseMetadata', None)
-        data.pop('Marker', None)
-        data.pop('IsTruncated', None)
+        data.pop("ResponseMetadata", None)
+        data.pop("Marker", None)
+        data.pop("IsTruncated", None)
 
     if data is not None:
-        with open(outputfile, 'w+') as f:
-            f.write(json.dumps(data, indent=4, sort_keys=True, default=custom_serializer))
+        with open(outputfile, "w+") as f:
+            f.write(
+                json.dumps(data, indent=4, sort_keys=True, default=custom_serializer)
+            )
 
     summary.append(call_summary)
 
 
 def collect(arguments):
-    logging.getLogger('botocore').setLevel(logging.WARN)
-    account_dir = './{}'.format(arguments.account_name)
+    logging.getLogger("botocore").setLevel(logging.WARN)
+    account_dir = "./{}".format(arguments.account_name)
 
     summary = []
 
@@ -159,16 +187,16 @@ def collect(arguments):
     make_directory("account-data")
     make_directory("account-data/{}".format(account_dir))
 
-    default_region = os.environ.get('AWS_REGION', 'us-east-1')
+    default_region = os.environ.get("AWS_REGION", "us-east-1")
 
-    session_data = {'region_name': default_region}
+    session_data = {"region_name": default_region}
 
     if arguments.profile_name:
-        session_data['profile_name'] = arguments.profile_name
+        session_data["profile_name"] = arguments.profile_name
 
     session = boto3.Session(**session_data)
 
-    sts = session.client('sts')
+    sts = session.client("sts")
     try:
         sts.get_caller_identity()
     except ClientError as e:
@@ -178,10 +206,11 @@ def collect(arguments):
             print("ERROR: Unknown exception when trying to call sts.get_caller_identity: {}".format(e), flush=True)
         sys.exit(-1)
 
+
     # Ensure we can make iam calls
-    iam = session.client('iam')
+    iam = session.client("iam")
     try:
-        iam.get_user(UserName='test')
+        iam.get_user(UserName="test")
     except ClientError as e:
         if 'InvalidClientTokenId' in str(e):
             print("ERROR: AWS doesn't allow you to make IAM calls from a session without MFA, and the collect command gathers IAM data.  Please use MFA or don't use a session. With aws-vault, specify `--no-session` on your `exec`.", flush=True)
@@ -198,49 +227,62 @@ def collect(arguments):
         sys.exit(-1)
 
     print("* Getting region names", flush=True)
-    ec2 = session.client('ec2')
+    ec2 = session.client("ec2")
     region_list = ec2.describe_regions()
-    with open("account-data/{}/describe-regions.json".format(account_dir), 'w+') as f:
+    with open("account-data/{}/describe-regions.json".format(account_dir), "w+") as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))
 
     print("* Creating directory for each region name", flush=True)
-    for region in region_list['Regions']:
-        make_directory('account-data/{}/{}'.format(account_dir, region.get('RegionName', 'Unknown')))
+    for region in region_list["Regions"]:
+        make_directory(
+            "account-data/{}/{}".format(
+                account_dir, region.get("RegionName", "Unknown")
+            )
+        )
 
     # Services that will only be queried in the default_
     # TODO: Identify these from boto
-    universal_services = ['sts', 'iam', 'route53', 'route53domains', 's3', 's3control', 'cloudfront', 'organizations']
+    universal_services = ('sts', 'iam', 'route53', 'route53domains', 's3', 's3control', 'cloudfront', 'organizations')
 
     with open("collect_commands.yaml") as f:
         collect_commands = yaml.safe_load(f)
 
     for runner in collect_commands:
-        print('* Getting {}:{} info'.format(runner['Service'], runner['Request']), flush=True)
+        print(
+            "* Getting {}:{} info".format(runner["Service"], runner["Request"]),
+            flush=True,
+        )
 
         parameters = {}
-        for region in region_list['Regions']:
+        for region in region_list["Regions"]:
             dynamic_parameter = None
             # Only call universal services in default region
-            if runner['Service'] in universal_services:
-                if region['RegionName'] != default_region:
+            if runner["Service"] in universal_services:
+                if region["RegionName"] != default_region:
                     continue
-            elif region['RegionName'] not in session.get_available_regions(runner['Service']):
-                print('  Skipping region {}, as {} does not exist there'.format(region['RegionName'], runner['Service']))
+            elif region["RegionName"] not in session.get_available_regions(
+                runner["Service"]
+            ):
+                print(
+                    "  Skipping region {}, as {} does not exist there".format(
+                        region["RegionName"], runner["Service"]
+                    )
+                )
                 continue
-            handler = session.client(runner['Service'], region_name=region['RegionName'])
+            handler = session.client(
+                runner["Service"], region_name=region["RegionName"]
+            )
 
             filepath = "account-data/{}/{}/{}-{}".format(
-                account_dir,
-                region['RegionName'],
-                runner['Service'],
-                runner['Request'])
+                account_dir, region["RegionName"], runner["Service"], runner["Request"]
+            )
 
             method_to_call = snakecase(runner["Request"])
 
             # Identify any parameters
-            if runner.get('Parameters', False):
-                for parameter in runner['Parameters']:
-                    parameters[parameter['Name']] = parameter['Value']
+            if runner.get("Parameters", False):
+                for parameter in runner["Parameters"]:
+                    parameters[parameter["Name"]] = parameter["Value"]
 
                     # Look for any dynamic values (ones that jq parse a file)
                     if '|' in parameter['Value']:
@@ -254,13 +296,17 @@ def collect(arguments):
                     make_directory(action_path)
 
                     # Read the ecs-list-clusters.json file
-                    list_clusters_file = 'account-data/{}/{}/{}'.format(account_dir, region['RegionName'], 'ecs-list-clusters.json')
-                    with open(list_clusters_file, 'r') as f:
+                    list_clusters_file = "account-data/{}/{}/{}".format(
+                        account_dir, region["RegionName"], "ecs-list-clusters.json"
+                    )
+                    with open(list_clusters_file, "r") as f:
                         list_clusters = json.load(f)
 
                         # For each cluster, read the `ecs list-tasks`
-                        for clusterArn in list_clusters['clusterArns']:
-                            cluster_path = action_path + '/' + urllib.parse.quote_plus(clusterArn)
+                        for clusterArn in list_clusters["clusterArns"]:
+                            cluster_path = (
+                                action_path + "/" + urllib.parse.quote_plus(clusterArn)
+                            )
                             make_directory(cluster_path)
 
                             list_tasks_file = 'account-data/{}/{}/{}/{}'.format(account_dir,
@@ -268,32 +314,41 @@ def collect(arguments):
                                                                                 'ecs-list-tasks',
                                                                                 urllib.parse.quote_plus(clusterArn))
 
-                            with open(list_tasks_file, 'r') as f2:
+                            with open(list_tasks_file, "r") as f2:
                                 list_tasks = json.load(f2)
 
                                 # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
-                                for taskArn in list_tasks['taskArns']:
-                                    outputfile = action_path + '/' + urllib.parse.quote_plus(clusterArn) + '/' + urllib.parse.quote_plus(taskArn)
+                                for taskArn in list_tasks["taskArns"]:
+                                    outputfile = (
+                                        action_path
+                                        + "/"
+                                        + urllib.parse.quote_plus(clusterArn)
+                                        + "/"
+                                        + urllib.parse.quote_plus(taskArn)
+                                    )
 
                                     call_parameters = {}
-                                    call_parameters['cluster'] = clusterArn
-                                    call_parameters['tasks'] = [taskArn]
+                                    call_parameters["cluster"] = clusterArn
+                                    call_parameters["tasks"] = [taskArn]
 
                                     call_function(
                                         outputfile,
                                         handler,
                                         method_to_call,
                                         call_parameters,
-                                        runner.get('Check', None),
-                                        summary)
+                                        runner.get("Check", None),
+                                        summary,
+                                    )
 
             elif dynamic_parameter is not None:
                 # Set up directory for the dynamic value
                 make_directory(filepath)
 
                 # The dynamic parameter must always be the first value
-                parameter_file = parameters[dynamic_parameter].split('|')[0]
-                parameter_file = "account-data/{}/{}/{}".format(account_dir, region['RegionName'], parameter_file)
+                parameter_file = parameters[dynamic_parameter].split("|")[0]
+                parameter_file = "account-data/{}/{}/{}".format(
+                    account_dir, region["RegionName"], parameter_file
+                )
 
                 # Get array if a globbing pattern is used (ex. "*.json")
                 parameter_files = glob.glob(parameter_file)
@@ -303,32 +358,44 @@ def collect(arguments):
                         # The file where parameters are obtained from does not exist
                         # Need to manually add the failure to our list of calls made as this failure
                         # occurs before the call is attempted.
-                        call_summary = {'service': handler.meta.service_model.service_name, 'action': method_to_call,
-                                        'parameters': parameters, 'exception': 'Parameter file does not exist: {}'.format(parameter_file)}
+                        call_summary = {
+                            "service": handler.meta.service_model.service_name,
+                            "action": method_to_call,
+                            "parameters": parameters,
+                            "exception": "Parameter file does not exist: {}".format(
+                                parameter_file
+                            ),
+                        }
                         summary.append(call_summary)
-                        print("  The file where parameters are obtained from does not exist: {}".format(parameter_file), flush=True)
+                        print(
+                            "  The file where parameters are obtained from does not exist: {}".format(
+                                parameter_file
+                            ),
+                            flush=True,
+                        )
                         continue
 
-                    with open(parameter_file, 'r') as f:
+                    with open(parameter_file, "r") as f:
                         parameter_values = json.load(f)
-                        pyjq_parse_string = '|'.join(parameters[dynamic_parameter].split('|')[1:])
+                        pyjq_parse_string = "|".join(
+                            parameters[dynamic_parameter].split("|")[1:]
+                        )
                         for parameter in pyjq.all(pyjq_parse_string, parameter_values):
                             filename = get_filename_from_parameter(parameter)
                             identifier = get_identifier_from_parameter(parameter)
                             call_parameters = dict(parameters)
                             call_parameters[dynamic_parameter] = identifier
 
-                            outputfile = "{}/{}".format(
-                                filepath,
-                                filename)
+                            outputfile = "{}/{}".format(filepath, filename)
 
                             call_function(
                                 outputfile,
                                 handler,
                                 method_to_call,
                                 call_parameters,
-                                runner.get('Check', None),
-                                summary)
+                                runner.get("Check", None),
+                                summary,
+                            )
             else:
                 filepath = filepath + ".json"
                 call_function(
@@ -336,8 +403,9 @@ def collect(arguments):
                     handler,
                     method_to_call,
                     parameters,
-                    runner.get('Check', None),
-                    summary)
+                    runner.get("Check", None),
+                    summary,
+                )
 
     # Print summary
     print("--------------------------------------------------------------------")
@@ -347,18 +415,42 @@ def collect(arguments):
     if failures:
         print("Failures:")
         for call_summary in failures:
-            print("  {}.{}({}): {}".format(call_summary['service'], call_summary['action'], call_summary['parameters'], call_summary['exception']))
+            print(
+                "  {}.{}({}): {}".format(
+                    call_summary["service"],
+                    call_summary["action"],
+                    call_summary["parameters"],
+                    call_summary["exception"],
+                )
+            )
+        # Ensure errors can be detected
+        sys.exit(-1)
 
 
 def run(arguments):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", help="Config file name",
-                        default="config.json", type=str)
-    parser.add_argument("--account", help="Account to collect from",
-                        required=False, type=str, dest='account_name')
-    parser.add_argument("--profile", help="AWS profile name",
-                        required=False, type=str, dest='profile_name')
-    parser.add_argument('--clean', help='Remove any existing data for the account before gathering', action='store_true')
+    parser.add_argument(
+        "--config", help="Config file name", default="config.json", type=str
+    )
+    parser.add_argument(
+        "--account",
+        help="Account to collect from",
+        required=False,
+        type=str,
+        dest="account_name",
+    )
+    parser.add_argument(
+        "--profile",
+        help="AWS profile name",
+        required=False,
+        type=str,
+        dest="profile_name",
+    )
+    parser.add_argument(
+        "--clean",
+        help="Remove any existing data for the account before gathering",
+        action="store_true",
+    )
 
     args = parser.parse_args(arguments)
 

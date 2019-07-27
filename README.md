@@ -4,15 +4,44 @@ CloudMapper
 
 CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality, including auditing for security issues.
 
-*Network mapping demo: https://duo-labs.github.io/cloudmapper/*
+- [Network mapping demo](https://duo-labs.github.io/cloudmapper/)
+- [Report demo](https://duo-labs.github.io/cloudmapper/account-data/report.html)
+- [Intro post](https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool)
+- [Post to show usage in spotting misconfigurations](https://duo.com/blog/spotting-misconfigurations-with-cloudmapper)
 
-*Report demo: https://duo-labs.github.io/cloudmapper/account-data/report.html*
+# Commands
 
-*Intro post: https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool*
+- `api_endpoints`: List the URLs that can be called via API Gateway.
+- `audit`: Check for potential misconfigurations.
+- `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
+- `find_admins`: Look at IAM policies to identify admin users and roles and spot potential IAM issues. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
+- `find_unused`: Look for unused resources in the account.  Finds unused Security Groups, Elastic IPs, network interfaces, and volumes.
+- `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
+- `public`: Find public hosts and port ranges. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_public/).
+- `sg_ips`: Get geoip info on CIDRs trusted in Security Groups. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_sg_ips/).
+- `stats`: Show counts of resources for accounts. More details [here](https://summitroute.com/blog/2018/06/06/cloudmapper_stats/).
+- `weboftrust`: Show Web Of Trust. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_wot/).
+- `report`: Generate HTML report. Includes summary of the accounts and audit findings. More details [here](https://summitroute.com/blog/2019/03/04/cloudmapper_report_generation/).
+- `iam_report`: Generate HTML report for the IAM information of an account. More details [here](https://summitroute.com/blog/2019/03/11/cloudmapper_iam_report_command/).
 
-*Post to show usage in spotting misconfigurations: https://duo.com/blog/spotting-misconfigurations-with-cloudmapper*
 
-![Demo screenshot](docs/images/ideal_layout.png "Demo screenshot")
+If you want to add your own private commands, you can create a `private_commands` directory and add them there.
+
+# Screenshots
+
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
+<table border=0>
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" alt="Report screenshot">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" alt="Findings summary">
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings.png" alt="Findings">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/iam_report-inactive_and_detail.png" alt="IAM report">
+<tr><td>
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_audit.png" alt="Command-line audit">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_public.png" alt="Command-line public command">
+</table>
+
 
 ## Installation
 
@@ -24,7 +53,7 @@ On macOS:
 
 ```
 # clone the repo
-git clone git@github.com:duo-labs/cloudmapper.git
+git clone https://github.com/duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
 brew install autoconf automake libtool jq awscli python3 pipenv
 cd cloudmapper/
@@ -35,7 +64,7 @@ pipenv shell
 On Linux:
 ```
 # clone the repo
-git clone git@github.com:duo-labs/cloudmapper.git
+git clone https://github.com/duo-labs/cloudmapper.git
 # (AWS Linux, Centos, Fedora, RedHat etc.):
 # sudo yum install autoconf automake libtool python3-devel.x86_64 python3-tkinter python-pip jq awscli
 # (Debian, Ubuntu etc.):
@@ -52,11 +81,15 @@ pipenv shell
 A small set of demo data is provided.  This will display the same environment as the demo site https://duo-labs.github.io/cloudmapper/ 
 
 ```
+# Generate the data for the network map
 python cloudmapper.py prepare --config config.json.demo --account demo
+# Generate a report
+python cloudmapper.py report --config config.json.demo --account demo
 python cloudmapper.py webserver
 ```
 
 This will run a local webserver at http://127.0.0.1:8000/
+View the network map from that link, or view the report at http://127.0.0.1:8000/account-data/report.html
 
 
 # Setup
@@ -66,19 +99,7 @@ This will run a local webserver at http://127.0.0.1:8000/
 
 ## 1. Configure your account
 
-### Option 1: Edit config file manually
 Copy the `config.json.demo` to `config.json` and edit it to include your account ID and name (ex. "prod"), along with any external CIDR names. A CIDR is an IP range such as `1.2.3.4/32` which means only the IP `1.2.3.4`.
-
-### Option 2: Generate config file
-CloudMapper has commands to configure your account:
-
-```
-python cloudmapper.py configure {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
-python cloudmapper.py configure {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
-```
-
-This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
-
 
 ## 2. Collect data about the account
 
@@ -101,22 +122,59 @@ Collecting the data is done as follows:
 python cloudmapper.py collect --account my_account
 ```
 
-# Commands
+## Analyze the data
+From here, try running the different commands, such as:
 
-- `api_endpoints`: List the URLs that can be called via API Gateway.
-- `audit`: Check for potential misconfigurations.
-- `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
-- `find_admins`: Look at IAM policies to identify admin users and roles and spot potential IAM issues. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
-- `prepare`/`webserver`: See [Network Visualizations](docs/network_visualizations.md)
-- `public`: Find public hosts and port ranges. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_public/).
-- `sg_ips`: Get geoip info on CIDRs trusted in Security Groups. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_sg_ips/).
-- `stats`: Show counts of resources for accounts. More details [here](https://summitroute.com/blog/2018/06/06/cloudmapper_stats/).
-- `weboftrust`: Show Web Of Trust. More details [here](https://summitroute.com/blog/2018/06/13/cloudmapper_wot/).
-- `report`: Generate HTML report. Includes summary of the accounts and audit findings. More details [here](https://summitroute.com/blog/2019/03/04/cloudmapper_report_generation/).
-- `iam_report`: Generate HTML report for the IAM information of an account. More details [here](https://summitroute.com/blog/2019/03/11/cloudmapper_iam_report_command/).
+```
+python cloudmapper.py report --account my_account
+python cloudmapper.py webserver
+```
+
+Then view the report in your browser at 127.0.0.1:8000/account-data/report.html
 
 
-If you want to add your own private commands, you can create a `private_commands` directory and add them there.
+
+## Further configuration
+
+### Generating a config file
+Instead of modifying `config.json` directly, there is a command to configure the data there, in case that is needed:
+
+```
+python cloudmapper.py configure {add-account|remove-account} --config-file CONFIG_FILE --name NAME --id ID [--default DEFAULT]
+python cloudmapper.py configure {add-cidr|remove-cidr} --config-file CONFIG_FILE --cidr CIDR --name NAME
+```
+
+This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
+
+
+### Using audit config overrides
+You may find that you don't care about some of audit items. You may want to ignore the check entirely, or just specific resources.  Copy `config/audit_config_override.yaml.example` to `config/audit_config_override.yaml` and edit the file based on the comments in there.
+
+
+# Using a Docker container
+The docker container that is created is meant to be used interactively.
+
+```
+docker build -t cloudmapper .
+aws-vault exec YOUR_PROFILE --server --
+docker run -p 8000:8000 -it cloudmapper /bin/bash
+```
+
+You shoudl replace `YOUR_PROFILE` with the profile you've configured for aws-vult. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
+
+```
+pipenv shell
+python cloudmapper.py report --accout demo
+python cloudmapper.py webserver --public
+```
+
+You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html
+
+
+# Alternatives
+For network diagrams, you may want to try https://github.com/lyft/cartography or https://github.com/anaynayak/aws-security-viz
+
+For auditng and other AWS security tools see https://github.com/toniblyx/my-arsenal-of-aws-security-tools
 
 Licenses
 --------

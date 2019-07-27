@@ -117,7 +117,12 @@
                 ],
                 "Version": "2012-10-17"
             },
-            "AttachedManagedPolicies": [],
+            "AttachedManagedPolicies": [
+                {
+                    "PolicyName": "AmazonEC2RoleforSSM",
+                    "PolicyArn": "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+                }
+            ],
             "CreateDate": "2018-11-20T17:14:45+00:00",
             "InstanceProfileList": [],
             "Path": "/service-role/",

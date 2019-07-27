@@ -37,7 +37,7 @@ $(window).on('load', function(){
     
     $.when(
         $.getJSON("./data.json"),
-        $.getJSON("./style.json")
+        $.getJSON("/style.json")
     ).done(function(datafile, stylefile) {
         loadCytoscape({
             wheelSensitivity: 0.1,
@@ -51,6 +51,11 @@ $(window).on('load', function(){
             },
             style: stylefile[0]
         });
+    })
+    .fail(function(e) {
+        if (e.status == 404) {
+            alert("Failed to fetch data!\nPlease run cloudmapper.py prepare before using webserver");
+        }
     });
 }); // Page loaded
 

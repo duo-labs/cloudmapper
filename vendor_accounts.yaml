@@ -11,13 +11,15 @@
 # Note the `name` is referenced in ./web/style.json which then references an
 # image file in ./web/icons/logos/ for these vendors to display in the 
 # web-of-trust view.
+#
+# Some of these were found originally from https://github.com/dagrz/aws_pwn/blob/master/miscellanea/integrations.txt 
 
 - name: Cloudhealth
   source: 'https://github.com/mozilla/security/blob/master/operations/cloudformation-templates/cloudhealth_iam_role.json'
   accounts: ['454464851268']
 - name: 'SegmentIO'
-  source: 'https://segment.com/docs/destinations/amazon-s3/'
-  accounts: ['107630771604']
+  source: ['https://segment.com/docs/destinations/amazon-s3/', 'https://segment.com/docs/destinations/amazon-kinesis/']
+  accounts: ['107630771604','595280932656']
 - name: 'StackDriver'
   source: 'https://web.archive.org/web/20150423044518/https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account'
   accounts: ['314658760392']
@@ -67,8 +69,6 @@
   type: 'aws'
   source: 'https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-getting-started.html#step-2'
   accounts: ['386209384616']
-
-  # The following are from https://github.com/dagrz/aws_pwn/blob/master/miscellanea/integrations.txt and still need logos
 - name: 'dome9'
   source: 'http://support.dome9.com/knowledgebase/articles/796419-convert-dome9-aws-account-connection-from-iam-user'
   accounts: ['634729597623']
@@ -131,3 +131,27 @@
 - name: 'Spotinst'
   source: 'https://help.spotinst.com/hc/en-us/articles/360000343509-Functions-Permissions-Model-IAM-Role-'
   accounts: ['922761411349']
+- name: 'Redlock'
+  source: 'https://docs.paloaltonetworks.com/redlock/redlock-admin/connect-your-cloud-platform-to-redlock/onboard-your-aws-account/set-up-your-aws-account.html'
+  accounts: ['188619942792']
+- name: 'Sumo Logic'
+  source: 'https://help.sumologic.com/03Send-Data/Sources/02Sources-for-Hosted-Collectors/Amazon-Web-Services/Grant-Access-to-an-AWS-Product'
+  accounts: ['926226587429']
+- name: 'Bridgecrew'
+  accounts: ['890234264427']
+  Source: 'https://bridgecrew.cloud'
+- name: 'Lacework'
+  accounts: ['434813966438']
+  Source: 'https://support.lacework.com/hc/en-us/articles/360017546933-Getting-Started'
+- name: 'Onelogin'
+  accounts: ['842984801698']
+  Source: 'https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010344'
+- name: 'nOps'
+  accounts: ['202279780353']
+  source: 'https://help.nops.io/manual_setup'
+- name: 'Fivetran'
+  source: 'https://fivetran.com/docs/logs/cloudwatch/setup-guide'
+  accounts: ['834469178297']
+- name: 'Databricks'
+  source: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html'
+  accounts: ['414351767826']

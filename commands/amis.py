@@ -16,39 +16,40 @@ __description__ = "Cross-reference EC2 instances with AMI information"
 
 
 def log_warning(msg):
-    print('WARNING: {}'.format(msg), file=sys.stderr)
+    print("WARNING: {}".format(msg), file=sys.stderr)
 
 
 def find_image(image_id, public_images, account_images):
     for image in public_images:
-        if image_id == image['ImageId']:
-            return image, 'public'
+        if image_id == image["ImageId"]:
+            return image, "public"
     for image in account_images:
-        if image_id == image['ImageId']:
-            return image, 'private'
+        if image_id == image["ImageId"]:
+            return image, "private"
 
-    return None, 'unknown_image'
+    return None, "unknown_image"
 
 
 def get_instance_name(instance):
-    if 'Tags' in instance:
-        for tag in instance['Tags']:
-            if tag['Key'] == 'Name':
-                return tag['Value']
+    if "Tags" in instance:
+        for tag in instance["Tags"]:
+            if tag["Key"] == "Name":
+                return tag["Value"]
     return None
 
 
 def amis(args, accounts):
     # Loading the list of public images from disk takes a while, so we'll iterate by region
 
-    regions_file = 'data/aws/us-east-1/ec2-describe-images.json'
+    regions_file = "data/aws/us-east-1/ec2-describe-images.json"
     if not os.path.isfile(regions_file):
-        raise Exception("You need to download the set of public AMI images.  Run:\n"
-                        "  mkdir -p data/aws\n"
-                        "  cd data/aws\n"
-                        "  aws ec2 describe-regions | jq -r '.Regions[].RegionName' | xargs -I{} mkdir {}\n"
-                        "  aws ec2 describe-regions | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws --region {} ec2 describe-images --executable-users all > {}/ec2-describe-images.json'\n"
-                        )
+        raise Exception(
+            "You need to download the set of public AMI images.  Run:\n"
+            "  mkdir -p data/aws\n"
+            "  cd data/aws\n"
+            "  aws ec2 describe-regions | jq -r '.Regions[].RegionName' | xargs -I{} mkdir {}\n"
+            "  aws ec2 describe-regions | jq -r '.Regions[].RegionName' | xargs -I{} sh -c 'aws --region {} ec2 describe-images --executable-users all > {}/ec2-describe-images.json'\n"
+        )
 
     print('\t'.join([
         'Account Name',
@@ -100,10 +101,6 @@ def amis(args, accounts):
                         account.name,
                         region.name,
                         instance['InstanceId'],
-                        get_instance_name(instance),
-                        image_id,
-                        is_public_image,
-                        image_description,
                         owner]))
 
 

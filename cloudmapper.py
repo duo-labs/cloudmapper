@@ -33,13 +33,12 @@ import sys
 import pkgutil
 import importlib
 
-__version__ = "2.5.6"
+__version__ = "2.6.2"
 
 
 def show_help(commands):
     print("CloudMapper {}".format(__version__))
-    print("usage: {} [{}] [...]".format(
-        sys.argv[0], "|".join(sorted(commands.keys()))))
+    print("usage: {} [{}] [...]".format(sys.argv[0], "|".join(sorted(commands.keys()))))
     for command, module in sorted(commands.items()):
         print("  {}: {}".format(command, module.__description__))
     sys.exit(-1)

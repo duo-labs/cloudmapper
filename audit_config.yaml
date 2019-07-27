@@ -141,9 +141,16 @@ USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS:
   is_global: True
   group: IAM
 
-BAD_MFA_POLICY:
+IAM_BAD_MFA_POLICY:
   title: Incorrect policy used to attempt to enforce MFA
   description: AWS had advised incorrect policies for enforcing MFA which allowed an attacker, if they compromised keys that were protected by this policy, to remove the MFA policy from themselves, or remove the existing MFA device and add their own.
+  severity: High
+  is_global: True
+  group: IAM
+
+IAM_KNOWN_BAD_POLICY:
+  title: Known bad policy used
+  description: AWS has provided flawed policies to customers. These are either deprecated or no longer advised.
   severity: High
   is_global: True
   group: IAM
@@ -152,6 +159,13 @@ IAM_NOTACTION_ALLOW:
   title: Use of NotAction in an Allow statement
   description: Using NotAction in an Allow policy almost always results in unwanted actions being allowed and should be avoided.
   severity: Medium
+  is_global: True
+  group: IAM
+
+IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE:
+  title: IAM role allows assumption from anywhere
+  description: The IAM role's trust policy allows any other account to assume it.
+  severity: High
   is_global: True
   group: IAM
 
@@ -262,6 +276,12 @@ EC2_SOURCE_DEST_CHECK_OFF:
 EC2_CLASSIC:
   title: EC2 Classic used
   description: EC2 Classic does not use VPCs. Some security benefits are therefore not possible. These workloads should be migrated to modern EC2 instances.
+  severity: Info
+  group: EC2
+
+EC2_OLD:
+  title: Old EC2
+  description: EC2 runnning that was launched more than 365 days ago.
   severity: Info
   group: EC2
 
