@@ -1,6 +1,9 @@
 import json
+import yaml
+from os.path import exists
 import pyjq
 import traceback
+import re
 
 from policyuniverse.policy import Policy
 
@@ -12,7 +15,7 @@ from shared.common import (
     is_external_cidr,
     Finding,
     get_collection_date,
-    days_between
+    days_between,
 )
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
@@ -35,6 +38,34 @@ class Findings(object):
 
     def __len__(self):
         return len(self.findings)
+
+
+def finding_is_filtered(finding, conf):
+    if conf["severity"] == "Mute":
+        return True
+
+    for resource_to_ignore in conf.get("ignore_resources", []):
+        ignore_regex = re.compile("^" + resource_to_ignore + "$")
+        if re.search(ignore_regex, finding.resource_id):
+            return True
+
+    return False
+
+
+def load_audit_config():
+    with open("audit_config.yaml", "r") as f:
+        audit_config = yaml.safe_load(f)
+    # TODO: Check the file is formatted correctly
+
+    if exists("config/audit_config_override.yaml"):
+        with open("config/audit_config_override.yaml", "r") as f:
+            audit_override = yaml.safe_load(f)
+
+            # Over-write the values from audit_config
+            for finding_id in audit_override:
+                for k in audit_override[finding_id]:
+                    audit_config[finding_id][k] = audit_override[finding_id][k]
+    return audit_config
 
 
 def audit_s3_buckets(findings, region):
@@ -635,14 +666,14 @@ def audit_ec2(findings, region):
                 launch_time = instance["LaunchTime"].split(".")[0]
                 age_in_days = days_between(launch_time, collection_date)
                 if age_in_days > MAX_RESOURCE_AGE_DAYS:
-                    findings.add(Finding(
-                        region, 
-                        "EC2_OLD", 
-                        instance["InstanceId"],
-                        resource_details={
-                            "Age in days": age_in_days
-                        },
-                    ))
+                    findings.add(
+                        Finding(
+                            region,
+                            "EC2_OLD",
+                            instance["InstanceId"],
+                            resource_details={"Age in days": age_in_days},
+                        )
+                    )
 
             # Check for EC2 Classic
             if "vpc" not in instance.get("VpcId", ""):
@@ -739,7 +770,10 @@ def audit_sg(findings, region):
                     region,
                     "SG_LARGE_CIDR",
                     cidr,
-                    resource_details={"size": ip.size, "security_groups": list(cidrs[cidr])},
+                    resource_details={
+                        "size": ip.size,
+                        "security_groups": list(cidrs[cidr]),
+                    },
                 )
             )
 

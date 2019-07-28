@@ -232,7 +232,7 @@ def get_connections(cidrs, vpc, outputfilter):
                 # This is a private IP, ex. 10.0.0.0/16
 
                 # See if we should skip this
-                if not outputfilter["internal_edges"]:
+                if not outputfilter.get("internal_edges", True):
                     continue
 
                 # Find all instances in this VPC and peered VPCs that are in this CIDR
@@ -277,7 +277,7 @@ def get_connections(cidrs, vpc, outputfilter):
                                     connections, source_instance, instance, sg
                                 )
 
-        if outputfilter["internal_edges"]:
+        if outputfilter.get("internal_edges", True):
             # Connect allowed in Security Groups
             for ingress_sg in pyjq.all(
                 ".IpPermissions[].UserIdGroupPairs[].GroupId", sg
@@ -287,7 +287,7 @@ def get_connections(cidrs, vpc, outputfilter):
                     # We have an instance and a list of SG's it allows in
                     for source in sg_to_instance_mapping.get(ingress_sg, {}):
                         if (
-                            not outputfilter["inter_rds_edges"]
+                            not outputfilter.get("inter_rds_edges", True)
                             and (
                                 source.node_type == "rds"
                                 or source.node_type == "rds_rr"
@@ -347,6 +347,62 @@ def add_node_to_subnets(region, node, nodes):
                         subnet.addChild(subnet_node)
 
 
+def get_resource_nodes(region, outputfilter):
+    nodes = {}
+    # EC2 nodes
+    for ec2_json in get_ec2s(region):
+        node = Ec2(
+            region,
+            ec2_json,
+            outputfilter.get("collapse_by_tag", False),
+            outputfilter.get("collapse_asgs", False),
+        )
+        nodes[node.arn] = node
+
+    # RDS nodes
+    for rds_json in get_rds_instances(region):
+        node = Rds(region, rds_json)
+        if not outputfilter.get("read_replicas", False) and node.node_type == "rds_rr":
+            continue
+        nodes[node.arn] = node
+
+    # ELB nodes
+    for elb_json in get_elbs(region):
+        node = Elb(region, elb_json)
+        nodes[node.arn] = node
+
+    for elb_json in get_elbv2s(region):
+        node = Elbv2(region, elb_json)
+        nodes[node.arn] = node
+
+    # PrivateLink and VPC Endpoints
+    for vpc_endpoint_json in get_vpc_endpoints(region):
+        node = VpcEndpoint(region, vpc_endpoint_json)
+        nodes[node.arn] = node
+
+    # ECS tasks
+    for ecs_json in get_ecs_tasks(region):
+        node = Ecs(region, ecs_json)
+        nodes[node.arn] = node
+
+    # Lambda functions
+    for lambda_json in get_lambda_functions(region):
+        node = Lambda(region, lambda_json)
+        nodes[node.arn] = node
+
+    # Redshift clusters
+    for node_json in get_redshift(region):
+        node = Redshift(region, node_json)
+        nodes[node.arn] = node
+
+    # ElasticSearch clusters
+    for node_json in get_elasticsearch(region):
+        node = ElasticSearch(region, node_json)
+        nodes[node.arn] = node
+
+    return nodes
+
+
 def build_data_structure(account_data, config, outputfilter):
     cytoscape_json = []
 
@@ -361,9 +417,9 @@ def build_data_structure(account_data, config, outputfilter):
 
     # Iterate through each region and add all the VPCs, AZs, and Subnets
     for region_json in get_regions(account, outputfilter):
-        nodes = {}
         region = Region(account, region_json)
 
+        # Build the tree hierarchy
         for vpc_json in get_vpcs(region, outputfilter):
             vpc = Vpc(region, vpc_json)
 
@@ -374,7 +430,7 @@ def build_data_structure(account_data, config, outputfilter):
 
                 for subnet_json in get_subnets(az):
                     # If we ignore AZz, then tie the subnets up the VPC as the parent
-                    if outputfilter["azs"]:
+                    if outputfilter.get("azs", False):
                         parent = az
                     else:
                         parent = vpc
@@ -385,60 +441,8 @@ def build_data_structure(account_data, config, outputfilter):
             region.addChild(vpc)
         account.addChild(region)
 
-        #
         # In each region, iterate through all the resource types
-        #
-
-        # EC2 nodes
-        for ec2_json in get_ec2s(region):
-            node = Ec2(
-                region,
-                ec2_json,
-                outputfilter["collapse_by_tag"],
-                outputfilter["collapse_asgs"],
-            )
-            nodes[node.arn] = node
-
-        # RDS nodes
-        for rds_json in get_rds_instances(region):
-            node = Rds(region, rds_json)
-            if not outputfilter["read_replicas"] and node.node_type == "rds_rr":
-                continue
-            nodes[node.arn] = node
-
-        # ELB nodes
-        for elb_json in get_elbs(region):
-            node = Elb(region, elb_json)
-            nodes[node.arn] = node
-
-        for elb_json in get_elbv2s(region):
-            node = Elbv2(region, elb_json)
-            nodes[node.arn] = node
-
-        # PrivateLink and VPC Endpoints
-        for vpc_endpoint_json in get_vpc_endpoints(region):
-            node = VpcEndpoint(region, vpc_endpoint_json)
-            nodes[node.arn] = node
-
-        # ECS tasks
-        for ecs_json in get_ecs_tasks(region):
-            node = Ecs(region, ecs_json)
-            nodes[node.arn] = node
-
-        # Lambda functions
-        for lambda_json in get_lambda_functions(region):
-            node = Lambda(region, lambda_json)
-            nodes[node.arn] = node
-
-        # Redshift clusters
-        for node_json in get_redshift(region):
-            node = Redshift(region, node_json)
-            nodes[node.arn] = node
-
-        # ElasticSearch clusters
-        for node_json in get_elasticsearch(region):
-            node = ElasticSearch(region, node_json)
-            nodes[node.arn] = node
+        nodes = get_resource_nodes(region, outputfilter)
 
         # Filter out nodes based on tags
         if len(outputfilter.get("tags", [])) > 0:
@@ -485,7 +489,7 @@ def build_data_structure(account_data, config, outputfilter):
                     vpc_children_to_remove = set()
                     for vpc_child in vpc.children:
                         if vpc_child.has_leaves:
-                            if outputfilter["azs"]:
+                            if outputfilter.get("azs", False):
                                 cytoscape_json.append(vpc_child.cytoscape_data())
                             elif vpc_child.node_type != "az":
                                 # Add VPC children that are not AZs, such as Gateway endpoints

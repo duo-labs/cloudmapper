@@ -14,9 +14,9 @@ from shared.nodes import Account, Region
 
 KNOWN_BAD_POLICIES = {
     "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
-    "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV2 instead"
-
+    "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV2 instead",
 }
+
 
 def get_current_policy_doc(policy):
     for doc in policy["PolicyVersionList"]:
@@ -262,12 +262,10 @@ def find_admins_in_account(region, findings):
                     region,
                     "IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE",
                     role["Arn"],
-                    resource_details={
-                        "statement": role["AssumeRolePolicyDocument"],
-                    },
+                    resource_details={"statement": role["AssumeRolePolicyDocument"]},
                 )
             )
-    
+
         # Check if anything looks malformed
         for stmt in role["AssumeRolePolicyDocument"]["Statement"]:
             if stmt["Effect"] != "Allow":

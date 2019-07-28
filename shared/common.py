@@ -309,16 +309,19 @@ def get_us_east_1(account):
 
     raise Exception("us-east-1 not found")
 
+
 def iso_date(d):
     """ Convert ISO format date string such as 2018-04-08T23:33:20+00:00"""
     time_format = "%Y-%m-%dT%H:%M:%S"
     return datetime.datetime.strptime(d.split("+")[0], time_format)
 
+
 def days_between(s1, s2):
-        """s1 and s2 are date strings"""
-        d1 = iso_date(s1)
-        d2 = iso_date(s2)
-        return abs((d1 - d2).days)
+    """s1 and s2 are date strings"""
+    d1 = iso_date(s1)
+    d2 = iso_date(s2)
+    return abs((d1 - d2).days)
+
 
 def get_collection_date(account):
     if type(account) is not Account:
@@ -328,7 +331,9 @@ def get_collection_date(account):
         account_struct, "iam-get-credential-report", get_us_east_1(account_struct)
     )
     if not json_blob:
-        raise Exception("File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for this account.")
+        raise Exception(
+            "File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for this account."
+        )
 
     # GeneratedTime looks like "2019-01-30T15:43:24+00:00"
     return json_blob["GeneratedTime"]

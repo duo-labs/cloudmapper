@@ -2,6 +2,7 @@ import pyjq
 
 from shared.common import query_aws, get_regions
 from shared.nodes import Account, Region
+from commands.prepare import get_resource_nodes
 
 
 def find_unused_security_groups(region):
@@ -24,6 +25,21 @@ def find_unused_security_groups(region):
         ".NetworkInterfaces[].Groups[].GroupId", network_interfaces
     ):
         used_sgs.add(used_sg)
+
+    # Get the data from the `prepare` command
+    outputfilter = {
+        "internal_edges": True,
+        "read_replicas": True,
+        "inter_rds_edges": True,
+        "azs": False,
+        "collapse_by_tag": None,
+        "collapse_asgs": True,
+        "mute": True,
+    }
+    nodes = get_resource_nodes(region, outputfilter)
+
+    for _, node in nodes.items():
+        used_sgs.update(node.security_groups)
 
     unused_sg_ids = set(defined_sg_set) - used_sgs
     unused_sgs = []
