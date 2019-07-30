@@ -1,4 +1,5 @@
 import argparse
+import json
 
 from shared.common import parse_arguments
 from shared.iam_audit import find_admins
@@ -13,9 +14,18 @@ def run(arguments):
         help="The privileges to look for. Defaults to iam privileges that allow direct admin or escalation.",
         default=None
     )
+    parser.add_argument(
+        "--json",
+        help="Print the json of the issues",
+        default=False,
+        action="store_true",
+    )
     args, accounts, config = parse_arguments(arguments, parser)
 
     admins = find_admins(accounts, args, findings=set())
 
     for admin in admins:
-        print("{}\t{}\t{}".format(admin["account"], admin["type"], admin["name"]))
+        if args.json:
+            print(json.dumps(admin,sort_keys=True))
+        else:
+            print("{}\t{}\t{}".format(admin["account"], admin["type"], admin["name"]))
