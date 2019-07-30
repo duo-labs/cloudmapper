@@ -49,7 +49,7 @@ def policy_action_count(policy_doc, location):
     return actions_count
 
 
-def is_admin_policy(policy_doc, location, findings, region):
+def is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
     # This attempts to identify policies that directly allow admin privs, or indirectly through possible
     # privilege escalation (ex. iam:PutRolePolicy to add an admin policy to itself).
     # It is a best effort. It will have false negatives, meaning it may not identify an admin policy
@@ -100,22 +100,7 @@ def is_admin_policy(policy_doc, location, findings, region):
                     and (
                         action_matches(
                             action,
-                            [
-                                "iam:PutRolePolicy",
-                                "iam:AddUserToGroup",
-                                "iam:AddRoleToInstanceProfile",
-                                "iam:AttachGroupPolicy",
-                                "iam:AttachRolePolicy",
-                                "iam:AttachUserPolicy",
-                                "iam:ChangePassword",
-                                "iam:CreateAccessKey",
-                                # Check for the rare possibility that an actor has a Deny policy on themselves,
-                                # so they try to escalate privs by removing that policy
-                                "iam:DeleteUserPolicy",
-                                "iam:DetachGroupPolicy",
-                                "iam:DetachRolePolicy",
-                                "iam:DetachUserPolicy",
-                            ],
+                            privs_to_look_for
                         )
                     )
                 ):
@@ -151,17 +136,19 @@ def check_for_bad_policy(findings, region, arn, policy_text):
                 return
 
 
-def find_admins(accounts, findings):
+def find_admins(accounts, args, findings):
+    privs_to_look_for = args.privs.split(",")
+
     admins = []
     for account in accounts:
         account = Account(None, account)
         region = get_us_east_1(account)
-        admins.extend(find_admins_in_account(region, findings))
+        admins.extend(find_admins_in_account(region, findings, privs_to_look_for))
 
     return admins
 
 
-def find_admins_in_account(region, findings):
+def find_admins_in_account(region, findings, privs_to_look_for):
     account = region.account
     location = {"account": account.name}
 
@@ -185,7 +172,7 @@ def find_admins_in_account(region, findings):
 
         policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc, location)
 
-        if is_admin_policy(policy_doc, location, findings, region):
+        if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
             admin_policies.append(policy["Arn"])
             if (
                 "arn:aws:iam::aws:policy/AdministratorAccess" in policy["Arn"]
@@ -240,7 +227,7 @@ def find_admins_in_account(region, findings):
 
         for policy in role["RolePolicyList"]:
             policy_doc = policy["PolicyDocument"]
-            if is_admin_policy(policy_doc, location, findings, region):
+            if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
                 reasons.append("Custom policy: {}".format(policy["PolicyName"]))
                 findings.add(
                     Finding(
@@ -348,7 +335,7 @@ def find_admins_in_account(region, findings):
                 )
         for policy in group["GroupPolicyList"]:
             policy_doc = policy["PolicyDocument"]
-            if is_admin_policy(policy_doc, location, findings, region):
+            if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
                 is_admin = True
                 findings.add(
                     Finding(
@@ -390,7 +377,7 @@ def find_admins_in_account(region, findings):
                 )
         for policy in user.get("UserPolicyList", []):
             policy_doc = policy["PolicyDocument"]
-            if is_admin_policy(policy_doc, location, findings, region):
+            if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
                 reasons.append("Custom user policy: {}".format(policy["PolicyName"]))
                 findings.add(
                     Finding(
