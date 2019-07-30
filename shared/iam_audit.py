@@ -137,7 +137,9 @@ def check_for_bad_policy(findings, region, arn, policy_text):
 
 
 def find_admins(accounts, args, findings):
-    privs_to_look_for = args.privs.split(",")
+    privs_to_look_for = None
+    if 'privs' in args:
+        privs_to_look_for = args.privs.split(",")
 
     admins = []
     for account in accounts:
@@ -148,7 +150,10 @@ def find_admins(accounts, args, findings):
     return admins
 
 
-def find_admins_in_account(region, findings, privs_to_look_for):
+def find_admins_in_account(region, findings, privs_to_look_for=None):
+    if privs_to_look_for is None:
+        privs_to_look_for = ["iam:PutRolePolicy","iam:AddUserToGroup","iam:AddRoleToInstanceProfile","iam:AttachGroupPolicy","iam:AttachRolePolicy","iam:AttachUserPolicy","iam:ChangePassword","iam:CreateAccessKey","iam:DeleteUserPolicy","iam:DetachGroupPolicy","iam:DetachRolePolicy","iam:DetachUserPolicy"]
+
     account = region.account
     location = {"account": account.name}
 
