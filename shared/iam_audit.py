@@ -138,7 +138,7 @@ def check_for_bad_policy(findings, region, arn, policy_text):
 
 def find_admins(accounts, args, findings):
     privs_to_look_for = None
-    if 'privs' in args:
+    if 'privs' in args and args.privs:
         privs_to_look_for = args.privs.split(",")
 
     admins = []

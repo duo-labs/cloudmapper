@@ -10,8 +10,8 @@ def run(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--privs",
-        help="The privileges to look for",
-        default="iam:PutRolePolicy,iam:AddUserToGroup,iam:AddRoleToInstanceProfile,iam:AttachGroupPolicy,iam:AttachRolePolicy,iam:AttachUserPolicy,iam:ChangePassword,iam:CreateAccessKey,iam:DeleteUserPolicy,iam:DetachGroupPolicy,iam:DetachRolePolicy,iam:DetachUserPolicy"
+        help="The privileges to look for. Defaults to iam privileges that allow direct admin or escalation.",
+        default=None
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
