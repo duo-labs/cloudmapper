@@ -49,7 +49,9 @@ def policy_action_count(policy_doc, location):
     return actions_count
 
 
-def is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
+def is_admin_policy(
+    policy_doc, location, findings, region, privs_to_look_for, include_retricted
+):
     # This attempts to identify policies that directly allow admin privs, or indirectly through possible
     # privilege escalation (ex. iam:PutRolePolicy to add an admin policy to itself).
     # It is a best effort. It will have false negatives, meaning it may not identify an admin policy
@@ -94,17 +96,14 @@ def is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
                         )
                     return True
                 # Look for privilege escalations
-                if (
-                    stmt.get("Resource", "") == "*"
-                    and stmt.get("Condition", "") == ""
-                    and (
-                        action_matches(
-                            action,
-                            privs_to_look_for
-                        )
-                    )
-                ):
-                    return True
+                if action_matches(action, privs_to_look_for):
+                    if include_retricted:
+                        return True
+                    elif (
+                        stmt.get("Resource", "") == "*"
+                        and stmt.get("Condition", "") == ""
+                    ):
+                        return True
 
     return False
 
@@ -138,21 +137,43 @@ def check_for_bad_policy(findings, region, arn, policy_text):
 
 def find_admins(accounts, args, findings):
     privs_to_look_for = None
-    if 'privs' in args and args.privs:
+    if "privs" in args and args.privs:
         privs_to_look_for = args.privs.split(",")
+    include_restricted = False
+    if "include_restricted" in args:
+        include_restricted = args.include_restricted
 
     admins = []
     for account in accounts:
         account = Account(None, account)
         region = get_us_east_1(account)
-        admins.extend(find_admins_in_account(region, findings, privs_to_look_for))
+        admins.extend(
+            find_admins_in_account(
+                region, findings, privs_to_look_for, include_restricted
+            )
+        )
 
     return admins
 
 
-def find_admins_in_account(region, findings, privs_to_look_for=None):
+def find_admins_in_account(
+    region, findings, privs_to_look_for=None, include_restricted=False
+):
     if privs_to_look_for is None:
-        privs_to_look_for = ["iam:PutRolePolicy","iam:AddUserToGroup","iam:AddRoleToInstanceProfile","iam:AttachGroupPolicy","iam:AttachRolePolicy","iam:AttachUserPolicy","iam:ChangePassword","iam:CreateAccessKey","iam:DeleteUserPolicy","iam:DetachGroupPolicy","iam:DetachRolePolicy","iam:DetachUserPolicy"]
+        privs_to_look_for = [
+            "iam:PutRolePolicy",
+            "iam:AddUserToGroup",
+            "iam:AddRoleToInstanceProfile",
+            "iam:AttachGroupPolicy",
+            "iam:AttachRolePolicy",
+            "iam:AttachUserPolicy",
+            "iam:ChangePassword",
+            "iam:CreateAccessKey",
+            "iam:DeleteUserPolicy",
+            "iam:DetachGroupPolicy",
+            "iam:DetachRolePolicy",
+            "iam:DetachUserPolicy",
+        ]
 
     account = region.account
     location = {"account": account.name}
@@ -177,7 +198,14 @@ def find_admins_in_account(region, findings, privs_to_look_for=None):
 
         policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc, location)
 
-        if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
+        if is_admin_policy(
+            policy_doc,
+            location,
+            findings,
+            region,
+            privs_to_look_for,
+            include_restricted,
+        ):
             admin_policies.append(policy["Arn"])
             if (
                 "arn:aws:iam::aws:policy/AdministratorAccess" in policy["Arn"]
@@ -232,7 +260,14 @@ def find_admins_in_account(region, findings, privs_to_look_for=None):
 
         for policy in role["RolePolicyList"]:
             policy_doc = policy["PolicyDocument"]
-            if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
+            if is_admin_policy(
+                policy_doc,
+                location,
+                findings,
+                region,
+                privs_to_look_for,
+                include_restricted,
+            ):
                 reasons.append("Custom policy: {}".format(policy["PolicyName"]))
                 findings.add(
                     Finding(
@@ -340,7 +375,14 @@ def find_admins_in_account(region, findings, privs_to_look_for=None):
                 )
         for policy in group["GroupPolicyList"]:
             policy_doc = policy["PolicyDocument"]
-            if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
+            if is_admin_policy(
+                policy_doc,
+                location,
+                findings,
+                region,
+                privs_to_look_for,
+                include_restricted,
+            ):
                 is_admin = True
                 findings.add(
                     Finding(
@@ -382,7 +424,14 @@ def find_admins_in_account(region, findings, privs_to_look_for=None):
                 )
         for policy in user.get("UserPolicyList", []):
             policy_doc = policy["PolicyDocument"]
-            if is_admin_policy(policy_doc, location, findings, region, privs_to_look_for):
+            if is_admin_policy(
+                policy_doc,
+                location,
+                findings,
+                region,
+                privs_to_look_for,
+                include_restricted,
+            ):
                 reasons.append("Custom user policy: {}".format(policy["PolicyName"]))
                 findings.add(
                     Finding(
