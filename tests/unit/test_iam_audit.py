@@ -13,6 +13,6 @@ class TestIamAudit(unittest.TestCase):
         )
 
         findings = set()
-        admins = find_admins(accounts, findings)
+        admins = find_admins(accounts, args, findings)
 
         assert_equal(admins, [{"account": "demo", "name": "bad_role", "type": "role"}])
