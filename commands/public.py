@@ -8,12 +8,16 @@ __description__ = "Find publicly exposed services and their ports"
 
 
 def public(accounts, config):
+    all_accounts = []
+
     for account in accounts:
         public_nodes, warnings = get_public_nodes(account, config)
         for public_node in public_nodes:
-            print(json.dumps(public_node, indent=4, sort_keys=True))
+            all_accounts.append(public_node)
         for warning in warnings:
             print("WARNING: {}".format(warning), file=sys.stderr)
+    
+    print(json.dumps(all_accounts, indent=4, sort_keys=True))
 
 
 def run(arguments):
