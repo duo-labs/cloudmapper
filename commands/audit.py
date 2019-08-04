@@ -24,7 +24,7 @@ def audit_command(accounts, config, args):
         if args.json:
             finding = json.loads(str(finding))
             finding['finding_type_metadata']= conf
-            print(json.dumps(finding))
+            print(json.dumps(finding, sort_keys=True))
         elif args.markdown:
             print(
                 "*Audit Finding: [{}] - {}*\\nAccount: {} ({}) - {}\\nDescription: {}\\nResource: `{}`\\nDetails:```{}```".format(
