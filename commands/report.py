@@ -52,8 +52,8 @@ SEVERITIES = [
     {"name": "Medium", "color": "rgba(252, 209, 83, 1)"},  # Orange
     {"name": "Low", "color": "rgba(255, 255, 102, 1)"},  # Yellow
     {"name": "Info", "color": "rgba(154, 214, 156, 1)"},  # Green
-    {"name": "Verbose", "color": "rgba(133, 163, 198, 1)"},
-]  # Blue
+    {"name": "Verbose", "color": "rgba(133, 163, 198, 1)"},  # Blue
+] 
 
 ACTIVE_COLOR = "rgb(139, 214, 140)"
 BAD_COLOR = "rgb(204, 120, 120)"
@@ -300,8 +300,16 @@ def report(accounts, config, args):
 
     print("* Auditing accounts")
     findings = audit(accounts)
-
     audit_config = load_audit_config()
+
+    # Filter findings
+    tmp_findings = []
+    for finding in findings:
+        conf = audit_config[finding.issue_id]
+        if finding_is_filtered(finding, conf):
+            continue
+        tmp_findings.append(finding)
+    findings = tmp_findings
 
     t["findings_severity_by_account_chart"] = []
 
@@ -317,8 +325,6 @@ def report(accounts, config, args):
         # Filtering the list of findings down to the ones specific to the current account.
         for finding in [f for f in findings if f.account_name == account["name"]]:
             conf = audit_config[finding.issue_id]
-            if finding_is_filtered(finding, conf):
-                continue
 
             count = findings_severity_by_account[finding.account_name][
                 conf["severity"]
@@ -352,11 +358,11 @@ def report(accounts, config, args):
         t["severities"][severity["name"]] = {}
     for finding in findings:
         conf = audit_config[finding.issue_id]
+
         t["severities"][conf["severity"]][finding.issue_id] = {
             "title": conf["title"],
             "id": finding.issue_id,
         }
-        # t['severities'][severity['name']] = severity_issue_list
 
     # Create chart for finding counts
     finding_type_set = {}
