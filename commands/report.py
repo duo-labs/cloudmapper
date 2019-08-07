@@ -359,7 +359,6 @@ def report(accounts, config, args):
             "title": conf["title"],
             "id": finding.issue_id,
         }
-        # t['severities'][severity['name']] = severity_issue_list
 
     # Create chart for finding counts
     finding_type_set = {}
