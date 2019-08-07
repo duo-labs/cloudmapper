@@ -52,8 +52,8 @@ SEVERITIES = [
     {"name": "Medium", "color": "rgba(252, 209, 83, 1)"},  # Orange
     {"name": "Low", "color": "rgba(255, 255, 102, 1)"},  # Yellow
     {"name": "Info", "color": "rgba(154, 214, 156, 1)"},  # Green
-    {"name": "Verbose", "color": "rgba(133, 163, 198, 1)"},
-]  # Blue
+    {"name": "Verbose", "color": "rgba(133, 163, 198, 1)"},  # Blue
+] 
 
 ACTIVE_COLOR = "rgb(139, 214, 140)"
 BAD_COLOR = "rgb(204, 120, 120)"
@@ -352,6 +352,9 @@ def report(accounts, config, args):
         t["severities"][severity["name"]] = {}
     for finding in findings:
         conf = audit_config[finding.issue_id]
+        if finding_is_filtered(finding, conf):
+            continue
+
         t["severities"][conf["severity"]][finding.issue_id] = {
             "title": conf["title"],
             "id": finding.issue_id,
