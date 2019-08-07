@@ -146,6 +146,18 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
             and call_summary["action"] == "get_policy"
         ):
             print("  - No policy exists")
+        elif (
+            "AccessDeniedException" in str(e)
+            and call_summary["service"] == "kms"
+            and call_summary["action"] == "list_key_policies"
+        ):
+            print("  - Denied, which should mean this KMS has restricted access")
+        elif (
+            "AccessDeniedException" in str(e)
+            and call_summary["service"] == "kms"
+            and call_summary["action"] == "get_key_rotation_status"
+        ):
+            print("  - Denied, which should mean this KMS has restricted access")
         else:
             print("ClientError: {}".format(e), flush=True)
             call_summary["exception"] = e
