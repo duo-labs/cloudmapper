@@ -382,5 +382,5 @@
   Request: describe-organization
 - Service: organizations
   Request: list-accounts
-- Service: kafka
-  Request: list-clusters
+# - Service: kafka
+#   Request: list-clusters
