@@ -300,8 +300,16 @@ def report(accounts, config, args):
 
     print("* Auditing accounts")
     findings = audit(accounts)
-
     audit_config = load_audit_config()
+
+    # Filter findings
+    tmp_findings = []
+    for finding in findings:
+        conf = audit_config[finding.issue_id]
+        if finding_is_filtered(finding, conf):
+            continue
+        tmp_findings.append(finding)
+    findings = tmp_findings
 
     t["findings_severity_by_account_chart"] = []
 
@@ -317,8 +325,6 @@ def report(accounts, config, args):
         # Filtering the list of findings down to the ones specific to the current account.
         for finding in [f for f in findings if f.account_name == account["name"]]:
             conf = audit_config[finding.issue_id]
-            if finding_is_filtered(finding, conf):
-                continue
 
             count = findings_severity_by_account[finding.account_name][
                 conf["severity"]
@@ -352,8 +358,6 @@ def report(accounts, config, args):
         t["severities"][severity["name"]] = {}
     for finding in findings:
         conf = audit_config[finding.issue_id]
-        if finding_is_filtered(finding, conf):
-            continue
 
         t["severities"][conf["severity"]][finding.issue_id] = {
             "title": conf["title"],
