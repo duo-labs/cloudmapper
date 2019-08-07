@@ -62,9 +62,10 @@ def load_audit_config():
             audit_override = yaml.safe_load(f)
 
             # Over-write the values from audit_config
-            for finding_id in audit_override:
-                for k in audit_override[finding_id]:
-                    audit_config[finding_id][k] = audit_override[finding_id][k]
+            if audit_override:
+                for finding_id in audit_override:
+                    for k in audit_override[finding_id]:
+                        audit_config[finding_id][k] = audit_override[finding_id][k]
     return audit_config
 
 
