@@ -314,7 +314,8 @@ def report(accounts, config, args):
         for severity in SEVERITIES:
             findings_severity_by_account[account["name"]][severity["name"]] = {}
 
-        for finding in findings:
+        # Filtering the list of findings down to the ones specific to the current account.
+        for finding in [f for f in findings if f.account_name == account["name"]]:
             conf = audit_config[finding.issue_id]
             if finding_is_filtered(finding, conf):
                 continue
