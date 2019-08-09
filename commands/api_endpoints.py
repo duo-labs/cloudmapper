@@ -4,7 +4,7 @@ from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
 
-__description__ = "Map API Gateway end-points"
+__description__ = "[Deprecated] Map API Gateway end-points"
 
 
 def api_endpoints(accounts, config):
@@ -50,5 +50,6 @@ def api_endpoints(accounts, config):
 
 
 def run(arguments):
+    print("*** DEPRECARTED: Not enough of data is collected for this command to run successfully ***\n\n")
     _, accounts, config = parse_arguments(arguments)
     api_endpoints(accounts, config)
