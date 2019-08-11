@@ -146,6 +146,18 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
             and call_summary["action"] == "get_policy"
         ):
             print("  - No policy exists")
+        elif (
+            "AccessDeniedException" in str(e)
+            and call_summary["service"] == "kms"
+            and call_summary["action"] == "list_key_policies"
+        ):
+            print("  - Denied, which should mean this KMS has restricted access")
+        elif (
+            "AccessDeniedException" in str(e)
+            and call_summary["service"] == "kms"
+            and call_summary["action"] == "get_key_rotation_status"
+        ):
+            print("  - Denied, which should mean this KMS has restricted access")
         else:
             print("ClientError: {}".format(e), flush=True)
             call_summary["exception"] = e
@@ -183,7 +195,14 @@ def collect(arguments):
     make_directory("account-data")
     make_directory("account-data/{}".format(account_dir))
 
+    # Identify the default region used by global services such as IAM
     default_region = os.environ.get("AWS_REGION", "us-east-1")
+    if 'gov-' in default_region:
+        default_region = 'us-gov-west-1'
+    elif 'cn-' in default_region:
+        default_region = 'cn-north-1'
+    else:
+        default_region = 'us-east-1'
 
     session_data = {"region_name": default_region}
 

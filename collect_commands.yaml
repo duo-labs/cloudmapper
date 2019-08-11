@@ -361,11 +361,11 @@
   Parameters:
   - Name: restApiId
     Value: apigateway-get-rest-apis.json|.items[]?|.id
-- Service: apigateway
-  Request: get-deployments
-  Parameters:
-  - Name: restApiId
-    Value: apigateway-get-rest-apis.json|.items[]?|.id
+# - Service: apigateway
+#   Request: get-deployments
+#   Parameters:
+#   - Name: restApiId
+#     Value: apigateway-get-rest-apis.json|.items[]?|.id
 - Service: apigateway
   Request: get-stages
   Parameters:
@@ -382,5 +382,5 @@
   Request: describe-organization
 - Service: organizations
   Request: list-accounts
-- Service: kafka
-  Request: list-clusters
+# - Service: kafka
+#   Request: list-clusters
