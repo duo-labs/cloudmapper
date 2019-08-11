@@ -11,7 +11,6 @@ CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The 
 
 # Commands
 
-- `api_endpoints`: List the URLs that can be called via API Gateway.
 - `audit`: Check for potential misconfigurations.
 - `collect`: Collect metadata about an account. More details [here](https://summitroute.com/blog/2018/06/05/cloudmapper_collect/).
 - `find_admins`: Look at IAM policies to identify admin users and roles, or principals with specific privileges. More details [here](https://summitroute.com/blog/2018/06/12/cloudmapper_find_admins/).
