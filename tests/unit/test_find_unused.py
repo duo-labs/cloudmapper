@@ -9,7 +9,7 @@ from nose.tools import assert_equal, assert_true, assert_false
 
 class TestFindUnused(TestCase):
     mock_account = type("account", (object,), {"name": "a"})
-    mock_region = type("region", (object,), {"account": mock_account, "name": "a"})
+    mock_region = type("region", (object,), {"account": mock_account, "name": "a", "region": mock_account })
 
     def test_find_unused_elastic_ips_empty(self):
         def mocked_query_side_effect(account, query, region):
@@ -205,7 +205,7 @@ class TestFindUnused(TestCase):
                 ],
             )
 
-    def test_find_unused_security_groups(self):
+    def test_find_unused_network_interfaces(self):
         def mocked_query_side_effect(account, query, region):
             if query == "ec2-describe-network-interfaces":
                 return {
