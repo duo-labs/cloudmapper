@@ -271,3 +271,91 @@ class TestFindUnused(TestCase):
                 find_unused_network_interfaces(self.mock_region),
                 [{"id": "eni-00000001"}],
             )
+
+    def test_unused_elastic_load_balancers(self):
+        def mocked_query_side_effect(account, query, region):
+            if query == "elb-describe-load-balancers":
+                return {
+                    "LoadBalancerDescriptions": [
+                        {
+                            "AvailabilityZones": [
+                                "eu-west-1b",
+                                "eu-west-1c",
+                                "eu-west-1a"
+                            ],
+                            "BackendServerDescriptions": [],
+                            "CanonicalHostedZoneName": "some-elb-450109654.eu-west-1.elb.amazonaws.com",
+                            "CanonicalHostedZoneNameID": "Z32O12XQLNTSW1",
+                            "CreatedTime": "2019-08-29T13:33:49.910000+00:00",
+                            "DNSName": "some-elb-450109654.eu-west-1.elb.amazonaws.com",
+                            "HealthCheck": {
+                                "HealthyThreshold": 4,
+                                "Interval": 300,
+                                "Target": "HTTP:8033/ping",
+                                "Timeout": 4,
+                                "UnhealthyThreshold": 2
+                            },
+                            "Instances": [],
+                            "ListenerDescriptions": [
+                                {
+                                    "Listener": {
+                                        "InstancePort": 8033,
+                                        "InstanceProtocol": "HTTP",
+                                        "LoadBalancerPort": 443,
+                                        "Protocol": "HTTPS",
+                                        "SSLCertificateId": "arn:aws:acm:eu-west-1:123456789011:certificate/1e43d2f8-8f31-4a29-ba3e-fce3d2c6c0ed"
+                                    },
+                                    "PolicyNames": [
+                                        "ELBSecurityPolicy-2016-08"
+                                    ]
+                                },
+                                {
+                                    "Listener": {
+                                        "InstancePort": 8033,
+                                        "InstanceProtocol": "HTTP",
+                                        "LoadBalancerPort": 80,
+                                        "Protocol": "HTTP"
+                                    },
+                                    "PolicyNames": []
+                                }
+                            ],
+                            "LoadBalancerName": "some-elb",
+                            "Policies": {
+                                "AppCookieStickinessPolicies": [],
+                                "LBCookieStickinessPolicies": [],
+                                "OtherPolicies": [
+                                    "ELBSecurityPolicy-2019-08"
+                                ]
+                            },
+                            "Scheme": "internet-facing",
+                            "SecurityGroups": [
+                                "sg-82e9fce5",
+                                "sg-d2be0aaa",
+                                "sg-b1e9fcd6"
+                            ],
+                            "SourceSecurityGroup": {
+                                "GroupName": "default-http-healthcheck",
+                                "OwnerAlias": "123456789011"
+                            },
+                            "Subnets": [
+                                "subnet-67c99110",
+                                "subnet-a684b4c3",
+                                "subnet-ef6516b6"
+                            ],
+                            "VPCId": "vpc-1234567"
+                        }
+                    ]
+                }
+
+        # Clear cached module so we can mock stuff
+        if "shared.find_unused" in sys.modules:
+            del sys.modules["shared.find_unused"]
+
+        with mock.patch("shared.common.query_aws") as mock_query:
+            mock_query.side_effect = mocked_query_side_effect
+            from shared.find_unused import find_unused_elastic_load_balancers
+
+            assert_equal(
+                find_unused_elastic_load_balancers(self.mock_region),
+                [{"LoadBalancerName": "some-elb"}],
+            )
