@@ -155,3 +155,6 @@
 - name: 'Databricks'
   source: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html'
   accounts: ['414351767826']
+- name: 'Threat Stack'
+  source: 'https://threatstack.zendesk.com/hc/en-us/articles/206006626-AWS-EC2-Integration'
+  accounts: ['896126563706']
