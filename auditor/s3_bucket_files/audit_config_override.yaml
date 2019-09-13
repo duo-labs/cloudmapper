@@ -1,0 +1,10 @@
+# Include overrides here to the default audit_config.yaml settings.
+
+# # Example 1: Disable a rule entirely
+# GUARDDUTY_OFF:
+#   severity: Mute
+
+# # Example 2: Ignore certain resources from the auditing
+# S3_PUBLIC_POLICY_GETOBJECT_ONLY:
+#   # This is an array of regexes, and must match the entire string
+#   ignore_resources: [".*demo"]
