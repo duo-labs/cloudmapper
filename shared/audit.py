@@ -672,7 +672,7 @@ def audit_ec2(findings, region):
                             region,
                             "EC2_OLD",
                             instance["InstanceId"],
-                            resource_details={"Age in days": age_in_days, "Name": get_name(instance, "InstanceId")},
+                            resource_details={"Age in days": age_in_days, "Name": get_name(instance, "InstanceId"), "Tags": instance.get('Tags', {})},
                         )
                     )
 
