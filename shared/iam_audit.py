@@ -324,7 +324,7 @@ def find_admins_in_account(
                                 },
                             )
                         )
-            elif stmt["Action"] == "sts:AssumeRoleWithSAML":
+            elif stmt["Action"] in ["sts:AssumeRoleWithSAML", "sts:AssumeRoleWithWebIdentity"]:
                 continue
             else:
                 findings.add(
