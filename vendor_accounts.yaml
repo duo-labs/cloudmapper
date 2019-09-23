@@ -152,6 +152,9 @@
 - name: 'Fivetran'
   source: 'https://fivetran.com/docs/logs/cloudwatch/setup-guide'
   accounts: ['834469178297']
+- name: 'Rapid7'
+  accounts: ['336818582268']
+  source: 'https://insightvm.help.rapid7.com/docs/aws-connect-to-cloud-configuration-assessment'
 - name: 'Databricks'
   source: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html'
   accounts: ['414351767826']
