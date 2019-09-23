@@ -18,7 +18,7 @@ from shared.common import (
     days_between,
 )
 from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region
+from shared.nodes import Account, Region, get_name
 from shared.iam_audit import find_admins_in_account
 
 
@@ -672,7 +672,7 @@ def audit_ec2(findings, region):
                             region,
                             "EC2_OLD",
                             instance["InstanceId"],
-                            resource_details={"Age in days": age_in_days},
+                            resource_details={"Age in days": age_in_days, "Name": get_name(instance, "InstanceId")},
                         )
                     )
 
