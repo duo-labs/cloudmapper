@@ -46,9 +46,34 @@
 <div class="content, report">
     <div class="row">
         <div class="col-sm-12">
+<h1>Contents</h1>
+<ul>
+    <li><a href="#account-summary" id="account-summary">Account Summary</a>
+    <ul>
+        <li><a href="#accounts-reviewed">Accounts reviewed</a>
+        <li><a href="#resources">Resources</a>
+        <ul>
+            <li><a href="#resource-counts">Resource counts</a>
+            <li><a href="#region-usage">Region usage</a>
+        </ul>
+        <li><a href="#iam">IAM</a>
+        <li><a href="#public-network-resources">Public network resources</a>
+        <ul>
+            <li><a href="#counts-of-public-resources-by-type">Counts of public resources by type</a>
+            <li><a href="#counts-of-public-resources-by-port-ranges">Counts of public resources by port ranges</a>
+        </ul>
+    </ul>
+    <li><a href="#findings-summary">Findings Summary</a>
+    <ul>
+        <li><a href="#counts-of-findings-by-account">Counts of finding types by account</a>
+        <li><a href="#links-to-findings">Links to findings</a>
+        <li><a href="#counts-of-findings-by-account">Counts of findings by account</a>
+    </ul>
+    <li><a href="#findings">Findings</a>
+</ul>
 
-<h1>Account Summary</h1>
-<h2>Accounts reviewed</h2>
+<h1><a href="#account-summary" id="account-summary">Account Summary</a></h1>
+<h2><a href="#accounts-reviewed" id="accounts-reviewed">Accounts reviewed</a></h2>
 <table id='accounts'>
     <tr><th>Account name</th><th>Account ID</th><th>Collection date</th></tr>
     {% for account in t.accounts %}
@@ -56,9 +81,9 @@
     {% endfor %}
 </table>
 
-<h2>Resources</h2>
+<h2><a href="#resources" id="resources">Resources</a></h2>
 
-<h3>Resource counts</h3>
+<h3><a href="#resource-counts" id="resource-counts">Resource counts</a></h3>
 
 <div><canvas id="resource_counts"></canvas></div>
 <script>makeChart("resource_counts", {{t.account_names}}, {{ t.resource_data_set }}, legend=true, x_axes=true, y_axes=true)</script>
@@ -92,7 +117,7 @@
 
 
 
-<h3>Region usage</h3>
+<h3><a href="#region-usage" id="region-usage">Region usage</a></h3>
 <p>This table shows whether a region contains the resources being counted. Currently all S3 buckets, no matter their location, and CloudFronts, are identified as being in us-east-1.</p>
 
 <table id='regions' class='rotated'>
@@ -117,14 +142,14 @@
         
     </table>
 
-<h2>IAM</h2>
+<h2><a href="#iam" id="iam">IAM</a></h2>
 <div><canvas id="iam_active"></canvas></div>
 <script>makeChart("iam_active", {{t.account_names}}, {{ t.iam_active_data_set }}, legend=true, x_axes=true, y_axes=true)</script>
 
 
-<h2>Public network resources</h2>
+<h2><a href="#public-network-resources" id="public-network-resources">Public network resources</a></h2>
 
-<h3>Counts of public resources by type</h3>
+<h3><a href="#counts-of-public-resources-by-type" id="counts-of-public-resources-by-type">Counts of public resources by type</a></h3>
 
 <table id='public_network_resource_types' class='rotated'>
     <tr><th></th>
@@ -149,18 +174,18 @@
         {% endfor %}
 </table>
 
-<h3>Counts of public resources by port ranges</h3>
+<h3><a href="#counts-of-public-resources-by-port-ranges" id="counts-of-public-resources-by-port-ranges">Counts of public resources by port ranges</a></h3>
 <div><canvas id="public_ports"></canvas></div>
 <script>makeChart("public_ports", {{t.account_names}}, {{ t.public_ports_data_set }}, legend=true, x_axes=true, y_axes=true)</script>
 
 <hr>
-<h1>Findings Summary</h1>
+<h1><a href="#findings-summary" id="findings-summary">Findings Summary</a></h1>
 
-<h3>Counts of finding types by account</h3>
+<h2><a href="#counts-of-findings-by-account" id="counts-of-findings-by-account">Counts of finding types by account</a></h2>
 <div><canvas id="finding_types_chart"></canvas></div>
 <script>makeChart("finding_types_chart", {{t.account_names}}, {{ t.findings_severity_by_account_chart }}, legend=true, x_axes=true, y_axes=true)</script>
 
-<h3>Links to findings</h3>
+<h2><a href="#links-to-findings" id="links-to-findings">Links to findings</a></h2>
 {% for severity in t.severities %}
     {% if t.severities[severity]|length > 0 %}
         <b>{{ severity }}</b>
@@ -173,12 +198,12 @@
 {% endfor %}
 
 
-<h3>Counts of findings by account</h3>
+<h2><a href="#counts-of-findings-by-account" id="counts-of-findings-by-account">Counts of findings by account</a></h2>
 <div><canvas id="findings_chart"></canvas></div>
 <script>makeChart("findings_chart", {{t.account_names}}, {{ t.finding_counts_by_account_chart }}, legend=true, x_axes=true, y_axes=true)</script>
 
 <hr>
-<h1>Findings</h1>
+<h1><a href="#findings" id="findings">Findings</a></h1>
 {% for finding_group in t.findings %}
 <h2>{{ finding_group }}</h2>
 

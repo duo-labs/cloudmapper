@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyjq = "==2.1.0"
+pyjq = "==2.3.1"
 netaddr = "==0.7.19"
 six = "==1.10.0"
 "boto3" = "==1.9.145"
