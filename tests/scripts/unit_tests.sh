@@ -3,7 +3,7 @@ if [ -f .coverage ]; then
   rm .coverage
 fi
 
-nosetests tests/unit \
+python -m nose tests/unit \
 --with-coverage \
 --cover-package=commands \
 --cover-package=shared \
