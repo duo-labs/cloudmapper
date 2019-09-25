@@ -7,4 +7,7 @@
 # # Example 2: Ignore certain resources from the auditing
 # S3_PUBLIC_POLICY_GETOBJECT_ONLY:
 #   # This is an array of regexes, and must match the entire string
+#   # These string match against the resource IDs, which in the `audit --json` output 
+#   # is the "resource" element. In the report, it is the value listed after the 
+#   # account and region, such as a user name, EC2 instance ID, S3 bucket name, etc.
 #   ignore_resources: [".*demo"]
