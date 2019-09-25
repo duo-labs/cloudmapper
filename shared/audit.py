@@ -169,23 +169,21 @@ def audit_s3_block_policy(findings, region):
 
 
 def audit_guardduty(findings, region):
-    for region_json in get_regions(region.account):
-        region = Region(region.account, region_json)
-        detector_list_json = query_aws(
-            region.account, "guardduty-list-detectors", region
+    detector_list_json = query_aws(
+        region.account, "guardduty-list-detectors", region
+    )
+    if not detector_list_json:
+        # GuardDuty must not exist in this region (or the collect data is old)
+        return
+    is_enabled = False
+    for detector in detector_list_json["DetectorIds"]:
+        detector_json = get_parameter_file(
+            region, "guardduty", "get-detector", detector
         )
-        if not detector_list_json:
-            # GuardDuty must not exist in this region (or the collect data is old)
-            continue
-        is_enabled = False
-        for detector in detector_list_json["DetectorIds"]:
-            detector_json = get_parameter_file(
-                region, "guardduty", "get-detector", detector
-            )
-            if detector_json["Status"] == "ENABLED":
-                is_enabled = True
-        if not is_enabled:
-            findings.add(Finding(region, "GUARDDUTY_OFF", None, None))
+        if detector_json["Status"] == "ENABLED":
+            is_enabled = True
+    if not is_enabled:
+        findings.add(Finding(region, "GUARDDUTY_OFF", None, None))
 
 
 def audit_iam(findings, region):
@@ -992,7 +990,7 @@ def audit(accounts):
                     audit_route53(findings, region)
                     audit_cloudfront(findings, region)
                     audit_s3_block_policy(findings, region)
-                    audit_guardduty(findings, region)
+                audit_guardduty(findings, region)
                 audit_ebs_snapshots(findings, region)
                 audit_rds_snapshots(findings, region)
                 audit_rds(findings, region)
