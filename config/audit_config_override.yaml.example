@@ -7,7 +7,11 @@
 # # Example 2: Ignore certain resources from the auditing
 # S3_PUBLIC_POLICY_GETOBJECT_ONLY:
 #   # This is an array of regexes, and must match the entire string
-#   # These string match against the resource IDs, which in the `audit --json` output 
-#   # is the "resource" element. In the report, it is the value listed after the 
-#   # account and region, such as a user name, EC2 instance ID, S3 bucket name, etc.
 #   ignore_resources: [".*demo"]
+
+# Example 3: Use a custom auditor to add your own auditing functions
+# CUSTOM_GUARDDUTY_OFF:
+#   title: "[Custom] GuardDuty is not enabled"
+#   description: GuardDuty is an AWS threat detection service that detects compromised access keys, EC2 instances, and more. It should be enabled in all regions.
+#   severity: Medium
+#   group: GuardDuty
