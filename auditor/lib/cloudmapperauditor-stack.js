@@ -1,6 +1,5 @@
 /**
  * Deploys the CloudMapper audit app.
- * Usage: cdk deploy -c s3_bucket=MYCOMPANY-cloudmapper -c sns_topic=email
  */
 
 const cdk = require('@aws-cdk/core');
