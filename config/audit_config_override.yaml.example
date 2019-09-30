@@ -8,3 +8,10 @@
 # S3_PUBLIC_POLICY_GETOBJECT_ONLY:
 #   # This is an array of regexes, and must match the entire string
 #   ignore_resources: [".*demo"]
+
+# Example 3: Use a custom auditor to add your own auditing functions
+# CUSTOM_GUARDDUTY_OFF:
+#   title: "[Custom] GuardDuty is not enabled"
+#   description: GuardDuty is an AWS threat detection service that detects compromised access keys, EC2 instances, and more. It should be enabled in all regions.
+#   severity: Medium
+#   group: GuardDuty

@@ -86,6 +86,14 @@ def find_unused_network_interfaces(region):
 
     return unused_network_interfaces
 
+def find_unused_elastic_load_balancers(region):
+    unused_elastic_load_balancers = []
+    elastic_load_balancers = query_aws(region.account, "elb-describe-load-balancers", region)
+    for elastic_load_balancer in pyjq.all(".LoadBalancerDescriptions[] | select(.Instances == [])", elastic_load_balancers):
+        unused_elastic_load_balancers.append({"LoadBalancerName": elastic_load_balancer["LoadBalancerName"]})
+        
+    return unused_elastic_load_balancers
+
 
 def add_if_exists(dictionary, key, value):
     if value:
@@ -118,6 +126,11 @@ def find_unused_resources(accounts):
                 unused_resources_for_region,
                 "network_interfaces",
                 find_unused_network_interfaces(region),
+            )
+            add_if_exists(
+                unused_resources_for_region,
+                "elastic_load_balancers",
+                find_unused_elastic_load_balancers(region),
             )
 
             unused_resources_for_account.append(

@@ -15,6 +15,7 @@ resource_stats.png
 data/
 private_commands/
 output/
+.vscode/
 Pipfile.lock
 auditor/node_modules
 auditor/.cdk.staging
