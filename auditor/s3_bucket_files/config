@@ -1,0 +1,5 @@
+[profile test]
+region=us-east-1
+output=json
+credential_source = EcsContainer
+role_arn=arn:aws:iam::000000000000:role/CloudMapper
