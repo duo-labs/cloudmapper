@@ -7,7 +7,8 @@ CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The 
 - [Network mapping demo](https://duo-labs.github.io/cloudmapper/)
 - [Report demo](https://duo-labs.github.io/cloudmapper/account-data/report.html)
 - [Intro post](https://duo.com/blog/introducing-cloudmapper-an-aws-visualization-tool)
-- [Post to show usage in spotting misconfigurations](https://duo.com/blog/spotting-misconfigurations-with-cloudmapper)
+- [Post to show spotting misconfigurations in networks](https://duo.com/blog/spotting-misconfigurations-with-cloudmapper)
+- [Post on performing continuous auditing](https://duo.com/blog/continuous-auditing-with-cloudmapper)
 
 # Commands
 
