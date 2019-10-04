@@ -306,7 +306,7 @@ def report(accounts, config, args):
     tmp_findings = []
     for finding in findings:
         conf = audit_config[finding.issue_id]
-        if finding_is_filtered(finding, conf):
+        if finding_is_filtered(finding, conf, minimum_severity=args.minimum_severity):
             continue
         tmp_findings.append(finding)
     findings = tmp_findings
@@ -455,6 +455,12 @@ def run(arguments):
         action="store_true",
         default=False,
         dest="stats_all_resources",
+    )
+    parser.add_argument(
+        "--minimum_severity",
+        help="Only report issues that are greater than this. Default: LOW",
+        default="INFO",
+        choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
     )
     args, accounts, config = parse_arguments(arguments, parser)
 

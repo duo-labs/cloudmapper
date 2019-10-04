@@ -46,8 +46,11 @@ class Findings(object):
         return len(self.findings)
 
 
-def finding_is_filtered(finding, conf):
-    if conf["severity"] == "Mute":
+def finding_is_filtered(finding, conf, minimum_severity="LOW"):
+    minimum_severity = minimum_severity.upper()
+    severity_choices = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
+    finding_severity = conf["severity"].upper()
+    if severity_choices.index(finding_severity) > severity_choices.index(minimum_severity):
         return True
 
     for resource_to_ignore in conf.get("ignore_resources", []):
