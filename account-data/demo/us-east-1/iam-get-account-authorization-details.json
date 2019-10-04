@@ -217,7 +217,44 @@
     ],
     "RoleDetailList": [
         {
-            "Arn": "arn:aws:iam::123456789012:role/service-role/bad_role",
+            "Arn": "arn:aws:iam::123456789012:role/exfiller",
+            "AssumeRolePolicyDocument": {
+                "Statement": [
+                    {
+                        "Action": "sts:AssumeRole",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "ec2.amazonaws.com"
+                        }
+                    }
+                ],
+                "Version": "2012-10-17"
+            },
+            "AttachedManagedPolicies": [],
+            "CreateDate": "2018-10-19T21:45:27+00:00",
+            "InstanceProfileList": [],
+            "Path": "/",
+            "RoleId": "AROAJIWYG5SMZL45EWWGG",
+            "RoleName": "exfiller",
+            "RolePolicyList": [
+                {
+                    "PolicyDocument": {
+                        "Statement": [
+                            {
+                                "Action": "s3:*",
+                                "Effect": "Allow",
+                                "Resource": "*"
+                            }
+                        ],
+                        "Version": "2012-10-17"
+                    },
+                    "PolicyName": "tmp"
+                }
+            ],
+            "Tags": []
+        },
+        {
+            "Arn": "arn:aws:iam::123456789012:role/bad_role",
             "AssumeRolePolicyDocument": {
                 "Statement": [
                     {
@@ -238,7 +275,7 @@
             ],
             "CreateDate": "2018-11-20T17:14:45+00:00",
             "InstanceProfileList": [],
-            "Path": "/service-role/",
+            "Path": "",
             "RoleId": "AROAIBATWWYQXZTTALNCE",
             "RoleName": "bad_role",
             "RolePolicyList": [

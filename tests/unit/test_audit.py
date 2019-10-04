@@ -43,7 +43,8 @@ class TestAudit(unittest.TestCase):
                     "IAM_CUSTOM_POLICY_ALLOWS_ADMIN",
                     "IAM_KNOWN_BAD_POLICY",
                     "IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE",
-                    "EC2_OLD"
+                    "EC2_OLD",
+                    "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL"
                 ]
             ),
         )

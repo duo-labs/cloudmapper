@@ -48,9 +48,11 @@ class Findings(object):
 
 def finding_is_filtered(finding, conf, minimum_severity="LOW"):
     minimum_severity = minimum_severity.upper()
-    severity_choices = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
+    severity_choices = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO", "MUTE"]
     finding_severity = conf["severity"].upper()
-    if severity_choices.index(finding_severity) > severity_choices.index(minimum_severity):
+    if severity_choices.index(finding_severity) > severity_choices.index(
+        minimum_severity
+    ):
         return True
 
     for resource_to_ignore in conf.get("ignore_resources", []):
@@ -205,6 +207,45 @@ def audit_guardduty(findings, region):
 
 def audit_iam(findings, region):
     find_admins_in_account(region, findings)
+    # By default we get the findings for the admins, but we can also look for specific
+    # privileges, so we'll look for who has s3:ListAllMyBuckets and then only use those
+    # findings that are for a compute resource having this privilege
+
+    s3_listing_findings = Findings()
+    s3_get_findings = Findings()
+
+    # TODO Running find_admins_in_account is really slow, and now we're running it 3 times.
+    #      So figure out a way to run it once.
+    find_admins_in_account(
+        region, s3_listing_findings, privs_to_look_for=["s3:ListAllMyBuckets"]
+    )
+    find_admins_in_account(region, s3_get_findings, privs_to_look_for=["s3:GetObject"])
+
+    for f in s3_listing_findings:
+        if f.issue_id != "IAM_UNEXPECTED_ADMIN_PRINCIPAL":
+            continue
+
+        services = make_list(f.resource_details.get("Principal", {}).get("Service", ""))
+        for service in services:
+            if service in ["config.amazonaws.com", "trustedadvisor.amazonaws.com"]:
+                continue
+
+            # If we are here then we have a principal that can list S3 buckets,
+            # and is associated with an unexpected service,
+            # so check if they can read data from them as well
+
+            for fget in s3_get_findings:
+                if (
+                    fget.issue_id == "IAM_UNEXPECTED_ADMIN_PRINCIPAL"
+                    and fget.resource_id == f.resource_id
+                ):
+                    # If we are here, then the principal can list S3 buckets and get objects
+                    # from them, and is not an unexpected service, so record this as a finding
+                    f.issue_id = "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL"
+                    findings.add(f)
+
+            # Don't record this multiple times if multiple services are listed
+            break
 
 
 def audit_cloudtrail(findings, region):
