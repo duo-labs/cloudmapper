@@ -46,9 +46,34 @@
 <div class="content, report">
     <div class="row">
         <div class="col-sm-12">
+<h1>Contents</h1>
+<ul>
+    <li><a href="#account-summary" id="account-summary">Account Summary</a>
+    <ul>
+        <li><a href="#accounts-reviewed">Accounts reviewed</a>
+        <li><a href="#resources">Resources</a>
+        <ul>
+            <li><a href="#resource-counts">Resource counts</a>
+            <li><a href="#region-usage">Region usage</a>
+        </ul>
+        <li><a href="#iam">IAM</a>
+        <li><a href="#public-network-resources">Public network resources</a>
+        <ul>
+            <li><a href="#counts-of-public-resources-by-type">Counts of public resources by type</a>
+            <li><a href="#counts-of-public-resources-by-port-ranges">Counts of public resources by port ranges</a>
+        </ul>
+    </ul>
+    <li><a href="#findings-summary">Findings Summary</a>
+    <ul>
+        <li><a href="#counts-of-findings-by-account">Counts of finding types by account</a>
+        <li><a href="#links-to-findings">Links to findings</a>
+        <li><a href="#counts-of-findings-by-account">Counts of findings by account</a>
+    </ul>
+    <li><a href="#findings">Findings</a>
+</ul>
 
-<h1>Account Summary</h1>
-<h2>Accounts reviewed</h2>
+<h1><a href="#account-summary" id="account-summary">Account Summary</a></h1>
+<h2><a href="#accounts-reviewed" id="accounts-reviewed">Accounts reviewed</a></h2>
 <table id='accounts'>
     <tr><th>Account name</th><th>Account ID</th><th>Collection date</th></tr>
     
@@ -56,12 +81,12 @@
     
 </table>
 
-<h2>Resources</h2>
+<h2><a href="#resources" id="resources">Resources</a></h2>
 
-<h3>Resource counts</h3>
+<h3><a href="#resource-counts" id="resource-counts">Resource counts</a></h3>
 
 <div><canvas id="resource_counts"></canvas></div>
-<script>makeChart("resource_counts", ['demo'], [{'label': 'S3 buckets', 'data': [1], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': 'EC2 instances', 'data': [3], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'ELBs', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'ELBv2s', 'data': [1], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'RDS instances', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'Redshift clusters', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'ElasticSearch domains', 'data': [1], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'Elasticache clusters', 'data': [0], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'SNS topics', 'data': [2], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'SQS queues', 'data': [1], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'CloudFronts', 'data': [0], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'Autoscaling groups', 'data': [0], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'ElasticBeanstalks', 'data': [0], 'backgroundColor': 'rgba(191,67,66,1)', 'borderWidth': 1}, {'label': 'Firehose streams', 'data': [0], 'backgroundColor': 'rgba(231,215,193,1)', 'borderWidth': 1}, {'label': 'Glacier vaults', 'data': [0], 'backgroundColor': 'rgba(167,138,127,1)', 'borderWidth': 1}, {'label': 'KMS keys', 'data': [0], 'backgroundColor': 'rgba(201,213,181,1)', 'borderWidth': 1}, {'label': 'Lambda functions', 'data': [1], 'backgroundColor': 'rgba(115,87,81,1)', 'borderWidth': 1}, {'label': 'Kafka clusters', 'data': [1], 'backgroundColor': 'rgba(140,28,19,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("resource_counts", ['demo'], [{'label': 'S3 buckets', 'data': [1], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}, {'label': 'EC2 instances', 'data': [3], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'ELBs', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'ELBv2s', 'data': [1], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'RDS instances', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'Redshift clusters', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'ElasticSearch domains', 'data': [1], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'Elasticache clusters', 'data': [0], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'SNS topics', 'data': [2], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'SQS queues', 'data': [1], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'CloudFronts', 'data': [0], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'Autoscaling groups', 'data': [0], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'ElasticBeanstalks', 'data': [0], 'backgroundColor': 'rgba(191,67,66,1)', 'borderWidth': 1}, {'label': 'Firehose streams', 'data': [0], 'backgroundColor': 'rgba(231,215,193,1)', 'borderWidth': 1}, {'label': 'Glacier vaults', 'data': [0], 'backgroundColor': 'rgba(167,138,127,1)', 'borderWidth': 1}, {'label': 'KMS keys', 'data': [0], 'backgroundColor': 'rgba(201,213,181,1)', 'borderWidth': 1}, {'label': 'Lambda functions', 'data': [1], 'backgroundColor': 'rgba(115,87,81,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 
 
@@ -101,8 +126,6 @@
         <th class="rotate"><div><span>KMS keys</span></div></th>
     
         <th class="rotate"><div><span>Lambda functions</span></div></th>
-    
-        <th class="rotate"><div><span>Kafka clusters</span></div></th>
     
     </tr>
 
@@ -217,12 +240,6 @@
             
             1</td>
         
-            
-            <td class="highlight">
-            
-            
-            1</td>
-        
     </tr>
     
     
@@ -230,7 +247,7 @@
 
 
 
-<h3>Region usage</h3>
+<h3><a href="#region-usage" id="region-usage">Region usage</a></h3>
 <p>This table shows whether a region contains the resources being counted. Currently all S3 buckets, no matter their location, and CloudFronts, are identified as being in us-east-1.</p>
 
 <table id='regions' class='rotated'>
@@ -245,7 +262,7 @@
             <td>demo</td>
             
                 
-                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">S3 buckets:1<br>EC2 instances:3<br>ELBs:1<br>ELBv2s:1<br>RDS instances:1<br>Redshift clusters:1<br>ElasticSearch domains:1<br>SNS topics:2<br>SQS queues:1<br>Lambda functions:1<br>Kafka clusters:1<br></span></div></td>
+                <td class="highlight"><div class="mytooltip">Y<span class="tooltiptext">S3 buckets:1<br>EC2 instances:3<br>ELBs:1<br>ELBv2s:1<br>RDS instances:1<br>Redshift clusters:1<br>ElasticSearch domains:1<br>SNS topics:2<br>SQS queues:1<br>Lambda functions:1<br></span></div></td>
                 
             
         </tr>
@@ -253,14 +270,14 @@
         
     </table>
 
-<h2>IAM</h2>
+<h2><a href="#iam" id="iam">IAM</a></h2>
 <div><canvas id="iam_active"></canvas></div>
-<script>makeChart("iam_active", ['demo'], [{'label': 'Active users', 'stack': 'users', 'data': [0], 'backgroundColor': 'rgb(162, 203, 249)', 'borderWidth': 1}, {'label': 'Inactive users', 'stack': 'users', 'data': [0], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}, {'label': 'Active roles', 'stack': 'roles', 'data': [3], 'backgroundColor': 'rgb(139, 214, 140)', 'borderWidth': 1}, {'label': 'Inactive roles', 'stack': 'roles', 'data': [0], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("iam_active", ['demo'], [{'label': 'Active users', 'stack': 'users', 'data': [0], 'backgroundColor': 'rgb(162, 203, 249)', 'borderWidth': 1}, {'label': 'Inactive users', 'stack': 'users', 'data': [0], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}, {'label': 'Active roles', 'stack': 'roles', 'data': [4], 'backgroundColor': 'rgb(139, 214, 140)', 'borderWidth': 1}, {'label': 'Inactive roles', 'stack': 'roles', 'data': [0], 'backgroundColor': 'rgb(244, 178, 178)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 
-<h2>Public network resources</h2>
+<h2><a href="#public-network-resources" id="public-network-resources">Public network resources</a></h2>
 
-<h3>Counts of public resources by type</h3>
+<h3><a href="#counts-of-public-resources-by-type" id="counts-of-public-resources-by-type">Counts of public resources by type</a></h3>
 
 <table id='public_network_resource_types' class='rotated'>
     <tr><th></th>
@@ -347,18 +364,18 @@
         
 </table>
 
-<h3>Counts of public resources by port ranges</h3>
+<h3><a href="#counts-of-public-resources-by-port-ranges" id="counts-of-public-resources-by-port-ranges">Counts of public resources by port ranges</a></h3>
 <div><canvas id="public_ports"></canvas></div>
 <script>makeChart("public_ports", ['demo'], [{'label': '443', 'data': [3], 'backgroundColor': 'rgba(141,211,199,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 <hr>
-<h1>Findings Summary</h1>
+<h1><a href="#findings-summary" id="findings-summary">Findings Summary</a></h1>
 
-<h3>Counts of finding types by account</h3>
+<h2><a href="#counts-of-findings-by-account" id="counts-of-findings-by-account">Counts of finding types by account</a></h2>
 <div><canvas id="finding_types_chart"></canvas></div>
-<script>makeChart("finding_types_chart", ['demo'], [{'label': 'Critical', 'data': [0], 'backgroundColor': 'rgba(255, 0, 0, 1)', 'borderWidth': 1}, {'label': 'High', 'data': [2], 'backgroundColor': 'rgba(216, 91, 84, 1)', 'borderWidth': 1}, {'label': 'Medium', 'data': [7], 'backgroundColor': 'rgba(252, 209, 83, 1)', 'borderWidth': 1}, {'label': 'Low', 'data': [8], 'backgroundColor': 'rgba(255, 255, 102, 1)', 'borderWidth': 1}, {'label': 'Info', 'data': [1], 'backgroundColor': 'rgba(154, 214, 156, 1)', 'borderWidth': 1}, {'label': 'Verbose', 'data': [0], 'backgroundColor': 'rgba(133, 163, 198, 1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("finding_types_chart", ['demo'], [{'label': 'Critical', 'data': [0], 'backgroundColor': 'rgba(255, 0, 0, 1)', 'borderWidth': 1}, {'label': 'High', 'data': [4], 'backgroundColor': 'rgba(216, 91, 84, 1)', 'borderWidth': 1}, {'label': 'Medium', 'data': [7], 'backgroundColor': 'rgba(252, 209, 83, 1)', 'borderWidth': 1}, {'label': 'Low', 'data': [8], 'backgroundColor': 'rgba(255, 255, 102, 1)', 'borderWidth': 1}, {'label': 'Info', 'data': [2], 'backgroundColor': 'rgba(154, 214, 156, 1)', 'borderWidth': 1}, {'label': 'Verbose', 'data': [0], 'backgroundColor': 'rgba(133, 163, 198, 1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
-<h3>Links to findings</h3>
+<h2><a href="#links-to-findings" id="links-to-findings">Links to findings</a></h2>
 
     
 
@@ -366,9 +383,13 @@
         <b>High</b>
         <ul>
         
-            <li> <a href="#BAD_MFA_POLICY">Incorrect policy used to attempt to enforce MFA</a>
+            <li> <a href="#IAM_BAD_MFA_POLICY">Incorrect policy used to attempt to enforce MFA</a>
         
             <li> <a href="#IAM_KNOWN_BAD_POLICY">Known bad policy used</a>
+        
+            <li> <a href="#IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE">IAM role allows assumption from anywhere</a>
+        
+            <li> <a href="#IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL">IAM role with s3 listing and get privileges can be assumed by unexpected principals</a>
         
         </ul>
     
@@ -423,6 +444,8 @@
         
             <li> <a href="#S3_PUBLIC_POLICY_GETOBJECT_ONLY">Internet accessible S3 bucket via policy (only GetObject)</a>
         
+            <li> <a href="#EC2_OLD">Old EC2</a>
+        
         </ul>
     
 
@@ -430,12 +453,12 @@
 
 
 
-<h3>Counts of findings by account</h3>
+<h2><a href="#counts-of-findings-by-account" id="counts-of-findings-by-account">Counts of findings by account</a></h2>
 <div><canvas id="findings_chart"></canvas></div>
-<script>makeChart("findings_chart", ['demo'], [{'label': 'S3_PUBLIC_POLICY_GETOBJECT_ONLY', 'data': [1], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'CLOUDTRAIL_NOT_MULTIREGION', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'BAD_MFA_POLICY', 'data': [1], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'IAM_KNOWN_BAD_POLICY', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'IAM_CUSTOM_POLICY_ALLOWS_ADMIN', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'PASSWORD_POLICY_NOT_SET', 'data': [1], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'ROOT_USER_HAS_ACCESS_KEYS', 'data': [1], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS', 'data': [2], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'USER_HAS_UNUSED_ACCESS_KEY', 'data': [2], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA', 'data': [1], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS', 'data': [1], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'USER_HAS_TWO_ACCESS_KEYS', 'data': [1], 'backgroundColor': 'rgba(191,67,66,1)', 'borderWidth': 1}, {'label': 'S3_ACCESS_BLOCK_OFF', 'data': [1], 'backgroundColor': 'rgba(231,215,193,1)', 'borderWidth': 1}, {'label': 'GUARDDUTY_OFF', 'data': [1], 'backgroundColor': 'rgba(167,138,127,1)', 'borderWidth': 1}, {'label': 'ECR_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(201,213,181,1)', 'borderWidth': 1}, {'label': 'REDSHIFT_PUBLIC_IP', 'data': [1], 'backgroundColor': 'rgba(115,87,81,1)', 'borderWidth': 1}, {'label': 'SQS_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(140,28,19,1)', 'borderWidth': 1}, {'label': 'SNS_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(109,100,102,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
+<script>makeChart("findings_chart", ['demo'], [{'label': 'S3_PUBLIC_POLICY_GETOBJECT_ONLY', 'data': [1], 'backgroundColor': 'rgba(255,255,179,1)', 'borderWidth': 1}, {'label': 'CLOUDTRAIL_NOT_MULTIREGION', 'data': [1], 'backgroundColor': 'rgba(190,186,218,1)', 'borderWidth': 1}, {'label': 'IAM_BAD_MFA_POLICY', 'data': [1], 'backgroundColor': 'rgba(251,128,114,1)', 'borderWidth': 1}, {'label': 'IAM_KNOWN_BAD_POLICY', 'data': [1], 'backgroundColor': 'rgba(128,177,211,1)', 'borderWidth': 1}, {'label': 'IAM_CUSTOM_POLICY_ALLOWS_ADMIN', 'data': [1], 'backgroundColor': 'rgba(253,180,98,1)', 'borderWidth': 1}, {'label': 'IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE', 'data': [1], 'backgroundColor': 'rgba(179,222,105,1)', 'borderWidth': 1}, {'label': 'IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL', 'data': [1], 'backgroundColor': 'rgba(252,205,229,1)', 'borderWidth': 1}, {'label': 'PASSWORD_POLICY_NOT_SET', 'data': [1], 'backgroundColor': 'rgba(217,217,217,1)', 'borderWidth': 1}, {'label': 'ROOT_USER_HAS_ACCESS_KEYS', 'data': [1], 'backgroundColor': 'rgba(188,128,189,1)', 'borderWidth': 1}, {'label': 'USER_HAS_NOT_USED_ACCESS_KEY_FOR_MAX_DAYS', 'data': [2], 'backgroundColor': 'rgba(204,235,197,1)', 'borderWidth': 1}, {'label': 'USER_HAS_UNUSED_ACCESS_KEY', 'data': [2], 'backgroundColor': 'rgba(255,237,111,1)', 'borderWidth': 1}, {'label': 'USER_WITH_PASSWORD_LOGIN_BUT_NO_MFA', 'data': [1], 'backgroundColor': 'rgba(191,67,66,1)', 'borderWidth': 1}, {'label': 'USER_HAS_NOT_LOGGED_IN_FOR_OVER_MAX_DAYS', 'data': [1], 'backgroundColor': 'rgba(231,215,193,1)', 'borderWidth': 1}, {'label': 'USER_HAS_TWO_ACCESS_KEYS', 'data': [1], 'backgroundColor': 'rgba(167,138,127,1)', 'borderWidth': 1}, {'label': 'S3_ACCESS_BLOCK_OFF', 'data': [1], 'backgroundColor': 'rgba(201,213,181,1)', 'borderWidth': 1}, {'label': 'GUARDDUTY_OFF', 'data': [1], 'backgroundColor': 'rgba(115,87,81,1)', 'borderWidth': 1}, {'label': 'ECR_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(140,28,19,1)', 'borderWidth': 1}, {'label': 'REDSHIFT_PUBLIC_IP', 'data': [1], 'backgroundColor': 'rgba(109,100,102,1)', 'borderWidth': 1}, {'label': 'EC2_OLD', 'data': [3], 'backgroundColor': 'rgba(244,146,146,1)', 'borderWidth': 1}, {'label': 'SQS_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(249,189,154,1)', 'borderWidth': 1}, {'label': 'SNS_PUBLIC', 'data': [1], 'backgroundColor': 'rgba(136,132,255,1)', 'borderWidth': 1}], legend=true, x_axes=true, y_axes=true)</script>
 
 <hr>
-<h1>Findings</h1>
+<h1><a href="#findings" id="findings">Findings</a></h1>
 
 <h2>S3</h2>
 
@@ -541,11 +564,11 @@
 <h2>IAM</h2>
 
 
-    <div class="section"><a name="BAD_MFA_POLICY"></a>
+    <div class="section"><a name="IAM_BAD_MFA_POLICY"></a>
      
     <h3>Incorrect policy used to attempt to enforce MFA</h3>
     <p><b style="background-color: rgba(216, 91, 84, 1)">Severity: High</b><br>
-    <b>Issue ID:</b> BAD_MFA_POLICY</p>
+    <b>Issue ID:</b> IAM_BAD_MFA_POLICY</p>
     <p>AWS had advised incorrect policies for enforcing MFA which allowed an attacker, if they compromised keys that were protected by this policy, to remove the MFA policy from themselves, or remove the existing MFA device and add their own.
     <hr>
 
@@ -675,7 +698,7 @@
             <ol>
                 
                 
-                    <li> arn:aws:iam::123456789012:role/service-role/bad_role
+                    <li> arn:aws:iam::123456789012:role/bad_role
                     
                     <pre>{
     "comment": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
@@ -711,7 +734,7 @@
             <ol>
                 
                 
-                    <li> arn:aws:iam::123456789012:role/service-role/bad_role
+                    <li> arn:aws:iam::123456789012:role/bad_role
                     
                     <pre>{
     "comment": "Role has custom policy allowing admin",
@@ -726,6 +749,90 @@
             }
         ],
         "Version": "2012-10-17"
+    }
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE"></a>
+     
+    <h3>IAM role allows assumption from anywhere</h3>
+    <p><b style="background-color: rgba(216, 91, 84, 1)">Severity: High</b><br>
+    <b>Issue ID:</b> IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE</p>
+    <p>The IAM role's trust policy allows any other account to assume it.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> arn:aws:iam::123456789012:role/bad_role
+                    
+                    <pre>{
+    "statement": {
+        "Statement": [
+            {
+                "Action": "sts:AssumeRole",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "*"
+                }
+            }
+        ],
+        "Version": "2012-10-17"
+    }
+}</pre>
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+    <div class="section"><a name="IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL"></a>
+     
+    <h3>IAM role with s3 listing and get privileges can be assumed by unexpected principals</h3>
+    <p><b style="background-color: rgba(216, 91, 84, 1)">Severity: High</b><br>
+    <b>Issue ID:</b> IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL</p>
+    <p>The ability to list s3 buckets, and get objects from them, should be restricted largely to people as compromising an EC2 with this privilege could lead to exfiltration of data.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            
+            <ol>
+                
+                
+                    <li> arn:aws:iam::123456789012:role/exfiller
+                    
+                    <pre>{
+    "comment": "Unexpected Principal in AssumeRolePolicyDocument for an admin",
+    "Principal": {
+        "Service": "ec2.amazonaws.com"
     }
 }</pre>
                     
@@ -1096,6 +1203,80 @@
                 
                 
                     <li> redshift-cluster-1
+                    
+                
+            </ol>
+        
+        </ul>
+    
+    </ul>
+    </div>
+
+
+<h2>EC2</h2>
+
+
+    <div class="section"><a name="EC2_OLD"></a>
+     
+    <h3>Old EC2</h3>
+    <p><b style="background-color: rgba(154, 214, 156, 1)">Severity: Info</b><br>
+    <b>Issue ID:</b> EC2_OLD</p>
+    <p>EC2 runnning that was launched more than 365 days ago.
+    <hr>
+
+
+    <ul>
+    
+    
+    <li>demo (123456789012)
+        <ul>
+        
+
+        
+            <li>us-east-1 
+            <ol>
+                
+                
+                    <li> i-00000000000000000
+                    
+                    <pre>{
+    "Age in days": 523,
+    "Name": "Bastion",
+    "Tags": [
+        {
+            "Value": "Bastion",
+            "Key": "Name"
+        }
+    ]
+}</pre>
+                    
+                
+                    <li> i-00000000000000001
+                    
+                    <pre>{
+    "Age in days": 523,
+    "Name": "Web1",
+    "Tags": [
+        {
+            "Value": "Web1",
+            "Key": "Name"
+        }
+    ]
+}</pre>
+                    
+                
+                    <li> i-00000000000000002
+                    
+                    <pre>{
+    "Age in days": 523,
+    "Name": "Web2",
+    "Tags": [
+        {
+            "Value": "Web2",
+            "Key": "Name"
+        }
+    ]
+}</pre>
                     
                 
             </ol>
