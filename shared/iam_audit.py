@@ -268,6 +268,12 @@ def find_admins_in_account(
                 privs_to_look_for,
                 include_restricted,
             ):
+                if ':role/OrganizationAccountAccessRole' in role['Arn']:
+                    # AWS creates this role and adds an inline policy to it granting full
+                    # privileges, so this just causes false positives as the purpose
+                    # of this detection rule is to find unexpected admins
+                    continue
+
                 reasons.append("Custom policy: {}".format(policy["PolicyName"]))
                 findings.add(
                     Finding(
