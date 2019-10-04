@@ -1,0 +1,14 @@
+{
+    "JobCompletionDate": "2019-05-03T21:56:43.085000+00:00",
+    "JobCreationDate": "2019-05-03T21:56:43.001000+00:00",
+    "JobStatus": "COMPLETED",
+    "ServicesLastAccessed": [
+        {
+            "LastAuthenticated": "2019-04-15T04:19:00+00:00",
+            "LastAuthenticatedEntity": "arn:aws:iam::123456789012:role/service-role/level1",
+            "ServiceName": "Amazon CloudWatch Logs",
+            "ServiceNamespace": "logs",
+            "TotalAuthenticatedEntities": 1
+        }
+    ]
+}

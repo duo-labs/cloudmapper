@@ -190,6 +190,21 @@ IAM_UNEXPECTED_FORMAT:
   is_global: True
   group: IAM
 
+IAM_UNEXPECTED_ADMIN_PRINCIPAL:
+  title: IAM role with admin privileges can be assumed by unexpected principals
+  description: Admins in an account should be assumed by people. This rule detects IAM Roles that can be granted to EC2s and other services, that has admin privileges.
+  severity: High
+  is_global: True
+  group: IAM
+
+IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL:
+  title: IAM role with s3 listing and get privileges can be assumed by unexpected principals
+  description: The ability to list s3 buckets, and get objects from them, should be restricted largely to people as compromising an EC2 with this privilege could lead to exfiltration of data.
+  severity: High
+  is_global: True
+  group: IAM
+
+
 IAM_NAME_DOES_NOT_INDICATE_ADMIN:
   title: Name does not indicate admin
   description: This IAM Group grants admin privileges, but the name does not indicate it is for admins.

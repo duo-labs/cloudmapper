@@ -237,12 +237,12 @@ def find_admins_in_account(
     # Identify roles that allow admin access
     for role in iam["RoleDetailList"]:
         location["role"] = role["Arn"]
-        reasons = []
+        reasons_for_being_admin = []
 
         # Check if this role is an admin
         for policy in role["AttachedManagedPolicies"]:
             if policy["PolicyArn"] in admin_policies:
-                reasons.append(
+                reasons_for_being_admin.append(
                     "Attached managed policy: {}".format(policy["PolicyArn"])
                 )
             if policy["PolicyArn"] in KNOWN_BAD_POLICIES:
@@ -274,7 +274,7 @@ def find_admins_in_account(
                     # of this detection rule is to find unexpected admins
                     continue
 
-                reasons.append("Custom policy: {}".format(policy["PolicyName"]))
+                reasons_for_being_admin.append("Custom policy: {}".format(policy["PolicyName"]))
                 findings.add(
                     Finding(
                         region,
@@ -316,13 +316,13 @@ def find_admins_in_account(
                 continue
 
             if stmt["Action"] == "sts:AssumeRole":
-                if len(reasons) != 0:
+                if len(reasons_for_being_admin) != 0:
                     # Admin assumption should be done by users or roles, not by AWS services
                     if "AWS" not in stmt["Principal"] or len(stmt["Principal"]) != 1:
                         findings.add(
                             Finding(
                                 region,
-                                "IAM_UNEXPECTED_FORMAT",
+                                "IAM_UNEXPECTED_ADMIN_PRINCIPAL",
                                 role["Arn"],
                                 resource_details={
                                     "comment": "Unexpected Principal in AssumeRolePolicyDocument for an admin",
@@ -345,7 +345,7 @@ def find_admins_in_account(
                     )
                 )
 
-            if len(reasons) != 0:
+            if len(reasons_for_being_admin) != 0:
                 record_admin(admins, account.name, "role", role["RoleName"])
         # TODO Should check users or other roles allowed to assume this role to show they are admins
     location.pop("role", None)
@@ -408,12 +408,12 @@ def find_admins_in_account(
     # Check users
     for user in iam["UserDetailList"]:
         location["user"] = user["UserName"]
-        reasons = []
+        reasons_for_being_admin = []
 
         # Check the different ways in which the user could be an admin
         for policy in user["AttachedManagedPolicies"]:
             if policy["PolicyArn"] in admin_policies:
-                reasons.append(
+                reasons_for_being_admin.append(
                     "Attached managed policy: {}".format(policy["PolicyArn"])
                 )
             if policy["PolicyArn"] in KNOWN_BAD_POLICIES:
@@ -438,7 +438,7 @@ def find_admins_in_account(
                 privs_to_look_for,
                 include_restricted,
             ):
-                reasons.append("Custom user policy: {}".format(policy["PolicyName"]))
+                reasons_for_being_admin.append("Custom user policy: {}".format(policy["PolicyName"]))
                 findings.add(
                     Finding(
                         region,
@@ -452,11 +452,10 @@ def find_admins_in_account(
                 )
         for group in user["GroupList"]:
             if group in admin_groups:
-                reasons.append("In admin group: {}".format(group))
+                reasons_for_being_admin.append("In admin group: {}".format(group))
 
         # Log them if they are an admin
-        if len(reasons) != 0:
-            # log_info('User is admin', location, reasons)
+        if len(reasons_for_being_admin) != 0:
             record_admin(admins, account.name, "user", user["UserName"])
 
     location.pop("user", None)
