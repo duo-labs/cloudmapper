@@ -83,7 +83,8 @@ class CloudmapperauditorStack extends cdk.Stack {
       memoryLimitMiB: 512,
       cpu: 256,
       environment: {
-        S3_BUCKET: config['s3_bucket']
+        S3_BUCKET: config['s3_bucket'],
+        MINIMUM_ALERT_SEVERITY: config['minimum_alert_severity']
       },
       logging: new ecs.AwsLogDriver({
         streamPrefix: 'cloudmapper',

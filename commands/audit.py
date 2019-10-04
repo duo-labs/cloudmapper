@@ -18,7 +18,7 @@ def audit_command(accounts, config, args):
     for finding in findings:
         conf = audit_config[finding.issue_id]
 
-        if finding_is_filtered(finding, conf):
+        if finding_is_filtered(finding, conf, minimum_severity=args.minimum_severity):
             continue
 
         if args.json:
@@ -63,6 +63,12 @@ def run(arguments):
         help="Print issue as markdown (for Slack)",
         default=False,
         action="store_true",
+    )
+    parser.add_argument(
+        "--minimum_severity",
+        help="Only report issues that are greater than this. Default: LOW",
+        default="INFO",
+        choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
