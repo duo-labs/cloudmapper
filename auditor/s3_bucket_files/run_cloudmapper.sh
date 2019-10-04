@@ -49,7 +49,7 @@ sleep 10
 echo "Done waiting, start audit"
 
 # Audit the accounts and send the alerts to Slack
-python cloudmapper.py audit --accounts all --markdown | python ./utils/toslack.py
+python cloudmapper.py audit --accounts all --markdown --minimum_severity $MINIMUM_ALERT_SEVERITY | python ./utils/toslack.py
 if [ $? -ne 0 ]; then
     echo "ERROR: The audit command had an error"
     aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
