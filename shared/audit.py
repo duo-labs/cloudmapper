@@ -227,7 +227,11 @@ def audit_iam(findings, region):
 
         services = make_list(f.resource_details.get("Principal", {}).get("Service", ""))
         for service in services:
-            if service in ["config.amazonaws.com", "trustedadvisor.amazonaws.com"]:
+            if service in [
+                "config.amazonaws.com",
+                "trustedadvisor.amazonaws.com",
+                "macie.amazonaws.com",
+            ]:
                 continue
 
             # If we are here then we have a principal that can list S3 buckets,
