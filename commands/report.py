@@ -16,6 +16,8 @@ from shared.nodes import Account, Region
 from shared.public import get_public_nodes
 from shared.audit import audit, load_audit_config, finding_is_filtered
 
+from cloudmapper import __version__
+
 __description__ = "Create report"
 
 REPORT_OUTPUT_FILE = os.path.join("web", "account-data", "report.html")
@@ -76,6 +78,8 @@ def report(accounts, config, args):
 
     # Data to be passed to the template
     t = {}
+
+    t["version"] = __version__
 
     # Get account names and id's
     t["accounts"] = []
