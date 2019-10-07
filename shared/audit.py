@@ -221,13 +221,17 @@ def audit_iam(findings, region):
     )
     find_admins_in_account(region, s3_get_findings, privs_to_look_for=["s3:GetObject"])
 
-    for f in s3_listing_findings:
-        if f.issue_id != "IAM_UNEXPECTED_ADMIN_PRINCIPAL":
+    for flist in s3_listing_findings:
+        if flist.issue_id != "IAM_UNEXPECTED_ADMIN_PRINCIPAL":
             continue
 
-        services = make_list(f.resource_details.get("Principal", {}).get("Service", ""))
+        services = make_list(flist.resource_details.get("Principal", {}).get("Service", ""))
         for service in services:
-            if service in ["config.amazonaws.com", "trustedadvisor.amazonaws.com"]:
+            if service in [
+                "config.amazonaws.com",
+                "trustedadvisor.amazonaws.com",
+                "macie.amazonaws.com",
+            ]:
                 continue
 
             # If we are here then we have a principal that can list S3 buckets,
@@ -237,12 +241,23 @@ def audit_iam(findings, region):
             for fget in s3_get_findings:
                 if (
                     fget.issue_id == "IAM_UNEXPECTED_ADMIN_PRINCIPAL"
-                    and fget.resource_id == f.resource_id
+                    and fget.resource_id == flist.resource_id
                 ):
                     # If we are here, then the principal can list S3 buckets and get objects
-                    # from them, and is not an unexpected service, so record this as a finding
-                    f.issue_id = "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL"
-                    findings.add(f)
+                    # from them, and is not an unexpected service. Ensure we haven't already
+                    # recorded this as an unexpected admin.
+
+                    already_recorded = False
+                    for f in findings:
+                        if f.resource_id == fget.resource_id and f.issue_id == "IAM_UNEXPECTED_ADMIN_PRINCIPAL":
+                            already_recorded = True
+                            break
+
+                    if not already_recorded:
+                        flist.issue_id = "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL"
+                        findings.add(flist)
+
+                    
 
             # Don't record this multiple times if multiple services are listed
             break
