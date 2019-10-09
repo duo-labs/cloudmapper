@@ -25,7 +25,17 @@ def access_check_command(accounts, config, args):
         expanded_actions = parliament.expand_action(args.privilege)
         if len(expanded_actions) == 0:
             raise Exception("Unknown privilege {}".format(args.privilege))
+        
+        new_privilege_matches = []
+        for action in expanded_actions:
+            for privilege in privilege_matches:
+                if action['service'] == privilege['privilege_prefix'] and action['action'] == privilege['privilege_name']:
+                    new_privilege_matches.append(privilege)
+        privilege_matches = new_privilege_matches
 
+    if len(privilege_matches) == 0:
+        raise Exception("No privileges exist for the given argument set")
+        
 
     # For each account, see who has these privileges for this resource
     for account in accounts:
