@@ -3,7 +3,7 @@ import json
 import fnmatch
 import re
 
-from . import iam_definition, is_arn_match
+from . import iam_definition, is_arn_match, expand_action
 from .finding import Finding, severity
 from .misc import make_list, ACCESS_DECISION
 
@@ -80,46 +80,6 @@ def get_arn_format(resource_type, service_resources):
             resource_type, service_resources
         )
     )
-
-
-def expand_action(action, raise_exceptions=False):
-    """
-    Converts "iam:*List*" to 
-    [
-      {'service':'iam', 'action': 'ListAccessKeys'},
-      {'service':'iam', 'action': 'ListUsers'}, ...
-    ]
-    """
-    parts = action.split(":")
-    if len(parts) != 2:
-        raise ValueError("Action should be in form service:action")
-    prefix = parts[0]
-    unexpanded_action = parts[1]
-
-    actions = []
-    service_match = None
-    for service in iam_definition:
-        if service["prefix"] == prefix.lower():
-            service_match = service
-
-            for privilege in service["privileges"]:
-                if fnmatch.fnmatchcase(
-                    privilege["privilege"].lower(), unexpanded_action.lower()
-                ):
-                    actions.append(
-                        {
-                            "service": service_match["prefix"],
-                            "action": privilege["privilege"],
-                        }
-                    )
-
-    if not service_match and raise_exceptions:
-        raise ValueError("Unknown prefix {}".format(prefix))
-
-    if len(actions) == 0 and raise_exceptions:
-        raise ValueError("Unknown action {}:{}".format(prefix, unexpanded_action))
-
-    return actions
 
 
 def is_valid_region(str):

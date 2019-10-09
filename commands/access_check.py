@@ -19,6 +19,14 @@ def access_check_command(accounts, config, args):
     # Find privileges that match this resource type
     privilege_matches = parliament.get_privilege_matches_for_resource_type(resource_type_matches)
 
+    # Check if we were given a privilege
+    if args.privilege is not None:
+        # Confirm these privileges exist
+        expanded_actions = parliament.expand_action(args.privilege)
+        if len(expanded_actions) == 0:
+            raise Exception("Unknown privilege {}".format(args.privilege))
+
+
     # For each account, see who has these privileges for this resource
     for account in accounts:
         try:
@@ -39,13 +47,16 @@ def access_check_command(accounts, config, args):
 
             for privilege_match in privilege_matches:
                 references = policy.get_references(privilege_match['privilege_prefix'], privilege_match['privilege_name'])
-                if len(references) == 0:
-                    continue
+                
                 statements_for_resource = []
                 for reference in references:
                     if parliament.is_arn_match(privilege_match['resource_type'], reference, args.resource_arn):
                         statements_for_resource.append(references[reference])
-                        print('{}:{} - {}'.format(privilege_match['privilege_prefix'], privilege_match['privilege_name'], reference))
+                if len(statements_for_resource) == 0:
+                    continue
+                
+
+                print('{}:{} - {}'.format(privilege_match['privilege_prefix'], privilege_match['privilege_name'], reference))
 
 
 

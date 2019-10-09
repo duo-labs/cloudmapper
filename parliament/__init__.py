@@ -6,6 +6,7 @@ __version__ = "1.2.3"
 import os
 import json
 import re
+import fnmatch
 
 # On initialization, load the IAM data
 iam_definition_path = os.path.join(
@@ -162,6 +163,46 @@ def is_arn_match(resource_type, arn_format, resource):
     return False
 
 
+def expand_action(action, raise_exceptions=False):
+    """
+    Converts "iam:*List*" to 
+    [
+      {'service':'iam', 'action': 'ListAccessKeys'},
+      {'service':'iam', 'action': 'ListUsers'}, ...
+    ]
+    """
+    parts = action.split(":")
+    if len(parts) != 2:
+        raise ValueError("Action should be in form service:action")
+    prefix = parts[0]
+    unexpanded_action = parts[1]
+
+    actions = []
+    service_match = None
+    for service in iam_definition:
+        if service["prefix"] == prefix.lower():
+            service_match = service
+
+            for privilege in service["privileges"]:
+                if fnmatch.fnmatchcase(
+                    privilege["privilege"].lower(), unexpanded_action.lower()
+                ):
+                    actions.append(
+                        {
+                            "service": service_match["prefix"],
+                            "action": privilege["privilege"],
+                        }
+                    )
+
+    if not service_match and raise_exceptions:
+        raise ValueError("Unknown prefix {}".format(prefix))
+
+    if len(actions) == 0 and raise_exceptions:
+        raise ValueError("Unknown action {}:{}".format(prefix, unexpanded_action))
+
+    return actions
+
+
 def get_resource_type_matches_from_arn(arn):
     """ Given an ARN such as "arn:aws:s3:::mybucket", find resource types that match it.
         This would return:
@@ -205,3 +246,6 @@ def get_privilege_matches_for_resource_type(resource_type_matches):
                     )
 
     return privilege_matches
+
+
+
