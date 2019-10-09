@@ -1,4 +1,3 @@
-
 def make_list(v):
     """
     If the object is not a list already, it converts it to one
@@ -16,5 +15,3 @@ class ACCESS_DECISION:
     IMPLICIT_DENY = 0
     EXPLICIT_DENY = 1
     EXPLICIT_ALLOW = 2
-
-

@@ -3,7 +3,7 @@ import json
 import fnmatch
 import re
 
-from . import iam_definition
+from . import iam_definition, is_arn_match
 from .finding import Finding, severity
 from .misc import make_list, ACCESS_DECISION
 
@@ -82,7 +82,7 @@ def get_arn_format(resource_type, service_resources):
     )
 
 
-def expand_action(action):
+def expand_action(action, raise_exceptions=False):
     """
     Converts "iam:*List*" to 
     [
@@ -113,10 +113,10 @@ def expand_action(action):
                         }
                     )
 
-    if not service_match:
+    if not service_match and raise_exceptions:
         raise ValueError("Unknown prefix {}".format(prefix))
 
-    if len(actions) == 0:
+    if len(actions) == 0 and raise_exceptions:
         raise ValueError("Unknown action {}:{}".format(prefix, unexpanded_action))
 
     return actions
@@ -317,7 +317,7 @@ class Statement:
                 if action == "*" or action == "*:*":
                     return True
 
-                for action_struct in expand_action(action):
+                for action_struct in expand_action(action, raise_exceptions=False):
                     if (
                         action_struct["service"] == privilege_prefix
                         and action_struct["action"] == privilege_name
@@ -331,7 +331,7 @@ class Statement:
                 # I don't think it makes sense to have a "NotAction" of "*", but I'm including this check anyway.
                 return False
 
-            for action_struct in expand_action(action):
+            for action_struct in expand_action(action, raise_exceptions=False):
                 if (
                     action_struct["service"] == privilege_prefix
                     and action_struct["action"] == privilege_name

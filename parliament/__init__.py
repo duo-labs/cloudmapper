@@ -39,6 +39,13 @@ def is_arn_match(resource_type, arn_format, resource):
     - arn:aws:s3:::*personalize*
     
     That should return true because you could have "arn:aws:s3:::personalize/" which matches both.
+
+    Input:
+    - resource_type: Example "bucket", this is only used to identify special cases.
+    - arn_format: ARN regex from the docs
+    - resource: ARN regex from IAM policy
+
+    Notes:
     
     This problem is known as finding the intersection of two regexes.
     There is a library for this here https://github.com/qntm/greenery but it is far too slow,
@@ -65,7 +72,6 @@ def is_arn_match(resource_type, arn_format, resource):
         # We have to do a special case here for S3 buckets
         if "/" in resource:
             return False
-
 
     arn_parts = arn_format.split(":")
     if len(arn_parts) < 6:
@@ -134,7 +140,7 @@ def is_arn_match(resource_type, arn_format, resource):
     # "mybucket*", "mybucketotherthing" -> True
     # "*mybucket", "*myotherthing" -> False
 
-    # We are going to cheat and miss some possible situations, because writing something 
+    # We are going to cheat and miss some possible situations, because writing something
     # to do this correctly by generating a state machine seems much harder.
 
     # Check situation where it begins and ends with asterisks, such as "*/*"
@@ -156,9 +162,46 @@ def is_arn_match(resource_type, arn_format, resource):
     return False
 
 
-def get_resource_type_from_arn(arn):
+def get_resource_type_matches_from_arn(arn):
+    """ Given an ARN such as "arn:aws:s3:::mybucket", find resource types that match it.
+        This would return:
+        [
+            "resource": {
+                "arn": "arn:${Partition}:s3:::${BucketName}",
+                "condition_keys": [],
+                "resource": "bucket"
+            },
+            "service": {
+                "service_name": "Amazon S3",
+                "privileges": [...]
+                ...
+            }
+        ]
+    """
+    matches = []
     for service in iam_definition:
         for resource in service["resources"]:
             arn_format = re.sub(r"\$\{.*?\}", "*", resource["arn"])
             if is_arn_match(resource["resource"], arn, arn_format):
-                print("{} - {}".format(service['service_name'], resource["resource"]))
+                matches.append({"resource": resource, "service": service})
+    return matches
+
+
+def get_privilege_matches_for_resource_type(resource_type_matches):
+    """ Given the response from get_resource_type_matches_from_arn(...), this will identify the relevant privileges.
+    """
+    privilege_matches = []
+    for match in resource_type_matches:
+        for privilege in match["service"]["privileges"]:
+            for resource_type_dict in privilege["resource_types"]:
+                resource_type = resource_type_dict["resource_type"].replace("*", "")
+                if resource_type == match["resource"]["resource"]:
+                    privilege_matches.append(
+                        {
+                            "privilege_prefix": match["service"]["prefix"],
+                            "privilege_name": privilege["privilege"],
+                            "resource_type": resource_type
+                        }
+                    )
+
+    return privilege_matches

@@ -73,7 +73,7 @@ class Policy:
 
         def __is_allowed(stmts):
             """
-            Given statements that all relevant to the same resource and privilege,
+            Given statements that are all relevant to the same resource and privilege,
             (meaning each statement must have an explicit allow or deny on the privilege) 
             determine if it is allowed, which means no Deny effects.
             """
