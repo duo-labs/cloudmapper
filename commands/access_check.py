@@ -105,7 +105,7 @@ def access_check_command(accounts, config, args):
                 privileged_statements.extend(managed_policies[policy["PolicyArn"]])
 
             # Get the inline policies
-            for policy in role["RolePolicyList"]:
+            for policy in role.get("RolePolicyList", []):
                 policy_doc = policy["PolicyDocument"]
                 privileged_statements.extend(
                     get_privilege_statements(
@@ -121,6 +121,49 @@ def access_check_command(accounts, config, args):
                 print(
                     "{} - {}:{}".format(
                         role["Arn"], priv["privilege_prefix"], priv["privilege_name"]
+                    )
+                )
+
+        # Check the users
+        for user in iam["UserDetailList"]:
+            privileged_statements = []
+
+            # Get the managed policies
+            for policy in role["AttachedManagedPolicies"]:
+                privileged_statements.extend(managed_policies[policy["PolicyArn"]])
+
+            # Get the inline policies
+            for policy in user.get("UserPolicyList", []):
+                policy_doc = policy["PolicyDocument"]
+                privileged_statements.extend(
+                    get_privilege_statements(
+                        policy_doc, privilege_matches, args.resource_arn
+                    )
+                )
+
+            # Get the group policies            
+            for group_name in user.get("GroupList", []):
+                for group in iam["GroupDetailList"]:
+                    if group_name == group["GroupName"]:
+                        for policy in group["AttachedManagedPolicies"]:
+                            privileged_statements.extend(managed_policies[policy["PolicyArn"]])
+                        
+                        for policy in group["GroupPolicyList"]:
+                            policy_doc = policy["PolicyDocument"]
+                            privileged_statements.extend(
+                                get_privilege_statements(
+                                    policy_doc, privilege_matches, args.resource_arn
+                                )
+                            )
+
+            # Find the allowed privileges
+            allowed_privileges = get_allowed_privileges(
+                privilege_matches, privileged_statements
+            )
+            for priv in allowed_privileges:
+                print(
+                    "{} - {}:{}".format(
+                        user["Arn"], priv["privilege_prefix"], priv["privilege_name"]
                     )
                 )
 
