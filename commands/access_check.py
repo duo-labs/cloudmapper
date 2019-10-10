@@ -86,23 +86,16 @@ def access_check_command(accounts, config, args):
         except:
             raise Exception("No IAM data for account {}".format(account.name))
 
-        managed_policies = {}
-        # Identify which policies have statements with privileges that reference this resource
-        for policy in iam["Policies"]:
-            policy_arn = policy["Arn"]
-            policy_doc = get_current_policy_doc(policy)
-
-            managed_policies[policy_arn] = get_privilege_statements(
-                policy_doc, privilege_matches, args.resource_arn
-            )
-
         # Check the roles
         for role in iam["RoleDetailList"]:
             privileged_statements = []
 
             # Get the managed policies
             for policy in role["AttachedManagedPolicies"]:
-                privileged_statements.extend(managed_policies[policy["PolicyArn"]])
+                policy_doc = get_managed_policy(iam, policy['PolicyArn'])
+                privileged_statements.extend(get_privilege_statements(
+                    policy_doc, privilege_matches, args.resource_arn
+                ))
 
             # Get the inline policies
             for policy in role.get("RolePolicyList", []):
@@ -129,8 +122,11 @@ def access_check_command(accounts, config, args):
             privileged_statements = []
 
             # Get the managed policies
-            for policy in role["AttachedManagedPolicies"]:
-                privileged_statements.extend(managed_policies[policy["PolicyArn"]])
+            for policy in user["AttachedManagedPolicies"]:
+                policy_doc = get_managed_policy(iam, policy['PolicyArn'])
+                privileged_statements.extend(get_privilege_statements(
+                    policy_doc, privilege_matches, args.resource_arn
+                ))
 
             # Get the inline policies
             for policy in user.get("UserPolicyList", []):
@@ -145,8 +141,12 @@ def access_check_command(accounts, config, args):
             for group_name in user.get("GroupList", []):
                 for group in iam["GroupDetailList"]:
                     if group_name == group["GroupName"]:
+
                         for policy in group["AttachedManagedPolicies"]:
-                            privileged_statements.extend(managed_policies[policy["PolicyArn"]])
+                            policy_doc = get_managed_policy(iam, policy['PolicyArn'])
+                            privileged_statements.extend(get_privilege_statements(
+                                policy_doc, privilege_matches, args.resource_arn
+                            ))
                         
                         for policy in group["GroupPolicyList"]:
                             policy_doc = policy["PolicyDocument"]
@@ -155,6 +155,9 @@ def access_check_command(accounts, config, args):
                                     policy_doc, privilege_matches, args.resource_arn
                                 )
                             )
+            
+            # Get the IAM Boundary
+            # TODO
 
             # Find the allowed privileges
             allowed_privileges = get_allowed_privileges(
@@ -166,6 +169,13 @@ def access_check_command(accounts, config, args):
                         user["Arn"], priv["privilege_prefix"], priv["privilege_name"]
                     )
                 )
+
+
+def get_managed_policy(iam, policy_arn):
+    for policy in iam["Policies"]:
+        if policy_arn == policy["Arn"]:
+            return get_current_policy_doc(policy)
+    raise Exception("Policy not found: {}".format(policy_arn))
 
 
 def get_allowed_privileges(privilege_matches, privileged_statements):
