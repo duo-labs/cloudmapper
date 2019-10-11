@@ -9,7 +9,7 @@ from shared.common import parse_arguments, get_current_policy_doc
 __description__ = "Check who has access to a resource"
 
 
-def get_privilege_statements(policy_doc, privilege_matches, resource_arn):
+def get_privilege_statements(policy_doc, privilege_matches, resource_arn, principal):
     policy = parliament.policy.Policy(policy_doc)
     policy.analyze()
 
@@ -38,6 +38,39 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn):
         # print('{}:{} - {}'.format(privilege_match['privilege_prefix'], privilege_match['privilege_name'], reference))
 
     return policy_privilege_matches
+
+
+class Principal:
+    _tags = []
+    _type = ""
+    _username = ""
+    _userid = ""
+
+    @property
+    def tags(self):
+        """ aws:PrincipalTag """
+        return self._tags
+
+    @property
+    def mytype(self):
+        """ aws:PrincipalType """
+        return self._type
+
+    @property
+    def username(self):
+        """ aws:username """
+        return self._username
+
+    @property
+    def userid(self):
+        """ aws:userid """
+        return self._userid
+
+    def __init__(self, mytype, tags, username="", userid=""):
+        self._type = mytype
+        self._tags = tags
+        self._username = username
+        self._userid = userid
 
 
 def access_check_command(accounts, config, args):
@@ -90,12 +123,14 @@ def access_check_command(accounts, config, args):
         for role in iam["RoleDetailList"]:
             privileged_statements = []
 
+            principal = Principal(mytype="AssumedRole", tags=role["Tags"])
+
             # Get the managed policies
             for policy in role["AttachedManagedPolicies"]:
                 policy_doc = get_managed_policy(iam, policy["PolicyArn"])
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn
+                        policy_doc, privilege_matches, args.resource_arn, principal
                     )
                 )
 
@@ -104,7 +139,7 @@ def access_check_command(accounts, config, args):
                 policy_doc = policy["PolicyDocument"]
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn
+                        policy_doc, privilege_matches, args.resource_arn, principal
                     )
                 )
 
@@ -122,7 +157,7 @@ def access_check_command(accounts, config, args):
             if boundary is not None:
                 policy_doc = get_managed_policy(iam, boundary["PermissionsBoundaryArn"])
                 boundary_statements = get_privilege_statements(
-                    policy_doc, privilege_matches, args.resource_arn
+                    policy_doc, privilege_matches, args.resource_arn, principal
                 )
 
             # Find the allowed privileges
@@ -140,12 +175,14 @@ def access_check_command(accounts, config, args):
         for user in iam["UserDetailList"]:
             privileged_statements = []
 
+            principal = Principal(mytype="User", tags=user["Tags"])
+
             # Get the managed policies
             for policy in user["AttachedManagedPolicies"]:
                 policy_doc = get_managed_policy(iam, policy["PolicyArn"])
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn
+                        policy_doc, privilege_matches, args.resource_arn, principal
                     )
                 )
 
@@ -154,7 +191,7 @@ def access_check_command(accounts, config, args):
                 policy_doc = policy["PolicyDocument"]
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn
+                        policy_doc, privilege_matches, args.resource_arn, principal
                     )
                 )
 
@@ -167,7 +204,10 @@ def access_check_command(accounts, config, args):
                             policy_doc = get_managed_policy(iam, policy["PolicyArn"])
                             privileged_statements.extend(
                                 get_privilege_statements(
-                                    policy_doc, privilege_matches, args.resource_arn
+                                    policy_doc,
+                                    privilege_matches,
+                                    args.resource_arn,
+                                    principal,
                                 )
                             )
 
@@ -175,7 +215,10 @@ def access_check_command(accounts, config, args):
                             policy_doc = policy["PolicyDocument"]
                             privileged_statements.extend(
                                 get_privilege_statements(
-                                    policy_doc, privilege_matches, args.resource_arn
+                                    policy_doc,
+                                    privilege_matches,
+                                    args.resource_arn,
+                                    principal,
                                 )
                             )
 
@@ -193,7 +236,7 @@ def access_check_command(accounts, config, args):
             if boundary is not None:
                 policy_doc = get_managed_policy(iam, boundary["PermissionsBoundaryArn"])
                 boundary_statements = get_privilege_statements(
-                    policy_doc, privilege_matches, args.resource_arn
+                    policy_doc, privilege_matches, args.resource_arn, principal
                 )
 
             # Find the allowed privileges
