@@ -92,10 +92,12 @@ def access_check_command(accounts, config, args):
 
             # Get the managed policies
             for policy in role["AttachedManagedPolicies"]:
-                policy_doc = get_managed_policy(iam, policy['PolicyArn'])
-                privileged_statements.extend(get_privilege_statements(
-                    policy_doc, privilege_matches, args.resource_arn
-                ))
+                policy_doc = get_managed_policy(iam, policy["PolicyArn"])
+                privileged_statements.extend(
+                    get_privilege_statements(
+                        policy_doc, privilege_matches, args.resource_arn
+                    )
+                )
 
             # Get the inline policies
             for policy in role.get("RolePolicyList", []):
@@ -106,9 +108,26 @@ def access_check_command(accounts, config, args):
                     )
                 )
 
+            # Get IAM boundary
+            try:
+                file_name = "account-data/{}/{}/{}/{}".format(
+                    account["name"], "us-east-1", "iam-get-role", role["RoleName"]
+                )
+                get_user_response = json.load(open(file_name))
+            except:
+                raise Exception("No IAM data for user {}".format(user["RoleName"]))
+
+            boundary_statements = None
+            boundary = get_user_response["Role"].get("PermissionsBoundary", None)
+            if boundary is not None:
+                policy_doc = get_managed_policy(iam, boundary["PermissionsBoundaryArn"])
+                boundary_statements = get_privilege_statements(
+                    policy_doc, privilege_matches, args.resource_arn
+                )
+
             # Find the allowed privileges
             allowed_privileges = get_allowed_privileges(
-                privilege_matches, privileged_statements
+                privilege_matches, privileged_statements, boundary_statements
             )
             for priv in allowed_privileges:
                 print(
@@ -123,10 +142,12 @@ def access_check_command(accounts, config, args):
 
             # Get the managed policies
             for policy in user["AttachedManagedPolicies"]:
-                policy_doc = get_managed_policy(iam, policy['PolicyArn'])
-                privileged_statements.extend(get_privilege_statements(
-                    policy_doc, privilege_matches, args.resource_arn
-                ))
+                policy_doc = get_managed_policy(iam, policy["PolicyArn"])
+                privileged_statements.extend(
+                    get_privilege_statements(
+                        policy_doc, privilege_matches, args.resource_arn
+                    )
+                )
 
             # Get the inline policies
             for policy in user.get("UserPolicyList", []):
@@ -137,17 +158,19 @@ def access_check_command(accounts, config, args):
                     )
                 )
 
-            # Get the group policies            
+            # Get the group policies
             for group_name in user.get("GroupList", []):
                 for group in iam["GroupDetailList"]:
                     if group_name == group["GroupName"]:
 
                         for policy in group["AttachedManagedPolicies"]:
-                            policy_doc = get_managed_policy(iam, policy['PolicyArn'])
-                            privileged_statements.extend(get_privilege_statements(
-                                policy_doc, privilege_matches, args.resource_arn
-                            ))
-                        
+                            policy_doc = get_managed_policy(iam, policy["PolicyArn"])
+                            privileged_statements.extend(
+                                get_privilege_statements(
+                                    policy_doc, privilege_matches, args.resource_arn
+                                )
+                            )
+
                         for policy in group["GroupPolicyList"]:
                             policy_doc = policy["PolicyDocument"]
                             privileged_statements.extend(
@@ -155,13 +178,27 @@ def access_check_command(accounts, config, args):
                                     policy_doc, privilege_matches, args.resource_arn
                                 )
                             )
-            
-            # Get the IAM Boundary
-            # TODO
+
+            # Get IAM boundary
+            try:
+                file_name = "account-data/{}/{}/{}/{}".format(
+                    account["name"], "us-east-1", "iam-get-user", user["UserName"]
+                )
+                get_user_response = json.load(open(file_name))
+            except:
+                raise Exception("No IAM data for user {}".format(user["UserName"]))
+
+            boundary_statements = None
+            boundary = get_user_response["User"].get("PermissionsBoundary", None)
+            if boundary is not None:
+                policy_doc = get_managed_policy(iam, boundary["PermissionsBoundaryArn"])
+                boundary_statements = get_privilege_statements(
+                    policy_doc, privilege_matches, args.resource_arn
+                )
 
             # Find the allowed privileges
             allowed_privileges = get_allowed_privileges(
-                privilege_matches, privileged_statements
+                privilege_matches, privileged_statements, boundary_statements
             )
             for priv in allowed_privileges:
                 print(
@@ -172,38 +209,60 @@ def access_check_command(accounts, config, args):
 
 
 def get_managed_policy(iam, policy_arn):
+    """
+    Given the IAM data for an account and the ARN for a policy, 
+    return the policy document
+    """
     for policy in iam["Policies"]:
         if policy_arn == policy["Arn"]:
             return get_current_policy_doc(policy)
     raise Exception("Policy not found: {}".format(policy_arn))
 
 
-def get_allowed_privileges(privilege_matches, privileged_statements):
+def is_allowed(privilege_prefix, privilege_name, statements):
+    stmts_for_privilege = []
+    # Find all statements that use this privilege
+    for privileged_statement in statements:
+        if (
+            privileged_statement["privilege"]["privilege_prefix"] == privilege_prefix
+            and privileged_statement["privilege"]["privilege_name"] == privilege_name
+        ):
+            stmts_for_privilege.extend(privileged_statement["matching_statements"])
+
+    # Ensure we have at least one statement which could be an allow
+    if len(stmts_for_privilege) > 0:
+        # Ensure we have no denies
+        is_allowed = True
+        for stmt in stmts_for_privilege:
+            if not stmt.effect_allow:
+                is_allowed = False
+
+        if is_allowed:
+            return True
+    return False
+
+
+def get_allowed_privileges(
+    privilege_matches, privileged_statements, boundary_statements
+):
     """
     """
     allowed_privileges = []
     for privilege in privilege_matches:
-        stmts_for_privilege = []
-        # Find all statements that use this privilege
-        for privileged_statement in privileged_statements:
-            if (
-                privileged_statement["privilege"]["privilege_prefix"]
-                == privilege["privilege_prefix"]
-                and privileged_statement["privilege"]["privilege_name"]
-                == privilege["privilege_name"]
+        if boundary_statements is not None:
+            if not is_allowed(
+                privilege["privilege_prefix"],
+                privilege["privilege_name"],
+                boundary_statements,
             ):
-                stmts_for_privilege.extend(privileged_statement["matching_statements"])
+                continue
 
-        # Ensure we have at least one statement which could be an allow
-        if len(stmts_for_privilege) > 0:
-            # Ensure we have no denies
-            is_allowed = True
-            for stmt in stmts_for_privilege:
-                if not stmt.effect_allow:
-                    is_allowed = False
-
-            if is_allowed:
-                allowed_privileges.append(privilege)
+        if is_allowed(
+            privilege["privilege_prefix"],
+            privilege["privilege_name"],
+            privileged_statements,
+        ):
+            allowed_privileges.append(privilege)
     return allowed_privileges
 
 
