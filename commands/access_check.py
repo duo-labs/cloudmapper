@@ -8,6 +8,14 @@ from shared.common import parse_arguments, get_current_policy_doc
 
 __description__ = "Check who has access to a resource"
 
+def replace_principal_variables(reference, principal):
+    reference = reference.lower()
+    for tag in principal.tags:
+        reference = reference.replace("${aws:principaltag/"+tag["Key"].lower()+"}", tag["Value"].lower())
+
+    reference = reference.replace("${aws:principaltype}", principal.mytype.lower())
+    return reference
+
 
 def get_privilege_statements(policy_doc, privilege_matches, resource_arn, principal):
     policy = parliament.policy.Policy(policy_doc)
@@ -22,9 +30,14 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
 
         statements_for_resource = []
         for reference in references:
+            expanded_reference = replace_principal_variables(reference, principal)
             if parliament.is_arn_match(
-                privilege_match["resource_type"], reference, resource_arn
+                privilege_match["resource_type"], expanded_reference, resource_arn
             ):
+                # TODO Check condition
+
+
+
                 statements_for_resource.extend(references[reference])
         if len(statements_for_resource) == 0:
             continue
@@ -35,7 +48,6 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
                 "matching_statements": statements_for_resource,
             }
         )
-        # print('{}:{} - {}'.format(privilege_match['privilege_prefix'], privilege_match['privilege_name'], reference))
 
     return policy_privilege_matches
 
