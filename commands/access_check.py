@@ -18,6 +18,9 @@ from shared.common import parse_arguments, get_current_policy_doc
 __description__ = "Check who has access to a resource"
 
 def replace_principal_variables(reference, principal):
+    """
+    Given a resource reference string (ie. the Resource string from an IAM policy) and a prinicipal, replace any variables in the resource string that are principal related. 
+    """
     reference = reference.lower()
     for tag in principal.tags:
         reference = reference.replace("${aws:principaltag/"+tag["Key"].lower()+"}", tag["Value"].lower())
