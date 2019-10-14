@@ -1,3 +1,12 @@
+"""
+Given a resource, this looks through each account, at each principal to determine who has access.
+It first identifies all of the privileges that can act on this resource, which is possibly limited by a parameter.  Then for each principal, it finds the statements that match these privileges and the resource. This is done via get_privilege_statements(...) which returns a list of objects that contain a privilege (ex. s3:GetObject) and the associated statements.
+
+Then it determines if access is actually granted, by ensuring this privilege is allowed by any IAM boundary (without any denies), and allowed by the IAM privileges (again, without any denies).
+
+get_privilege_statements(...) works by looking for statements that match each privilege, ensuring that the resource also matches the resource of interest (with variable substitution), and any conditions related to the IAM principal match.
+"""
+
 import argparse
 import yaml
 import json
@@ -31,10 +40,16 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
         statements_for_resource = []
         for reference in references:
             expanded_reference = replace_principal_variables(reference, principal)
+            # TODO I need to do something for NotResource and NotAction
             if parliament.is_arn_match(
                 privilege_match["resource_type"], expanded_reference, resource_arn
             ):
+                # We now have a bunch of statements that match the privileges and resource of interest.
+                # Now we need to ensure the condition matches.
                 # TODO Check condition
+                stmts = references[reference]
+                for stmt in stmts:
+                    print(stmt.stmt.get("Condition", []))
 
 
 
@@ -48,6 +63,8 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
                 "matching_statements": statements_for_resource,
             }
         )
+
+        print(policy_privilege_matches)
 
     return policy_privilege_matches
 
