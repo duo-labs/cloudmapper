@@ -67,8 +67,6 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
             }
         )
 
-        print(policy_privilege_matches)
-
     return policy_privilege_matches
 
 
@@ -182,7 +180,7 @@ def access_check_command(accounts, config, args):
                 )
                 get_user_response = json.load(open(file_name))
             except:
-                raise Exception("No IAM data for user {}".format(user["RoleName"]))
+                raise Exception("No IAM data for role {}".format(role["RoleName"]))
 
             boundary_statements = None
             boundary = get_user_response["Role"].get("PermissionsBoundary", None)

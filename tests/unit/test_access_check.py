@@ -1,3 +1,4 @@
+import argparse
 import unittest
 import json
 from nose.tools import assert_equal, assert_true, assert_false
@@ -7,6 +8,8 @@ from commands.access_check import (
     replace_principal_variables,
     Principal,
     get_privilege_statements,
+    get_allowed_privileges,
+    access_check_command,
 )
 
 
@@ -139,23 +142,94 @@ class TestAccessCheck(unittest.TestCase):
             == 0
         )
 
-    # def test_access_check(self):
-    #     args, accounts, config = parse_arguments(
-    #         ["--accounts", "demo", "--config", "config.json.demo"], None
-    #     )
-    #     findings = audit(accounts)
+    def test_get_allowed_privileges(self):
+        principal = Principal(
+            "AssumedRole",
+            [{"Key": "project", "Value": "prod"}, {"Key": "color", "Value": "blue"}],
+            username="role",
+            userid="",
+        )
 
-    #     issue_ids = set()
-    #     for finding in findings:
-    #         print(finding)
-    #         issue_ids.add(finding.issue_id)
+        policy_doc = """
+        {
+            "Statement": [
+                {
+                    "Action": "s3:GetObject",
+                    "Effect": "Allow",
+                    "Resource": "*"
+                },
+                {
+                    "Sid": "AllowSNSAccessBasedOnArnMatching",
+                    "Effect": "Allow",
+                    "Action": [
+                        "sns:Publish"
+                    ],
+                    "Resource": [
+                        "arn:aws:sns:*:*:${aws:PrincipalTag/project}-*"
+                    ]
+                }
+            ],
+            "Version": "2012-10-17"
+        }"""
+        policy_doc = json.loads(policy_doc)
 
-    #     assert_equal(
-    #         issue_ids,
-    #         set(
-    #             [
-    #                 # The trail includes "IsMultiRegionTrail": false
-    #                 "CLOUDTRAIL_NOT_MULTIREGION",
-    #             ]
-    #         ),
-    #     )
+        privilege_matches = [
+            {
+                "privilege_prefix": "s3",
+                "privilege_name": "GetObject",
+                "resource_type": "object",
+            }
+        ]
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+
+        # Ensure we have allowed statements when there is no boundary
+        assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+
+        # Ensure we have allowed statements when the boundary matches what was allowed
+        assert_true(len(get_allowed_privileges(privilege_matches, stmts, stmts)) > 0)
+
+        policy_doc = """
+        {
+            "Statement": [
+                {
+                    "Action": "*",
+                    "Effect": "Deny",
+                    "Resource": "*"
+                }
+            ],
+            "Version": "2012-10-17"
+        }"""
+        policy_doc = json.loads(policy_doc)
+        boundary = get_privilege_statements(
+            policy_doc, privilege_matches, "*", principal
+        )
+
+        # Ensure nothing is allowed when the boundary denies all
+        assert_true(
+            len(get_allowed_privileges(privilege_matches, stmts, boundary)) == 0
+        )
+
+    def test_access_check(self):
+        # TODO This parsing code should not be here
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            "--resource_arn",
+            help="The resource to be looked at, such as arn:aws:s3:::mybucket",
+            required=True,
+        )
+        parser.add_argument(
+            "--privilege", help="The privilege in question (ex. s3:GetObject)"
+        )
+        args, accounts, config = parse_arguments(
+            [
+                "--accounts",
+                "demo",
+                "--config",
+                "config.json.demo",
+                "--resource_arn",
+                "arn:aws:sns:*:*:prod-*",
+            ],
+            parser,
+        )
+        access_check_command(accounts, config, args)
+        # TODO Have that function return results that can be tested
