@@ -260,6 +260,9 @@ class Statement:
                 self._is_valid = False
                 return
 
+    def __str__(self):
+        return json.dumps(self.stmt, indent=2)
+
     @property
     def is_valid(self):
         return self._is_valid
