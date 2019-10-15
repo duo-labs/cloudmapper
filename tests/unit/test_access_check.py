@@ -208,8 +208,117 @@ class TestAccessCheck(unittest.TestCase):
         assert_true(
             len(get_allowed_privileges(privilege_matches, stmts, boundary)) == 0
         )
+    
+    def test_conditions(self):
+        principal = Principal(
+            "AssumedRole",
+            [{"Key": "access-project", "Value": "peg"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+            username="role",
+            userid="",
+        )
+
+        policy_doc = """
+        {
+ "Version": "2012-10-17",
+ "Statement": [
+     {
+         "Sid": "AllActionsSecretsManagerSameProjectSameTeam",
+         "Effect": "Allow",
+         "Action": "secretsmanager:*",
+         "Resource": "*",
+         "Condition": {
+             "StringEquals": {
+                 "aws:ResourceTag/access-project": "${aws:PrincipalTag/access-project}",
+                 "aws:ResourceTag/access-team": "${aws:PrincipalTag/access-team}",
+                 "aws:ResourceTag/cost-center": "${aws:PrincipalTag/cost-center}"
+             },
+             "ForAllValues:StringEquals": {
+                 "aws:TagKeys": [
+                     "access-project",
+                     "access-team",
+                     "cost-center",
+                     "Name",
+                     "OwnedBy"
+                 ]
+             },
+             "StringEqualsIfExists": {
+                 "aws:RequestTag/access-project": "${aws:PrincipalTag/access-project}",
+                 "aws:RequestTag/access-team": "${aws:PrincipalTag/access-team}",
+                 "aws:RequestTag/cost-center": "${aws:PrincipalTag/cost-center}"
+             }
+         }
+     },
+     {
+         "Sid": "AllResourcesSecretsManagerNoTags",
+         "Effect": "Allow",
+         "Action": [
+             "secretsmanager:GetRandomPassword",
+             "secretsmanager:ListSecrets"
+         ],
+         "Resource": "*"
+     },
+     {
+         "Sid": "ReadSecretsManagerSameTeam",
+         "Effect": "Allow",
+         "Action": [
+             "secretsmanager:Describe*",
+             "secretsmanager:Get*",
+             "secretsmanager:List*"
+         ],
+         "Resource": "*",
+         "Condition": {
+             "StringEquals": {
+                 "aws:ResourceTag/access-team": "${aws:PrincipalTag/access-team}"
+             }
+         }
+     },
+     {
+         "Sid": "DenyUntagSecretsManagerReservedTags",
+         "Effect": "Deny",
+         "Action": "secretsmanager:UntagResource",
+         "Resource": "*",
+         "Condition": {
+             "StringLike": {
+                 "aws:TagKeys": "access-*"
+             }
+         }
+     },
+     {
+         "Sid": "DenyPermissionsManagement",
+         "Effect": "Deny",
+         "Action": "secretsmanager:*Policy",
+         "Resource": "*"
+     }
+ ]
+}"""
+        policy_doc = json.loads(policy_doc)
+
+        # Ensure this works at all
+        privilege_matches = [
+            {
+                "privilege_prefix": "secretsmanager",
+                "privilege_name": "ListSecrets",
+                "resource_type": "secret",
+            }
+        ]
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+
+        
+        # for stmt in stmts:
+        #     for m in stmt["matching_statements"]:
+        #         print(m)
+        # exit(-1)
+        # assert_true(
+        #     len(get_privilege_statements(policy_doc, privilege_matches, "*", principal))
+        #     > 0
+        # )
+        
 
     def test_access_check(self):
+        # This test calls the access_check command across the demo data,
+        # thereby excersising much of its code
+
         # TODO This parsing code should not be here
         parser = argparse.ArgumentParser()
         parser.add_argument(

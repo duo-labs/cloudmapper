@@ -52,7 +52,8 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
                 # TODO Check condition
                 stmts = references[reference]
                 for stmt in stmts:
-                    print(stmt.stmt.get("Condition", []))
+                    #print(stmt.stmt.get("Condition", []))
+                    pass
 
 
 
