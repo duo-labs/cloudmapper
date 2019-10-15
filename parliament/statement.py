@@ -317,7 +317,7 @@ class Statement:
         """
 
         if not self.in_actions(privilege_prefix, privilege_name):
-            # Give privilege is unrelated to this statement
+            # Given privilege is unrelated to this statement
             return []
 
         if "NotResource" in self.stmt:
@@ -345,6 +345,11 @@ class Statement:
                     affected_resources.append(resource)
                 elif resource == "*":
                     affected_resources.append(resource)
+
+        # Ensure we match on "*"
+        for resource in make_list(self.stmt["Resource"]):
+            if resource == "*":
+                affected_resources.append(resource)
 
         return affected_resources
 
