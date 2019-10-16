@@ -209,7 +209,187 @@ class TestAccessCheck(unittest.TestCase):
             len(get_allowed_privileges(privilege_matches, stmts, boundary)) == 0
         )
     
-    def test_conditions(self):
+    # def test_conditions_on_principal_tags(self):
+    #     # TODO
+    #     # Example from https://aws.amazon.com/blogs/security/working-backward-from-iam-policies-and-principal-tags-to-standardized-names-and-tags-for-your-aws-resources/
+    #     principal = Principal(
+    #         "AssumedRole",
+    #         [{"Key": "access-project", "Value": "web"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+    #         username="role",
+    #         userid="",
+    #     )
+
+    #     policy_doc = """{
+    #         "Effect": "Allow",
+    #         "Action": "s3:ListAllMyBuckets",
+    #         "Resource": "*",
+    #         "Condition": {
+    #             "StringEquals": {
+    #                 "aws:PrincipalTag/project": "web"
+    #             }
+    #         }
+    #     }"""
+
+    #     policy_doc = json.loads(policy_doc)
+
+    #     # Ensure this works at all
+    #     privilege_matches = [
+    #         {
+    #             "privilege_prefix": "s3",
+    #             "privilege_name": "ListAllMyBuckets",
+    #             "resource_type": "object",
+    #         }
+    #     ]
+    #     stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+    #     assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+
+
+    #     principal = Principal(
+    #         "AssumedRole",
+    #         [{"Key": "access-project", "Value": "database"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+    #         username="role",
+    #         userid="",
+    #     )
+    #     stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+    #     assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) == 0)
+
+
+    # def test_conditions_on_resource_tags_ec2(self):
+    #     # TODO
+    #     # Example from https://aws.amazon.com/blogs/security/working-backward-from-iam-policies-and-principal-tags-to-standardized-names-and-tags-for-your-aws-resources/
+    #     principal = Principal(
+    #         "AssumedRole",
+    #         [{"Key": "access-project", "Value": "peg"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+    #         username="role",
+    #         userid="",
+    #     )
+
+    #     policy_doc = """{
+    #         "Action":[
+    #             "ec2:StartInstances",
+    #             "ec2:StopInstances"
+    #         ],
+    #         "Resource":[
+    #             "arn:aws:ec2:*:*:instance/*"
+    #         ],
+    #         "Effect":"Allow",
+    #         "Condition":{
+    #             "StringEquals":{
+    #                 "ec2:ResourceTag/access-project":"web"
+    #             }
+    #         }
+    #     }"""
+
+    #     policy_doc = json.loads(policy_doc)
+
+    #     # Ensure this works at all
+    #     privilege_matches = [
+    #         {
+    #             "privilege_prefix": "ec2",
+    #             "privilege_name": "StopInstances",
+    #             "resource_type": "instance",
+    #         }
+    #     ]
+    #     stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+    #     # TODO Need to get resource info
+    #     print("get_privilege_statements: {}".format(stmts))
+    #     assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+
+
+    # def test_conditions_on_resource_and_principal_tags_ec2(self):
+    #     # TODO
+    #     # Example from https://aws.amazon.com/blogs/security/working-backward-from-iam-policies-and-principal-tags-to-standardized-names-and-tags-for-your-aws-resources/
+    #     principal = Principal(
+    #         "AssumedRole",
+    #         [{"Key": "access-project", "Value": "peg"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+    #         username="role",
+    #         userid="",
+    #     )
+
+    #     policy_doc = """{
+    #         "Action":[
+    #             "ec2:StartInstances",
+    #             "ec2:StopInstances"
+    #         ],
+    #         "Resource":[
+    #             "arn:aws:ec2:*:*:instance/*"
+    #         ],
+    #         "Effect":"Allow",
+    #         "Condition":{
+    #             "StringEquals":{
+    #                 "ec2:ResourceTag/access-project":"${aws:PrincipalTag/access-project}"
+    #             }
+    #         }
+    #     }"""
+
+    #     policy_doc = json.loads(policy_doc)
+
+    #     # Ensure this works at all
+    #     privilege_matches = [
+    #         {
+    #             "privilege_prefix": "ec2",
+    #             "privilege_name": "StopInstances",
+    #             "resource_type": "instance",
+    #         }
+    #     ]
+    #     stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+    #     # TODO Need to get resource info
+    #     print("get_privilege_statements: {}".format(stmts))
+    #     assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+    
+
+    # def test_conditions_on_resource_and_principal_tags_rds(self):
+    #     # TODO
+    #     # Example from https://aws.amazon.com/blogs/security/working-backward-from-iam-policies-and-principal-tags-to-standardized-names-and-tags-for-your-aws-resources/
+    #     principal = Principal(
+    #         "AssumedRole",
+    #         [{"Key": "access-project", "Value": "peg"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+    #         username="role",
+    #         userid="",
+    #     )
+
+    #     policy_doc = """{
+    #         "Version": "2012-10-17",
+    #         "Statement": [
+    #             {
+    #                 "Effect": "Allow",
+    #                 "Action": "rds:DescribeDBInstances",
+    #                 "Resource": "*"
+    #             },
+    #             {
+    #                 "Effect": "Allow",
+    #                 "Action": [
+    #                     "rds:RebootDBInstance",
+    #                     "rds:StartDBInstance",
+    #                     "rds:StopDBInstance"
+    #                 ],
+    #                 "Resource": "*",
+    #                 "Condition": {
+    #                     "StringEquals": {
+    #                         "aws:PrincipalTag/CostCenter": "0735",
+    #                         "rds:db-tag/Project": "DataAnalytics"
+    #                     }
+    #                 }
+    #             }
+    #         ]
+    #     }"""
+
+    #     policy_doc = json.loads(policy_doc)
+
+    #     # Ensure this works at all
+    #     privilege_matches = [
+    #         {
+    #             "privilege_prefix": "ec2",
+    #             "privilege_name": "StopInstances",
+    #             "resource_type": "instance",
+    #         }
+    #     ]
+    #     stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+    #     # TODO Need to get resource info
+    #     print("get_privilege_statements: {}".format(stmts))
+    #     assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+
+    def test_conditions_on_resource_and_principal_tags_complex_secrets(self):
         principal = Principal(
             "AssumedRole",
             [{"Key": "access-project", "Value": "peg"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
@@ -303,6 +483,21 @@ class TestAccessCheck(unittest.TestCase):
         ]
         stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
         assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+
+        # Ensure the Deny in the policy works
+        privilege_matches = [
+            {
+                "privilege_prefix": "secretsmanager",
+                "privilege_name": "PutResourcePolicy",
+                "resource_type": "secret",
+            }
+        ]
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) == 0)
+
+        # TODO Testing these conditions requires getting resource tags
+
+        
 
         
         # for stmt in stmts:
