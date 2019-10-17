@@ -384,3 +384,10 @@
   Request: list-accounts
 # - Service: kafka
 #   Request: list-clusters
+- Service: secretsmanager
+  Request: list-secrets
+- Service: secretsmanager
+  Request: get-resource-policy
+  Parameters:
+  - Name: SecretId
+    Value: secretsmanager-list-secrets.json|.SecretList[]?|.Name
