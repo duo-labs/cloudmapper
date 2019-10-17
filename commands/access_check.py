@@ -81,7 +81,7 @@ def apply_condition_function(condition_function, left_side, right_side):
     # TODO Need to handle other operators from https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html
     return None
 
-def get_condition_result(condition_function, condition_values, principal):
+def get_condition_result(condition_function, condition_values, resource_arn, principal):
     """
     Given a condition_function such as: 'StringEquals'
       and values, such as: {'aws:PrincipalTag/project': 'web'}
@@ -94,7 +94,7 @@ def get_condition_result(condition_function, condition_values, principal):
         if k.startswith("aws:PrincipalTag/"):
             for tag in principal.tags:
                 if k == "aws:PrincipalTag/"+tag["Key"]:
-                    results.append(apply_condition_function(condition_function, condition_values[k], tag["Value"]))
+                    results.append(apply_condition_function(condition_function, tag["Value"], condition_values[k]))
                     
 
     # The array results should now look something like [True, False, True],
@@ -141,7 +141,7 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
                     allowed_by_conditions = True
                     for condition_function in stmt.stmt.get("Condition", {}):
                         condition_values = stmt.stmt["Condition"][condition_function]
-                        condition_result = get_condition_result(condition_function, condition_values, principal)
+                        condition_result = get_condition_result(condition_function, condition_values, resource_arn, principal)
                         # TODO Need to do something different for Deny, to avoid false negatives
                         if condition_result is not None:
                             if condition_result == False:
