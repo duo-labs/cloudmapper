@@ -29,6 +29,58 @@ def replace_principal_variables(reference, principal):
     return reference
 
 
+def apply_condition_function(condition_function, left_side, right_side):
+    # TODO Need to handle arrays, such as:
+    # "Condition": {"StringLike": {"ec2:InstanceType": [
+    #   "t1.*",
+    #   "t2.*",
+    #   "m3.*"
+    # ]}}
+    # 
+    # or
+    #
+    # "Condition": {
+    #     "ForAllValues:StringEquals": {
+    #         "dynamodb:Attributes": [
+    #             "ID",
+    #             "Message",
+    #             "Tags"
+    #         ]
+    #     }
+    # }
+    # 
+    # or
+    #
+    # "Condition": {
+    #         "ForAnyValue:StringEquals": {
+    #             "dynamodb:Attributes": [
+    #                 "ID",
+    #                 "PostDateTime"
+    #             ]
+    #         }
+    #     }
+
+    if condition_function == 'StringEquals':
+        return left_side == right_side
+    elif condition_function == 'StringNotEquals':
+        return left_side != right_side
+    elif condition_function == 'StringEqualsIgnoreCase':
+        return left_side.lower() == right_side.lower()
+    elif condition_function == 'StringNotEqualsIgnoreCase':
+        return left_side.lower() != right_side.lower()
+    
+    elif condition_function == 'StringLike':
+        right_side.replace("*", ".*")
+        matcher = re.compile("^{}$".format(right_side))
+        return matcher.match(left_side)
+    elif condition_function == 'StringNotLike':
+        right_side.replace("*", ".*")
+        matcher = re.compile("^{}$".format(right_side))
+        return not matcher.match(left_side)
+    
+    # TODO Need to handle other operators from https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html
+    return None
+
 def get_condition_result(condition_function, condition_values, principal):
     """
     Given a condition_function such as: 'StringEquals'
@@ -42,8 +94,8 @@ def get_condition_result(condition_function, condition_values, principal):
         if k.startswith("aws:PrincipalTag/"):
             for tag in principal.tags:
                 if k == "aws:PrincipalTag/"+tag["Key"]:
-                    if condition_function == 'StringEquals':
-                        results.append(condition_values[k] == tag["Value"])
+                    results.append(apply_condition_function(condition_function, condition_values[k], tag["Value"]))
+                    
 
     # The array results should now look something like [True, False, True],
     # although more commonly is just [], [False], or [True]
@@ -55,7 +107,10 @@ def get_condition_result(condition_function, condition_values, principal):
         for result in results:
             if result == False:
                 return False
-        return True
+        # No False results, but ensure we have at least one True (may have None's)
+        for result in results:
+            if result == True:
+                return True
 
     return None
 
