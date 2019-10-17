@@ -37,25 +37,25 @@ def get_condition_result(condition_function, condition_values, principal):
     Else return None if the result cannot be determined.
     """
 
-    has_false = False
-    has_true = False
+    results = []
     for k in condition_values:
         if k.startswith("aws:PrincipalTag/"):
             for tag in principal.tags:
                 if k == "aws:PrincipalTag/"+tag["Key"]:
-                    print("Match on: {}".format(tag))
                     if condition_function == 'StringEquals':
-                        if  condition_values[k] == tag["Value"]:
-                            has_true = True
-                        else:
-                            has_false = True
+                        results.append(condition_values[k] == tag["Value"])
 
-    # If we have a true, an no Falses, return True
-    # If we have a true, but even one False, return False
-    if has_true:
-        return not has_false
-    if has_false:
-        return False
+    # The array results should now look something like [True, False, True],
+    # although more commonly is just [], [False], or [True]
+    # If we have a True, and no Falses, return True
+    # If we have a True, but even one False, return False
+    # If empty, return None
+
+    if len(results) > 0:
+        for result in results:
+            if result == False:
+                return False
+        return True
 
     return None
 
