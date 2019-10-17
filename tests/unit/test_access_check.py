@@ -209,49 +209,52 @@ class TestAccessCheck(unittest.TestCase):
             len(get_allowed_privileges(privilege_matches, stmts, boundary)) == 0
         )
     
-    # def test_conditions_on_principal_tags(self):
-    #     # TODO
-    #     # Example from https://aws.amazon.com/blogs/security/working-backward-from-iam-policies-and-principal-tags-to-standardized-names-and-tags-for-your-aws-resources/
-    #     principal = Principal(
-    #         "AssumedRole",
-    #         [{"Key": "access-project", "Value": "web"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
-    #         username="role",
-    #         userid="",
-    #     )
+    def test_conditions_on_principal_tags(self):
+        # Example from https://aws.amazon.com/blogs/security/working-backward-from-iam-policies-and-principal-tags-to-standardized-names-and-tags-for-your-aws-resources/
+        principal = Principal(
+            "AssumedRole",
+            [{"Key": "project", "Value": "web"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+            username="role",
+            userid="",
+        )
 
-    #     policy_doc = """{
-    #         "Effect": "Allow",
-    #         "Action": "s3:ListAllMyBuckets",
-    #         "Resource": "*",
-    #         "Condition": {
-    #             "StringEquals": {
-    #                 "aws:PrincipalTag/project": "web"
-    #             }
-    #         }
-    #     }"""
+        policy_doc = """
+        {
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": "s3:ListAllMyBuckets",
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": { "aws:PrincipalTag/project": "web" }
+                    }
+                }
+            ],
+            "Version": "2012-10-17"
+        }"""
 
-    #     policy_doc = json.loads(policy_doc)
+        policy_doc = json.loads(policy_doc)
 
-    #     # Ensure this works at all
-    #     privilege_matches = [
-    #         {
-    #             "privilege_prefix": "s3",
-    #             "privilege_name": "ListAllMyBuckets",
-    #             "resource_type": "object",
-    #         }
-    #     ]
-    #     stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
-    #     assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
+        # Ensure this works at all
+        privilege_matches = [
+            {
+                "privilege_prefix": "s3",
+                "privilege_name": "ListAllMyBuckets",
+                "resource_type": "object",
+            }
+        ]
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
 
+        principal = Principal(
+            "AssumedRole",
+            [{"Key": "project", "Value": "database"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
+            username="role",
+            userid="",
+        )
 
-    #     principal = Principal(
-    #         "AssumedRole",
-    #         [{"Key": "access-project", "Value": "database"}, {"Key": "access-team", "Value": "eng"}, {"Key": "cost-center", "Value": "987654"}],
-    #         username="role",
-    #         userid="",
-    #     )
-    #     stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
-    #     assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) == 0)
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) == 0)
 
 
     # def test_conditions_on_resource_tags_ec2(self):

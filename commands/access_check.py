@@ -13,7 +13,7 @@ import json
 import parliament
 from parliament.policy import Policy
 
-from shared.common import parse_arguments, get_current_policy_doc
+from shared.common import parse_arguments, get_current_policy_doc, make_list
 
 __description__ = "Check who has access to a resource"
 
@@ -28,6 +28,36 @@ def replace_principal_variables(reference, principal):
     reference = reference.replace("${aws:principaltype}", principal.mytype.lower())
     return reference
 
+
+def get_condition_result(condition_function, condition_values, principal):
+    """
+    Given a condition_function such as: 'StringEquals'
+      and values, such as: {'aws:PrincipalTag/project': 'web'}
+    Return True or False if the result can be determined.
+    Else return None if the result cannot be determined.
+    """
+
+    has_false = False
+    has_true = False
+    for k in condition_values:
+        if k.startswith("aws:PrincipalTag/"):
+            for tag in principal.tags:
+                if k == "aws:PrincipalTag/"+tag["Key"]:
+                    print("Match on: {}".format(tag))
+                    if condition_function == 'StringEquals':
+                        if  condition_values[k] == tag["Value"]:
+                            has_true = True
+                        else:
+                            has_false = True
+
+    # If we have a true, an no Falses, return True
+    # If we have a true, but even one False, return False
+    if has_true:
+        return not has_false
+    if has_false:
+        return False
+
+    return None
 
 def get_privilege_statements(policy_doc, privilege_matches, resource_arn, principal):
     policy = parliament.policy.Policy(policy_doc)
@@ -48,14 +78,23 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
                 privilege_match["resource_type"], expanded_reference, resource_arn
             ):
                 # We now have a bunch of statements that match the privileges and resource of interest.
-                # Now we need to ensure the condition matches.
-                # TODO Check condition
+                # Now we need to check if the statement is allowed by its conditions.
+                # We'll append the allowed statements to a second list, and then swap that list in.
                 stmts = references[reference]
+                condition_allowed_stmts = []
                 for stmt in stmts:
-                    #print(stmt.stmt.get("Condition", []))
-                    pass
-
-
+                    allowed_by_conditions = True
+                    for condition_function in stmt.stmt.get("Condition", {}):
+                        condition_values = stmt.stmt["Condition"][condition_function]
+                        condition_result = get_condition_result(condition_function, condition_values, principal)
+                        # TODO Need to do something different for Deny, to avoid false negatives
+                        if condition_result is not None:
+                            if condition_result == False:
+                                allowed_by_conditions = False
+                                break
+                    if allowed_by_conditions:
+                        condition_allowed_stmts.append(stmt)
+                references[reference] = condition_allowed_stmts
 
                 statements_for_resource.extend(references[reference])
         if len(statements_for_resource) == 0:
