@@ -1,3 +1,4 @@
+
 class severity:
     """ Used by Findings """
 

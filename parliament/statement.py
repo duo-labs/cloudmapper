@@ -767,6 +767,23 @@ class Statement:
                     action_struct["service"], action_struct["action"]
                 )
 
+                # If the privilege requires a resource of "*", ensure it has it.
+                if len(privilege_info["resource_types"]) == 0 or (
+                    len(privilege_info["resource_types"]) == 1 and privilege_info["resource_types"][0]["resource_type"]==""):
+                    match_found = False
+                    for resource in resources:
+                        if resource == "*":
+                            match_found = True
+                    if not match_found:
+                        self.add_finding(
+                            "No resources match for {}.{} which requires a resource format of *".format(
+                                action_struct["service"],
+                                action_struct["action"]
+                            ),
+                            severity.INVALID,
+                            location={},
+                        )
+
                 # Iterate through the resources defined in the action definition
                 for resource_type in privilege_info["resource_types"]:
                     resource_type = resource_type["resource_type"]

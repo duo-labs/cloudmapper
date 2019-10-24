@@ -1,7 +1,7 @@
 """
 This library is a linter for AWS IAM policies.
 """
-__version__ = "1.2.3"
+__version__ = "0.2.1"
 
 import os
 import json
@@ -38,7 +38,7 @@ def is_arn_match(resource_type, arn_format, resource):
     want to match the following two strings:
     - arn:*:s3:::*/*
     - arn:aws:s3:::*personalize*
-    
+
     That should return true because you could have "arn:aws:s3:::personalize/" which matches both.
 
     Input:
@@ -47,7 +47,7 @@ def is_arn_match(resource_type, arn_format, resource):
     - resource: ARN regex from IAM policy
 
     Notes:
-    
+
     This problem is known as finding the intersection of two regexes.
     There is a library for this here https://github.com/qntm/greenery but it is far too slow,
     taking over two minutes for that example before I killed the process.
@@ -163,9 +163,9 @@ def is_arn_match(resource_type, arn_format, resource):
     return False
 
 
-def expand_action(action, raise_exceptions=False):
+def expand_action(action, raise_exceptions=True):
     """
-    Converts "iam:*List*" to 
+    Converts "iam:*List*" to
     [
       {'service':'iam', 'action': 'ListAccessKeys'},
       {'service':'iam', 'action': 'ListUsers'}, ...
@@ -247,5 +247,6 @@ def get_privilege_matches_for_resource_type(resource_type_matches):
 
     return privilege_matches
 
-
-
+# Import moved here to deal with cyclic dependency
+from .policy import Policy
+from .finding import severity
