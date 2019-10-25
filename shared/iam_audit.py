@@ -6,11 +6,13 @@ import re
 import os.path
 
 from policyuniverse.policy import Policy
+from parliament import analyze_policy_string
 
 from netaddr import IPNetwork
 from shared.common import Finding, make_list, get_us_east_1
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
+
 
 KNOWN_BAD_POLICIES = {
     "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
@@ -196,6 +198,17 @@ def find_admins_in_account(
 
         check_for_bad_policy(findings, region, policy["Arn"], policy_doc)
 
+        analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+        for f in analyzed_policy.findings:
+            findings.add(
+                    Finding(
+                        region,
+                        "IAM_LINTER",
+                        policy["Arn"],
+                        resource_details={"issue": str(f.issue), "severity": str(f.severity), "location": str(f.location), "policy": policy_doc},
+                    )
+                )
+
         policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc, location)
 
         if is_admin_policy(
@@ -260,6 +273,18 @@ def find_admins_in_account(
 
         for policy in role["RolePolicyList"]:
             policy_doc = policy["PolicyDocument"]
+
+            analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+            for f in analyzed_policy.findings:
+                findings.add(
+                        Finding(
+                            region,
+                            "IAM_LINTER",
+                            policy["Arn"],
+                            resource_details={"issue": str(f.issue), "severity": str(f.severity), "location": str(f.location), "policy": policy_doc},
+                        )
+                    )
+
             if is_admin_policy(
                 policy_doc,
                 location,
@@ -430,6 +455,18 @@ def find_admins_in_account(
                 )
         for policy in user.get("UserPolicyList", []):
             policy_doc = policy["PolicyDocument"]
+
+            analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+            for f in analyzed_policy.findings:
+                findings.add(
+                        Finding(
+                            region,
+                            "IAM_LINTER",
+                            policy["Arn"],
+                            resource_details={"issue": str(f.issue), "severity": str(f.severity), "location": str(f.location), "policy": policy_doc},
+                        )
+                    )
+
             if is_admin_policy(
                 policy_doc,
                 location,
