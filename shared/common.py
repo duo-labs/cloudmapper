@@ -275,9 +275,15 @@ def get_account_stats(account, all_resources=False):
                     )
                     for bucket in buckets:
                         # Get the bucket's location
-                        bucket_region = get_parameter_file(
+                        bucket_region_data = get_parameter_file(
                             region, "s3", "get-bucket-location", bucket
-                        )["LocationConstraint"]
+                        )
+
+                        if bucket_region_data is None:
+                            # Bucket inaccessible, skip
+                            continue
+                        else:
+                            bucket_region = bucket_region_data["LocationConstraint"]
 
                         # Convert the value to a name.
                         # See https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
