@@ -233,74 +233,75 @@ def report(accounts, config, args):
         t["iam_active_data_set"][2]["data"].append(account_stats["roles"]["active"])
         t["iam_active_data_set"][3]["data"].append(account_stats["roles"]["inactive"])
 
-    print("* Getting public resource data")
-    # TODO Need to cache this data as this can take a long time
-    t["public_network_resource_type_names"] = [
-        "ec2",
-        "elb",
-        "elbv2",
-        "rds",
-        "redshift",
-        "ecs",
-        "autoscaling",
-        "cloudfront",
-        "apigateway",
-    ]
-    t["public_network_resource_types"] = {}
+    if not args.skip_public_resource_audit:
+        print("* Getting public resource data")
+        # TODO Need to cache this data as this can take a long time
+        t["public_network_resource_type_names"] = [
+            "ec2",
+            "elb",
+            "elbv2",
+            "rds",
+            "redshift",
+            "ecs",
+            "autoscaling",
+            "cloudfront",
+            "apigateway",
+        ]
+        t["public_network_resource_types"] = {}
 
-    t["public_ports"] = []
-    t["account_public_ports"] = {}
+        t["public_ports"] = []
+        t["account_public_ports"] = {}
 
-    for account in accounts:
-        print("  - {}".format(account["name"]))
+        for account in accounts:
+            print("  - {}".format(account["name"]))
 
-        t["public_network_resource_types"][account["name"]] = {}
-        t["account_public_ports"][account["name"]] = {}
+            t["public_network_resource_types"][account["name"]] = {}
+            t["account_public_ports"][account["name"]] = {}
 
-        for type_name in t["public_network_resource_type_names"]:
-            t["public_network_resource_types"][account["name"]][type_name] = 0
+            for type_name in t["public_network_resource_type_names"]:
+                t["public_network_resource_types"][account["name"]][type_name] = 0
 
-        public_nodes, _ = get_public_nodes(account, config, use_cache=True)
+            public_nodes, _ = get_public_nodes(account, config, use_cache=True)
 
-        for public_node in public_nodes:
-            if public_node["type"] in t["public_network_resource_type_names"]:
-                t["public_network_resource_types"][account["name"]][
-                    public_node["type"]
-                ] += 1
-            else:
-                raise Exception(
-                    "Unknown type {} of public node".format(public_node["type"])
+            for public_node in public_nodes:
+                if public_node["type"] in t["public_network_resource_type_names"]:
+                    t["public_network_resource_types"][account["name"]][
+                        public_node["type"]
+                    ] += 1
+                else:
+                    raise Exception(
+                        "Unknown type {} of public node".format(public_node["type"])
+                    )
+
+                if public_node["ports"] not in t["public_ports"]:
+                    t["public_ports"].append(public_node["ports"])
+
+                t["account_public_ports"][account["name"]][public_node["ports"]] = (
+                    t["account_public_ports"][account["name"]].get(public_node["ports"], 0)
+                    + 1
                 )
 
-            if public_node["ports"] not in t["public_ports"]:
-                t["public_ports"].append(public_node["ports"])
+        # Pass data for the public port chart
+        t["public_ports_data_set"] = []
+        color_index = 0
+        for ports in t["public_ports"]:
+            port_counts = []
+            for account_name in t["account_names"]:
+                port_counts.append(t["account_public_ports"][account_name].get(ports, 0))
 
-            t["account_public_ports"][account["name"]][public_node["ports"]] = (
-                t["account_public_ports"][account["name"]].get(public_node["ports"], 0)
-                + 1
-            )
+            # Fix the port range name for '' when ICMP is being allowed
+            if ports == "":
+                ports = "ICMP only"
 
-    # Pass data for the public port chart
-    t["public_ports_data_set"] = []
-    color_index = 0
-    for ports in t["public_ports"]:
-        port_counts = []
-        for account_name in t["account_names"]:
-            port_counts.append(t["account_public_ports"][account_name].get(ports, 0))
+            port_data = {
+                "label": ports,
+                "data": port_counts,
+                "backgroundColor": COLOR_PALETTE[color_index],
+                "borderWidth": 1,
+            }
+            t["public_ports_data_set"].append(port_data)
 
-        # Fix the port range name for '' when ICMP is being allowed
-        if ports == "":
-            ports = "ICMP only"
-
-        port_data = {
-            "label": ports,
-            "data": port_counts,
-            "backgroundColor": COLOR_PALETTE[color_index],
-            "borderWidth": 1,
-        }
-        t["public_ports_data_set"].append(port_data)
-
-        color_index = (color_index + 1) % len(COLOR_PALETTE)
+            color_index = (color_index + 1) % len(COLOR_PALETTE)
 
     print("* Auditing accounts")
     findings = audit(accounts)
@@ -462,9 +463,15 @@ def run(arguments):
     )
     parser.add_argument(
         "--minimum_severity",
-        help="Only report issues that are greater than this. Default: LOW",
+        help="Only report issues that are greater than this. Default: INFO",
         default="INFO",
         choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
+    )
+    parser.add_argument(
+        "--skip_public_resource_audit",
+        help="Skip auditing public resources, which can be slow for large accounts",
+        action="store_true",
+        dest="skip_public_resource_audit",
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
