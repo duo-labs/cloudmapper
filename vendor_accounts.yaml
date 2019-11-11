@@ -161,3 +161,6 @@
 - name: 'Threat Stack'
   source: 'https://threatstack.zendesk.com/hc/en-us/articles/206006626-AWS-EC2-Integration'
   accounts: ['896126563706']
+- name: 'Cloudyn'
+  source: 'https://docs.microsoft.com/bs-latn-ba/azure/cost-management/connect-aws-account'
+  accounts: ['432263259397']
