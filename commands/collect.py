@@ -63,11 +63,14 @@ def max_retries_config():
     :rtype: ``botocore.config.Config`` or None
     """
     key = 'BOTO_MAX_RETRIES'
-    if key not in os.environ:
+    value = os.environ.get(key, '').strip()
+    if value == '':
         return None
     try:
-        max_retries = int(os.environ[key])
+        max_retries = int(value)
     except Exception:
+        print(f'ERROR: Found "{key}" environment variable, but unable to '
+              'parse value "{value}" to an integer.')
         return None
     print(f'Setting explicit botocore retry config with max_attempts={max_retries} '
           'based on {key} environment variable.')
