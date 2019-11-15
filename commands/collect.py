@@ -14,8 +14,6 @@ from botocore.exceptions import ClientError, EndpointConnectionError, NoCredenti
 from shared.common import get_account, custom_serializer
 from botocore.config import Config
 
-logger = logging.getLogger()
-
 __description__ = "Run AWS API calls to collect data from the account"
 
 MAX_RETRIES = 3
@@ -70,16 +68,11 @@ def max_retries_config():
     try:
         max_retries = int(os.environ[key])
     except Exception:
-        logger.error(
-            'ERROR: Found "%s" environment variable, but unable to '
-            'parse value "%s" to an integer.', key, os.environ[key]
-        )
+        print(f'ERROR: Found "{key}" environment variable, but unable to '
+              'parse value "{os.environ[key]}" to an integer.')
         return None
-    logger.debug(
-        'Setting explicit botocore retry config with max_attempts=%d '
-        'based on %s environment variable.',
-        max_retries, key
-    )
+    print(f'Setting explicit botocore retry config with max_attempts={max_retries} '
+          'based on {key} environment variable.')
     return Config(retries={'max_attempts': max_retries})
 
 def call_function(outputfile, handler, method_to_call, parameters, check, summary):
