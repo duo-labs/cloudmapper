@@ -12,6 +12,7 @@ import pyjq
 import urllib.parse
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
 from shared.common import get_account, custom_serializer
+from botocore.config import Config
 
 __description__ = "Run AWS API calls to collect data from the account"
 
@@ -54,6 +55,25 @@ def make_directory(path):
         # Already exists
         pass
 
+def max_retries_config():
+    """
+    If a ``BOTO_MAX_RETRIES`` environment variable is set,
+    return a new ``botocore.config.Config`` instance using that number
+    as the retries max_attempts value.
+    :rtype: ``botocore.config.Config`` or None
+    """
+    key = 'BOTO_MAX_RETRIES'
+    if key not in os.environ:
+        return None
+    try:
+        max_retries = int(os.environ[key])
+    except Exception:
+        print(f'ERROR: Found "{key}" environment variable, but unable to '
+              'parse value "{os.environ[key]}" to an integer.')
+        return None
+    print(f'Setting explicit botocore retry config with max_attempts={max_retries} '
+          'based on {key} environment variable.')
+    return Config(retries={'max_attempts': max_retries})
 
 def call_function(outputfile, handler, method_to_call, parameters, check, summary):
     """
@@ -305,7 +325,8 @@ def collect(arguments):
                 )
                 continue
             handler = session.client(
-                runner["Service"], region_name=region["RegionName"]
+                runner["Service"], region_name=region["RegionName"],
+                config=max_retries_config()
             )
 
             filepath = "account-data/{}/{}/{}-{}".format(
