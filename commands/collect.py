@@ -68,8 +68,6 @@ def max_retries_config():
     try:
         max_retries = int(os.environ[key])
     except Exception:
-        print(f'ERROR: Found "{key}" environment variable, but unable to '
-              'parse value "{os.environ[key]}" to an integer.')
         return None
     print(f'Setting explicit botocore retry config with max_attempts={max_retries} '
           'based on {key} environment variable.')
