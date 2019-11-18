@@ -206,7 +206,9 @@ def audit_guardduty(findings, region):
 
 
 def audit_iam(findings, region):
+    # By calling the code to find the admins, we'll excercise the code that finds problems.
     find_admins_in_account(region, findings)
+
     # By default we get the findings for the admins, but we can also look for specific
     # privileges, so we'll look for who has s3:ListAllMyBuckets and then only use those
     # findings that are for a compute resource having this privilege

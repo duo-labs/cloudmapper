@@ -44,7 +44,8 @@ class TestAudit(unittest.TestCase):
                     "IAM_KNOWN_BAD_POLICY",
                     "IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE",
                     "EC2_OLD",
-                    "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL"
+                    "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL",
+                    "IAM_LINTER"
                 ]
             ),
         )
