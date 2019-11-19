@@ -152,20 +152,32 @@ You may find that you don't care about some of audit items. You may want to igno
 
 
 # Using a Docker container
-The docker container that is created is meant to be used interactively.
+We use docker-compose and it is designed to be automated.
+You will need to export your AWS credentials to your environment.
+
+You will need docker-compose.
+
+Docker produces 
+
+Start by building all dependencies.
+```
+make cloudmapper
+```
+
+Once cloudmapper is running (check with `docker-compose ps`)
+Run the collect and prepare commands.
 
 ```
-docker build -t cloudmapper .
-aws-vault exec YOUR_PROFILE --server --
-docker run -p 8000:8000 -it cloudmapper /bin/bash
+make collect
+make prepare
 ```
+The above commands actually do a "docker exec", you can configure the exact parameters like this:
+docker-compose exec cloudmapper entrypoint.sh prepare
 
-You shoudl replace `YOUR_PROFILE` with the profile you've configured for aws-vault. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
 
+Cloud mapper docker produces reports in to this directory.
 ```
-pipenv shell
-python cloudmapper.py report --accout demo
-python cloudmapper.py webserver --public
+./output
 ```
 
 You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html

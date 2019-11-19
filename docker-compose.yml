@@ -1,0 +1,26 @@
+version: '3.0'
+services:
+  cloudmapper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cloudmapper
+    hostname: cloudmapper
+    environment:
+      - "ENV=$ENV"
+      - "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
+      - "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+      - "AWS_DEFAULT_REGION=eu-west-1"
+      - "AWS_REGION=eu-west-1"
+      - "ACCOUNTS=demo"
+    volumes:
+      - "./output/account-data:/opt/cloudmapper/account-data"
+      - "./output/web:/opt/cloudmapper/web"
+      - "./output/data:/opt/cloudmapper/data"
+      - "./config.json:/opt/cloudmapper/config.json"
+      - "./entrypoint.sh:/usr/bin/entrypoint.sh"
+      - "./shared:/opt/cloudmapper/shared"
+    ports:
+      - 8000:8000
+    entrypoint: entrypoint.sh
+
