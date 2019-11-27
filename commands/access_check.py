@@ -15,7 +15,7 @@ from parliament.policy import Policy
 
 from shared.common import parse_arguments, get_current_policy_doc, make_list
 
-__description__ = "Check who has access to a resource"
+__description__ = "[proof-of-concept] Check who has access to a resource"
 
 def replace_principal_variables(reference, principal):
     """
