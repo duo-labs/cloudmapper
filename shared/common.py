@@ -393,3 +393,10 @@ def get_access_advisor_active_counts(account, max_age=90):
             account_stats[principal_type]["active"] += 1
 
     return account_stats
+
+
+def get_current_policy_doc(policy):
+    for doc in policy["PolicyVersionList"]:
+        if doc["IsDefaultVersion"]:
+            return doc["Document"]
+    raise Exception("No default document version in policy {}".format(policy["Arn"]))

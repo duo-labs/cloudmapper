@@ -9,7 +9,7 @@ from policyuniverse.policy import Policy
 from parliament import analyze_policy_string
 
 from netaddr import IPNetwork
-from shared.common import Finding, make_list, get_us_east_1
+from shared.common import Finding, make_list, get_us_east_1, get_current_policy_doc
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
@@ -18,13 +18,6 @@ KNOWN_BAD_POLICIES = {
     "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
     "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV2 instead",
 }
-
-
-def get_current_policy_doc(policy):
-    for doc in policy["PolicyVersionList"]:
-        if doc["IsDefaultVersion"]:
-            return doc["Document"]
-    raise Exception("No default document version in policy {}".format(policy["Arn"]))
 
 
 def action_matches(action_from_policy, actions_to_match_against):
