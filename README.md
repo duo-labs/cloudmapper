@@ -160,7 +160,7 @@ aws-vault exec YOUR_PROFILE --server --
 docker run -p 8000:8000 -it cloudmapper /bin/bash
 ```
 
-You shoudl replace `YOUR_PROFILE` with the profile you've configured for aws-vault. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
+You should replace `YOUR_PROFILE` with the profile you've configured for aws-vault. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
 
 ```
 pipenv shell
