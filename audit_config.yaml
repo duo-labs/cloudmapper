@@ -204,6 +204,12 @@ IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL:
   is_global: True
   group: IAM
 
+IAM_LINTER:
+  title: IAM linting issues
+  description: Issues identified by the IAM linter Parliament
+  severity: Low
+  is_global: True
+  group: IAM
 
 IAM_NAME_DOES_NOT_INDICATE_ADMIN:
   title: Name does not indicate admin
