@@ -495,11 +495,11 @@ def run(arguments):
     )
     parser.add_argument(
         "--max-attempts",
-        help="Override default Botocore config max_attempts value of 4",
+        help="Override Botocore config max_attempts (default 4)",
         required=False,
-        type=str,
+        type=int,
         dest="max_attempts",
-        default="4"
+        default=4
     )
 
     args = parser.parse_args(arguments)
