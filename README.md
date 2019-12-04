@@ -152,20 +152,22 @@ You may find that you don't care about some of audit items. You may want to igno
 
 
 # Using a Docker container
-The docker container that is created is meant to be used interactively.
+The docker container that is created is meant to be used interactively. 
 
 ```
 docker build -t cloudmapper .
-aws-vault exec YOUR_PROFILE --server --
 docker run -p 8000:8000 -it cloudmapper /bin/bash
 ```
 
-You should replace `YOUR_PROFILE` with the profile you've configured for aws-vault. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
+Cloudmapper needs to make IAM calls and cannot use session credentials, so you cannot use the aws-vault sever, and must pass role credentials in directly or configure aws credentials manually inside the container. Once configured, inside the container run `aws sts get-caller-identity` to confirm this was setup correctly. The demo data is not copied into the docker container so you will need to collect live data from your system.
 
 ```
+aws configure
+aws sts get-caller-identity
 pipenv shell
-python cloudmapper.py report --accout demo
-python cloudmapper.py webserver --public
+python cloudmapper.py configure add-account --config-file config.json --name YOUR_ACCOUNT --id YOUR_ACCOUNT_NUMBER
+python cloudmapper.py collect --account YOUR_ACCOUNT
+python cloudmapper.py report --account YOUR_ACCOUNT
 ```
 
 You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html
