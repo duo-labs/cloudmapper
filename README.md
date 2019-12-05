@@ -156,14 +156,23 @@ The docker container that is created is meant to be used interactively.
 
 ```
 docker build -t cloudmapper .
-docker run -p 8000:8000 -it cloudmapper /bin/bash
 ```
 
-Cloudmapper needs to make IAM calls and cannot use session credentials, so you cannot use the aws-vault sever, and must pass role credentials in directly or configure aws credentials manually inside the container. Once configured, inside the container run `aws sts get-caller-identity` to confirm this was setup correctly. The demo data is not copied into the docker container so you will need to collect live data from your system.
+Cloudmapper needs to make IAM calls and cannot use session credentials for collection, so you cannot use the aws-vault sever if you want to collect data, and must pass role credentials in directly or configure aws credentials manually inside the container. *The following code exposes your raw credentials inside the container.* 
 
 ```
-aws configure
-aws sts get-caller-identity
+(                                                              
+    export $(aws-vault exec YOUR_PROFILE --no-session -- env | grep ^AWS | xargs) && \ 
+    docker run -ti \
+        -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+        -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+        cloudmapper /bin/bash
+)
+```
+
+This will drop you into the container. Run `aws sts get-caller-identity` to confirm this was setup correctly. Cloudmapper demo data is not copied into the docker container so you will need to collect live data from your system. Not docker defaults may limit the memory available to your container. For example on Mac OS the default is 2GB which may not be enough to generate the report on a medium sized account.
+
+```
 pipenv shell
 python cloudmapper.py configure add-account --config-file config.json --name YOUR_ACCOUNT --id YOUR_ACCOUNT_NUMBER
 python cloudmapper.py collect --account YOUR_ACCOUNT
