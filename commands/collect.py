@@ -297,7 +297,7 @@ def collect(arguments):
                 if region["RegionName"] != default_region:
                     continue
             elif region["RegionName"] not in session.get_available_regions(
-                runner["Service"]
+                    runner["Service"], partition_name=arguments.partition_name
             ):
                 print(
                     "  Skipping region {}, as {} does not exist there".format(
@@ -500,6 +500,14 @@ def run(arguments):
         type=int,
         dest="max_attempts",
         default=4
+    )
+    parser.add_argument(
+        "--partition",
+        help="AWS partition name (aws, aws-cn, aws-us-gov, ...)",
+        required=False,
+        type=str,
+        dest="partition_name",
+        default='aws'
     )
 
     args = parser.parse_args(arguments)

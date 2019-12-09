@@ -55,7 +55,7 @@ SEVERITIES = [
     {"name": "Low", "color": "rgba(255, 255, 102, 1)"},  # Yellow
     {"name": "Info", "color": "rgba(154, 214, 156, 1)"},  # Green
     {"name": "Verbose", "color": "rgba(133, 163, 198, 1)"},  # Blue
-] 
+]
 
 ACTIVE_COLOR = "rgb(139, 214, 140)"
 BAD_COLOR = "rgb(204, 120, 120)"
@@ -221,17 +221,17 @@ def report(accounts, config, args):
         },
     ]
 
-    for account in accounts:
-        account = Account(None, account)
-        print("  - {}".format(account.name))
+    # for account in accounts:
+    #     account = Account(None, account)
+    #     print("  - {}".format(account.name))
 
-        account_stats = get_access_advisor_active_counts(account, args.max_age)
+    #     account_stats = get_access_advisor_active_counts(account, args.max_age)
 
-        # Add to dataset
-        t["iam_active_data_set"][0]["data"].append(account_stats["users"]["active"])
-        t["iam_active_data_set"][1]["data"].append(account_stats["users"]["inactive"])
-        t["iam_active_data_set"][2]["data"].append(account_stats["roles"]["active"])
-        t["iam_active_data_set"][3]["data"].append(account_stats["roles"]["inactive"])
+    #     # Add to dataset
+    #     t["iam_active_data_set"][0]["data"].append(account_stats["users"]["active"])
+    #     t["iam_active_data_set"][1]["data"].append(account_stats["users"]["inactive"])
+    #     t["iam_active_data_set"][2]["data"].append(account_stats["roles"]["active"])
+    #     t["iam_active_data_set"][3]["data"].append(account_stats["roles"]["inactive"])
 
     print("* Getting public resource data")
     # TODO Need to cache this data as this can take a long time

@@ -302,12 +302,16 @@ def get_account_stats(account, all_resources=False):
 
 
 def get_us_east_1(account):
-    for region_json in get_regions(account):
-        region = Region(account, region_json)
-        if region.name == "us-east-1":
-            return region
-
-    raise Exception("us-east-1 not found")
+    # hacking this.  This func encodes assumption about region for
+    # multipe metadata types, but is not correct in other partitions
+    # We'll use the default region instead.  This is the first entry
+    # in the OrderedDict() returned from get_regions().
+    # for region_json in get_regions(account):
+    #     region = Region(account, region_json)
+    #     if region.name == "us-east-1":
+    #         return region
+    # raise Exception("us-east-1 not found")
+    return Region(account, get_regions(account)[0])
 
 
 def iso_date(d):
