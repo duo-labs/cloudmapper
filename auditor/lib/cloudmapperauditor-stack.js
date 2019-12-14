@@ -38,40 +38,18 @@ class CloudmapperauditorStack extends cdk.Stack {
       process.exit(1);
     }
 
-    // Create VPC to run everything in, but without a NAT gateway.
-    // We want to run in a public subnet, but the CDK creates a private subnet
-    // by default, which results in the use of a NAT gateway, which costs $30/mo.
-    // To avoid that unnecessary charge, we have to create the VPC in a complicated
-    // way.
-    // This trick was figured out by jeshan in https://github.com/aws/aws-cdk/issues/1305#issuecomment-525474540
-    // Normally, the CDK does not allow this because the private subnets have to have
-    // a route out, and you can't get rid of the private subnets.
-    // So the trick is to remove the routes out.
-    // The private subnets remain, but are not usable and have no costs.
+    // Create VPC to run everything in. We make this public just because we don't
+    // want to spend $30/mo on a NAT gateway.
     const vpc = new ec2.Vpc(this, 'CloudMapperVpc', {
-        maxAzs: 2,
-        natGateways: 0
+        maxAzs: 1,
+        natGateways: 0,
+        subnetConfiguration: [
+          {
+            name: 'Public',
+            subnetType: ec2.SubnetType.PUBLIC
+          }
+        ]
     });
-
-    // Create a condition that will always fail.
-    // We will use this in a moment to remove the routes.
-    var exclude_condition = new cdk.CfnCondition(this,
-      'exclude-default-route-subnet',
-      {
-        // Checks if true == false, so this always fails
-        expression: cdk.Fn.conditionEquals(true, false)
-      }
-    );
-
-    // For the private subnets, add a CloudFormation condition to the routes
-    // to cause them to not be created.
-    for (var subnet of vpc.privateSubnets) {
-        for (var child of subnet.node.children) {
-            if (child.constructor.name==="CfnRoute") {
-              child.cfnOptions.condition = exclude_condition
-            }
-        }
-    }
 
     // Define the ECS task
     const cluster = new ecs.Cluster(this, 'Cluster', { vpc });

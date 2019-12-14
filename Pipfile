@@ -16,6 +16,7 @@ policyuniverse = "==1.1.0.1"
 PyYAML = "==4.2b4"
 Jinja2 = "==2.10.1"
 parliament = "==0.2.6"
+requests = "==2.22.0"
 
 [dev-packages]
 autoflake = "==0.7"
