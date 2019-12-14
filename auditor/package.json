@@ -11,19 +11,19 @@
   },
   "devDependencies": {
     "@types/node": "8.10.45",
-    "aws-cdk": "^1.14.0",
-    "typescript": "^3.6.2"
+    "aws-cdk": "^1.18.0",
+    "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@aws-cdk/aws-cloudwatch-actions": "^1.14.0",
-    "@aws-cdk/aws-ec2": "^1.14.0",
-    "@aws-cdk/aws-ecs": "^1.14.0",
-    "@aws-cdk/aws-ecs-patterns": "^1.14.0",
-    "@aws-cdk/aws-events": "^1.14.0",
-    "@aws-cdk/aws-logs": "^1.14.0",
-    "@aws-cdk/aws-s3": "^1.14.0",
-    "@aws-cdk/core": "^1.14.0",
+    "@aws-cdk/aws-cloudwatch-actions": "^1.18.0",
+    "@aws-cdk/aws-ec2": "^1.18.0",
+    "@aws-cdk/aws-ecs": "^1.18.0",
+    "@aws-cdk/aws-ecs-patterns": "^1.18.0",
+    "@aws-cdk/aws-events": "^1.18.0",
+    "@aws-cdk/aws-logs": "^1.18.0",
+    "@aws-cdk/aws-s3": "^1.18.0",
+    "@aws-cdk/core": "^1.18.0",
     "js-yaml": "^3.13.1",
-    "source-map-support": "^0.5.13"
+    "source-map-support": "^0.5.16"
   }
 }
