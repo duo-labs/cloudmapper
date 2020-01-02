@@ -3,9 +3,10 @@ import argparse
 import json
 import datetime
 import os.path
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 from six import add_metaclass
 from jinja2 import Template
+from enum import Enum
 
 from policyuniverse.policy import Policy
 from shared.common import parse_arguments, get_regions
@@ -15,7 +16,12 @@ from shared.nodes import Account, Region
 __description__ = "Create IAM report"
 
 
-REPORT_OUTPUT_FILE = os.path.join("web", "account-data", "iam_report.html")
+class OutputFormat(Enum):
+    json = "json"
+    html = "html"
+
+
+REPORT_OUTPUT_FILE = os.path.join("web", "account-data", "iam_report")
 
 
 def tolink(s):
@@ -616,10 +622,14 @@ def iam_report(accounts, config, args):
         t["policies"].append(p)
 
     # Generate report from template
-    with open(REPORT_OUTPUT_FILE, "w") as f:
-        f.write(template.render(t=t))
+    if args.requested_output == OutputFormat.html:
+        with open("{}.html".format(REPORT_OUTPUT_FILE), "w") as f:
+            f.write(template.render(t=t))
+    elif args.requested_output == OutputFormat.json:
+        with open("{}.json".format(REPORT_OUTPUT_FILE), "w") as f:
+            json.dump(t, f)
 
-    print("Report written to {}".format(REPORT_OUTPUT_FILE))
+    print("Report written to {}.{}".format(REPORT_OUTPUT_FILE, args.requested_output))
 
 
 def run(arguments):
@@ -635,6 +645,13 @@ def run(arguments):
         help="Do not create and display a graph",
         dest="show_graph",
         action="store_true",
+    )
+    parser.add_argument(
+        "--output",
+        help="Set the output type for the report",
+        default=OutputFormat.html,
+        type=OutputFormat,
+        dest="requested_output"
     )
     parser.set_defaults(show_graph=False)
     args, accounts, config = parse_arguments(arguments, parser)
