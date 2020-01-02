@@ -629,7 +629,7 @@ def iam_report(accounts, config, args):
         with open("{}.json".format(REPORT_OUTPUT_FILE), "w") as f:
             json.dump(t, f)
 
-    print("Report written to {}.{}".format(REPORT_OUTPUT_FILE, args.requested_output))
+    print("Report written to {}.{}".format(REPORT_OUTPUT_FILE, args.requested_output.value))
 
 
 def run(arguments):
