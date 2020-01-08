@@ -1,0 +1,23 @@
+{
+    "Role": {
+        "Arn": "arn:aws:iam::123456789012:role/level1",
+        "AssumeRolePolicyDocument": {
+            "Statement": [
+                {
+                    "Action": "sts:AssumeRole",
+                    "Condition": {},
+                    "Effect": "Allow",
+                    "Principal": {
+                        "AWS": "arn:aws:iam::123456789012:root"
+                    }
+                }
+            ],
+            "Version": "2012-10-17"
+        },
+        "CreateDate": "2019-08-07T01:43:56+00:00",
+        "MaxSessionDuration": 3600,
+        "Path": "/",
+        "RoleId": "AROA...",
+        "RoleName": "level1"
+    }
+}

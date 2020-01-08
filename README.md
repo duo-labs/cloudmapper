@@ -164,8 +164,12 @@ Start by building all dependencies.
 make cloudmapper
 ```
 
+
 Once cloudmapper is running (check with `docker-compose ps`)
 Run the collect and prepare commands.
+
+You should replace `YOUR_PROFILE` with the profile you've configured for aws-vault. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
+
 
 ```
 make collect
@@ -189,7 +193,7 @@ A CDK app for deploying CloudMapper via Fargate so that it runs nightly, sends a
 # Alternatives
 For network diagrams, you may want to try https://github.com/lyft/cartography or https://github.com/anaynayak/aws-security-viz
 
-For auditng and other AWS security tools see https://github.com/toniblyx/my-arsenal-of-aws-security-tools
+For auditing and other AWS security tools see https://github.com/toniblyx/my-arsenal-of-aws-security-tools
 
 Licenses
 --------

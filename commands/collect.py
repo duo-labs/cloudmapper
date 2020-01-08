@@ -12,6 +12,7 @@ import pyjq
 import urllib.parse
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
 from shared.common import get_account, custom_serializer
+from botocore.config import Config
 
 __description__ = "Run AWS API calls to collect data from the account"
 
@@ -305,7 +306,8 @@ def collect(arguments):
                 )
                 continue
             handler = session.client(
-                runner["Service"], region_name=region["RegionName"]
+                runner["Service"], region_name=region["RegionName"],
+                config=Config(retries={'max_attempts': arguments.max_attempts})
             )
 
             filepath = "account-data/{}/{}/{}-{}".format(
@@ -490,6 +492,14 @@ def run(arguments):
         "--clean",
         help="Remove any existing data for the account before gathering",
         action="store_true",
+    )
+    parser.add_argument(
+        "--max-attempts",
+        help="Override Botocore config max_attempts (default 4)",
+        required=False,
+        type=int,
+        dest="max_attempts",
+        default=4
     )
 
     args = parser.parse_args(arguments)
