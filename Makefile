@@ -1,5 +1,4 @@
 setup:
-	pip install pipenv
-	pipenv install --dev --skip-lock
+	pip install -e .[dev]
 test:
-	pipenv run -- bash tests/scripts/unit_tests.sh
+	bash cloudmapper/tests/scripts/unit_tests.sh

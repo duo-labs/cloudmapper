@@ -1,0 +1,4 @@
+graft cloudmapper/web
+graft cloudmapper/templates
+graft requirements
+include cloudmapper/*.yaml

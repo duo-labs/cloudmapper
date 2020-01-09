@@ -171,7 +171,7 @@ python cloudmapper.py webserver --public
 You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html
 
 # Running CloudMapper regularly to audit your environment
-A CDK app for deploying CloudMapper via Fargate so that it runs nightly, sends audit findings as alerts to a Slack channel, and generating a report that is saved on S3, is described [here](auditor/README.md).
+A CDK app for deploying CloudMapper via Fargate so that it runs nightly, sends audit findings as alerts to a Slack channel, and generating a report that is saved on S3, is described [here](cloudmapper/auditor/README.md).
 
 
 # Alternatives

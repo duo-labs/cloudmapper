@@ -10,10 +10,9 @@ ENV AWS_DEFAULT_REGION=us-east-1
 RUN apt-get update -y
 RUN apt-get install -y build-essential autoconf automake libtool python3.7-dev python3-tk jq awscli
 RUN apt-get install -y bash
-
+RUN pip install -U virtualenv && virtualenv /opt/venv
+ENV PATH=/opt/venv/bin:$PATH
 COPY . /opt/cloudmapper
-RUN pip install pipenv
-RUN pipenv install --skip-lock
-#RUN pipenv shell
+RUN pip install -e .[dev]
 
-RUN bash
+CMD ["/opt/venv/bin/cloudmapper"]
