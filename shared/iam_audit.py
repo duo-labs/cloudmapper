@@ -455,7 +455,7 @@ def find_admins_in_account(
                         Finding(
                             region,
                             "IAM_LINTER",
-                            role["Arn"],
+                            user["Arn"],
                             resource_details={"issue": str(f.issue), "severity": str(f.severity), "location": str(f.location), "policy": policy_doc},
                         )
                     )
