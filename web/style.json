@@ -470,6 +470,58 @@
         }
     },
     {
+        "selector": "[type = \"auth0\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/auth0.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"ADFS\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/ADFS.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"WAAD\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/waad.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"AllCloud-SSO\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/allcloud.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
         "selector": "[type = \"Cloudhealth\"]",
         
         "css": {
