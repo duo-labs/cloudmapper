@@ -74,7 +74,7 @@ def get_vpcs(region, outputfilter):
             outputfilter["vpc-names"]
         )
     vpcs = query_aws(region.account, "ec2-describe-vpcs", region)
-    return pyjq.all(".Vpcs[]{}".format(vpc_filter), vpcs)
+    return pyjq.all(".Vpcs[]?{}".format(vpc_filter), vpcs)
 
 
 def get_azs(vpc):
@@ -87,7 +87,7 @@ def get_vpc_peerings(region):
     vpc_peerings = query_aws(
         region.account, "ec2-describe-vpc-peering-connections", region
     )
-    resource_filter = ".VpcPeeringConnections[]"
+    resource_filter = ".VpcPeeringConnections[]?"
     return pyjq.all(resource_filter, vpc_peerings)
 
 
