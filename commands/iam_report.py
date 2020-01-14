@@ -552,7 +552,7 @@ def iam_report(accounts, config, args):
         policies.extend(stats["auth"].get("RolePolicyList", []))
         p["inline_policies"] = []
         for policy in policies:
-            p["managed_policies"].append(
+            p["inline_policies"].append(
                 {
                     "name": policy["PolicyName"],
                     "document": json.dumps(policy["PolicyDocument"], indent=4),
