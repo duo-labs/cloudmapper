@@ -67,7 +67,7 @@ def find_unused_elastic_ips(region):
     unused_ips = []
     ips = query_aws(region.account, "ec2-describe-addresses", region)
     for ip in pyjq.all(".Addresses[] | select(.AssociationId == null)", ips):
-        unused_ips.append({"id": ip["AllocationId"], "ip": ip["PublicIp"]})
+        unused_ips.append({"id": ip.get("AllocationId", "Un-allocated IP"), "ip": ip["PublicIp"]})
 
     return unused_ips
 

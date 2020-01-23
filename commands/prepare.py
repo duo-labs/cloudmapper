@@ -74,7 +74,7 @@ def get_vpcs(region, outputfilter):
             outputfilter["vpc-names"]
         )
     vpcs = query_aws(region.account, "ec2-describe-vpcs", region)
-    return pyjq.all(".Vpcs[]{}".format(vpc_filter), vpcs)
+    return pyjq.all(".Vpcs[]?{}".format(vpc_filter), vpcs)
 
 
 def get_azs(vpc):
@@ -87,7 +87,7 @@ def get_vpc_peerings(region):
     vpc_peerings = query_aws(
         region.account, "ec2-describe-vpc-peering-connections", region
     )
-    resource_filter = ".VpcPeeringConnections[]"
+    resource_filter = ".VpcPeeringConnections[]?"
     return pyjq.all(resource_filter, vpc_peerings)
 
 
@@ -326,7 +326,7 @@ def add_node_to_subnets(region, node, nodes):
 
     # Add a new node (potentially the same one) back to the dictionary
     for vpc in region.children:
-        if len(node.subnets) == 0 and vpc.local_id == node._parent.local_id:
+        if len(node.subnets) == 0 and node._parent and vpc.local_id == node._parent.local_id:
             # VPC Gateway Endpoints (S3 and DynamoDB) reside in a VPC, not a subnet
             # So set the relationship between the VPC and the node
             nodes[node.arn] = node
