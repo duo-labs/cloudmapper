@@ -658,7 +658,13 @@ def build_data_structure(account_data, config, outputfilter):
 def prepare(account, config, outputfilter):
     """Collect the data and write it to a file"""
     cytoscape_json = build_data_structure(account, config, outputfilter)
-
+    if not outputfilter["node_data"]:
+        filtered_cytoscape_json=[]
+        for node in cytoscape_json:
+            filtered_node = node.copy()
+            filtered_node['data']['node_data'] = {}
+            filtered_cytoscape_json.append(filtered_node)
+        cytoscape_json = filtered_cytoscape_json
     with open("web/data.json", "w") as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
 
@@ -769,13 +775,18 @@ def run(arguments):
         dest="collapse_asgs",
         action="store_false",
     )
-
+    parser.add_argument(
+        "--no-node-data",
+        help="Do not show node data",
+        dest="node_data",
+        action="store_false",
+    )
     parser.set_defaults(internal_edges=True)
     parser.set_defaults(inter_rds_edges=False)
     parser.set_defaults(read_replicas=True)
     parser.set_defaults(azs=True)
     parser.set_defaults(collapse_asgs=True)
-
+    parser.set_defaults(node_data=False)
     args = parser.parse_args(arguments)
 
     outputfilter = {}
@@ -802,6 +813,7 @@ def run(arguments):
     outputfilter["azs"] = args.azs
     outputfilter["collapse_by_tag"] = args.collapse_by_tag
     outputfilter["collapse_asgs"] = args.collapse_asgs
+    outputfilter["node_data"] = args.node_data
 
     # Read accounts file
     try:
