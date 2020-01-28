@@ -176,3 +176,6 @@
 - name: 'CloudZero'
   source: 'https://www.cloudzero.com/hubfs/CloudZero%20Configuration%20Guide%20-%20Automated.pdf'
   accounts: ['061190967865']
+- name: 'Cloudinary'
+  source: 'https://support.cloudinary.com/hc/en-us/articles/203276521-How-do-I-allow-Cloudinary-to-read-from-my-private-S3-bucket-'
+  accounts: ['232482882421']
