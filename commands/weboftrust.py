@@ -264,6 +264,10 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                         if "cognito-identity.amazonaws.com" in federated_principal.lower():
                             # TODO: Should show this somehow
                             continue
+                        elif ":oidc-provider/" in federated_principal.lower():
+                            # TODO: handle OpenID Connect identity providers
+                            # https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html
+                            continue
                         raise Exception('Principal {} is not a configured SAML provider'.format(federated_principal))
             if principal.get("AWS", None):
                 principal = principal["AWS"]
