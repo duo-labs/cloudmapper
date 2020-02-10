@@ -235,6 +235,15 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 json_blob={"id": "auth0", "name": "auth0", "type": "auth0"}
                             )
                             assume_role_nodes.add(node)
+                        elif "saml-provider/google" in saml_provider_arn.lower():
+                            node = Account(
+                                json_blob={
+                                    "id": "google",
+                                    "name": "google",
+                                    "type": "google",
+                                }
+                            )
+                            assume_role_nodes.add(node)
                         elif "cognito-identity.amazonaws.com" in saml_provider_arn.lower():
                             continue
                         elif "www.amazon.com" in saml_provider_arn.lower():
