@@ -164,7 +164,7 @@ You should replace `YOUR_PROFILE` with the profile you've configured for aws-vau
 
 ```
 pipenv shell
-python cloudmapper.py report --accout demo
+python cloudmapper.py report --account demo
 python cloudmapper.py webserver --public
 ```
 
