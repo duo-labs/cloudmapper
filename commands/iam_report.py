@@ -223,7 +223,7 @@ class user_node(graph_node):
             auth_graph[policy_node.key()] = policy_node
 
         for group_name in auth.get("GroupList", []):
-            group_key = self.key()[0:26] + "group/" + group_name
+            group_key = self.key()[0:26] + "group" + auth['Path'] + group_name
             group_node = auth_graph[group_key]
             group_node.add_parent(self)
             self.add_child(group_node)
