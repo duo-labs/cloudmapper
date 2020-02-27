@@ -71,10 +71,10 @@ def get_public_nodes(account, config, use_cache=False):
 
     # Try reading from cache
     cache_file_path = "account-data/{}/public_nodes.json".format(account["name"])
-    if use_cache:
-        if os.path.isfile(cache_file_path):
-            with open(cache_file_path) as f:
-                return json.load(f), []
+    # if use_cache:
+    #     if os.path.isfile(cache_file_path):
+    #         with open(cache_file_path) as f:
+    #             return json.load(f), []
 
     # Get the data from the `prepare` command
     outputfilter = {
@@ -154,45 +154,51 @@ def get_public_nodes(account, config, use_cache=False):
             )
             # I would need to redo this code in order to get the name of the security group
             public_sgs[sg_group_allowing_all_protocols] = {"public_ports": "0-65535"}
-        else:
-            # from_port and to_port mean the beginning and end of a port range
-            # We only care about TCP (6) and UDP (17)
-            # For more info see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html
-            port_ranges = []
-            for sg in ingress:
-                sg_port_ranges = []
-                for ip_permission in sg.get("IpPermissions", []):
-                    selection = 'select((.IpProtocol=="tcp") or (.IpProtocol=="udp")) | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
-                    sg_port_ranges.extend(
-                        pyjq.all(
-                            "{}| [.FromPort,.ToPort]".format(selection), ip_permission
-                        )
-                    )
-                public_sgs[sg["GroupId"]] = {
-                    "GroupName": sg["GroupName"],
-                    "public_ports": port_ranges_string(regroup_ranges(sg_port_ranges)),
-                }
-                port_ranges.extend(sg_port_ranges)
-            range_string = port_ranges_string(regroup_ranges(port_ranges))
-
-            target["ports"] = range_string
-            target["public_sgs"] = public_sgs
-            if target["ports"] == "":
-                issue_msg = "No ports open for tcp or udp (probably can only be pinged). Rules that are not tcp or udp: {} -- {}"
-                warnings.append(
-                    issue_msg.format(
-                        json.dumps(
-                            pyjq.all(
-                                '.[]|select((.IpProtocol!="tcp") and (.IpProtocol!="udp"))'.format(
-                                    selection
-                                ),
-                                ingress,
-                            )
-                        ),
-                        account,
+        
+        # from_port and to_port mean the beginning and end of a port range
+        # We only care about TCP (6) and UDP (17)
+        # For more info see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html
+        port_ranges = []
+        for sg in ingress:
+            sg_port_ranges = []
+            for ip_permission in sg.get("IpPermissions", []):
+                selection = 'select((.IpProtocol=="tcp") or (.IpProtocol=="udp")) | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
+                sg_port_ranges.extend(
+                    pyjq.all(
+                        "{}| [.FromPort,.ToPort]".format(selection), ip_permission
                     )
                 )
-            public_nodes.append(target)
+                selection = 'select(.IpProtocol=="-1") | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
+                sg_port_ranges.extend(
+                    pyjq.all(
+                        "{}| [0,65535]".format(selection), ip_permission
+                    )
+                )
+            public_sgs[sg["GroupId"]] = {
+                "GroupName": sg["GroupName"],
+                "public_ports": port_ranges_string(regroup_ranges(sg_port_ranges)),
+            }
+            port_ranges.extend(sg_port_ranges)
+        range_string = port_ranges_string(regroup_ranges(port_ranges))
+
+        target["ports"] = range_string
+        target["public_sgs"] = public_sgs
+        if target["ports"] == "":
+            issue_msg = "No ports open for tcp or udp (probably can only be pinged). Rules that are not tcp or udp: {} -- {}"
+            warnings.append(
+                issue_msg.format(
+                    json.dumps(
+                        pyjq.all(
+                            '.[]|select((.IpProtocol!="tcp") and (.IpProtocol!="udp"))'.format(
+                                selection
+                            ),
+                            ingress,
+                        )
+                    ),
+                    account,
+                )
+            )
+        public_nodes.append(target)
 
     # For the network diagram, if an ELB has availability across 3 subnets, I put one node in each subnet.
     # We don't care about that when we want to know what is public and it makes it confusing when you
