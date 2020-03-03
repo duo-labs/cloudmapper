@@ -5,6 +5,8 @@ import traceback
 import re
 import os.path
 
+from logging import CRITICAL
+from logging import getLogger
 from policyuniverse.policy import Policy
 from parliament import analyze_policy_string
 
@@ -13,7 +15,7 @@ from shared.common import Finding, make_list, get_us_east_1, get_current_policy_
 from shared.query import query_aws, get_parameter_file
 from shared.nodes import Account, Region
 
-
+getLogger("policyuniverse").setLevel(CRITICAL)
 KNOWN_BAD_POLICIES = {
     "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
     "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV2 instead",
