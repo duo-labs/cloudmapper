@@ -8,6 +8,8 @@ import pkgutil
 import importlib
 import inspect
 
+from logging import CRITICAL
+from logging import getLogger
 from policyuniverse.policy import Policy
 
 from netaddr import IPNetwork
@@ -26,6 +28,7 @@ from shared.iam_audit import find_admins_in_account
 
 # Global
 custom_filter = None
+getLogger("policyuniverse").setLevel(CRITICAL)
 
 
 class Findings(object):
