@@ -203,10 +203,6 @@ def collect(arguments):
 
     summary = []
 
-    regions_filter = None
-    if len(arguments.regions_filter) > 0:
-        regions_filter = arguments.regions_filter.split(",")
-
     if arguments.clean and os.path.exists("account-data/{}".format(account_dir)):
         rmtree("account-data/{}".format(account_dir))
 
@@ -221,6 +217,14 @@ def collect(arguments):
         default_region = 'cn-north-1'
     else:
         default_region = 'us-east-1'
+
+    regions_filter = None
+    if len(arguments.regions_filter) > 0:
+        regions_filter = arguments.regions_filter.lower().split(",")
+        # Force include of default region -- seems to be required
+        if default_region not in regions_filter:
+            regions_filter.append(default_region)
+        print("RESTRICTING COLLECTION TO REGIONS: {}".format(regions_filter))
 
     session_data = {"region_name": default_region}
 
