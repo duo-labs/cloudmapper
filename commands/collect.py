@@ -203,6 +203,10 @@ def collect(arguments):
 
     summary = []
 
+    regions_filter = None
+    if len(arguments.regions_filter) > 0:
+        regions_filter = arguments.regions_filter.split(",")
+
     if arguments.clean and os.path.exists("account-data/{}".format(account_dir)):
         rmtree("account-data/{}".format(account_dir))
 
@@ -269,6 +273,11 @@ def collect(arguments):
     print("* Getting region names", flush=True)
     ec2 = session.client("ec2")
     region_list = ec2.describe_regions()
+
+    if regions_filter is not None:
+        filtered_regions = [r for r in region_list["Regions"] if r["RegionName"] in regions_filter]
+        region_list["Regions"] = filtered_regions
+
     with open("account-data/{}/describe-regions.json".format(account_dir), "w+") as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))
 
@@ -516,6 +525,14 @@ def run(arguments):
         type=int,
         dest="max_attempts",
         default=4
+    )
+    parser.add_argument(
+        "--regions",
+        help="Filter and query AWS only for the given regions (CSV)",
+        required=False,
+        type=str,
+        dest="regions_filter",
+        default=""
     )
 
     args = parser.parse_args(arguments)
