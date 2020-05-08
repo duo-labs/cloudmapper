@@ -17,8 +17,6 @@ from botocore.config import Config
 __description__ = "Run AWS API calls to collect data from the account"
 
 MAX_RETRIES = 3
-MAX_TASKS_PER_DESCRIBE = 100
-
 
 def snakecase(s):
     return s.replace("-", "_")
@@ -367,24 +365,21 @@ def collect(arguments):
                             )
 
                             with open(list_tasks_file, "r") as f2:
-                                list_tasks_res = json.load(f2)
-                                list_tasks = list_tasks_res['taskArns']
+                                list_tasks = json.load(f2)
 
-                                task_arns_chunks = [list_tasks[i:i + MAX_TASKS_PER_DESCRIBE] for i in range(0, len(list_tasks), MAX_TASKS_PER_DESCRIBE)]
-
-                                # For each task chunk, call `ecs describe-tasks` using the `cluster` and `task` as arguments
-                                for chunk in task_arns_chunks:
+                                # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
+                                for taskArn in list_tasks["taskArns"]:
                                     outputfile = (
                                         action_path
                                         + "/"
                                         + urllib.parse.quote_plus(clusterArn)
                                         + "/"
-                                        + urllib.parse.quote_plus(f"describe_tasks_{task_arns_chunks.index(chunk)}")
+                                        + urllib.parse.quote_plus(taskArn)
                                     )
 
                                     call_parameters = {}
                                     call_parameters["cluster"] = clusterArn
-                                    call_parameters["tasks"] = chunk
+                                    call_parameters["tasks"] = [taskArn]
 
                                     call_function(
                                         outputfile,

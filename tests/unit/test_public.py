@@ -21,22 +21,20 @@ class TestPublic(unittest.TestCase):
             ["--accounts", "demo", "--config", "config.json.demo"], None
         )
 
-        public_nodes = get_public_nodes(accounts[0], config)
-        # public_nodes contains a list of nodes from the network diagram as the first item,
-        # and then things like API Gateway and CloudFront as the second item
-        assert_equal(len(public_nodes), 2)
+        public_nodes, warnings = get_public_nodes(accounts[0], config)
+
+        assert_equal(len(public_nodes), 3)
 
         # Check sizes of other items
-        assert_equal(len(public_nodes[1]), 0)
-        assert_equal(len(public_nodes[0]), 3)
+        assert_equal(len(public_nodes[0]), 6)
 
         public_nodes[0]
 
         ecs_nodes = []
         elb_nodes = []
         elbv2_nodes = []
-        print(public_nodes[0])
-        for node in public_nodes[0]:
+        print(public_nodes)
+        for node in public_nodes:
             if node["type"] == "ecs":
                 ecs_nodes.append(node)
             if node["type"] == "elb":

@@ -135,16 +135,16 @@ def get_ecs_tasks(region):
     clusters = query_aws(region.account, "ecs-list-clusters", region.region)
     for clusterArn in clusters.get("clusterArns", []):
         tasks_json = get_parameter_file(region, "ecs", "list-tasks", clusterArn)
-        for i in range(0, len(tasks_json["taskArns"]) // 100):
+        for taskArn in tasks_json["taskArns"]:
             task_path = "account-data/{}/{}/{}/{}/{}".format(
                 region.account.name,
                 region.region.name,
                 "ecs-describe-tasks",
                 urllib.parse.quote_plus(clusterArn),
-                urllib.parse.quote_plus(f"describe_tasks_{i}")
+                urllib.parse.quote_plus(taskArn),
             )
-            cluster_tasks = json.load(open(task_path))
-            tasks += cluster_tasks["tasks"]
+            task = json.load(open(task_path))
+            tasks.append(task["tasks"][0])
     return tasks
 
 
