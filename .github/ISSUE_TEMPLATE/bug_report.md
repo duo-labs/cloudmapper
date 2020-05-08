@@ -9,4 +9,4 @@ assignees: ''
 
 Please mention the following:
 - What command was run?
-- Are you working out of a pipenv environment, Docker, or something else?
+- Are you working out of a virtualenv environment, Docker, or something else?

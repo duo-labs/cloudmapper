@@ -16,7 +16,6 @@ COPY entrypoint.sh /opt/cloudmapper/entrypoint.sh
 RUN rm -rf /opt/cloudmapper/account-data/demo
 
 # Install the python libraries needed for CloudMapper
-RUN pip install pipenv
-RUN cd /opt/cloudmapper && pipenv install --skip-lock
+RUN cd /opt/cloudmapper && pip install -r requirements.txt
 
-ENTRYPOINT pipenv run /opt/cloudmapper/entrypoint.sh
+ENTRYPOINT /opt/cloudmapper/entrypoint.sh

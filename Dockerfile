@@ -12,8 +12,6 @@ RUN apt-get install -y build-essential autoconf automake libtool python3.7-dev p
 RUN apt-get install -y bash
 
 COPY . /opt/cloudmapper
-RUN pip install pipenv
-RUN pipenv install --skip-lock
-#RUN pipenv shell
+RUN pip install -r requirements.txt
 
 RUN bash
