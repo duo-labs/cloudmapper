@@ -216,6 +216,13 @@ def collect(arguments):
     else:
         default_region = 'us-east-1'
 
+    regions_filter = None
+    if len(arguments.regions_filter) > 0:
+        regions_filter = arguments.regions_filter.lower().split(",")
+        # Force include of default region -- seems to be required
+        if default_region not in regions_filter:
+            regions_filter.append(default_region)
+
     session_data = {"region_name": default_region}
 
     if arguments.profile_name:
@@ -267,6 +274,11 @@ def collect(arguments):
     print("* Getting region names", flush=True)
     ec2 = session.client("ec2")
     region_list = ec2.describe_regions()
+
+    if regions_filter is not None:
+        filtered_regions = [r for r in region_list["Regions"] if r["RegionName"] in regions_filter]
+        region_list["Regions"] = filtered_regions
+
     with open("account-data/{}/describe-regions.json".format(account_dir), "w+") as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))
 
@@ -511,6 +523,14 @@ def run(arguments):
         type=int,
         dest="max_attempts",
         default=4
+    )
+    parser.add_argument(
+        "--regions",
+        help="Filter and query AWS only for the given regions (CSV)",
+        required=False,
+        type=str,
+        dest="regions_filter",
+        default=""
     )
 
     args = parser.parse_args(arguments)
