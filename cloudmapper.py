@@ -61,7 +61,7 @@ def main():
 
     command = sys.argv[1]
     arguments = sys.argv[2:]
-    
+
     if command in commands:
         commands[command].run(arguments)
     else:

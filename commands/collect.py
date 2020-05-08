@@ -222,7 +222,6 @@ def collect(arguments):
         # Force include of default region -- seems to be required
         if default_region not in regions_filter:
             regions_filter.append(default_region)
-        print("RESTRICTING COLLECTION TO REGIONS: {}".format(regions_filter))
 
     session_data = {"region_name": default_region}
 
