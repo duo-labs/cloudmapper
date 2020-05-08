@@ -164,3 +164,18 @@
 - name: 'Cloudyn'
   source: 'https://docs.microsoft.com/bs-latn-ba/azure/cost-management/connect-aws-account'
   accounts: ['432263259397']
+- name: 'Lucidchart'
+  source: 'https://lucidchart.zendesk.com/hc/en-us/articles/208018563-Create-an-IAM-User-or-a-Cross-Account-Role-in-AWS-for-Lucidchart'
+  accounts: ['799803075172']
+- name: 'Workato'
+  source: 'https://docs.workato.com/connectors/s3.html'
+  accounts: ['353360065216']
+- name: 'Palo Alto Networks'
+  source: 'https://github.com/terraform-providers/terraform-provider-aws/issues/6674'
+  accounts: ['122442690527']
+- name: 'CloudZero'
+  source: 'https://www.cloudzero.com/hubfs/CloudZero%20Configuration%20Guide%20-%20Automated.pdf'
+  accounts: ['061190967865']
+- name: 'Cloudinary'
+  source: 'https://support.cloudinary.com/hc/en-us/articles/203276521-How-do-I-allow-Cloudinary-to-read-from-my-private-S3-bucket-'
+  accounts: ['232482882421']

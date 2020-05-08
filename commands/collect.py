@@ -17,6 +17,7 @@ from botocore.config import Config
 __description__ = "Run AWS API calls to collect data from the account"
 
 MAX_RETRIES = 3
+MAX_TASKS_PER_DESCRIBE = 100
 
 
 def snakecase(s):
@@ -151,6 +152,18 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
             "AccessDeniedException" in str(e)
             and call_summary["service"] == "kms"
             and call_summary["action"] == "list_key_policies"
+        ):
+            print("  - Denied, which should mean this KMS has restricted access")
+        elif (
+            "AccessDeniedException" in str(e)
+            and call_summary["service"] == "kms"
+            and call_summary["action"] == "list_grants"
+        ):
+            print("  - Denied, which should mean this KMS has restricted access")
+        elif (
+            "AccessDeniedException" in str(e)
+            and call_summary["service"] == "kms"
+            and call_summary["action"] == "get_key_policy"
         ):
             print("  - Denied, which should mean this KMS has restricted access")
         elif (
@@ -354,21 +367,24 @@ def collect(arguments):
                             )
 
                             with open(list_tasks_file, "r") as f2:
-                                list_tasks = json.load(f2)
+                                list_tasks_res = json.load(f2)
+                                list_tasks = list_tasks_res['taskArns']
 
-                                # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
-                                for taskArn in list_tasks["taskArns"]:
+                                task_arns_chunks = [list_tasks[i:i + MAX_TASKS_PER_DESCRIBE] for i in range(0, len(list_tasks), MAX_TASKS_PER_DESCRIBE)]
+
+                                # For each task chunk, call `ecs describe-tasks` using the `cluster` and `task` as arguments
+                                for chunk in task_arns_chunks:
                                     outputfile = (
                                         action_path
                                         + "/"
                                         + urllib.parse.quote_plus(clusterArn)
                                         + "/"
-                                        + urllib.parse.quote_plus(taskArn)
+                                        + urllib.parse.quote_plus(f"describe_tasks_{task_arns_chunks.index(chunk)}")
                                     )
 
                                     call_parameters = {}
                                     call_parameters["cluster"] = clusterArn
-                                    call_parameters["tasks"] = [taskArn]
+                                    call_parameters["tasks"] = chunk
 
                                     call_function(
                                         outputfile,

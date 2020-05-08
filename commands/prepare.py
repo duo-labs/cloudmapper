@@ -74,7 +74,7 @@ def get_vpcs(region, outputfilter):
             outputfilter["vpc-names"]
         )
     vpcs = query_aws(region.account, "ec2-describe-vpcs", region)
-    return pyjq.all(".Vpcs[]{}".format(vpc_filter), vpcs)
+    return pyjq.all(".Vpcs[]?{}".format(vpc_filter), vpcs)
 
 
 def get_azs(vpc):
@@ -87,7 +87,7 @@ def get_vpc_peerings(region):
     vpc_peerings = query_aws(
         region.account, "ec2-describe-vpc-peering-connections", region
     )
-    resource_filter = ".VpcPeeringConnections[]"
+    resource_filter = ".VpcPeeringConnections[]?"
     return pyjq.all(resource_filter, vpc_peerings)
 
 
@@ -135,16 +135,16 @@ def get_ecs_tasks(region):
     clusters = query_aws(region.account, "ecs-list-clusters", region.region)
     for clusterArn in clusters.get("clusterArns", []):
         tasks_json = get_parameter_file(region, "ecs", "list-tasks", clusterArn)
-        for taskArn in tasks_json["taskArns"]:
+        for i in range(0, len(tasks_json["taskArns"]) // 100):
             task_path = "account-data/{}/{}/{}/{}/{}".format(
                 region.account.name,
                 region.region.name,
                 "ecs-describe-tasks",
                 urllib.parse.quote_plus(clusterArn),
-                urllib.parse.quote_plus(taskArn),
+                urllib.parse.quote_plus(f"describe_tasks_{i}")
             )
-            task = json.load(open(task_path))
-            tasks.append(task["tasks"][0])
+            cluster_tasks = json.load(open(task_path))
+            tasks += cluster_tasks["tasks"]
     return tasks
 
 
@@ -326,7 +326,7 @@ def add_node_to_subnets(region, node, nodes):
 
     # Add a new node (potentially the same one) back to the dictionary
     for vpc in region.children:
-        if len(node.subnets) == 0 and vpc.local_id == node._parent.local_id:
+        if len(node.subnets) == 0 and node._parent and vpc.local_id == node._parent.local_id:
             # VPC Gateway Endpoints (S3 and DynamoDB) reside in a VPC, not a subnet
             # So set the relationship between the VPC and the node
             nodes[node.arn] = node
@@ -658,7 +658,13 @@ def build_data_structure(account_data, config, outputfilter):
 def prepare(account, config, outputfilter):
     """Collect the data and write it to a file"""
     cytoscape_json = build_data_structure(account, config, outputfilter)
-
+    if not outputfilter["node_data"]:
+        filtered_cytoscape_json=[]
+        for node in cytoscape_json:
+            filtered_node = node.copy()
+            filtered_node['data']['node_data'] = {}
+            filtered_cytoscape_json.append(filtered_node)
+        cytoscape_json = filtered_cytoscape_json
     with open("web/data.json", "w") as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
 
@@ -769,13 +775,18 @@ def run(arguments):
         dest="collapse_asgs",
         action="store_false",
     )
-
+    parser.add_argument(
+        "--no-node-data",
+        help="Do not show node data",
+        dest="node_data",
+        action="store_false",
+    )
     parser.set_defaults(internal_edges=True)
     parser.set_defaults(inter_rds_edges=False)
     parser.set_defaults(read_replicas=True)
     parser.set_defaults(azs=True)
     parser.set_defaults(collapse_asgs=True)
-
+    parser.set_defaults(node_data=False)
     args = parser.parse_args(arguments)
 
     outputfilter = {}
@@ -802,6 +813,7 @@ def run(arguments):
     outputfilter["azs"] = args.azs
     outputfilter["collapse_by_tag"] = args.collapse_by_tag
     outputfilter["collapse_asgs"] = args.collapse_asgs
+    outputfilter["node_data"] = args.node_data
 
     # Read accounts file
     try:

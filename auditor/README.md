@@ -31,6 +31,8 @@ aws secretsmanager create-secret --name cloudmapper-slack-webhook --secret-strin
 cdk deploy
 ```
 
+When prompted, entered "y".
+
 # Daily use
 Before setting this up to run against an account, you should manually run CloudMapper's audit or report command on the account to determine which findings should be fixed in the account, or muted.  This is done to avoid having your Slack channel flooded with 100 findings. If you are not fixing or muting issues, the value of this tool will quickly deteriorate.  It does not keep track of issues it previously alerted you about, so it will repeatedly alert on the same problems if action is not taken.  The expectation is you should be receiving a handful or less of alerts each day (ideally zero). If that is not the case, this tool is not being used as intended and you will not get value out of it.
 

@@ -170,10 +170,9 @@ Cloudmapper needs to make IAM calls and cannot use session credentials for colle
 )
 ```
 
-This will drop you into the container. Run `aws sts get-caller-identity` to confirm this was setup correctly. Cloudmapper demo data is not copied into the docker container so you will need to collect live data from your system. Not docker defaults may limit the memory available to your container. For example on Mac OS the default is 2GB which may not be enough to generate the report on a medium sized account.
+This will drop you into the container. Run `aws sts get-caller-identity` to confirm this was setup correctly. Cloudmapper demo data is not copied into the docker container so you will need to collect live data from your system. Note docker defaults may limit the memory available to your container. For example on Mac OS the default is 2GB which may not be enough to generate the report on a medium sized account.
 
 ```
-pipenv shell
 python cloudmapper.py configure add-account --config-file config.json --name YOUR_ACCOUNT --id YOUR_ACCOUNT_NUMBER
 python cloudmapper.py collect --account YOUR_ACCOUNT
 python cloudmapper.py report --account YOUR_ACCOUNT
@@ -188,7 +187,7 @@ A CDK app for deploying CloudMapper via Fargate so that it runs nightly, sends a
 # Alternatives
 For network diagrams, you may want to try https://github.com/lyft/cartography or https://github.com/anaynayak/aws-security-viz
 
-For auditng and other AWS security tools see https://github.com/toniblyx/my-arsenal-of-aws-security-tools
+For auditing and other AWS security tools see https://github.com/toniblyx/my-arsenal-of-aws-security-tools
 
 Licenses
 --------

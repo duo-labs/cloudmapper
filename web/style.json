@@ -7,7 +7,7 @@
             "height": 75
         }
     },
-    
+
     {
         "selector": "edge",
         "style": {
@@ -87,9 +87,9 @@
             "target-arrow-shape": "none"
         }
     },
-    
-    
-    
+
+
+
     {
         "selector": "[type = \"hidden\"]",
         "css": {
@@ -142,9 +142,9 @@
             "compound-sizing-wrt-labels": "include"
         }
     },
-    
-    
-    
+
+
+
 
     {
             "selector": "[type = \"ec2\"]",
@@ -172,7 +172,7 @@
         "background-fit": "contain",
         "background-clip": "none"
         }
-    }, 
+    },
     {
             "selector": "[type = \"elb\"]",
             "css": {
@@ -400,10 +400,10 @@
         "background-clip": "none"
         }
     },
-    
-    
-    
-    
+
+
+
+
     {
         "selector": "[type = \"weboftrust_account\"]",
         "css": {
@@ -423,7 +423,7 @@
             }
     },
 
-    
+
     {
         "selector": "[type = \"account_grouping\"]",
         "css": {
@@ -435,12 +435,12 @@
         }
     },
 
-    
+
     {
         "selector": "[type = \"unknown_account\"]",
         "css": {
             "shape": "triangle",
-        
+
             "background-color": "#000"
         }
     },
@@ -458,7 +458,7 @@
 
     {
         "selector": "[type = \"Okta\"]",
-        
+
         "css": {
             "label": "",
             "background-opacity": 0,
@@ -470,8 +470,60 @@
         }
     },
     {
+        "selector": "[type = \"auth0\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/auth0.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"ADFS\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/ADFS.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"WAAD\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/waad.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"AllCloud-SSO\"]",
+
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/allcloud.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
         "selector": "[type = \"Cloudhealth\"]",
-        
+
         "css": {
             "background-opacity": 0,
             "background-image": "./icons/logos/cloudhealth.png",
@@ -483,7 +535,7 @@
     },
     {
         "selector": "[type = \"Redlock\"]",
-        
+
         "css": {
             "background-opacity": 0,
             "background-image": "./icons/logos/redlock.png",
@@ -495,7 +547,7 @@
     },
     {
         "selector": "[type = \"SummitRoute\"]",
-        
+
         "css": {
             "background-opacity": 0,
             "background-image": "./icons/logos/summitroute.png",
@@ -507,7 +559,7 @@
     },
     {
         "selector": "[type = \"SegmentIO\"]",
-        
+
         "css": {
             "background-opacity": 0,
             "background-image": "./icons/logos/segmentio.png",
@@ -673,7 +725,7 @@
     },
     {
         "selector": "[type = \"TrendMicro\"]",
-        
+
         "css": {
             "background-opacity": 0,
             "background-image": "./icons/logos/trendmicro.png",
@@ -685,7 +737,7 @@
     },
     {
         "selector": "[type = \"Convox\"]",
-        
+
         "css": {
             "background-opacity": 0,
             "background-image": "./icons/logos/convox.png",
@@ -697,7 +749,7 @@
     },
     {
         "selector": "[type = \"Spotinst\"]",
-        
+
         "css": {
             "background-opacity": 0,
             "background-image": "./icons/logos/spotinst.png",
@@ -821,7 +873,78 @@
             "height": 100
         }
     },
-
+    {
+        "selector": "[type = \"CloudZero\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/cloudzero.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Palo Alto Networks\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/paloaltonetworks.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Workato\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/workato.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"orbitera\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/orbitera.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"Cloudinary\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/cloudinary.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"google\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/google.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
     {
         "selector": "[type = \"user\"]",
         "css": {
@@ -867,14 +990,14 @@
         "background-clip": "none"
         }
     },
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
     {
         "selector": ":selected",
         "css": {
