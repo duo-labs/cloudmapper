@@ -55,10 +55,10 @@ On macOS:
 # clone the repo
 git clone https://github.com/duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool jq awscli python3 pipenv
+brew install autoconf automake libtool jq awscli python3
 cd cloudmapper/
-pipenv install --skip-lock
-pipenv shell
+python3 -m venv ./venv && source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 On Linux:
@@ -71,8 +71,8 @@ git clone https://github.com/duo-labs/cloudmapper.git
 # You may additionally need "build-essential"
 sudo apt-get install autoconf automake libtool python3.7-dev python3-tk jq awscli
 cd cloudmapper/
-pipenv install --skip-lock
-pipenv shell
+python3 -m venv ./venv && source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 
@@ -160,10 +160,11 @@ aws-vault exec YOUR_PROFILE --server --
 docker run -p 8000:8000 -it cloudmapper /bin/bash
 ```
 
+Ensure you have aws-vault at least v5.4.4 to prevent a DNS rebinding attack when --server is used.
+
 You should replace `YOUR_PROFILE` with the profile you've configured for aws-vault. Inside the container run `aws sts get-caller-identity` to confirm this was setup correctly.
 
 ```
-pipenv shell
 python cloudmapper.py report --accout demo
 python cloudmapper.py webserver --public
 ```
