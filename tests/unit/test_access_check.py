@@ -58,7 +58,7 @@ class TestAccessCheck(unittest.TestCase):
             "AssumedRole",
             [{"Key": "project", "Value": "prod"}, {"Key": "color", "Value": "blue"}],
             username="role",
-            userid="",
+            userid=""
         )
 
         policy_doc = """
@@ -93,7 +93,7 @@ class TestAccessCheck(unittest.TestCase):
             }
         ]
         assert_true(
-            len(get_privilege_statements(policy_doc, privilege_matches, "*", principal))
+            len(get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test'))
             > 0
         )
 
@@ -106,7 +106,7 @@ class TestAccessCheck(unittest.TestCase):
             }
         ]
         assert_true(
-            len(get_privilege_statements(policy_doc, privilege_matches, "*", principal))
+            len(get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test'))
             == 0
         )
 
@@ -119,7 +119,7 @@ class TestAccessCheck(unittest.TestCase):
             }
         ]
         assert_true(
-            len(get_privilege_statements(policy_doc, privilege_matches, "*", principal))
+            len(get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test'))
             > 0
         )
 
@@ -127,7 +127,7 @@ class TestAccessCheck(unittest.TestCase):
         assert_true(
             len(
                 get_privilege_statements(
-                    policy_doc, privilege_matches, "arn:aws:sns:*:*:prod-*", principal
+                    policy_doc, privilege_matches, "arn:aws:sns:*:*:prod-*", principal, policy_identifier='unit_test'
                 )
             )
             > 0
@@ -136,7 +136,7 @@ class TestAccessCheck(unittest.TestCase):
         assert_true(
             len(
                 get_privilege_statements(
-                    policy_doc, privilege_matches, "arn:aws:sns:*:*:dev-*", principal
+                    policy_doc, privilege_matches, "arn:aws:sns:*:*:dev-*", principal, policy_identifier='unit_test'
                 )
             )
             == 0
@@ -180,7 +180,7 @@ class TestAccessCheck(unittest.TestCase):
                 "resource_type": "object",
             }
         ]
-        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test')
 
         # Ensure we have allowed statements when there is no boundary
         assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
@@ -201,7 +201,7 @@ class TestAccessCheck(unittest.TestCase):
         }"""
         policy_doc = json.loads(policy_doc)
         boundary = get_privilege_statements(
-            policy_doc, privilege_matches, "*", principal
+            policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test'
         )
 
         # Ensure nothing is allowed when the boundary denies all
@@ -243,7 +243,7 @@ class TestAccessCheck(unittest.TestCase):
                 "resource_type": "object",
             }
         ]
-        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test')
         assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
 
         principal = Principal(
@@ -253,7 +253,7 @@ class TestAccessCheck(unittest.TestCase):
             userid="",
         )
 
-        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test')
         assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) == 0)
 
 
@@ -484,7 +484,7 @@ class TestAccessCheck(unittest.TestCase):
                 "resource_type": "secret",
             }
         ]
-        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test')
         assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) > 0)
 
         # Ensure the Deny in the policy works
@@ -495,7 +495,7 @@ class TestAccessCheck(unittest.TestCase):
                 "resource_type": "secret",
             }
         ]
-        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal)
+        stmts = get_privilege_statements(policy_doc, privilege_matches, "*", principal, policy_identifier='unit_test')
         assert_true(len(get_allowed_privileges(privilege_matches, stmts, None)) == 0)
 
         # TODO Testing these conditions requires getting resource tags
