@@ -17,13 +17,16 @@ from shared.common import parse_arguments, get_current_policy_doc, make_list
 
 __description__ = "[proof-of-concept] Check who has access to a resource"
 
+
 def replace_principal_variables(reference, principal):
     """
     Given a resource reference string (ie. the Resource string from an IAM policy) and a prinicipal, replace any variables in the resource string that are principal related. 
     """
     reference = reference.lower()
     for tag in principal.tags:
-        reference = reference.replace("${aws:principaltag/"+tag["Key"].lower()+"}", tag["Value"].lower())
+        reference = reference.replace(
+            "${aws:principaltag/" + tag["Key"].lower() + "}", tag["Value"].lower()
+        )
 
     reference = reference.replace("${aws:principaltype}", principal.mytype.lower())
     return reference
@@ -36,7 +39,7 @@ def apply_condition_function(condition_function, left_side, right_side):
     #   "t2.*",
     #   "m3.*"
     # ]}}
-    # 
+    #
     # or
     #
     # "Condition": {
@@ -48,7 +51,7 @@ def apply_condition_function(condition_function, left_side, right_side):
     #         ]
     #     }
     # }
-    # 
+    #
     # or
     #
     # "Condition": {
@@ -60,26 +63,27 @@ def apply_condition_function(condition_function, left_side, right_side):
     #         }
     #     }
 
-    if condition_function == 'StringEquals':
+    if condition_function == "StringEquals":
         return left_side == right_side
-    elif condition_function == 'StringNotEquals':
+    elif condition_function == "StringNotEquals":
         return left_side != right_side
-    elif condition_function == 'StringEqualsIgnoreCase':
+    elif condition_function == "StringEqualsIgnoreCase":
         return left_side.lower() == right_side.lower()
-    elif condition_function == 'StringNotEqualsIgnoreCase':
+    elif condition_function == "StringNotEqualsIgnoreCase":
         return left_side.lower() != right_side.lower()
-    
-    elif condition_function == 'StringLike':
+
+    elif condition_function == "StringLike":
         right_side.replace("*", ".*")
         matcher = re.compile("^{}$".format(right_side))
         return matcher.match(left_side)
-    elif condition_function == 'StringNotLike':
+    elif condition_function == "StringNotLike":
         right_side.replace("*", ".*")
         matcher = re.compile("^{}$".format(right_side))
         return not matcher.match(left_side)
-    
+
     # TODO Need to handle other operators from https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html
     return None
+
 
 def get_condition_result(condition_function, condition_values, resource_arn, principal):
     """
@@ -93,9 +97,12 @@ def get_condition_result(condition_function, condition_values, resource_arn, pri
     for k in condition_values:
         if k.startswith("aws:PrincipalTag/"):
             for tag in principal.tags:
-                if k == "aws:PrincipalTag/"+tag["Key"]:
-                    results.append(apply_condition_function(condition_function, tag["Value"], condition_values[k]))
-                    
+                if k == "aws:PrincipalTag/" + tag["Key"]:
+                    results.append(
+                        apply_condition_function(
+                            condition_function, tag["Value"], condition_values[k]
+                        )
+                    )
 
     # The array results should now look something like [True, False, True],
     # although more commonly is just [], [False], or [True]
@@ -114,7 +121,10 @@ def get_condition_result(condition_function, condition_values, resource_arn, pri
 
     return None
 
-def get_privilege_statements(policy_doc, privilege_matches, resource_arn, principal):
+
+def get_privilege_statements(
+    policy_doc, privilege_matches, resource_arn, principal, policy_identifier
+):
     policy = parliament.policy.Policy(policy_doc)
     policy.analyze()
 
@@ -138,10 +148,16 @@ def get_privilege_statements(policy_doc, privilege_matches, resource_arn, princi
                 stmts = references[reference]
                 condition_allowed_stmts = []
                 for stmt in stmts:
+                    stmt.set_policy_identifier(policy_identifier)
                     allowed_by_conditions = True
                     for condition_function in stmt.stmt.get("Condition", {}):
                         condition_values = stmt.stmt["Condition"][condition_function]
-                        condition_result = get_condition_result(condition_function, condition_values, resource_arn, principal)
+                        condition_result = get_condition_result(
+                            condition_function,
+                            condition_values,
+                            resource_arn,
+                            principal,
+                        )
                         # TODO Need to do something different for Deny, to avoid false negatives
                         if condition_result is not None:
                             if condition_result == False:
@@ -255,7 +271,11 @@ def access_check_command(accounts, config, args):
                 policy_doc = get_managed_policy(iam, policy["PolicyArn"])
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn, principal
+                        policy_doc,
+                        privilege_matches,
+                        args.resource_arn,
+                        principal,
+                        policy["PolicyArn"],
                     )
                 )
 
@@ -264,7 +284,11 @@ def access_check_command(accounts, config, args):
                 policy_doc = policy["PolicyDocument"]
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn, principal
+                        policy_doc,
+                        privilege_matches,
+                        args.resource_arn,
+                        principal,
+                        role["Arn"] + ":" + policy["PolicyName"],
                     )
                 )
 
@@ -282,7 +306,11 @@ def access_check_command(accounts, config, args):
             if boundary is not None:
                 policy_doc = get_managed_policy(iam, boundary["PermissionsBoundaryArn"])
                 boundary_statements = get_privilege_statements(
-                    policy_doc, privilege_matches, args.resource_arn, principal
+                    policy_doc,
+                    privilege_matches,
+                    args.resource_arn,
+                    principal,
+                    boundary["PermissionsBoundaryArn"],
                 )
 
             # Find the allowed privileges
@@ -290,11 +318,12 @@ def access_check_command(accounts, config, args):
                 privilege_matches, privileged_statements, boundary_statements
             )
             for priv in allowed_privileges:
-                print(
-                    "{} - {}:{}".format(
-                        role["Arn"], priv["privilege_prefix"], priv["privilege_name"]
-                    )
-                )
+                priv_object = {
+                    "principal": role["Arn"],
+                    "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
+                    "references": list(priv["references"]),
+                }
+                print(json.dumps(priv_object))
 
         # Check the users
         for user in iam["UserDetailList"]:
@@ -307,7 +336,11 @@ def access_check_command(accounts, config, args):
                 policy_doc = get_managed_policy(iam, policy["PolicyArn"])
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn, principal
+                        policy_doc,
+                        privilege_matches,
+                        args.resource_arn,
+                        principal,
+                        policy["PolicyArn"],
                     )
                 )
 
@@ -316,7 +349,11 @@ def access_check_command(accounts, config, args):
                 policy_doc = policy["PolicyDocument"]
                 privileged_statements.extend(
                     get_privilege_statements(
-                        policy_doc, privilege_matches, args.resource_arn, principal
+                        policy_doc,
+                        privilege_matches,
+                        args.resource_arn,
+                        principal,
+                        user["Arn"] + ":" + policy["PolicyName"],
                     )
                 )
 
@@ -333,6 +370,7 @@ def access_check_command(accounts, config, args):
                                     privilege_matches,
                                     args.resource_arn,
                                     principal,
+                                    policy["PolicyArn"],
                                 )
                             )
 
@@ -344,6 +382,7 @@ def access_check_command(accounts, config, args):
                                     privilege_matches,
                                     args.resource_arn,
                                     principal,
+                                    group["Arn"] + ":" + policy["PolicyName"],
                                 )
                             )
 
@@ -361,7 +400,11 @@ def access_check_command(accounts, config, args):
             if boundary is not None:
                 policy_doc = get_managed_policy(iam, boundary["PermissionsBoundaryArn"])
                 boundary_statements = get_privilege_statements(
-                    policy_doc, privilege_matches, args.resource_arn, principal
+                    policy_doc,
+                    privilege_matches,
+                    args.resource_arn,
+                    principal,
+                    boundary["PermissionsBoundaryArn"],
                 )
 
             # Find the allowed privileges
@@ -369,11 +412,12 @@ def access_check_command(accounts, config, args):
                 privilege_matches, privileged_statements, boundary_statements
             )
             for priv in allowed_privileges:
-                print(
-                    "{} - {}:{}".format(
-                        user["Arn"], priv["privilege_prefix"], priv["privilege_name"]
-                    )
-                )
+                priv_object = {
+                    "principal": user["Arn"],
+                    "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
+                    "references": list(priv["references"]),
+                }
+                print(json.dumps(priv_object))
 
 
 def get_managed_policy(iam, policy_arn):
@@ -406,7 +450,7 @@ def is_allowed(privilege_prefix, privilege_name, statements):
                 is_allowed = False
 
         if is_allowed:
-            return True
+            return stmts_for_privilege
     return False
 
 
@@ -425,11 +469,15 @@ def get_allowed_privileges(
             ):
                 continue
 
-        if is_allowed(
+        allowed_stmts = is_allowed(
             privilege["privilege_prefix"],
             privilege["privilege_name"],
             privileged_statements,
-        ):
+        )
+        if allowed_stmts:
+            privilege["references"] = set()
+            for stmt in allowed_stmts:
+                privilege["references"].add(stmt.policy_id)
             allowed_privileges.append(privilege)
     return allowed_privileges
 
