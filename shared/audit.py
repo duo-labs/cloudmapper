@@ -834,6 +834,25 @@ def audit_ec2(findings, region):
                 )
 
 
+def audit_elbv2(findings, region):
+    json_blob = query_aws(region.account, "elbv2-describe-load-balancers", region)
+
+    for load_balancer in json_blob.get("LoadBalancers", []):
+        arn = load_balancer["LoadBalancerArn"]
+
+        # Check attributes
+        attributes_json = get_parameter_file(
+            region, "elbv2", "describe-load-balancer-attributes", arn
+        )
+
+        for attribute in attributes_json.get("Attributes", []):
+            if (
+                attribute["Key"] == "routing.http.drop_invalid_header_fields.enabled"
+                and attribute["Value"] == "false"
+            ):
+                findings.add(Finding(region, "REQUEST_SMUGGLING", arn))
+
+
 def audit_sg(findings, region):
     # TODO Check if security groups allow large CIDR range (ex. 1.2.3.4/3)
     # TODO Check if an SG restricts IPv4 and then opens IPv6 or vice versa.
@@ -1143,6 +1162,7 @@ def audit(accounts):
                 audit_redshift(findings, region)
                 audit_es(findings, region)
                 audit_ec2(findings, region)
+                audit_elbv2(findings, region)
                 audit_sg(findings, region)
                 audit_lambda(findings, region)
                 audit_glacier(findings, region)

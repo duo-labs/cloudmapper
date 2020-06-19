@@ -46,7 +46,8 @@ class TestAudit(unittest.TestCase):
                     "EC2_OLD",
                     "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL",
                     "IAM_LINTER",
-                    "EC2_IMDSV2_NOT_ENFORCED"
+                    "EC2_IMDSV2_NOT_ENFORCED",
+                    "REQUEST_SMUGGLING"
                 ]
             ),
         )

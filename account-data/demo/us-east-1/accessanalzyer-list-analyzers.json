@@ -1,0 +1,14 @@
+{
+    "analyzers": [
+        {
+            "arn": "arn:aws:access-analyzer:us-east-1:000000000000:analyzer/default",
+            "createdAt": "2020-06-19T21:20:04Z",
+            "lastResourceAnalyzed": "arn:aws:sqs:us-east-1:000000000000:test",
+            "lastResourceAnalyzedAt": "2020-06-19T21:20:04.664Z",
+            "name": "default",
+            "status": "ACTIVE",
+            "tags": {},
+            "type": "ACCOUNT"
+        }
+    ]
+}

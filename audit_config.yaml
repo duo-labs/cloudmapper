@@ -383,3 +383,9 @@ ACCESSANALYZER_OFF:
   description: Access Analyzer is a free service that can tell you when resources are public or shared with unexpected accounts.
   severity: Medium
   group: AccessAnalyzer
+
+REQUEST_SMUGGLING:
+  title: Request smuggling not denied
+  description: "HTTP request smuggling is possible against ALBs, as described here: https://99designs.com/blog/engineering/request-smuggling/"
+  severity: Low
+  group: ELB
