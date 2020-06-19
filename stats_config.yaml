@@ -2,7 +2,7 @@
   query: .Buckets|length
   source: s3-list-buckets
 - name: EC2 instances
-  query: '[.Reservations[].Instances[]|select(.State.Name == "running")]|length'
+  query: '[.Reservations[]?.Instances[]?|select(.State.Name == "running")]|length'
   source: ec2-describe-instances
 - name: ELBs
   query: .LoadBalancerDescriptions|length
