@@ -377,3 +377,9 @@ EC2_IMDSV2_NOT_ENFORCED:
   description: The original metadata service that allows EC2s to assume IAM roles could allow an attacker to take over that role if they were able to find an SSRF vulnerability or proxy functionality on the instance. IMDSv2 should be enforced and not optional.
   severity: Medium
   group: EC2
+
+ACCESSANALYZER_OFF:
+  title: Access Analyzer off
+  description: Access Analyzer is a free service that can tell you when resources are public or shared with unexpected accounts.
+  severity: Medium
+  group: AccessAnalyzer
