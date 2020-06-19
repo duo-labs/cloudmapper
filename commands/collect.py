@@ -401,6 +401,54 @@ def collect(arguments):
                                         runner.get("Check", None),
                                         summary,
                                     )
+                elif runner["Service"] == "route53" and runner["Request"] == "list-hosted-zones-by-vpc":
+                    action_path = filepath
+                    make_directory(action_path)
+
+                    # Read the regions file
+                    regions_file = "account-data/{}/{}".format(
+                        account_dir, "describe-regions.json"
+                    )
+                    with open(regions_file, "r") as f:
+                        describe_regions = json.load(f)
+
+                        # For each region
+                        for collect_region in describe_regions["Regions"]:
+                            cluster_path = (
+                                action_path + "/" + urllib.parse.quote_plus(collect_region["RegionName"])
+                            )
+                            make_directory(cluster_path)
+
+                            # Read the VPC file
+                            describe_vpcs_file = "account-data/{}/{}/{}".format(
+                                account_dir,
+                                collect_region["RegionName"],
+                                "ec2-describe-vpcs.json"
+                            )
+
+                            with open(describe_vpcs_file, "r") as f2:
+                                describe_vpcs = json.load(f2)
+
+                                for vpc in describe_vpcs["Vpcs"]:
+                                    outputfile = (
+                                        action_path
+                                        + "/"
+                                        + urllib.parse.quote_plus(collect_region["RegionName"])
+                                        + "/"
+                                        + urllib.parse.quote_plus(vpc["VpcId"])
+                                    )
+
+                                    call_parameters = {}
+                                    call_parameters["VPCRegion"] = collect_region["RegionName"]
+                                    call_parameters["VPCId"] = vpc["VpcId"]
+                                    call_function(
+                                        outputfile,
+                                        handler,
+                                        method_to_call,
+                                        call_parameters,
+                                        runner.get("Check", None),
+                                        summary,
+                                    )
 
             elif dynamic_parameter is not None:
                 # Set up directory for the dynamic value

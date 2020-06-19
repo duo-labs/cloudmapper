@@ -391,3 +391,6 @@
   Parameters:
   - Name: SecretId
     Value: secretsmanager-list-secrets.json|.SecretList[]?|.Name
+- Service: route53
+  Request: list-hosted-zones-by-vpc
+  Custom_collection: True

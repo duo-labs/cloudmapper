@@ -7,9 +7,9 @@ def query_aws(account, query, region=None):
     if not region:
         file_name = "account-data/{}/{}.json".format(account.name, query)
     else:
-        file_name = "account-data/{}/{}/{}.json".format(
-            account.name, region.name, query
-        )
+        if not isinstance(region, str):
+            region = region.name
+        file_name = "account-data/{}/{}/{}.json".format(account.name, region, query)
     if os.path.isfile(file_name):
         return json.load(open(file_name))
     else:

@@ -366,3 +366,8 @@ LIGHTSAIL_IN_USE:
   severity: Info
   group: Lightsail
 
+FOREIGN_HOSTED_ZONE:
+  title: Hosted zone found
+  description: Hosted Zones have legitimate uses, but may also be used to redirect traffic by an attacker, especially when they are owned by another account. (This finding needs more research into what should be filterd out, but I wanted to expose this info for manual review).
+  severity: Info
+  group: Route53

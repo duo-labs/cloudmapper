@@ -230,7 +230,9 @@ def audit_iam(findings, region):
         if flist.issue_id != "IAM_UNEXPECTED_ADMIN_PRINCIPAL":
             continue
 
-        services = make_list(flist.resource_details.get("Principal", {}).get("Service", ""))
+        services = make_list(
+            flist.resource_details.get("Principal", {}).get("Service", "")
+        )
         for service in services:
             if service in [
                 "config.amazonaws.com",
@@ -254,7 +256,10 @@ def audit_iam(findings, region):
 
                     already_recorded = False
                     for f in findings:
-                        if f.resource_id == fget.resource_id and f.issue_id == "IAM_UNEXPECTED_ADMIN_PRINCIPAL":
+                        if (
+                            f.resource_id == fget.resource_id
+                            and f.issue_id == "IAM_UNEXPECTED_ADMIN_PRINCIPAL"
+                        ):
                             already_recorded = True
                             break
 
@@ -262,15 +267,13 @@ def audit_iam(findings, region):
                         flist.issue_id = "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL"
                         findings.add(flist)
 
-                    
-
             # Don't record this multiple times if multiple services are listed
             break
 
 
 def audit_cloudtrail(findings, region):
     json_blob = query_aws(region.account, "cloudtrail-describe-trails", region)
-    if len(json_blob["trailList"]) == 0:
+    if len(json_blob.get("trailList", [])) == 0:
         findings.add(Finding(region, "CLOUDTRAIL_OFF", None, None))
     else:
         multiregion = False
@@ -535,10 +538,27 @@ def audit_route53(findings, region):
                 )
             )
 
+    # Check VPC hosted zones
+    regions_json = query_aws(region.account, "describe-regions")
+    regions = pyjq.all(".Regions[].RegionName", regions_json)
+    for region_name in regions:
+        vpc_json = query_aws(region.account, "ec2-describe-vpcs", region_name)
+        vpcs = pyjq.all(".Vpcs[]?.VpcId", vpc_json)
+        for vpc in vpcs:
+            hosted_zone_file = f"account-data/{region.account.name}/{region.name}/route53-list-hosted-zones-by-vpc/{region_name}/{vpc}"
+            hosted_zones_json = json.load(open(hosted_zone_file))
+            hosted_zones = pyjq.all(".HostedZoneSummaries[]?", hosted_zones_json)
+            for hosted_zone in hosted_zones:
+                if hosted_zone.get("Owner", {}).get("OwningAccount", "") != "":
+                    if hosted_zone["Owner"]["OwningAccount"] != region.account.local_id:
+                        findings.add(
+                            Finding(region, "FOREIGN_HOSTED_ZONE", hosted_zone)
+                        )
+
 
 def audit_ebs_snapshots(findings, region):
     json_blob = query_aws(region.account, "ec2-describe-snapshots", region)
-    for snapshot in json_blob["Snapshots"]:
+    for snapshot in json_blob.get("Snapshots", []):
         try:
             file_json = get_parameter_file(
                 region, "ec2", "describe-snapshot-attribute", snapshot["SnapshotId"]
@@ -790,7 +810,7 @@ def audit_sg(findings, region):
 
     cidrs = {}
     sg_json = query_aws(region.account, "ec2-describe-security-groups", region)
-    sgs = pyjq.all(".SecurityGroups[]", sg_json)
+    sgs = pyjq.all(".SecurityGroups[]?", sg_json)
     for sg in sgs:
         cidr_and_name_list = pyjq.all(
             ".IpPermissions[]?.IpRanges[]|[.CidrIp,.Description]", sg
