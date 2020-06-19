@@ -394,3 +394,5 @@
 - Service: route53
   Request: list-hosted-zones-by-vpc
   Custom_collection: True
+- Service: accessanalyzer
+  Request: list-analyzers

@@ -208,6 +208,21 @@ def audit_guardduty(findings, region):
         findings.add(Finding(region, "GUARDDUTY_OFF", None, None))
 
 
+def audit_accessanalyzer(findings, region):
+    analyzer_list_json = query_aws(
+        region.account, "accessanalzyer-list-analyzers", region
+    )
+    if not analyzer_list_json:
+        # Access Analyzer must not exist in this region (or the collect data is old)
+        return
+    is_enabled = False
+    for analyzer in analyzer_list_json["analyzers"]:
+        if analyzer["status"] == "ACTIVE":
+            is_enabled = True
+    if not is_enabled:
+        findings.add(Finding(region, "ACCESSANALYZER_OFF", None, None))
+
+
 def audit_iam(findings, region):
     # By calling the code to find the admins, we'll excercise the code that finds problems.
     find_admins_in_account(region, findings)
@@ -755,10 +770,10 @@ def audit_ec2(findings, region):
             if instance.get("State", {}).get("Name", "") == "terminated":
                 # Ignore EC2's that are off
                 continue
-            
+
             # Check for IMDSv2 enforced
-            if instance.get("MetadataOptions", {}).get('HttpEndpoint', '') == 'enabled':
-                if instance["MetadataOptions"].get('HttpTokens', '') == 'optional':
+            if instance.get("MetadataOptions", {}).get("HttpEndpoint", "") == "enabled":
+                if instance["MetadataOptions"].get("HttpTokens", "") == "optional":
                     findings.add(
                         Finding(
                             region,
@@ -770,7 +785,6 @@ def audit_ec2(findings, region):
                             },
                         )
                     )
-
 
             # Check for old instances
             if instance.get("LaunchTime", "") != "":
@@ -1120,6 +1134,7 @@ def audit(accounts):
                     audit_cloudfront(findings, region)
                     audit_s3_block_policy(findings, region)
                 audit_guardduty(findings, region)
+                audit_accessanalyzer(findings, region)
                 audit_ebs_snapshots(findings, region)
                 audit_rds_snapshots(findings, region)
                 audit_rds(findings, region)
