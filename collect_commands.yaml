@@ -153,6 +153,11 @@
   - Name: TargetGroupArn
     Value: elbv2-describe-target-groups/*|.TargetGroups[].TargetGroupArn
 - Service: elbv2
+  Request: describe-load-balancer-attributes
+  Parameters:
+  - Name: LoadBalancerArn
+    Value: elbv2-describe-load-balancers.json|.LoadBalancers[].LoadBalancerArn
+- Service: elbv2
   Request: describe-tags
   Parameters:
   - Name: ResourceArns
