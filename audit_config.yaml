@@ -386,6 +386,6 @@ ACCESSANALYZER_OFF:
 
 REQUEST_SMUGGLING:
   title: Request smuggling not denied
-  description: "HTTP request smuggling is possible against ALBs, as described here: https://99designs.com/blog/engineering/request-smuggling/"
+  description: "HTTP request smuggling is possible against ALBs, as described here: https://portswigger.net/web-security/request-smuggling"
   severity: Low
   group: ELB
