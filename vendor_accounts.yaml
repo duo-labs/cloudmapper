@@ -179,3 +179,12 @@
 - name: 'Cloudinary'
   source: 'https://support.cloudinary.com/hc/en-us/articles/203276521-How-do-I-allow-Cloudinary-to-read-from-my-private-S3-bucket-'
   accounts: ['232482882421']
+- name: 'Tenable'
+  source: 'https://docs.tenable.com/tenableio/vulnerabilitymanagement/Content/Settings/Connectors_ConfigureAWS_KeylessAutoDiscovery.htm'
+  accounts: ['012615275169']
+- name: 'Stitch'
+  source: 'https://www.stitchdata.com/docs/destinations/amazon-s3/connecting-an-amazon-s3-data-warehouse-to-stitch'
+  accounts: ['218546966473']
+- name: 'Emnify'
+  source: 'https://www.emnify.com/datastreamer-integration-into-aws'
+  accounts: ['884047677700']
