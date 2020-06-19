@@ -797,6 +797,18 @@
         }
     },
     {
+        "selector": "[type = \"Lucidchart\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/lucidchart.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
         "selector": "[type = \"Cloudyn\"]",
         "css": {
             "label": "",
