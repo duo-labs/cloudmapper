@@ -786,7 +786,7 @@ def run(arguments):
     parser.set_defaults(read_replicas=True)
     parser.set_defaults(azs=True)
     parser.set_defaults(collapse_asgs=True)
-    parser.set_defaults(node_data=False)
+    parser.set_defaults(node_data=True)
     args = parser.parse_args(arguments)
 
     outputfilter = {}
