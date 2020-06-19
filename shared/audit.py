@@ -844,7 +844,6 @@ def audit_elbv2(findings, region):
         attributes_json = get_parameter_file(
             region, "elbv2", "describe-load-balancer-attributes", arn
         )
-        # print(json.dumps(attributes_json, indent=2))
 
         for attribute in attributes_json.get("Attributes", []):
             if (
