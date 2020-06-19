@@ -755,6 +755,22 @@ def audit_ec2(findings, region):
             if instance.get("State", {}).get("Name", "") == "terminated":
                 # Ignore EC2's that are off
                 continue
+            
+            # Check for IMDSv2 enforced
+            if instance.get("MetadataOptions", {}).get('HttpEndpoint', '') == 'enabled':
+                if instance["MetadataOptions"].get('HttpTokens', '') == 'optional':
+                    findings.add(
+                        Finding(
+                            region,
+                            "EC2_IMDSV2_NOT_ENFORCED",
+                            instance["InstanceId"],
+                            resource_details={
+                                "Name": get_name(instance, "InstanceId"),
+                                "Tags": instance.get("Tags", {}),
+                            },
+                        )
+                    )
+
 
             # Check for old instances
             if instance.get("LaunchTime", "") != "":

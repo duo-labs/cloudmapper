@@ -45,7 +45,8 @@ class TestAudit(unittest.TestCase):
                     "IAM_ROLE_ALLOWS_ASSUMPTION_FROM_ANYWHERE",
                     "EC2_OLD",
                     "IAM_UNEXPECTED_S3_EXFIL_PRINCIPAL",
-                    "IAM_LINTER"
+                    "IAM_LINTER",
+                    "EC2_IMDSV2_NOT_ENFORCED"
                 ]
             ),
         )

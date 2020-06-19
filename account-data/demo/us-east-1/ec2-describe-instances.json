@@ -196,7 +196,13 @@
                             "Key": "Name"
                         }
                     ], 
-                    "AmiLaunchIndex": 0
+                    "AmiLaunchIndex": 0,
+                    "MetadataOptions": {
+                        "State": "applied",
+                        "HttpTokens": "optional",
+                        "HttpPutResponseHopLimit": 1,
+                        "HttpEndpoint": "enabled"
+                    }
                 },
                 {
                     "Monitoring": {
@@ -288,7 +294,13 @@
                             "Key": "Name"
                         }
                     ], 
-                    "AmiLaunchIndex": 0
+                    "AmiLaunchIndex": 0,
+                    "MetadataOptions": {
+                        "State": "applied",
+                        "HttpTokens": "optional",
+                        "HttpPutResponseHopLimit": 1,
+                        "HttpEndpoint": "enabled"
+                    }
                 }
             ], 
             "ReservationId": "r-00000000000000000", 

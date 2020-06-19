@@ -371,3 +371,9 @@ FOREIGN_HOSTED_ZONE:
   description: Hosted Zones have legitimate uses, but may also be used to redirect traffic by an attacker, especially when they are owned by another account. (This finding needs more research into what should be filterd out, but I wanted to expose this info for manual review).
   severity: Info
   group: Route53
+
+EC2_IMDSV2_NOT_ENFORCED:
+  title: IMDSv2 not enforced
+  description: The original metadata service that allows EC2s to assume IAM roles could allow an attacker to take over that role if they were able to find an SSRF vulnerability or proxy functionality on the instance. IMDSv2 should be enforced and not optional.
+  severity: Medium
+  group: EC2
