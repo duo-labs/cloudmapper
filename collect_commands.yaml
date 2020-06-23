@@ -348,7 +348,12 @@
   Request: describe-tasks
   Custom_collection: True
 - Service: eks
+  Request: list-clusters
+- Service: eks
   Request: describe-cluster
+  Parameters:
+  - Name: cluster
+    Value: eks-list-clusters.json|.clusters[]
 - Service: logs
   Request: describe-destinations
 - Service: logs
