@@ -556,13 +556,8 @@ def build_data_structure(account_data, config, outputfilter):
     # Collapse CIDRs
     #
 
-    # Get a list of the current CIDRs
-    current_cidrs = []
-    for cidr_string in cidrs:
-        current_cidrs.append(cidr_string)
-
     # Iterate through them
-    for cidr_string in current_cidrs:
+    for cidr_string in cidrs:
         # Find CIDRs in the config that our CIDR falls inside
         # It may fall inside multiple ranges
         matching_known_cidrs = {}
@@ -613,12 +608,9 @@ def build_data_structure(account_data, config, outputfilter):
                     connections[Connection(new_source, c._target)] = r
 
     # Add external cidr nodes
-    used_cidrs = 0
-    for _, cidr in cidrs.items():
-        if cidr.is_used:
-            used_cidrs += 1
-            cytoscape_json.append(cidr.cytoscape_data())
-    log("- {} external CIDRs built".format(used_cidrs))
+    used_cidrs = [cidr.cytoscape_data() for cidr in cidrs.values() if cidr.is_used]
+    cytoscape_json.extend(cidr.cytoscape_data())
+    log("- {} external CIDRs built".format(len(used_cidrs)))
 
     total_number_of_nodes = len(cytoscape_json)
 
