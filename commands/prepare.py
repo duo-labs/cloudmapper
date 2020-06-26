@@ -557,7 +557,7 @@ def build_data_structure(account_data, config, outputfilter):
     #
 
     # Iterate through them
-    for cidr_string in cidrs:
+    for cidr_string in list(cidrs):
         # Find CIDRs in the config that our CIDR falls inside
         # It may fall inside multiple ranges
         matching_known_cidrs = {}
@@ -608,9 +608,30 @@ def build_data_structure(account_data, config, outputfilter):
                     connections[Connection(new_source, c._target)] = r
 
     # Add external cidr nodes
-    used_cidrs = [cidr.cytoscape_data() for cidr in cidrs.values() if cidr.is_used]
-    cytoscape_json.extend(cidr.cytoscape_data())
-    log("- {} external CIDRs built".format(len(used_cidrs)))
+
+    # To make the charts easier to understand when the same entity has more than
+    # a single CIDR range, we will build two lookup structures: a dictionary
+    # mapping local_id values to the cytoscape_data data for the CIDR object and
+    # a dictionary mapping network names to the accumulated cytoscape data.
+    used_cidrs = {
+        cidr.local_id: cidr.cytoscape_data() for cidr in cidrs.values() if cidr.is_used
+    }
+    log("- {} external CIDRs in use".format(len(used_cidrs)))
+
+    cidr_nodes = {}
+
+    for used_cidr in used_cidrs.values():
+        data = used_cidr["data"]
+        name = data["name"]
+        flipped_data = data.copy()
+        flipped_data.update({"id": name, "local_id": name, "node_data": set()})
+        cidr_nodes.setdefault(name, flipped_data)["node_data"].add(data["node_data"])
+
+    # Now that we have all of the unique CIDR ranges processed, we can generate
+    # the combined entities which will be given to Cytoscape:
+    for node in cidr_nodes.values():
+        node["node_data"] = "<br>".join(sorted(node["node_data"]))
+        cytoscape_json.append({"data": node})
 
     total_number_of_nodes = len(cytoscape_json)
 
@@ -620,7 +641,13 @@ def build_data_structure(account_data, config, outputfilter):
             # Ensure we don't add connections with the same nodes on either side
             continue
         c._json = reasons
-        cytoscape_json.append(c.cytoscape_data())
+        c_data = c.cytoscape_data()
+        # If the source is a CIDR range we want to reference it by the logical
+        # network name instead:
+        source = c_data["data"]["source"]
+        if source in used_cidrs:
+            c_data["data"]["source"] = used_cidrs[source]["data"]["name"]
+        cytoscape_json.append(c_data)
     log("- {} connections built".format(len(connections)))
 
     # Check if we have a lot of data, and if so, show a warning
@@ -651,10 +678,10 @@ def prepare(account, config, outputfilter):
     """Collect the data and write it to a file"""
     cytoscape_json = build_data_structure(account, config, outputfilter)
     if not outputfilter["node_data"]:
-        filtered_cytoscape_json=[]
+        filtered_cytoscape_json = []
         for node in cytoscape_json:
             filtered_node = node.copy()
-            filtered_node['data']['node_data'] = {}
+            filtered_node["data"]["node_data"] = {}
             filtered_cytoscape_json.append(filtered_node)
         cytoscape_json = filtered_cytoscape_json
     with open("web/data.json", "w") as outfile:
