@@ -48,21 +48,21 @@ Mouse actions
 - Holding down shift can be used to select multiple nodes. Holding shift, clicking, and dragging over an area, selects all nodes that overlap that area.
 - Click on a node and drag it to move it around.
 
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_icons.png" width=300 alt="Command icons">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/command_icons.png" width=300 alt="Command icons">
 
 Commands
 --------
 - Delete (d): Select a node and click the eye with a slash through it to delete (ie. hide) it. Click the eye to undelete (unhide) all deleted nodes.   All nodes connected to a deleted node will get a black border. If you double-click on a node with a black border, its deleted neighbors will be undeleted.
 
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/deleted_node.png" width=300 alt="Deleted node">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/deleted_node.png" width=300 alt="Deleted node">
 
 - Highlight (h): Select a node and click the symbol of the connected nodes to highlight the neighbors of a node. Click the inverse symbol to unhighlight the neighbors.  Highlight neighbors makes it easier to see which nodes are connected.
 
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/highlight_neighbors.png" width=300 alt="Highlighted neighbors">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/highlight_neighbors.png" width=300 alt="Highlighted neighbors">
 
 - Collapse all: Click the icon of the arrows pointed toward each other to collapse all nodes.  Click the symbol of the arrows pointed away to uncollapse all collapsed node.
 
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/collapsed_node.png" width=300 alt="Collapsed node">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/collapsed_node.png" width=300 alt="Collapsed node">
 
 - Collapse (c/e): The "minus" symbol will collapse a node, and the "plus" symbol will expand it.
 - Randomize layout (r): The hammer symbol will randomly layout the diagram in a new way.

@@ -1,6 +1,6 @@
 The purpose of this project is to run CloudMapper's collection and audit capabilities nightly, across multiple accounts, sending any audit findings to a Slack channel and keeping a copy of the collected metadata in an S3 bucket.
 
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/nightly_scanner_diagram.png" width=100% alt="Diagram">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/nightly_scanner_diagram.png" width=100% alt="Diagram">
 
 
 # Setup

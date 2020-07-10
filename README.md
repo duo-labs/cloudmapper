@@ -27,17 +27,17 @@ If you want to add your own private commands, you can create a `private_commands
 
 # Screenshots
 
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
 <table border=0>
 <tr><td>
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" alt="Report screenshot">
-<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" alt="Findings summary">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/report_resources.png" alt="Report screenshot">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/report_findings_summary.png" alt="Findings summary">
 <tr><td>
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings.png" alt="Findings">
-<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/iam_report-inactive_and_detail.png" alt="IAM report">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/report_findings.png" alt="Findings">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/iam_report-inactive_and_detail.png" alt="IAM report">
 <tr><td>
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_audit.png" alt="Command-line audit">
-<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_public.png" alt="Command-line public command">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/command_line_audit.png" alt="Command-line audit">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/command_line_public.png" alt="Command-line public command">
 </table>
 
 
