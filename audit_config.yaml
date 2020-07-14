@@ -218,7 +218,6 @@ IAM_NAME_DOES_NOT_INDICATE_ADMIN:
   is_global: True
   group: IAM
 
-
 DOMAIN_NOT_SET_TO_RENEW:
   title: Domain not set to autorenew
   description: This domain will no longer be under your control once it expires and may be taken over by someone else.
@@ -261,7 +260,7 @@ AMI_PUBLIC:
   title: AMI is public
   description: An AMI is used to install the OS for an EC2 instance. These may contain sensitive information. These are very easy for attackers to find.
   severity: High
-  group: RDS
+  group: EC2
 
 ECR_PUBLIC:
   title: ECR is public
