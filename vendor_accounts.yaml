@@ -190,16 +190,13 @@
   accounts: ['884047677700']
 - name: 'Qualys Cloud View'
   source: 'https://qualysguard.qualys.com/qwebhelp/fo_portal/scans/ec2_connector.htm'
-  accounts: ['80595016317', '205767712438']
+  accounts: ['080595016317', '205767712438']
 - name: 'Auth0'
   source: 'https://auth0.com/docs/integrations/aws/sso'
   accounts: ['951887872838']
 - name: 'Altus'
   source: 'https://docs.cloudera.com/documentation/altus/topics/alt_env_setup_aws.html#env_quickstart'
   accounts: ['062663104137']
-- name: 'Cloud Optix'
-  source: 'https://community.sophos.com/kb/en-us/126082'
-  accounts: ['195990147830']
 - name: 'AlertLogic'
   source: 'https://docs.alertlogic.com/prepare/iam-role-creation.htm#top'
   accounts: ['239734009475', '733251395267', '857795874556']
@@ -289,7 +286,7 @@
   accounts: ['710193521658']
 - name: 'qubole'
   source: 'https://docs.qubole.com/en/latest/user-guide/managing-accounts/aws/iam-roles/override-iam-roles.html'
-  accounts: ['8053', '805246085872']
+  accounts: ['805246085872']
 - name: '2'
   source: 'https://developers.cloudability.com/docs/vendor-credentials-end-point'
   accounts: ['165736516723']
@@ -365,22 +362,14 @@
 - name: 'Anodot'
   source: 'https://support.anodot.com/hc/en-us/articles/360012563774'
   accounts: ['340481513670']
-- name: 'CDM Solutions'
-  source: 'https://pastebin.com/HK3STK0v'
-  accounts: ['445937625421']
 - name: 'MediaMath'
   source: 'https://apidocs.mediamath.com/reporting/log-level-data-service/overview#data-security-and-authorization'
   accounts: ['794878508631']
-- name: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html,https://docs.databricks.com/administration-guide/account-settings/aws-storage.html'
+- name: 'Databricks'
   source: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html'
   accounts: ['414351767826']
-- name: 'trackit'
-  source: 'https://trackit.io/'
-  accounts: ['394125495069']
 - name: 'Presidio'
   source: 'customer IAM policy'
   accounts: ['118652503430']
-- name: 'BlueSentry'
-  source: 'customer IAM policy'
-  accounts: ['964273422046']
+
 
