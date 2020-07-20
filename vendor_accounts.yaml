@@ -195,7 +195,7 @@
   source: 'https://auth0.com/docs/integrations/aws/sso'
   accounts: ['951887872838']
 - name: 'Altus'
-  source: 'https://docs.cloudera.com/documentation/altus/topics/alt_env_setup_aws.html#env_quickstart'
+  source: 'https://blog.cloudera.com/cloudera-altus-cloud-services-youre-in-control-part-2/'
   accounts: ['062663104137']
 - name: 'AlertLogic'
   source: 'https://docs.alertlogic.com/prepare/iam-role-creation.htm#top'
@@ -203,9 +203,6 @@
 - name: 'CloudConformity'
   source: 'https://github.com/cloudconformity/documentation-api/blob/master/Accounts.md#update-account'
   accounts: ['717210094962']
-- name: 'Wavefront'
-  source: 'https://docs.wavefront.com/integrations_aws_metrics.html'
-  accounts: ['301213811993']
 - name: 'Nessus AWS Connector'
   source: 'https://docs.tenable.com/tenableio/vulnerabilitymanagement/Content/Settings/Connectors_ConfigureAWS_KeylessAutoDiscovery.htm'
   accounts: ['012615275169']
