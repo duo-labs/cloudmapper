@@ -153,7 +153,10 @@ You may find that you don't care about some of audit items. You may want to igno
 The docker container that is created is meant to be used interactively. 
 
 ```
-docker build -t cloudmapper .
+$ docker build -t cloudmapper .
+
+# Make sure you checkout cloudmapper codes in current folder
+$ docker run -ti -v $(pwd):/apps -p 8000:8000 -w /apps cloudmapper bash
 ```
 
 Cloudmapper needs to make IAM calls and cannot use session credentials for collection, so you cannot use the aws-vault sever if you want to collect data, and must pass role credentials in directly or configure aws credentials manually inside the container. *The following code exposes your raw credentials inside the container.* 
@@ -164,7 +167,8 @@ Cloudmapper needs to make IAM calls and cannot use session credentials for colle
     docker run -ti \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-        cloudmapper /bin/bash
+        -v $(pwd):/apps -p 8000:8000 -w /apps \
+        cloudmapper bash
 )
 ```
 
