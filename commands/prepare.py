@@ -174,7 +174,7 @@ def get_elasticsearch(region):
 def get_sgs(vpc):
     sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
     return pyjq.all(
-        '.SecurityGroups[] | select(.VpcId == "{}")'.format(vpc.local_id), sgs
+        '.SecurityGroups[]? | select(.VpcId == "{}")'.format(vpc.local_id), sgs
     )
 
 
