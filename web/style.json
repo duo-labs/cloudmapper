@@ -994,6 +994,18 @@
         }
     },
     {
+        "selector": "[type = \"gsuite\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/gsuite.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
         "selector": "[type = \"user\"]",
         "css": {
         "background-opacity": 0,
