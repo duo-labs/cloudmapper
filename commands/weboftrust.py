@@ -244,6 +244,15 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 }
                             )
                             assume_role_nodes.add(node)
+                        elif "saml-provider/gsuite" in saml_provider_arn.lower():
+                            node = Account(
+                                json_blob={
+                                    "id": "gsuite",
+                                    "name": "gsuite",
+                                    "type": "gsuite",
+                                }
+                            )
+                            assume_role_nodes.add(node)
                         elif "cognito-identity.amazonaws.com" in saml_provider_arn.lower():
                             continue
                         elif "www.amazon.com" in saml_provider_arn.lower():
