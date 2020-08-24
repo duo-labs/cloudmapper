@@ -144,6 +144,14 @@ python cloudmapper.py configure {add-cidr|remove-cidr} --config-file CONFIG_FILE
 
 This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
 
+If you use [AWS Organizations](https://aws.amazon.com/organizations/), you can also automatically add organization member accounts to `config.json` using:
+
+```
+python cloudmapper.py configure discover-organization-accounts
+```
+
+You need to be authenticated to the AWS CLI and have the permission `organization:ListAccounts` prior to running this command.
+
 
 ### Using audit config overrides
 You may find that you don't care about some of audit items. You may want to ignore the check entirely, or just specific resources.  Copy `config/audit_config_override.yaml.example` to `config/audit_config_override.yaml` and edit the file based on the comments in there.
