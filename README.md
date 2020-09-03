@@ -156,7 +156,7 @@ The docker container that is created is meant to be used interactively.
 docker build -t cloudmapper .
 ```
 
-Cloudmapper needs to make IAM calls and cannot use session credentials for collection, so you cannot use the aws-vault sever if you want to collect data, and must pass role credentials in directly or configure aws credentials manually inside the container. *The following code exposes your raw credentials inside the container.* 
+Cloudmapper needs to make IAM calls and cannot use session credentials for collection, so you cannot use the aws-vault server if you want to collect data, and must pass role credentials in directly or configure aws credentials manually inside the container. *The following code exposes your raw credentials inside the container.* 
 
 ```
 (                                                              
