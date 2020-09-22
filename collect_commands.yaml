@@ -352,7 +352,7 @@
 - Service: eks
   Request: describe-cluster
   Parameters:
-  - Name: cluster
+  - Name: name
     Value: eks-list-clusters.json|.clusters[]
 - Service: logs
   Request: describe-destinations
