@@ -430,7 +430,7 @@ def iam_report(accounts, config, args):
     iam_graph = get_iam_graph(json_account_auth_details)
     cytoscape_json = build_cytoscape_graph(iam_graph)
 
-    with open(os.path.join("web", "account-data", "data.json"), "w") as outfile:
+    with open(os.path.join("web", "account-data", "data-iam_report.json"), "w") as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
 
     print("* Generating the rest of the report")

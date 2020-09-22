@@ -535,5 +535,5 @@ def run(arguments):
         exit(-1)
 
     cytoscape_json = weboftrust(args, accounts, config)
-    with open("web/data.json", "w") as outfile:
+    with open("web/data-weboftrust.json", "w") as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
