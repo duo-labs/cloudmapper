@@ -665,7 +665,7 @@ def prepare(account, config, outputfilter):
             filtered_node['data']['node_data'] = {}
             filtered_cytoscape_json.append(filtered_node)
         cytoscape_json = filtered_cytoscape_json
-    with open("web/data.json", "w") as outfile:
+    with open("web/data-network.json", "w") as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
 
 

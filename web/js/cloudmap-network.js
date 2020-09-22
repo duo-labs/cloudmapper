@@ -36,7 +36,7 @@ $(window).on('load', function(){
     akkordion(".akkordion", {});
     
     $.when(
-        $.getJSON("./account-data/data-iam_report.json"),
+        $.getJSON("./data-network.json"),
         $.getJSON("./style.json")
     ).done(function(datafile, stylefile) {
         loadCytoscape({
