@@ -170,6 +170,8 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
             and call_summary["action"] == "get_key_rotation_status"
         ):
             print("  - Denied, which should mean this KMS has restricted access")
+        elif "AWSOrganizationsNotInUseException" in str(e):
+            print(' - Your account is not a member of an organization.')
         else:
             print("ClientError: {}".format(e), flush=True)
             call_summary["exception"] = e
