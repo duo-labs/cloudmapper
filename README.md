@@ -172,6 +172,7 @@ Cloudmapper needs to make IAM calls and cannot use session credentials for colle
     docker run -ti \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+        -p 8000:8000 \
         cloudmapper /bin/bash
 )
 ```
@@ -182,6 +183,7 @@ This will drop you into the container. Run `aws sts get-caller-identity` to conf
 python cloudmapper.py configure add-account --config-file config.json --name YOUR_ACCOUNT --id YOUR_ACCOUNT_NUMBER
 python cloudmapper.py collect --account YOUR_ACCOUNT
 python cloudmapper.py report --account YOUR_ACCOUNT
+python cloudmapper.py webserver --public
 ```
 
 You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html
