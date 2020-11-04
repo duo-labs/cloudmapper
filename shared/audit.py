@@ -165,7 +165,16 @@ def audit_s3_buckets(findings, region):
                     },
                 )
             )
-
+            
+ def audit_encrypt_s3(findings, region):
+    buckets_json = query_aws(region.account, "s3-list-buckets", region)
+    buckets = pyjq.all(".Buckets[].Name", buckets_json)
+    for bucket in buckets:
+        file_json = get_parameter_file(region, "s3", "get-bucket-encryption", bucket)
+        if not file_json:
+            findings.add(
+                    Finding(region, "S3_ENCRYPTION", bucket)
+              )
 
 def audit_s3_block_policy(findings, region):
     caller_identity_json = query_aws(region.account, "sts-get-caller-identity", region)
@@ -1152,6 +1161,7 @@ def audit(accounts):
                     audit_route53(findings, region)
                     audit_cloudfront(findings, region)
                     audit_s3_block_policy(findings, region)
+                    audit_encrypt_s3(findings, region)
                 audit_guardduty(findings, region)
                 audit_accessanalyzer(findings, region)
                 audit_ebs_snapshots(findings, region)
