@@ -16,7 +16,14 @@ S3_PUBLIC_POLICY_GETOBJECT_ONLY:
   severity: Info
   is_global: True
   group: S3
-
+  
+S3_ENCRYPTION:
+  title: s3 encryption is not enabled
+  description: encryption is not done on these buckets
+  severity: Medium
+  is_global: True
+  group: S3
+  
 S3_PUBLIC_POLICY:
   title: Internet accessible S3 bucket via policy
   description: This S3 bucket allows more public access than simply GetObject. These public privileges should be reduced.
