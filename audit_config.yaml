@@ -20,7 +20,7 @@ S3_PUBLIC_POLICY_GETOBJECT_ONLY:
 S3_ENCRYPTION:
   title: S3 bucket encryption is not enabled
   description: Encryption is not done on these buckets
-  severity: Medium
+  severity: High
   is_global: True
   group: S3
   
