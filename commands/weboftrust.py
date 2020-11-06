@@ -276,7 +276,7 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
 
                         found = False
                         for k, v in PROVIDERS.items():
-                            if k in in saml_provider_arn.lower():
+                            if k in saml_provider_arn.lower():
                                 found = True
                                 if v.get('node') != None:
                                         node = v['node']
