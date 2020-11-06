@@ -144,7 +144,8 @@ def get_ecs_tasks(region):
                 urllib.parse.quote_plus(taskArn),
             )
             task = json.load(open(task_path))
-            tasks.append(task["tasks"][0])
+            for task in task["tasks"]:
+                tasks.append(task)
     return tasks
 
 
