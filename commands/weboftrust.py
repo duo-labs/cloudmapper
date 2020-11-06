@@ -5,7 +5,7 @@ import yaml
 import pyjq
 import urllib.parse
 
-from shared.common import parse_arguments, make_list, query_aws, get_regions
+from shared.common import parse_arguments, make_list, query_aws, get_regions, get_saml_providers
 
 __description__ = "Create Web Of Trust diagram for accounts"
 
@@ -15,88 +15,6 @@ __description__ = "Create Web Of Trust diagram for accounts"
 # - More vendors, and a dozen don't have logos
 # - How IAM admins are identified (need to leverage code from find_admins better)
 # - More services and their trust policies.
-
-PROVIDERS = {
-    'saml-provider/okta': {
-        'node': Account( json_blob={"id": "okta", "name": "okta", "type": "Okta"}),
-        'assumed': True,
-    },
-    "saml-provider/onelogin": {
-        'node': Account(
-            json_blob={
-                "id": "onelogin",
-                "name": "onelogin",
-                "type": "Onelogin",
-            }
-        ),
-        'assumed': True,
-    },
-    "saml-provider/waad": {
-        'node': Account(
-            json_blob={
-                "id": "WAAD",
-                "name": "WAAD",
-                "type": "waad",
-            }
-        ),
-        'assumed': True,
-    },
-    "saml-provider/allcloud-sso": {
-        'node': Account(
-            json_blob={
-                "id": "AllCloud-SSO",
-                "name": "AllCloud-SSO",
-                "type": "AllCloud-SSO",
-            }
-        ),
-        'assumed': True,
-    },
-    "saml-provider/adfs": {
-        'node': Account(
-            json_blob={"id": "adfs", "name": "adfs", "type": "ADFS"}
-        ),
-        'assumed': True,
-    },
-    "saml-provider/auth0": {
-        'node': Account(
-            json_blob={"id": "auth0", "name": "auth0", "type": "auth0"}
-        ),
-        'assumed': True,
-    },
-    "saml-provider/google": {
-        'node': Account(
-            json_blob={
-                "id": "google",
-                "name": "google",
-                "type": "google",
-            }
-        ),
-        'assumed': True,
-    },
-    "saml-provider/gsuite": {
-        'node': Account(
-            json_blob={
-                "id": "gsuite",
-                "name": "gsuite",
-                "type": "gsuite",
-            }
-        ),
-        'assumed': True,
-    },
-    "cognito-identity.amazonaws.com": {
-        'node': None,
-    },
-    "www.amazon.com": {
-        'node': Account(
-            json_blob={
-                "id": "Amazon.com",
-                "name": "Amazon.com",
-                "type": "Amazon",
-            }
-        ),
-    },
-}
-
 
 def get_regional_vpc_peerings(region):
     vpc_peerings = query_aws(
@@ -275,13 +193,13 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                         saml_provider_arn = next(saml for saml in saml_providers if saml['Arn'] == federated_principal)['Arn']
 
                         found = False
-                        for k, v in PROVIDERS.items():
-                            if k in saml_provider_arn.lower():
+                        for p in get_saml_providers():
+                            if p['name'] in saml_provider_arn.lower():
                                 found = True
-                                if v.get('node') != None:
-                                        node = v['node']
+                                if p.get('node') != None:
+                                        node = Account(**p['node'])
 
-                                if v.get('assumed'):
+                                if p.get('assumed'):
                                     assume_role_nodes.add(node)
 
                                 break
