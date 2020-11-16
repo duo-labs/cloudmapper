@@ -458,12 +458,13 @@ def build_data_structure(account_data, config, outputfilter):
                     # For a tag set, see if all conditions match, ex. [["Team","Dev"],["Name","Bastion"]]
                     for pair in conditions:
                         # Given ["Team","Dev"], see if it matches one of the tags in the node
-                        for tag in node.tags:
-                            if (
-                                tag.get("Key", "") == pair[0]
-                                and tag.get("Value", "") == pair[1]
-                            ):
-                                condition_matches += 1
+                        if node.tags:
+                            for tag in node.tags:
+                                if (
+                                    tag.get("Key", "") == pair[0]
+                                    and tag.get("Value", "") == pair[1]
+                                ):
+                                    condition_matches += 1
                     # We have a match if all of the conditions matched
                     if condition_matches == len(conditions):
                         has_match = True
