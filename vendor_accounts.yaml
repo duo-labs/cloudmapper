@@ -188,3 +188,9 @@
 - name: 'Emnify'
   source: 'https://www.emnify.com/datastreamer-integration-into-aws'
   accounts: ['884047677700']
+- name: 'Cloudaware'
+  source: 'https://docs.cloudaware.com/DOCS/AWS-Start-Guide.1171685377.html'
+  accounts: ['814021343637']
+- name: 'Checkpoint Cloudguard'
+  source: 'https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk159912&partition=Basic&product=CloudGuard'
+  accounts: ['634729597623']
