@@ -10,7 +10,7 @@ from shared.nodes import Account, Region
 # The creation of the map and table of locations is all this does now, which is both
 # not very valuable, and is difficult to setup (requires matplotlib, basemap data, and geoip data)
 
-__description__ = "Find all IPs are that are given trusted access via Security Groups"
+__description__ = "[Deprecated] Find all IPs are that are given trusted access via Security Groups"
 
 
 def get_cidrs_for_account(account, cidrs):
