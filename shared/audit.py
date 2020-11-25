@@ -210,7 +210,7 @@ def audit_guardduty(findings, region):
 
 def audit_accessanalyzer(findings, region):
     analyzer_list_json = query_aws(
-        region.account, "accessanalzyer-list-analyzers", region
+        region.account, "accessanalyzer-list-analyzers", region
     )
     if not analyzer_list_json:
         # Access Analyzer must not exist in this region (or the collect data is old)
