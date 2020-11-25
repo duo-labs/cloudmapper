@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Runnning run_cloudmapper"
+echo "Running run_cloudmapper"
 
 # Configure the AWS SDK so we can assume roles
 mkdir ~/.aws
@@ -57,7 +57,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Generate the report"
-python cloudmapper.py report --accounts all
+python cloudmapper.py report --accounts all --minimum_severity $MINIMUM_REPORT_SEVERITY
 if [ $? -ne 0 ]; then
     echo "ERROR: The report command had an error"
     aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
@@ -95,5 +95,4 @@ if grep "Summary:" collect_logs/* | grep -v '0 errors'; then
   grep "Summary:" collect_logs/* | python ./utils/toslack.py
 else
   echo "Completed CloudMapper audit" | python ./utils/toslack.py
-
 fi
