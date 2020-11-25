@@ -26,7 +26,8 @@ while read account; do
         echo "*** Collecting from $1"
         python cloudmapper.py collect --profile $1 --account $1 > collect_logs/$1
         if [ $? -ne 0 ]; then
-            echo "ERROR: The collect command had an error for account $1"
+            echo "ERROR: The collect command had an error for account $1" | tee >(python ./utils/toslack.py)
+            tail collect_logs/$1
             # Record error
             aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
         else
@@ -86,4 +87,13 @@ if [ $? -ne 0 ]; then
     aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
 fi
 echo "Completed CloudMapper audit"
-echo "Completed CloudMapper audit" | python ./utils/toslack.py
+
+# Write to Cloudwatch (via stdout) and Slack when non-blocking API errors are detected during collection.
+if grep "Summary:" collect_logs/* | grep -v '0 errors'; then
+  echo "Completed CloudMapper audit with errors" | python ./utils/toslack.py
+  grep "Summary:" collect_logs/* | grep -v '0 errors'
+  grep "Summary:" collect_logs/* | python ./utils/toslack.py
+else
+  echo "Completed CloudMapper audit" | python ./utils/toslack.py
+
+fi
