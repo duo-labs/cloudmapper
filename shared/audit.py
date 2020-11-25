@@ -224,7 +224,7 @@ def audit_accessanalyzer(findings, region):
 
 
 def audit_iam(findings, region):
-    # By calling the code to find the admins, we'll excercise the code that finds problems.
+    # By calling the code to find the admins, we'll exercise the code that finds problems.
     find_admins_in_account(region, findings)
 
     # By default we get the findings for the admins, but we can also look for specific
