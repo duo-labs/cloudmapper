@@ -834,6 +834,25 @@ def audit_ec2(findings, region):
                 )
 
 
+def audit_elbv1(findings, region):
+    json_blob = query_aws(region.account, "elb-describe-load-balancers", region)
+
+    for load_balancer in json_blob.get("LoadBalancerDescriptions", []):
+        lb_name = load_balancer["LoadBalancerName"]
+
+        # Check attributes
+        attributes_json = get_parameter_file(
+            region, "elb", "describe-load-balancer-attributes", lb_name
+        )
+
+        for attribute in attributes_json.get("LoadBalancerAttributes", [])['AdditionalAttributes']:
+            if (
+                attribute["Key"] == "elb.http.desyncmitigationmode"
+                and attribute["Value"] != "strictest"
+            ):
+                findings.add(Finding(region, "ELBV1_DESYNC_MITIGATION", lb_name))
+
+
 def audit_elbv2(findings, region):
     json_blob = query_aws(region.account, "elbv2-describe-load-balancers", region)
 
@@ -1162,6 +1181,7 @@ def audit(accounts):
                 audit_redshift(findings, region)
                 audit_es(findings, region)
                 audit_ec2(findings, region)
+                audit_elbv1(findings, region)
                 audit_elbv2(findings, region)
                 audit_sg(findings, region)
                 audit_lambda(findings, region)

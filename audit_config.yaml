@@ -388,3 +388,9 @@ REQUEST_SMUGGLING:
   description: "HTTP request smuggling is possible against ALBs, as described here: https://portswigger.net/web-security/request-smuggling"
   severity: Low
   group: ELB
+
+ELBV1_DESYNC_MITIGATION:
+  title: Desync mitigation mode not configured
+  description: "Desync mitigation mode protects your application from issues due to HTTP Desync and should be set to 'Strictest'. https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-desync-mitigation-mode.html"
+  severity: Low
+  group: ELB
