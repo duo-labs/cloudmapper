@@ -781,7 +781,10 @@ def audit_ec2(findings, region):
                             instance["InstanceId"],
                             resource_details={
                                 "Name": get_name(instance, "InstanceId"),
+                                "Instance ID": instance["InstanceId"],
                                 "Tags": instance.get("Tags", {}),
+                                "MetadataOptions": instance["MetadataOptions"],
+                                "SSH Key Found": instance.get("KeyName", {}),
                             },
                         )
                     )
