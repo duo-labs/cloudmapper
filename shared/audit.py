@@ -914,7 +914,13 @@ def audit_sg(findings, region):
                                 region,
                                 "SG_CIDR_OVERLAPS",
                                 sg["GroupId"],
-                                resource_details={"cidr1": cidr, "cidr2": cidr_seen},
+                                resource_details={
+                                    "SG name:": sg["GroupName"],
+                                    "SG description": sg["Description"],
+                                    "SG tags": sg.get("Tags", {}),
+                                    "cidr1": cidr,
+                                    "cidr2": cidr_seen
+                                },
                             )
                         )
                 cidrs_seen.add(cidr)
@@ -929,6 +935,7 @@ def audit_sg(findings, region):
                     cidr,
                     resource_details={
                         "size": ip.size,
+                        "IP info": str(ip.info),
                         "security_groups": list(cidrs[cidr]),
                     },
                 )
