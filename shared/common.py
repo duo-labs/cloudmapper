@@ -186,6 +186,30 @@ def get_account(account_name, config=None, config_filename="config.json.demo"):
     )
 
 
+def get_account_by_id(account_id, config=None, config_filename="config.json"):
+    if config is None:
+        config = json.load(open(config_filename))
+
+    for account in config["accounts"]:
+        if account["id"] == account_id:
+            return account
+        if account_id is None and account.get("default", False):
+            return account
+
+    # Else could not find account
+    if account_id is None:
+        exit(
+            "ERROR: Must specify an account, or set one in {} as a default".format(
+                config_filename
+            )
+        )
+    exit(
+        'ERROR: Account ID "{}" not found in {}'.format(
+            account_id, config_filename
+        )
+    )
+
+
 def parse_arguments(arguments, parser=None):
     """Returns (args, accounts, config)"""
     if parser is None:
