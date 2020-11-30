@@ -210,7 +210,7 @@ def audit_guardduty(findings, region):
 
 def audit_accessanalyzer(findings, region):
     analyzer_list_json = query_aws(
-        region.account, "accessanalzyer-list-analyzers", region
+        region.account, "accessanalyzer-list-analyzers", region
     )
     if not analyzer_list_json:
         # Access Analyzer must not exist in this region (or the collect data is old)
@@ -224,7 +224,7 @@ def audit_accessanalyzer(findings, region):
 
 
 def audit_iam(findings, region):
-    # By calling the code to find the admins, we'll excercise the code that finds problems.
+    # By calling the code to find the admins, we'll exercise the code that finds problems.
     find_admins_in_account(region, findings)
 
     # By default we get the findings for the admins, but we can also look for specific

@@ -54,7 +54,11 @@ class CloudmapperauditorStack extends cdk.Stack {
     // Define the ECS task
     const cluster = new ecs.Cluster(this, 'Cluster', { vpc });
 
-    const taskDefinition = new ecs.FargateTaskDefinition(this, 'taskDefinition', {});
+    const taskDefinition = new ecs.FargateTaskDefinition(this, 'taskDefinition', {
+      // Uncomment if you need to change resource limits of Fargate task definition and container
+      // memoryLimitMiB: 512,
+      // cpu: 256
+    });
 
     taskDefinition.addContainer('cloudmapper-container', {
       image: ecs.ContainerImage.fromAsset('./resources'),

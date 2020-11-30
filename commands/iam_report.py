@@ -639,19 +639,19 @@ def run(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--max-age",
-        help="Number of days a user or role hasn't been used before it's marked dead",
+        help="Number of days a user or role hasn't been used before it's marked dead. Default: 90",
         default=90,
         type=int,
     )
     parser.add_argument(
         "--graph",
-        help="Do not create and display a graph",
+        help="Display a graph. Default: False",
         dest="show_graph",
         action="store_true",
     )
     parser.add_argument(
         "--output",
-        help="Set the output type for the report",
+        help="Set the output type for the report. [json | html]. Default: html",
         default=OutputFormat.html,
         type=OutputFormat,
         dest="requested_output"
