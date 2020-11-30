@@ -167,7 +167,7 @@ def audit_s3_buckets(findings, region):
             )
 
 
-def audit_s3_block_policy(findings, region):
+def audit_s3_block_policy(findings, region, account_name):
     caller_identity_json = query_aws(region.account, "sts-get-caller-identity", region)
     block_policy_json = get_parameter_file(
         region, "s3control", "get-public-access-block", caller_identity_json["Account"]
@@ -186,7 +186,7 @@ def audit_s3_block_policy(findings, region):
                 Finding(
                     region,
                     "S3_ACCESS_BLOCK_ALL_ACCESS_TYPES",
-                    None,
+                    account_name,
                     resource_details=block_policy_json,
                 )
             )
@@ -781,7 +781,10 @@ def audit_ec2(findings, region):
                             instance["InstanceId"],
                             resource_details={
                                 "Name": get_name(instance, "InstanceId"),
+                                "Instance ID": instance["InstanceId"],
                                 "Tags": instance.get("Tags", {}),
+                                "MetadataOptions": instance["MetadataOptions"],
+                                "SSH Key Found": instance.get("KeyName", {}),
                             },
                         )
                     )
@@ -911,7 +914,13 @@ def audit_sg(findings, region):
                                 region,
                                 "SG_CIDR_OVERLAPS",
                                 sg["GroupId"],
-                                resource_details={"cidr1": cidr, "cidr2": cidr_seen},
+                                resource_details={
+                                    "SG name:": sg["GroupName"],
+                                    "SG description": sg["Description"],
+                                    "SG tags": sg.get("Tags", {}),
+                                    "cidr1": cidr,
+                                    "cidr2": cidr_seen
+                                },
                             )
                         )
                 cidrs_seen.add(cidr)
@@ -926,6 +935,7 @@ def audit_sg(findings, region):
                     cidr,
                     resource_details={
                         "size": ip.size,
+                        "IP info": str(ip.info),
                         "security_groups": list(cidrs[cidr]),
                     },
                 )
@@ -1151,7 +1161,7 @@ def audit(accounts):
                     audit_users(findings, region)
                     audit_route53(findings, region)
                     audit_cloudfront(findings, region)
-                    audit_s3_block_policy(findings, region)
+                    audit_s3_block_policy(findings, region, account.name)
                 audit_guardduty(findings, region)
                 audit_accessanalyzer(findings, region)
                 audit_ebs_snapshots(findings, region)

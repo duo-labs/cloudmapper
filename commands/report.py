@@ -343,7 +343,7 @@ def report(accounts, config, args):
         for _ in accounts:
             severity_counts_by_account.append(
                 len(
-                    findings_severity_by_account[finding.account_name][severity["name"]]
+                    findings_severity_by_account[_["name"]][severity["name"]]
                 )
             )
 
@@ -462,7 +462,7 @@ def run(arguments):
     )
     parser.add_argument(
         "--minimum_severity",
-        help="Only report issues that are greater than this. Default: LOW",
+        help="Only report issues that are greater than this. Default: INFO",
         default="INFO",
         choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
     )
