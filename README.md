@@ -183,6 +183,7 @@ This will drop you into the container. Run `aws sts get-caller-identity` to conf
 python cloudmapper.py configure add-account --config-file config.json --name YOUR_ACCOUNT --id YOUR_ACCOUNT_NUMBER
 python cloudmapper.py collect --account YOUR_ACCOUNT
 python cloudmapper.py report --account YOUR_ACCOUNT
+python cloudmapper.py prepare --account YOUR_ACCOUNT
 python cloudmapper.py webserver --public
 ```
 
