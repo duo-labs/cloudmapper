@@ -721,6 +721,8 @@ def audit_es(findings, region):
         )
         # Find the entity we need
         policy_string = policy_file_json["DomainStatus"]["AccessPolicies"]
+        if policy_string == '':
+            policy_string = "{}"
         # Load the string value as json
         policy = json.loads(policy_string)
         policy = Policy(policy)
@@ -729,10 +731,9 @@ def audit_es(findings, region):
         # they are VPC-only, in which case they have an "Endpoints" (plural) array containing a "vpc" element
         if (
             policy_file_json["DomainStatus"].get("Endpoint", "") != ""
-            or policy_file_json["DomainStatus"].get("Endpoints", {}).get("vpc", "")
-            == ""
+            or policy_file_json["DomainStatus"].get("Endpoints", {}).get("vpc", "") == ""
         ):
-            if policy.is_internet_accessible():
+            if policy.is_internet_accessible() or policy_string == "{}":
                 findings.add(
                     Finding(region, "ES_PUBLIC", name, resource_details=policy_string)
                 )
