@@ -459,6 +459,8 @@ def weboftrust(args, accounts, config):
         if not was_scanned:
             for vendor in vendor_accounts:
                 if n.id in vendor["accounts"]:
+                    if 'source' not in vendor:
+                        print("WARNING: Unconfirmed vendor: {} ({})".format(vendor['name'], n.id))
                     n.name = vendor["name"]
                     n.type = vendor.get("type", vendor["name"])
 
