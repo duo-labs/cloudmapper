@@ -2,7 +2,7 @@ from __future__ import print_function
 from shared.query import query_aws, get_parameter_file
 from shared.common import Finding
 
-# To use custom auditing, you must copy this file to ./private_commands/custom_auditory.py
+# To use custom auditing, you must copy this file to ./private_commands/custom_auditor.py
 # and uncomment and modify the functions below.
 
 __description__ = "Custom auditing functions"

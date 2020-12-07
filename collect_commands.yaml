@@ -134,6 +134,11 @@
 - Service: elb
   Request: describe-load-balancers
 - Service: elb
+  Request: describe-load-balancer-attributes
+  Parameters:
+  - Name: LoadBalancerName
+    Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[].LoadBalancerName
+- Service: elb
   Request: describe-load-balancer-policies
 - Service: elb
   Request: describe-tags

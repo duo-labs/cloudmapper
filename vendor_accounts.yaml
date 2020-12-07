@@ -193,3 +193,12 @@
 - name: 'Checkpoint Cloudguard'
   source: 'https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk159912&partition=Basic&product=CloudGuard'
   accounts: ['634729597623']
+- name: 'Cisco Umbrella'
+  source: 'https://docs.umbrella.com/umbrella-user-guide/docs/enable-logging-to-your-own-s3-bucket'
+  accounts: ['568526795995']
+- name: 'Cloudflare'
+  source: 'https://developers.cloudflare.com/logs/logpush/aws-s3'
+  accounts: ['391854517948']
+- name: '[Deprecated] AWS Log delivery Service'
+  source: 'https://forums.aws.amazon.com/thread.jspa?messageID=629256'
+  accounts: ['858827067514']

@@ -361,48 +361,50 @@ def collect(arguments):
                     list_clusters_file = "account-data/{}/{}/{}".format(
                         account_dir, region["RegionName"], "ecs-list-clusters.json"
                     )
-                    with open(list_clusters_file, "r") as f:
-                        list_clusters = json.load(f)
 
-                        # For each cluster, read the `ecs list-tasks`
-                        for clusterArn in list_clusters["clusterArns"]:
-                            cluster_path = (
-                                action_path + "/" + urllib.parse.quote_plus(clusterArn)
-                            )
-                            make_directory(cluster_path)
+                    if os.path.isfile(list_clusters_file):
+                        with open(list_clusters_file, "r") as f:
+                            list_clusters = json.load(f)
 
-                            list_tasks_file = "account-data/{}/{}/{}/{}".format(
-                                account_dir,
-                                region["RegionName"],
-                                "ecs-list-tasks",
-                                urllib.parse.quote_plus(clusterArn),
-                            )
+                            # For each cluster, read the `ecs list-tasks`
+                            for clusterArn in list_clusters["clusterArns"]:
+                                cluster_path = (
+                                    action_path + "/" + urllib.parse.quote_plus(clusterArn)
+                                )
+                                make_directory(cluster_path)
 
-                            with open(list_tasks_file, "r") as f2:
-                                list_tasks = json.load(f2)
+                                list_tasks_file = "account-data/{}/{}/{}/{}".format(
+                                    account_dir,
+                                    region["RegionName"],
+                                    "ecs-list-tasks",
+                                    urllib.parse.quote_plus(clusterArn),
+                                )
 
-                                # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
-                                for taskArn in list_tasks["taskArns"]:
-                                    outputfile = (
-                                        action_path
-                                        + "/"
-                                        + urllib.parse.quote_plus(clusterArn)
-                                        + "/"
-                                        + urllib.parse.quote_plus(taskArn)
-                                    )
+                                with open(list_tasks_file, "r") as f2:
+                                    list_tasks = json.load(f2)
 
-                                    call_parameters = {}
-                                    call_parameters["cluster"] = clusterArn
-                                    call_parameters["tasks"] = [taskArn]
+                                    # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
+                                    for taskArn in list_tasks["taskArns"]:
+                                        outputfile = (
+                                            action_path
+                                            + "/"
+                                            + urllib.parse.quote_plus(clusterArn)
+                                            + "/"
+                                            + urllib.parse.quote_plus(taskArn)
+                                        )
 
-                                    call_function(
-                                        outputfile,
-                                        handler,
-                                        method_to_call,
-                                        call_parameters,
-                                        runner.get("Check", None),
-                                        summary,
-                                    )
+                                        call_parameters = {}
+                                        call_parameters["cluster"] = clusterArn
+                                        call_parameters["tasks"] = [taskArn]
+
+                                        call_function(
+                                            outputfile,
+                                            handler,
+                                            method_to_call,
+                                            call_parameters,
+                                            runner.get("Check", None),
+                                            summary,
+                                        )
                 elif runner["Service"] == "route53" and runner["Request"] == "list-hosted-zones-by-vpc":
                     action_path = filepath
                     make_directory(action_path)
@@ -428,29 +430,30 @@ def collect(arguments):
                                 "ec2-describe-vpcs.json"
                             )
 
-                            with open(describe_vpcs_file, "r") as f2:
-                                describe_vpcs = json.load(f2)
+                            if os.path.isfile(describe_vpcs_file):
+                                with open(describe_vpcs_file, "r") as f2:
+                                    describe_vpcs = json.load(f2)
 
-                                for vpc in describe_vpcs["Vpcs"]:
-                                    outputfile = (
-                                        action_path
-                                        + "/"
-                                        + urllib.parse.quote_plus(collect_region["RegionName"])
-                                        + "/"
-                                        + urllib.parse.quote_plus(vpc["VpcId"])
-                                    )
+                                    for vpc in describe_vpcs["Vpcs"]:
+                                        outputfile = (
+                                            action_path
+                                            + "/"
+                                            + urllib.parse.quote_plus(collect_region["RegionName"])
+                                            + "/"
+                                            + urllib.parse.quote_plus(vpc["VpcId"])
+                                        )
 
-                                    call_parameters = {}
-                                    call_parameters["VPCRegion"] = collect_region["RegionName"]
-                                    call_parameters["VPCId"] = vpc["VpcId"]
-                                    call_function(
-                                        outputfile,
-                                        handler,
-                                        method_to_call,
-                                        call_parameters,
-                                        runner.get("Check", None),
-                                        summary,
-                                    )
+                                        call_parameters = {}
+                                        call_parameters["VPCRegion"] = collect_region["RegionName"]
+                                        call_parameters["VPCId"] = vpc["VpcId"]
+                                        call_function(
+                                            outputfile,
+                                            handler,
+                                            method_to_call,
+                                            call_parameters,
+                                            runner.get("Check", None),
+                                            summary,
+                                        )
 
             elif dynamic_parameter is not None:
                 # Set up directory for the dynamic value

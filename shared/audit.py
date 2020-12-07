@@ -167,7 +167,7 @@ def audit_s3_buckets(findings, region):
             )
 
 
-def audit_s3_block_policy(findings, region):
+def audit_s3_block_policy(findings, region, account_name):
     caller_identity_json = query_aws(region.account, "sts-get-caller-identity", region)
     block_policy_json = get_parameter_file(
         region, "s3control", "get-public-access-block", caller_identity_json["Account"]
@@ -186,7 +186,7 @@ def audit_s3_block_policy(findings, region):
                 Finding(
                     region,
                     "S3_ACCESS_BLOCK_ALL_ACCESS_TYPES",
-                    None,
+                    account_name,
                     resource_details=block_policy_json,
                 )
             )
@@ -210,7 +210,7 @@ def audit_guardduty(findings, region):
 
 def audit_accessanalyzer(findings, region):
     analyzer_list_json = query_aws(
-        region.account, "accessanalzyer-list-analyzers", region
+        region.account, "accessanalyzer-list-analyzers", region
     )
     if not analyzer_list_json:
         # Access Analyzer must not exist in this region (or the collect data is old)
@@ -224,7 +224,7 @@ def audit_accessanalyzer(findings, region):
 
 
 def audit_iam(findings, region):
-    # By calling the code to find the admins, we'll excercise the code that finds problems.
+    # By calling the code to find the admins, we'll exercise the code that finds problems.
     find_admins_in_account(region, findings)
 
     # By default we get the findings for the admins, but we can also look for specific
@@ -721,6 +721,8 @@ def audit_es(findings, region):
         )
         # Find the entity we need
         policy_string = policy_file_json["DomainStatus"]["AccessPolicies"]
+        if policy_string == '':
+            policy_string = "{}"
         # Load the string value as json
         policy = json.loads(policy_string)
         policy = Policy(policy)
@@ -729,10 +731,9 @@ def audit_es(findings, region):
         # they are VPC-only, in which case they have an "Endpoints" (plural) array containing a "vpc" element
         if (
             policy_file_json["DomainStatus"].get("Endpoint", "") != ""
-            or policy_file_json["DomainStatus"].get("Endpoints", {}).get("vpc", "")
-            == ""
+            or policy_file_json["DomainStatus"].get("Endpoints", {}).get("vpc", "") == ""
         ):
-            if policy.is_internet_accessible():
+            if policy.is_internet_accessible() or policy_string == "{}":
                 findings.add(
                     Finding(region, "ES_PUBLIC", name, resource_details=policy_string)
                 )
@@ -781,7 +782,10 @@ def audit_ec2(findings, region):
                             instance["InstanceId"],
                             resource_details={
                                 "Name": get_name(instance, "InstanceId"),
+                                "Instance ID": instance["InstanceId"],
                                 "Tags": instance.get("Tags", {}),
+                                "MetadataOptions": instance["MetadataOptions"],
+                                "SSH Key Found": instance.get("KeyName", {}),
                             },
                         )
                     )
@@ -832,6 +836,25 @@ def audit_ec2(findings, region):
                         },
                     )
                 )
+
+
+def audit_elbv1(findings, region):
+    json_blob = query_aws(region.account, "elb-describe-load-balancers", region)
+
+    for load_balancer in json_blob.get("LoadBalancerDescriptions", []):
+        lb_name = load_balancer["LoadBalancerName"]
+
+        # Check attributes
+        attributes_json = get_parameter_file(
+            region, "elb", "describe-load-balancer-attributes", lb_name
+        )
+
+        for attribute in attributes_json.get("LoadBalancerAttributes", [])['AdditionalAttributes']:
+            if (
+                attribute["Key"] == "elb.http.desyncmitigationmode"
+                and attribute["Value"] != "strictest"
+            ):
+                findings.add(Finding(region, "ELBV1_DESYNC_MITIGATION", lb_name))
 
 
 def audit_elbv2(findings, region):
@@ -911,7 +934,13 @@ def audit_sg(findings, region):
                                 region,
                                 "SG_CIDR_OVERLAPS",
                                 sg["GroupId"],
-                                resource_details={"cidr1": cidr, "cidr2": cidr_seen},
+                                resource_details={
+                                    "SG name:": sg["GroupName"],
+                                    "SG description": sg["Description"],
+                                    "SG tags": sg.get("Tags", {}),
+                                    "cidr1": cidr,
+                                    "cidr2": cidr_seen
+                                },
                             )
                         )
                 cidrs_seen.add(cidr)
@@ -926,6 +955,7 @@ def audit_sg(findings, region):
                     cidr,
                     resource_details={
                         "size": ip.size,
+                        "IP info": str(ip.info),
                         "security_groups": list(cidrs[cidr]),
                     },
                 )
@@ -1151,7 +1181,7 @@ def audit(accounts):
                     audit_users(findings, region)
                     audit_route53(findings, region)
                     audit_cloudfront(findings, region)
-                    audit_s3_block_policy(findings, region)
+                    audit_s3_block_policy(findings, region, account.name)
                 audit_guardduty(findings, region)
                 audit_accessanalyzer(findings, region)
                 audit_ebs_snapshots(findings, region)
@@ -1162,6 +1192,7 @@ def audit(accounts):
                 audit_redshift(findings, region)
                 audit_es(findings, region)
                 audit_ec2(findings, region)
+                audit_elbv1(findings, region)
                 audit_elbv2(findings, region)
                 audit_sg(findings, region)
                 audit_lambda(findings, region)
