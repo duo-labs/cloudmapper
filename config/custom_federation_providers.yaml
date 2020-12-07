@@ -1,0 +1,10 @@
+{
+ "federation_providers": [
+# replace with custom providers
+#   {
+#     "id": "saml-provider/xyz",
+#     "name": "friendly_name",
+#     "type": ""
+#   }
+ ]
+}

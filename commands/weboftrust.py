@@ -181,6 +181,13 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
 
     for role in pyjq.all(".RoleDetailList[]", iam):
         principals = pyjq.all(".AssumeRolePolicyDocument.Statement[].Principal", role)
+
+        federation_providers = []
+        if path.exists('config/custom_federation_providers.yaml'):
+            with open('config/custom_federation_providers.yaml', 'r') as f:
+                federation_providers_data = yaml.safe_load(f)
+                federation_providers = federation_providers_data['federation_providers']
+
         for principal in principals:
             assume_role_nodes = set()
             federated_principals = principal.get("Federated", None)
@@ -272,6 +279,20 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 }
                             )
                             continue
+                        elif federation_providers:
+                            found = False
+                            for provider in federation_providers:
+                                provider_type = provider.get('type', "")
+                                if provider['id'] in "saml_provider_arn.lower()":
+                                    node = Account(
+                                        json_blob={
+                                            "id": f"provider['id']",
+                                            "name": f"provider['name']",
+                                            "type": provider_typey,
+                                    }                                        )
+                                    found = True
+                            if found:
+                                continue
                         else:
                             raise Exception(
                                 "Unknown federation provider: {}".format(saml_provider_arn.lower())
