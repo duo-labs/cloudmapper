@@ -206,8 +206,8 @@
 - name: 'Nessus AWS Connector'
   source: 'https://docs.tenable.com/tenableio/vulnerabilitymanagement/Content/Settings/Connectors_ConfigureAWS_KeylessAutoDiscovery.htm'
   accounts: ['012615275169']
-- name: 'Cloud Guard'
-  source: 'http://support.dome9.com/knowledgebase/articles/796419-convert-dome9-aws-account-connection-from-iam-user'
+- name: 'Dome9 Arc'
+  source: 'https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-partner-providers.html'
   accounts: ['634729597623']
 - name: 'FortiCASB'
   source: 'https://fortinetweb.s3.amazonaws.com/docs.fortinet.com/v2/attachments/bf017449-572a-11e9-81a4-00505692583a/forticasb-4.1.0-admin-guide.pdf'
@@ -216,7 +216,6 @@
   source: 'https://docs.fortinet.com/document/forticwp/4.4.0/online-help/828941/amazon-web-services'
   accounts: ['854209929931']
 - name: 'Azure Sentinel'
-  source: 'https://docs.microsoft.com/en-us/azure/sentinel/connect-aws'
   accounts: ['197857026523']
 - name: 'Azure Billing Management'
   source: 'https://docs.microsoft.com/en-us/azure/cost-management/aws-integration-manage'
@@ -228,55 +227,50 @@
   source: 'https://docs.netapp.com/us-en/cloud_volumes/aws/media/cvs_aws_account_setup.pdf'
   accounts: ['695990169366']
 - name: 'Axonius.com'
-  source: 'https://docs.axonius.com/docs/amazon-web-services-aws'
   accounts: ['802876684602', '817364327683', '405773942477']
 - name: 'Fugue'
-  source: 'https://docs.fugue.co/setup.html'
+  # https://docs.fugue.co/setup.html
   accounts: ['370134896156', '944830124550']
 - name: 'CloudPhysics'
   source: 'https://www.cloudphysics.com/connectaws/'
   accounts: ['863002038009']
 - name: 'QRadar'
-  source: 'https://www.ibm.com/support/knowledgecenter/en/SS42VS_DSM/com.ibm.dsm.doc/b_dsm_guide.pdf?origURL=SS42VS_DSM/b_dsm_guide.pdf'
   accounts: ['429269239926']
 - name: 'LogicMonitor'
-  source: 'https://www.logicmonitor.com/support/lm-cloud/getting-started-lm-cloud/2a-adding-aws-environment-logicmonitor/'
   accounts: ['282028653949']
 - name: 'MVision ePO'
   source: 'https://docs.mcafee.com/bundle/prod-name-n.n.x-guide-type/page/GUID-9B6E696A-78DA-4F41-A0FC-39699DD39639.html'
   accounts: ['307653271100']
 - name: 'Cloud Workload Protection'
-  source: 'https://support.symantec.com/us/en/article.HOWTO126947.html'
-  accounts: ['754237914691', '033496790460']
+  source: 'https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-partner-providers.html'
+  accounts: ['754237914691']
+- name: 'Cloud Workload Protection'
+  # Same as above, but unconfirmed ID
+  accounts: ['033496790460']
 - name: 'Logz.io'
-  source: 'https://docs.logz.io/user-guide/give-aws-access-with-iam-roles/'
   accounts: ['406095609952']
 - name: 'Xi Frame'
-  source: 'https://docs.frame.nutanix.com/account-management/byoaws.html'
   accounts: ['178591426237']
 - name: 'CloudWisdom, metricly'
-  source: 'https://docs.metricly.com/integrations/aws-integration/aws-cloudformation-installation/'
   accounts: ['270852171095']
 - name: 'Rockset'
-  source: 'https://docs.rockset.com/aws-external-id/'
   accounts: ['216690786812']
-- name: 'AWS4Less, cloudhawk.net,cloudhawk.io'
-  source: 'https://www.aws4less.com/AWS/AWSRegistrationGuide.php'
+- name: 'CloudHiro'
+  # This company apparently used to be called AWS4Less
+  source: 'https://cloudhiro.com/AWS/AWSRegistrationGuide.php'
   accounts: ['545334166883']
 - name: 'Densify'
   source: 'https://www.densify.com/docs/Content/Data_Collection_for_Public_Cloud_Systems/AWS_Data_Collection_Prerequisites_for_an_IAM_Role.htm'
   accounts: ['036437403198']
 - name: 'Dyntrace'
-  source: 'https://www.dynatrace.com/support/help/technology-support/cloud-platforms/amazon-web-services/installation/aws-monitoring-with-dynatrace-managed/'
   accounts: ['509560245411']
 - name: 'Armor Anywhere'
-  source: 'https://147.75.0.111/display/KBSS/Create+a+Cloud+Connection+for+AWS+Security+Hub'
+  source: ['https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-partner-providers.html', 'https://docs.armor.com/pages/viewpage.action?pageId=20709565']
   accounts: ['679703615338', '345186984524']
 - name: 'Genys'
   source: 'https://help.mypurecloud.com/articles/create-iam-resources-to-invoke-an-aws-lambda-function/'
   accounts: ['765628985471']
 - name: 'site24x7'
-  source: 'https://www.site24x7.com/help/api/#generate-aws-external-id'
   accounts: ['949777495771']
 - name: 'ylastic'
   source: 'https://blog.ylastic.com/post/153943542476/iam-role-with-external-id-for-cross-account-access'
@@ -284,7 +278,7 @@
 - name: 'qubole'
   source: 'https://docs.qubole.com/en/latest/user-guide/managing-accounts/aws/iam-roles/override-iam-roles.html'
   accounts: ['805246085872']
-- name: '2'
+- name: 'Cloudability'
   source: 'https://developers.cloudability.com/docs/vendor-credentials-end-point'
   accounts: ['165736516723']
 - name: 'VManage'
@@ -293,11 +287,9 @@
 - name: 'Cloud Applicatoin Manager'
   source: 'https://www.ctl.io/knowledge-base/cloud-application-manager/deploying-anywhere/using-your-aws-account/#create-an-iam-role-with-the-policy-chosen'
   accounts: ['540339316802']
-- name: 'Security, Change Management, Backup Restore'
-  source: 'https://docs.cloudaware.com/'
+- name: 'Cloudaware'
   accounts: ['814021343637']
 - name: 'Cloud Ranger'
-  source: 'https://docs.druva.com/CloudRanger/Getting_Started/001_Credentials/Create_an_AWS_Access_Role_-_Step_by_step_guide'
   accounts: ['558211695259']
 - name: 'FoxPass'
   source: 'https://docs.foxpass.com/docs/access-control-integration-with-amazon-ec2'
@@ -306,13 +298,11 @@
   source: 'https://nirmata-documentation.readthedocs.io/en/latest/CloudProviders.html'
   accounts: ['094919933512']
 - name: 'GitLab'
-  source: 'https://gitlab.com/help/user/project/clusters/add_remove_clusters.md#eks-cluster'
   accounts: ['855262394183', '956491294349']
 - name: 'Snyk'
   source: 'https://support.snyk.io/hc/en-us/articles/360004002418-AWS-Lambda-integration'
   accounts: ['198361731867']
 - name: 'CloudCraft'
-  source: 'https://help.cloudcraft.co/article/64-minimal-iam-policy'
   accounts: ['968898580625']
 - name: 'JupiterOne'
   source: 'https://github.com/JupiterOne/jupiterone-aws-cloudformation/commit/c9abbbcc3e29474c6605a6f8ace5ec0ff475d3f8'
@@ -322,42 +312,39 @@
   accounts: ['414502572119']
 - name: 'Funnel'
   source: 'https://help.funnel.io/en/articles/1494351-amazon-s3-bucket-configuration'
-  accounts: ['71303700930']
+  accounts: ['071303700930']
 - name: 'Domo'
   source: 'https://knowledge.domo.com/Connect/Connecting_to_Data_with_Connectors/Configuring_Each_Connector/Connectors_for_File_Retrieval/Amazon_S3_AssumeRole_Connector'
   accounts: ['339405024189', '010251424122', '687132894031', '622384692065']
 - name: 'Atlas DataLake'
-  source: 'https://docs.atlas.mongodb.com/tutorial/data-lake-deploy/'
   accounts: ['962727799805']
 - name: 'Upsolver'
-  source: 'https://docs.upsolver.com/DataSources/SetupGuides/aws-integration.html'
   accounts: ['428641199958']
 - name: 'Weave Cloud'
   source: 'https://eksctl.io/'
   accounts: ['376248598259']
-- name: 'AWS Import'
-  source: 'https://lucidchart.zendesk.com/hc/en-us/articles/208018563-Create-an-IAM-User-or-a-Cross-Account-Role-in-AWS-for-Lucidchart#collapseTwo'
+- name: 'Lucidchart'
   accounts: ['799803075172']
 - name: 'ChaosSearch'
   source: 'https://docs.chaossearch.io/docs/prerequisites'
   accounts: ['515570774723']
 - name: 'EDB Postgres'
-  source: 'https://www.enterprisedb.com/edb-docs/d/edb-postgres-ark-platform/user-guides/administrative-users-guide/3.0/EDB_Ark_Administrative_User_Guide.1.20.html'
+  # https://www.enterprisedb.com/edb-docs/d/edb-postgres-ark-platform/user-guides/administrative-users-guide/3.0/EDB_Ark_Administrative_User_Guide.1.20.html
   accounts: ['305753120797']
 - name: 'TheGlobalSolutions.net'
-  source: 'http://www.theglobalsolutions.net/awspatching/saas_help.php'
+  # http://www.theglobalsolutions.net/awspatching/saas_help.php
   accounts: ['726941830086']
 - name: 'wpengine'
   source: 'https://wpengine.com/support/configuring-largefs-store-transfer-unlimited-data/'
   accounts: ['902500896138']
 - name: 'cloudsqueeze'
-  source: 'https://app.cloudsqueeze.ai/awsAddAccount'
+  # source: 'https://app.cloudsqueeze.ai/awsAddAccount'
   accounts: ['759994998399']
 - name: 'ThingSpace'
   source: 'https://thingspace.verizon.com/resources/documentation/cloudconnector/Getting_Started/Streaming_to_AWS/'
   accounts: ['675479154635']
 - name: 'Anodot'
-  source: 'https://support.anodot.com/hc/en-us/articles/360012563774'
+  source: 'https://support.anodot.com/hc/en-us/articles/360034553113-Enable-Reading-from-the-Kinesis-Stream'
   accounts: ['340481513670']
 - name: 'MediaMath'
   source: 'https://apidocs.mediamath.com/reporting/log-level-data-service/overview#data-security-and-authorization'
