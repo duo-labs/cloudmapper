@@ -61,10 +61,6 @@
   type: 'aws'
   source: 'https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html'
   accounts: ['193672423079', '391106570357', '262260360010', '902366379725', '865932855811', '760740231472', '361669875840', '762762565011', '404641285394', '660998842044', '907379612154', '053454850223', '210876761215', '307160386991', '915173422425', '075028567923']
-- name: 'Cloudfront logs'
-  type: 'aws'
-  # This one is odd as the account ID is 'cloudfront' instead of a number, but I've seen it.
-  accounts: ['cloudfront']
 - name: 'Billing'
   type: 'aws'
   source: 'https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-getting-started.html#step-2'
@@ -139,13 +135,13 @@
   accounts: ['926226587429']
 - name: 'Bridgecrew'
   accounts: ['890234264427']
-  Source: 'https://bridgecrew.cloud'
+  source: 'https://bridgecrew.cloud'
 - name: 'Lacework'
   accounts: ['434813966438']
-  Source: 'https://support.lacework.com/hc/en-us/articles/360017546933-Getting-Started'
+  source: 'https://support.lacework.com/hc/en-us/articles/360017546933-Getting-Started'
 - name: 'Onelogin'
   accounts: ['842984801698']
-  Source: 'https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010344'
+  source: 'https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010344'
 - name: 'nOps'
   accounts: ['202279780353']
   source: 'https://help.nops.io/manual_setup'
