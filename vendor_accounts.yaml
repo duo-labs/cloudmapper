@@ -61,17 +61,10 @@
   type: 'aws'
   source: 'https://docs.aws.amazon.com/redshift/latest/mgmt/db-auditing.html'
   accounts: ['193672423079', '391106570357', '262260360010', '902366379725', '865932855811', '760740231472', '361669875840', '762762565011', '404641285394', '660998842044', '907379612154', '053454850223', '210876761215', '307160386991', '915173422425', '075028567923']
-- name: 'Cloudfront logs'
-  type: 'aws'
-  # This one is odd as the account ID is 'cloudfront' instead of a number, but I've seen it.
-  accounts: ['cloudfront']
 - name: 'Billing'
   type: 'aws'
   source: 'https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-getting-started.html#step-2'
   accounts: ['386209384616']
-- name: 'dome9'
-  source: 'http://support.dome9.com/knowledgebase/articles/796419-convert-dome9-aws-account-connection-from-iam-user'
-  accounts: ['634729597623']
 - name: 'stackdriver'
   source: 'https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account'
   accounts: ['314658760392']
@@ -139,7 +132,7 @@
   accounts: ['926226587429']
 - name: 'Bridgecrew'
   accounts: ['890234264427']
-  Source: 'https://bridgecrew.cloud'
+  source: 'https://bridgecrew.cloud'
 - name: 'Lacework'
   source: 'https://support.lacework.com/hc/en-us/articles/360017546933-Getting-Started'
   accounts: ['434813966438']
@@ -355,6 +348,9 @@
 - name: 'Presidio'
   source: 'customer IAM policy'
   accounts: ['118652503430']
+- name: 'Checkpoint Cloudguard'
+  source: 'https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk159912&partition=Basic&product=CloudGuard'
+  accounts: ['634729597623']
 - name: 'Cisco Umbrella'
   source: 'https://docs.umbrella.com/umbrella-user-guide/docs/enable-logging-to-your-own-s3-bucket'
   accounts: ['568526795995']
