@@ -355,5 +355,12 @@
 - name: 'Presidio'
   source: 'customer IAM policy'
   accounts: ['118652503430']
-
-
+- name: 'Cisco Umbrella'
+  source: 'https://docs.umbrella.com/umbrella-user-guide/docs/enable-logging-to-your-own-s3-bucket'
+  accounts: ['568526795995']
+- name: 'Cloudflare'
+  source: 'https://developers.cloudflare.com/logs/logpush/aws-s3'
+  accounts: ['391854517948']
+- name: '[Deprecated] AWS Log delivery Service'
+  source: 'https://forums.aws.amazon.com/thread.jspa?messageID=629256'
+  accounts: ['858827067514']

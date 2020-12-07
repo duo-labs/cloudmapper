@@ -218,7 +218,6 @@ IAM_NAME_DOES_NOT_INDICATE_ADMIN:
   is_global: True
   group: IAM
 
-
 DOMAIN_NOT_SET_TO_RENEW:
   title: Domain not set to autorenew
   description: This domain will no longer be under your control once it expires and may be taken over by someone else.
@@ -261,7 +260,7 @@ AMI_PUBLIC:
   title: AMI is public
   description: An AMI is used to install the OS for an EC2 instance. These may contain sensitive information. These are very easy for attackers to find.
   severity: High
-  group: RDS
+  group: EC2
 
 ECR_PUBLIC:
   title: ECR is public
@@ -387,5 +386,11 @@ ACCESSANALYZER_OFF:
 REQUEST_SMUGGLING:
   title: Request smuggling not denied
   description: "HTTP request smuggling is possible against ALBs, as described here: https://portswigger.net/web-security/request-smuggling"
+  severity: Low
+  group: ELB
+
+ELBV1_DESYNC_MITIGATION:
+  title: Desync mitigation mode not configured
+  description: "Desync mitigation mode protects your application from issues due to HTTP Desync and should be set to 'Strictest'. https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-desync-mitigation-mode.html"
   severity: Low
   group: ELB

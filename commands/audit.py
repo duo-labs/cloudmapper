@@ -66,7 +66,7 @@ def run(arguments):
     )
     parser.add_argument(
         "--minimum_severity",
-        help="Only report issues that are greater than this. Default: LOW",
+        help="Only report issues that are greater than this. Default: INFO",
         default="INFO",
         choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
     )

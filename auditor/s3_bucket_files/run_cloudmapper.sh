@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Runnning run_cloudmapper"
+echo "Running run_cloudmapper"
 
 # Configure the AWS SDK so we can assume roles
 mkdir ~/.aws
@@ -26,7 +26,8 @@ while read account; do
         echo "*** Collecting from $1"
         python cloudmapper.py collect --profile $1 --account $1 > collect_logs/$1
         if [ $? -ne 0 ]; then
-            echo "ERROR: The collect command had an error for account $1"
+            echo "ERROR: The collect command had an error for account $1" | tee >(python ./utils/toslack.py)
+            tail collect_logs/$1
             # Record error
             aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
         else
@@ -56,31 +57,42 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Generate the report"
-python cloudmapper.py report --accounts all
+python cloudmapper.py report --accounts all --minimum_severity $MINIMUM_REPORT_SEVERITY
 if [ $? -ne 0 ]; then
     echo "ERROR: The report command had an error"
     aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
 fi
 
 # Copy the collect data to the S3 bucket
-aws s3 sync --delete account-data/ s3://$S3_BUCKET/account-data/
+echo "Exporting account data"
+aws s3 sync --no-progress --quiet --delete account-data/ s3://$S3_BUCKET/account-data/
 if [ $? -ne 0 ]; then
     echo "ERROR: syncing account-data failed"
     aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
 fi
 
 # Copy the logs to the S3 bucket
-aws s3 sync --delete collect_logs/ s3://$S3_BUCKET/collect_logs/
+echo "Exporting collection logs"
+aws s3 sync --no-progress --quiet --delete collect_logs/ s3://$S3_BUCKET/collect_logs/
 if [ $? -ne 0 ]; then
     echo "ERROR: syncing the collection logs failed"
     aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
 fi
 
 # Copy the report to the S3 bucket
-aws s3 sync --delete web/ s3://$S3_BUCKET/web/
+echo "Exporting web report"
+aws s3 sync --no-progress --quiet --delete web/ s3://$S3_BUCKET/web/
 if [ $? -ne 0 ]; then
     echo "ERROR: syncing web directory failed"
     aws cloudwatch put-metric-data --namespace cloudmapper --metric-data MetricName=errors,Value=1
 fi
 echo "Completed CloudMapper audit"
-echo "Completed CloudMapper audit" | python ./utils/toslack.py
+
+# Write to Cloudwatch (via stdout) and Slack when non-blocking API errors are detected during collection.
+if grep "Summary:" collect_logs/* | grep -v '0 errors'; then
+  echo "Completed CloudMapper audit with errors" | python ./utils/toslack.py
+  grep "Summary:" collect_logs/* | grep -v '0 errors'
+  grep "Summary:" collect_logs/* | python ./utils/toslack.py
+else
+  echo "Completed CloudMapper audit" | python ./utils/toslack.py
+fi

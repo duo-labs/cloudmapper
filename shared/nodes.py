@@ -704,7 +704,7 @@ class Lambda(Leaf):
 
     @property
     def tags(self):
-        return pyjq.all(".tags[]", self._json_blob)
+        return pyjq.all(".tags[]?", self._json_blob)
 
     @property
     def is_public(self):

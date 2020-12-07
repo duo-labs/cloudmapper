@@ -27,17 +27,17 @@ If you want to add your own private commands, you can create a `private_commands
 
 # Screenshots
 
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/ideal_layout.png" width=100% alt="Ideal layout">
 <table border=0>
 <tr><td>
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_resources.png" alt="Report screenshot">
-<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings_summary.png" alt="Findings summary">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/report_resources.png" alt="Report screenshot">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/report_findings_summary.png" alt="Findings summary">
 <tr><td>
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/report_findings.png" alt="Findings">
-<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/iam_report-inactive_and_detail.png" alt="IAM report">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/report_findings.png" alt="Findings">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/iam_report-inactive_and_detail.png" alt="IAM report">
 <tr><td>
-<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_audit.png" alt="Command-line audit">
-<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/master/docs/images/command_line_public.png" alt="Command-line public command">
+<img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/command_line_audit.png" alt="Command-line audit">
+<td><img src="https://raw.githubusercontent.com/duo-labs/cloudmapper/main/docs/images/command_line_public.png" alt="Command-line public command">
 </table>
 
 
@@ -144,6 +144,14 @@ python cloudmapper.py configure {add-cidr|remove-cidr} --config-file CONFIG_FILE
 
 This will allow you to define the different AWS accounts you use in your environment and the known CIDR IPs.
 
+If you use [AWS Organizations](https://aws.amazon.com/organizations/), you can also automatically add organization member accounts to `config.json` using:
+
+```
+python cloudmapper.py configure discover-organization-accounts
+```
+
+You need to be authenticated to the AWS CLI and have the permission `organization:ListAccounts` prior to running this command.
+
 
 ### Using audit config overrides
 You may find that you don't care about some of audit items. You may want to ignore the check entirely, or just specific resources.  Copy `config/audit_config_override.yaml.example` to `config/audit_config_override.yaml` and edit the file based on the comments in there.
@@ -156,7 +164,7 @@ The docker container that is created is meant to be used interactively.
 docker build -t cloudmapper .
 ```
 
-Cloudmapper needs to make IAM calls and cannot use session credentials for collection, so you cannot use the aws-vault sever if you want to collect data, and must pass role credentials in directly or configure aws credentials manually inside the container. *The following code exposes your raw credentials inside the container.* 
+Cloudmapper needs to make IAM calls and cannot use session credentials for collection, so you cannot use the aws-vault server if you want to collect data, and must pass role credentials in directly or configure aws credentials manually inside the container. *The following code exposes your raw credentials inside the container.* 
 
 ```
 (                                                              
@@ -164,6 +172,7 @@ Cloudmapper needs to make IAM calls and cannot use session credentials for colle
     docker run -ti \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+        -p 8000:8000 \
         cloudmapper /bin/bash
 )
 ```
@@ -174,6 +183,8 @@ This will drop you into the container. Run `aws sts get-caller-identity` to conf
 python cloudmapper.py configure add-account --config-file config.json --name YOUR_ACCOUNT --id YOUR_ACCOUNT_NUMBER
 python cloudmapper.py collect --account YOUR_ACCOUNT
 python cloudmapper.py report --account YOUR_ACCOUNT
+python cloudmapper.py prepare --account YOUR_ACCOUNT
+python cloudmapper.py webserver --public
 ```
 
 You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html

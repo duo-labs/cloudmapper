@@ -5,7 +5,7 @@ import yaml
 import pyjq
 import urllib.parse
 
-from shared.common import parse_arguments, make_list, query_aws, get_regions
+from shared.common import parse_arguments, make_list, query_aws, get_regions, get_account_by_id
 
 __description__ = "Create Web Of Trust diagram for accounts"
 
@@ -191,7 +191,15 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
 
                 for federated_principal in federated_principals:
                     try:
-                        saml_provider_arn = next(saml for saml in saml_providers if saml['Arn'] == federated_principal)['Arn']
+                        # Validate that the federated principal and the SAML provider is coming from known accounts.
+                        # WoT will show us the direction of that trust for further inspection.
+                        # this enables cross_account_admin_sts (STS between accounts)
+                        for saml in saml_providers:
+                            if saml['Arn'] == federated_principal:
+                                saml_provider_arn = saml['Arn']
+                            elif get_account_by_id(account_id=federated_principal.split(':')[4]):
+                                if get_account_by_id(account_id=saml['Arn'].split(':')[4]):
+                                    saml_provider_arn = saml['Arn']
 
                         if 'saml-provider/okta' in saml_provider_arn.lower():
                             node = Account(
@@ -244,6 +252,15 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 }
                             )
                             assume_role_nodes.add(node)
+                        elif "saml-provider/gsuite" in saml_provider_arn.lower():
+                            node = Account(
+                                json_blob={
+                                    "id": "gsuite",
+                                    "name": "gsuite",
+                                    "type": "gsuite",
+                                }
+                            )
+                            assume_role_nodes.add(node)
                         elif "cognito-identity.amazonaws.com" in saml_provider_arn.lower():
                             continue
                         elif "www.amazon.com" in saml_provider_arn.lower():
@@ -260,7 +277,7 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 "Unknown federation provider: {}".format(saml_provider_arn.lower())
                             )
 
-                    except StopIteration:
+                    except (StopIteration, IndexError):
                         if "cognito-identity.amazonaws.com" in federated_principal.lower():
                             # TODO: Should show this somehow
                             continue

@@ -3,6 +3,8 @@ import os.path
 import netaddr
 import argparse
 
+from shared.organization import get_organization_accounts
+
 __description__ = "Add and remove items from the config file"
 
 
@@ -60,7 +62,15 @@ def configure(action, arguments):
             name = config["cidrs"][cidr]["name"]
             if condition(cidr == arguments.cidr, name == arguments.name):
                 del config["cidrs"][cidr]
-
+    elif action == "discover-organization-accounts":
+        organization_accounts = get_organization_accounts()
+        current_accounts = config.get("accounts", {})
+        current_account_ids = set(map(lambda entry: entry["id"], current_accounts))
+        for organization_account in organization_accounts:
+            # Don't overwrite any account already in the configuration file
+            if organization_account['id'] not in current_account_ids:
+                config["accounts"].append(organization_account)
+            
     with open(arguments.config_file, "w+") as f:
         f.write(json.dumps(config, indent=4, sort_keys=True))
 
@@ -69,7 +79,7 @@ def run(arguments):
     if len(arguments) == 0:
         exit(
             "ERROR: Missing action for configure.\n"
-            "Usage: [add-cidr|add-account|remove-cidr|remove-account]"
+            "Usage: [add-cidr|add-account|discover-organization-accounts|remove-cidr|remove-account]"
         )
         return
     action = arguments[0]

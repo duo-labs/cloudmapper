@@ -27,6 +27,7 @@
         "selector": "edge.admin",
         "style": {
             "width": 10,
+            "label": "admin",
             "line-color": "#f00",
             "target-arrow-color": "#f00"
         }
@@ -35,6 +36,7 @@
         "selector": "edge.assume_role",
         "style": {
             "line-color": "#999",
+            "label": "assume_role",
             "target-arrow-color": "#999"
         }
     },
@@ -43,6 +45,7 @@
         "style": {
             "line-color": "#999",
             "target-arrow-color": "#999",
+            "label": "assume_role_read",
             "line-style": "dashed"
         }
     },
@@ -50,6 +53,7 @@
         "selector": "edge.cloudtrail",
         "style": {
             "line-color": "#090",
+            "label": "cloudtrail",
             "target-arrow-color": "#090"
         }
     },
@@ -58,6 +62,7 @@
         "selector": "edge.s3_read",
         "style": {
             "line-color": "#fc0",
+            "label": "s3_read",
             "target-arrow-color": "#fc0",
             "line-style": "dashed"
         }
@@ -67,6 +72,7 @@
         "selector": "edge.s3",
         "style": {
             "line-color": "#fc0",
+            "label": "s3",
             "target-arrow-color": "#fc0"
         }
     },
@@ -74,6 +80,7 @@
         "selector": "edge.vpc",
         "style": {
             "line-color": "#36f",
+            "label": "vpc peering",
             "target-arrow-color": "#36f",
             "target-arrow-shape": "none"
         }
@@ -83,6 +90,7 @@
         "style": {
             "line-color": "#36f",
             "line-style": "dashed",
+            "label": "directconnect",
             "target-arrow-color": "#36f",
             "target-arrow-shape": "none"
         }
@@ -987,6 +995,18 @@
             "label": "",
             "background-opacity": 0,
             "background-image": "./icons/logos/google.png",
+            "background-fit": "contain",
+            "background-clip": "none",
+            "width": 150,
+            "height": 100
+        }
+    },
+    {
+        "selector": "[type = \"gsuite\"]",
+        "css": {
+            "label": "",
+            "background-opacity": 0,
+            "background-image": "./icons/logos/gsuite.png",
             "background-fit": "contain",
             "background-clip": "none",
             "width": 150,

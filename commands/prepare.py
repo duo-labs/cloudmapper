@@ -144,7 +144,8 @@ def get_ecs_tasks(region):
                 urllib.parse.quote_plus(taskArn),
             )
             task = json.load(open(task_path))
-            tasks.append(task["tasks"][0])
+            for task in task["tasks"]:
+                tasks.append(task)
     return tasks
 
 
@@ -174,7 +175,7 @@ def get_elasticsearch(region):
 def get_sgs(vpc):
     sgs = query_aws(vpc.account, "ec2-describe-security-groups", vpc.region)
     return pyjq.all(
-        '.SecurityGroups[] | select(.VpcId == "{}")'.format(vpc.local_id), sgs
+        '.SecurityGroups[]? | select(.VpcId == "{}")'.format(vpc.local_id), sgs
     )
 
 
@@ -457,12 +458,13 @@ def build_data_structure(account_data, config, outputfilter):
                     # For a tag set, see if all conditions match, ex. [["Team","Dev"],["Name","Bastion"]]
                     for pair in conditions:
                         # Given ["Team","Dev"], see if it matches one of the tags in the node
-                        for tag in node.tags:
-                            if (
-                                tag.get("Key", "") == pair[0]
-                                and tag.get("Value", "") == pair[1]
-                            ):
-                                condition_matches += 1
+                        if node.tags:
+                            for tag in node.tags:
+                                if (
+                                    tag.get("Key", "") == pair[0]
+                                    and tag.get("Value", "") == pair[1]
+                                ):
+                                    condition_matches += 1
                     # We have a match if all of the conditions matched
                     if condition_matches == len(conditions):
                         has_match = True

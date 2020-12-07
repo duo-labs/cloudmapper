@@ -134,6 +134,11 @@
 - Service: elb
   Request: describe-load-balancers
 - Service: elb
+  Request: describe-load-balancer-attributes
+  Parameters:
+  - Name: LoadBalancerName
+    Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[].LoadBalancerName
+- Service: elb
   Request: describe-load-balancer-policies
 - Service: elb
   Request: describe-tags
@@ -348,7 +353,12 @@
   Request: describe-tasks
   Custom_collection: True
 - Service: eks
+  Request: list-clusters
+- Service: eks
   Request: describe-cluster
+  Parameters:
+  - Name: name
+    Value: eks-list-clusters.json|.clusters[]
 - Service: logs
   Request: describe-destinations
 - Service: logs
@@ -401,3 +411,7 @@
   Custom_collection: True
 - Service: accessanalyzer
   Request: list-analyzers
+- Service: glue
+  Request: get-jobs
+- Service: glue
+  Request: get-triggers
