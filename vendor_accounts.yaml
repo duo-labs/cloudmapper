@@ -184,6 +184,11 @@
 - name: 'Emnify'
   source: 'https://www.emnify.com/datastreamer-integration-into-aws'
   accounts: ['884047677700']
+- name: 'Cloudaware'
+  accounts: ['814021343637']
+- name: 'Checkpoint Cloudguard'
+  source: 'https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk159912&partition=Basic&product=CloudGuard'
+  accounts: ['634729597623']
 - name: 'Cisco Umbrella'
   source: 'https://docs.umbrella.com/umbrella-user-guide/docs/enable-logging-to-your-own-s3-bucket'
   accounts: ['568526795995']
