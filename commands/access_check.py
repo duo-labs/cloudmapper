@@ -320,7 +320,7 @@ def access_check_command(accounts, config, args):
             for priv in allowed_privileges:
                 priv_object = {
                     "principal": role["Arn"],
-                    "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
+                    "privilege": "{priv['privilege_prefix']}:{priv['privilege_name']}",
                     "references": list(priv["references"]),
                 }
                 print(json.dumps(priv_object))
@@ -414,7 +414,7 @@ def access_check_command(accounts, config, args):
             for priv in allowed_privileges:
                 priv_object = {
                     "principal": user["Arn"],
-                    "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
+                    "privilege": "{priv['privilege_prefix']}:{priv['privilege_name']}",
                     "references": list(priv["references"]),
                 }
                 print(json.dumps(priv_object))
