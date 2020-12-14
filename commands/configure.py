@@ -63,7 +63,7 @@ def configure(action, arguments):
             if condition(cidr == arguments.cidr, name == arguments.name):
                 del config["cidrs"][cidr]
     elif action == "discover-organization-accounts":
-        organization_accounts = get_organization_accounts()
+        organization_accounts = get_organization_accounts(**vars(arguments))
         current_accounts = config.get("accounts", {})
         current_account_ids = set(map(lambda entry: entry["id"], current_accounts))
         for organization_account in organization_accounts:
@@ -103,5 +103,7 @@ def run(arguments):
         required = True if action.startswith("add") else False
         parser.add_argument("--cidr", help="CIDR IP", required=required, type=str)
         parser.add_argument("--name", help="CIDR Name", required=required, type=str)
+    elif action == "discover-organization-accounts":
+        parser.add_argument("--profile", help="AWS profile name", required=False, type=str, dest="profile_name")
     args = parser.parse_args(arguments)
     configure(action, args)
