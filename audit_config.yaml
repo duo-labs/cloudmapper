@@ -192,7 +192,7 @@ IAM_UNEXPECTED_FORMAT:
 
 IAM_UNEXPECTED_ADMIN_PRINCIPAL:
   title: IAM role with admin privileges can be assumed by unexpected principals
-  description: Admins in an account should be assumed by people. This rule detects IAM Roles that can be granted to EC2s and other services, that has admin privileges.
+  description: Admins in an account should be assumed by people. This rule detects IAM Roles that have admin privileges which can be granted to EC2s and other services.
   severity: High
   is_global: True
   group: IAM
@@ -227,7 +227,7 @@ DOMAIN_NOT_SET_TO_RENEW:
 
 DOMAIN_HAS_NO_TRANSFER_LOCK:
   title: Domain does not have a domain transfer lock set
-  description: A domain transfer lock mitigates the possibility of someone else taking ownership of your domain. Not all TLD's support this, for example, the .io domain does not support this.
+  description: A domain transfer lock mitigates the possibility of someone else taking ownership of your domain. Not all TLD's support this. For example, the .io domain does not support this.
   severity: Low
   is_global: True
   group: Route53
@@ -264,7 +264,7 @@ AMI_PUBLIC:
 
 ECR_PUBLIC:
   title: ECR is public
-  description: The Amazon Elastic Container Registry (ECR) stores docker images. These may contain sensitive information. These are somewhat hard for an attacker to find, but should not be made public.
+  description: The Amazon Elastic Container Registry (ECR) stores Docker images. These may contain sensitive information. These are somewhat hard for an attacker to find, but should not be made public.
   severity: Medium
   group: ECR
 
@@ -276,13 +276,13 @@ REDSHIFT_PUBLIC_IP:
 
 ES_PUBLIC:
   title: ElasticSearch cluster is publicly accessible
-  description: ElasticSearch databases should be public. Change the resource policy to fix this.
+  description: ElasticSearch databases should not be public. Change the resource policy to fix this.
   severity: High
   group: ElasticSearch
 
 CLOUDFRONT_MINIMUM_PROTOCOL_SUPPORT:
   title: CloudFront is supporting an insecure minimum protocol version
-  description: An advanced attacker with a privileged position in a network could obtain access to the encrypted traffic coming to this CloudFront distribution because this is supported an older, weaker, protocol version.
+  description: An advanced attacker with a privileged position in a network could obtain access to the encrypted traffic coming to this CloudFront distribution because this is supported an older, weaker protocol version.
   severity: Low
   is_global: True
   group: CloudFront
@@ -307,7 +307,7 @@ EC2_OLD:
 
 LAMBDA_PUBLIC:
   title: Lambda is internet accessible
-  description: Lambdas should not be publicly callable. Other resources, such as an API Gateway should be used to call the Lambda.
+  description: Lambdas should not be publicly callable. Other resources such as an API Gateway should be used to call the Lambda.
   severity: Medium
   group: Lambda
 
@@ -355,7 +355,7 @@ SG_CIDR_UNEXPECTED:
 
 SG_LARGE_CIDR:
   title: Security Group CIDR contains large IP range
-  description: The CIDR in a Security Group in the account contains a large IP range, defeating the purpose of restricting access with a Security Group
+  description: The CIDR in a Security Group in the account contains a large IP range, defeating the purpose of restricting access with a Security Group.
   severity: Info
   group: SecurityGroup
 
@@ -367,7 +367,7 @@ LIGHTSAIL_IN_USE:
 
 FOREIGN_HOSTED_ZONE:
   title: Hosted zone found
-  description: Hosted Zones have legitimate uses, but may also be used to redirect traffic by an attacker, especially when they are owned by another account. (This finding needs more research into what should be filterd out, but I wanted to expose this info for manual review).
+  description: Hosted Zones have legitimate uses, but may also be used to redirect traffic by an attacker, especially when they are owned by another account. (This finding needs more research into what should be filtered out, but I wanted to expose this info for manual review).
   severity: Info
   group: Route53
 
