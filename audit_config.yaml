@@ -282,7 +282,7 @@ ES_PUBLIC:
 
 CLOUDFRONT_MINIMUM_PROTOCOL_SUPPORT:
   title: CloudFront is supporting an insecure minimum protocol version
-  description: An advanced attacker with a privileged position in a network could obtain access to the encrypted traffic coming to this CloudFront distribution because this is supported an older, weaker protocol version.
+  description: An advanced attacker with a privileged position in a network could obtain access to the encrypted traffic coming to this CloudFront distribution because this distribution supports an older, weaker protocol version.
   severity: Low
   is_global: True
   group: CloudFront
