@@ -360,3 +360,6 @@
 - name: '[Deprecated] AWS Log delivery Service'
   source: 'https://forums.aws.amazon.com/thread.jspa?messageID=629256'
   accounts: ['858827067514']
+- name: 'Epsagon'
+  source: 'https://docs.epsagon.com/docs/faq'
+  accounts: ['066549572091']
