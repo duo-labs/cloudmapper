@@ -397,6 +397,29 @@
   Request: describe-organization
 - Service: organizations
   Request: list-accounts
+- Service: organizations
+  Request: list-policies
+  Parameters:
+    - Name: Filter
+      Value: SERVICE_CONTROL_POLICY
+- Service: organizations
+  Request: describe-policy
+  Parameters:
+    - Name: PolicyId
+      Value: organizations-list-policies.json|.Policies[]?|.Id
+- Service: organizations
+  Request: list-roots
+- Service: organizations
+  # I think this is actually recursive, but I don't have a way of doing that.
+  Request: list-organizational-units-for-parent
+  Parameters:
+    - Name: ParentId
+      Value: organizations-list-roots.json|.Roots[]?|.Id
+- Service: organizations
+  Request: list-targets-for-policy
+  Parameters:
+    - Name: PolicyId
+      Value: organizations-list-policies.json|.Policies[]?|.Id
 # - Service: kafka
 #   Request: list-clusters
 - Service: secretsmanager
