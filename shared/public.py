@@ -187,7 +187,7 @@ def get_public_nodes(account, config, use_cache=False):
             issue_msg = "No ports open for tcp or udp (probably can only be pinged). Rules that are not tcp or udp: {} -- {}"
             warnings.append(
                 issue_msg.format(
-                    json.dumps(
+                    json_dumps(
                         pyjq.all(
                             '.[]|select((.IpProtocol!="tcp") and (.IpProtocol!="udp"))'.format(
                                 selection
@@ -250,6 +250,6 @@ def get_public_nodes(account, config, use_cache=False):
 
     # Write cache file
     with open(cache_file_path, "w") as f:
-        f.write(json.dumps(public_nodes, indent=4, sort_keys=True))
+        f.write(json_dumps(public_nodes, indent=4))
 
     return public_nodes, warnings

@@ -13,7 +13,8 @@ import json
 import parliament
 from parliament.policy import Policy
 
-from shared.common import parse_arguments, get_current_policy_doc, make_list
+from shared.common import parse_arguments, get_current_policy_doc
+from shared.json_wrapper import json_dumps
 
 __description__ = "[proof-of-concept] Check who has access to a resource"
 
@@ -323,7 +324,7 @@ def access_check_command(accounts, config, args):
                     "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
                     "references": list(priv["references"]),
                 }
-                print(json.dumps(priv_object))
+                print(json_dumps(priv_object))
 
         # Check the users
         for user in iam["UserDetailList"]:
@@ -417,7 +418,7 @@ def access_check_command(accounts, config, args):
                     "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
                     "references": list(priv["references"]),
                 }
-                print(json.dumps(priv_object))
+                print(json_dumps(priv_object))
 
 
 def get_managed_policy(iam, policy_arn):

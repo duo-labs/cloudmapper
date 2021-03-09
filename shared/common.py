@@ -9,6 +9,7 @@ from netaddr import IPNetwork
 
 from shared.nodes import Account, Region
 from shared.query import query_aws, get_parameter_file
+from shared.json_wrapper import json_dumps
 
 
 class Severity:
@@ -72,7 +73,7 @@ def log_issue(severity, msg, location=None, reasons=[]):
             "Location": location,
             "Reasons": reasons,
         }
-        print(json.dumps(json_issue, sort_keys=True), file=sys.stderr)
+        print(json_dumps(json_issue), file=sys.stderr)
 
 
 class Finding(object):
@@ -90,7 +91,7 @@ class Finding(object):
         self.resource_details = resource_details
 
     def __str__(self):
-        return json.dumps(
+        return json_dumps(
             {
                 "account_id": self.region.account.local_id,
                 "account_name": self.region.account.name,

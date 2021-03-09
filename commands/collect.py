@@ -12,7 +12,7 @@ import pyjq
 import urllib.parse
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
 from shared.common import get_account, custom_serializer
-from botocore.config import Config
+from shared.json_wrapper import json_dumps
 
 __description__ = "Run AWS API calls to collect data from the account"
 
@@ -191,7 +191,7 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
     if data is not None:
         with open(outputfile, "w+") as f:
             f.write(
-                json.dumps(data, indent=4, sort_keys=True, default=custom_serializer)
+                json_dumps(data, indent=4, default=custom_serializer, sort_keys=True)
             )
 
     summary.append(call_summary)
@@ -282,7 +282,7 @@ def collect(arguments):
         region_list["Regions"] = filtered_regions
 
     with open("account-data/{}/describe-regions.json".format(account_dir), "w+") as f:
-        f.write(json.dumps(region_list, indent=4, sort_keys=True))
+        f.write(json_dumps(region_list, indent=4, sort_keys=True))
 
     print("* Creating directory for each region name", flush=True)
     for region in region_list["Regions"]:

@@ -16,14 +16,16 @@ for line in sys.stdin:
     slack_data = {'text': line}
 
     response = requests.post(
-        webhook_url, data=json.dumps(slack_data),
+        webhook_url,
+        data=json_dumps(slack_data),
         headers={'Content-Type': 'application/json'}
     )
     if response.status_code == 429:
         # Rate-limited. Sleep and retry
         time.sleep(5)
         response = requests.post(
-            webhook_url, data=json.dumps(slack_data),
+            webhook_url,
+            data=json_dumps(slack_data),
             headers={'Content-Type': 'application/json'}
         )
 

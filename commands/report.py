@@ -12,6 +12,7 @@ from shared.common import (
     get_collection_date,
     get_access_advisor_active_counts,
 )
+from shared.json_wrapper import json_dumps
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
 from shared.audit import audit, load_audit_config, finding_is_filtered
@@ -428,7 +429,7 @@ def report(accounts, config, args):
         region_hits["hits"].append(
             {
                 "resource": finding.resource_id,
-                "details": json.dumps(finding.resource_details, indent=4),
+                "details": json_dumps(finding.resource_details, indent=4),
             }
         )
 

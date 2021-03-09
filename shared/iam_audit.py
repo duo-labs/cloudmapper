@@ -193,7 +193,7 @@ def find_admins_in_account(
 
         check_for_bad_policy(findings, region, policy["Arn"], policy_doc)
 
-        analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+        analyzed_policy = analyze_policy_string(json_dumps(policy_doc))
         for f in analyzed_policy.findings:
             findings.add(
                     Finding(
@@ -269,7 +269,7 @@ def find_admins_in_account(
         for policy in role["RolePolicyList"]:
             policy_doc = policy["PolicyDocument"]
 
-            analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+            analyzed_policy = analyze_policy_string(json_dumps(policy_doc))
             for f in analyzed_policy.findings:
                 findings.add(
                         Finding(
@@ -451,7 +451,7 @@ def find_admins_in_account(
         for policy in user.get("UserPolicyList", []):
             policy_doc = policy["PolicyDocument"]
 
-            analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+            analyzed_policy = analyze_policy_string(json_dumps(policy_doc))
             for f in analyzed_policy.findings:
                 findings.add(
                         Finding(
