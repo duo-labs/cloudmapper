@@ -19,6 +19,9 @@ getLogger("policyuniverse").setLevel(CRITICAL)
 KNOWN_BAD_POLICIES = {
     "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
     "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV3 instead",
+    "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetRole": "Use AmazonEC2SpotFleetTaggingRole instead",
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaReadOnlyAccess" : "Use AWSLambda_ReadOnlyAccess instead",
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaFullAccess" :"Use AWSLambda_FullAccess instead",
 }
 
 
