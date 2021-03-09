@@ -88,14 +88,11 @@ def is_admin_policy(
                         )
                     return True
                 # Look for privilege escalations
-                if action_matches(action, privs_to_look_for):
-                    if include_retricted:
-                        return True
-                    elif (
+                if action_matches(action, privs_to_look_for) and (include_retricted or (
                         stmt.get("Resource", "") == "*"
                         and stmt.get("Condition", "") == ""
-                    ):
-                        return True
+                )):
+                    return True
 
     return False
 

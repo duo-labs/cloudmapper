@@ -157,10 +157,9 @@ def get_privilege_statements(
                             principal,
                         )
                         # TODO Need to do something different for Deny, to avoid false negatives
-                        if condition_result is not None:
-                            if condition_result == False:
-                                allowed_by_conditions = False
-                                break
+                        if condition_result is not None and condition_result == False:
+                            allowed_by_conditions = False
+                            break
                     if allowed_by_conditions:
                         condition_allowed_stmts.append(stmt)
                 references[reference] = condition_allowed_stmts
@@ -455,17 +454,16 @@ def is_allowed(privilege_prefix, privilege_name, statements):
 def get_allowed_privileges(
     privilege_matches, privileged_statements, boundary_statements
 ):
-    """
+    """Gets allowed privileges
     """
     allowed_privileges = []
     for privilege in privilege_matches:
-        if boundary_statements is not None:
-            if not is_allowed(
+        if boundary_statements is not None and not is_allowed(
                 privilege["privilege_prefix"],
                 privilege["privilege_name"],
                 boundary_statements,
-            ):
-                continue
+        ):
+            continue
 
         allowed_stmts = is_allowed(
             privilege["privilege_prefix"],
