@@ -27,8 +27,8 @@ def action_matches(action_from_policy, actions_to_match_against):
     return False
 
 
-def policy_action_count(policy_doc, location):
-    # Counts how many unrestricted actions a policy grants
+def policy_action_count(policy_doc):
+    """Counts how many unrestricted actions a policy grants"""
     policy = Policy(policy_doc)
     actions_count = 0
     for stmt in policy.statements:
@@ -199,7 +199,7 @@ def find_admins_in_account(
                     )
                 )
 
-        policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc, location)
+        policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc)
 
         if is_admin_policy(
             policy_doc,
