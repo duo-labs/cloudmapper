@@ -363,3 +363,6 @@
 - name: 'Epsagon'
   source: 'https://docs.epsagon.com/docs/faq'
   accounts: ['066549572091']
+- name: 'Turbot'
+  source: 'https://turbot.com/v5/docs/integrations/aws/import-aws-account'
+  accounts: ['287590803701', '255798382450']
