@@ -1,19 +1,14 @@
 import json
-from datetime import datetime
-import pyjq
-import traceback
 import re
-import os.path
-
 from logging import CRITICAL
 from logging import getLogger
-from policyuniverse.policy import Policy
-from parliament import analyze_policy_string
 
-from netaddr import IPNetwork
+from parliament import analyze_policy_string
+from policyuniverse.policy import Policy
+
 from shared.common import Finding, make_list, get_us_east_1, get_current_policy_doc
-from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region
+from shared.json_wrapper import json_dumps
+from shared.nodes import Account
 
 getLogger("policyuniverse").setLevel(CRITICAL)
 KNOWN_BAD_POLICIES = {

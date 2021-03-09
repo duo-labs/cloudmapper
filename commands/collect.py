@@ -1,16 +1,19 @@
-import os.path
-import os
-import glob
 import argparse
-from shutil import rmtree
-import logging
 import json
+import logging
+import os
+import os.path
 import time
-import boto3
-import yaml
-import pyjq
 import urllib.parse
+from shutil import rmtree
+
+import boto3
+import glob
+import pyjq
+import yaml
+from botocore.config import Config
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
+
 from shared.common import get_account, custom_serializer
 from shared.json_wrapper import json_dumps
 

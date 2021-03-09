@@ -8,10 +8,8 @@ get_privilege_statements(...) works by looking for statements that match each pr
 """
 
 import argparse
-import yaml
 import json
 import parliament
-from parliament.policy import Policy
 
 from shared.common import parse_arguments, get_current_policy_doc
 from shared.json_wrapper import json_dumps

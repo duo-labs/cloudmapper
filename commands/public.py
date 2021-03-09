@@ -1,6 +1,7 @@
 from __future__ import print_function
+
 import sys
-import json
+
 from shared.common import parse_arguments
 from shared.json_wrapper import json_dumps
 from shared.public import get_public_nodes

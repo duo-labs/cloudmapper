@@ -1,11 +1,11 @@
 from __future__ import print_function
-import json
-import os
+
 import pyjq
 
-from shared.nodes import Account, Region, is_public_ip
 from commands.prepare import build_data_structure
 from shared.common import get_regions, query_aws
+from shared.json_wrapper import json_dumps
+from shared.nodes import Account, Region, is_public_ip
 
 
 def regroup_ranges(rgs):

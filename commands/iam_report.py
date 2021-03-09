@@ -1,19 +1,22 @@
 from __future__ import print_function
+
 import argparse
-import json
 import datetime
+import json
 import os.path
 from abc import ABCMeta
-from six import add_metaclass
-from jinja2 import Template
-from enum import Enum
-
 from logging import CRITICAL
 from logging import getLogger
+
+from enum import Enum
+from jinja2 import Template
 from policyuniverse.policy import Policy
+from six import add_metaclass
+
 from shared.common import parse_arguments, get_regions
 from shared.json_wrapper import json_dumps
 from shared.nodes import Account, Region
+from shared.query import query_aws, get_parameter_file
 
 __description__ = "Create IAM report"
 getLogger("policyuniverse").setLevel(CRITICAL)

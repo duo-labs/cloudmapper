@@ -1,8 +1,10 @@
-import json
-import requests
-import sys
 import os
+import sys
 import time
+
+import requests
+
+from shared.json_wrapper import json_dumps
 
 # Usage: Set the environment variable SLACK_WEBHOOK to https://hooks.slack.com/services/XXXX/YYYYY
 

@@ -1,5 +1,4 @@
 import argparse
-import json
 
 from shared.common import parse_arguments
 from shared.iam_audit import find_admins

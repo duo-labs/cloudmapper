@@ -1,7 +1,8 @@
+import argparse
 import json
 import os.path
+
 import netaddr
-import argparse
 
 from shared.json_wrapper import json_dumps
 from shared.organization import get_organization_accounts
