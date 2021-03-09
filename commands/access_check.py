@@ -84,7 +84,7 @@ def apply_condition_function(condition_function, left_side, right_side):
     return None
 
 
-def get_condition_result(condition_function, condition_values, resource_arn, principal):
+def get_condition_result(condition_function, condition_values, principal):
     """
     Given a condition_function such as: 'StringEquals'
       and values, such as: {'aws:PrincipalTag/project': 'web'}
@@ -154,7 +154,6 @@ def get_privilege_statements(
                         condition_result = get_condition_result(
                             condition_function,
                             condition_values,
-                            resource_arn,
                             principal,
                         )
                         # TODO Need to do something different for Deny, to avoid false negatives
