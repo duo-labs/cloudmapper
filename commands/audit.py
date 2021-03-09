@@ -8,7 +8,7 @@ from shared.json_wrapper import json_dumps
 __description__ = "Identify potential issues such as public S3 buckets"
 
 
-def audit_command(accounts, config, args):
+def audit_command(accounts, args):
     """Audit the accounts"""
 
     findings = audit(accounts)
@@ -72,4 +72,4 @@ def run(arguments):
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
-    audit_command(accounts, config, args)
+    audit_command(accounts, args)
