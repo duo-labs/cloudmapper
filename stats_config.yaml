@@ -128,3 +128,7 @@
   query: .logGroups|length
   source: logs-describe-log-groups
   verbose: true
+- name: Parameters Stored 
+  query: .Parameters|length
+  source: ssm-describe-parameters 
+  verbose: true

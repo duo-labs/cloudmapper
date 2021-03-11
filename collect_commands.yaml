@@ -397,8 +397,8 @@
   Request: describe-organization
 - Service: organizations
   Request: list-accounts
-# - Service: kafka
-#   Request: list-clusters
+- Service: kafka
+  Request: list-clusters
 - Service: secretsmanager
   Request: list-secrets
 - Service: secretsmanager
@@ -415,3 +415,5 @@
   Request: get-jobs
 - Service: glue
   Request: get-triggers
+- Service: ssm
+  Request: describe-parameters
