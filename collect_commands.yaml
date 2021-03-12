@@ -417,3 +417,7 @@
   Request: get-triggers
 - Service: ssm
   Request: describe-parameters
+- Service: acm
+  Request: list-certificates
+- Service: dynamodb
+  Request: list-tables

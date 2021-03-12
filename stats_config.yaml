@@ -132,3 +132,11 @@
   query: .Parameters|length
   source: ssm-describe-parameters 
   verbose: true
+- name: ACM Certificates 
+  query: .CertificateSummaryList|length
+  source: acm-list-certificates  
+  verbose: true
+- name: DynamoDB Tables 
+  query: .TableNames|length
+  source: dynamodb-list-tanñes  
+  verbose: true
