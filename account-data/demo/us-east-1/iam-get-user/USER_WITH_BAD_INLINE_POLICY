@@ -1,0 +1,9 @@
+{
+    "User": {
+        "Arn": "arn:aws:iam::aws:user/USER_WITH_BAD_INLINE_POLICY",
+        "CreateDate": "2021-03-13T18:42:09+00:00",
+        "Path": "/",
+        "UserId": "AIDAS2OTVRSQMBNO326VD",
+        "UserName": "USER_WITH_BAD_INLINE_POLICY"
+    }
+}
