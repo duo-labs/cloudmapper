@@ -134,7 +134,7 @@
   verbose: true
 - name: DynamoDB Tables 
   query: .TableNames|length
-  source: dynamodb-list-tanñes  
+  source: dynamodb-list-tables  
   verbose: true
 - name: Internet Gateways
   query: '[.InternetGateways[]?.Attachments[]?|select(.State == "available")]|length'
