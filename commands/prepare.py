@@ -657,7 +657,7 @@ def build_data_structure(account_data, config, outputfilter):
     return cytoscape_json
 
 
-def prepare(account, config, outputfilter):
+def prepare(account, config, outputfilter, outputfile):
     """Collect the data and write it to a file"""
     cytoscape_json = build_data_structure(account, config, outputfilter)
     if not outputfilter["node_data"]:
@@ -667,13 +667,21 @@ def prepare(account, config, outputfilter):
             filtered_node['data']['node_data'] = {}
             filtered_cytoscape_json.append(filtered_node)
         cytoscape_json = filtered_cytoscape_json
-    with open("web/data.json", "w") as outfile:
+    with open(outputfile, "w") as outfile:
         json.dump(cytoscape_json, outfile, indent=4)
 
 
 def run(arguments):
     # Parse arguments
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--output", 
+        help="Output data file path",
+        required=False, 
+        default="web/data.json", 
+        type=str,
+        dest="outputfile"
+    )
     parser.add_argument(
         "--config", help="Config file name", default="config.json", type=str
     )
@@ -830,4 +838,4 @@ def run(arguments):
         )
     account = get_account(args.account_name, config, args.config)
 
-    prepare(account, config, outputfilter)
+    prepare(account, config, outputfilter, args.outputfile)
