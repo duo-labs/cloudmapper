@@ -147,7 +147,7 @@ This will allow you to define the different AWS accounts you use in your environ
 If you use [AWS Organizations](https://aws.amazon.com/organizations/), you can also automatically add organization member accounts to `config.json` using:
 
 ```
-python cloudmapper.py configure discover-organization-accounts
+python cloudmapper.py configure discover-organization-accounts [--profile AWS_PROFILE]
 ```
 
 You need to be authenticated to the AWS CLI and have the permission `organization:ListAccounts` prior to running this command.

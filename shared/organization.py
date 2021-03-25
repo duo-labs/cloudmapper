@@ -5,8 +5,16 @@ from utils.strings import slugify
 # maximum allowed value, c.f. https://docs.aws.amazon.com/organizations/latest/APIReference/API_ListAccounts.html#API_ListAccounts_RequestSyntax
 MAX_NUM_RESULTS = 20
 
-def get_organization_accounts():
-  organizations_client = boto3.client('organizations')
+def get_organization_accounts(**arguments):
+
+  if (arguments and arguments['profile_name']):
+    session_data = {}
+    session_data["profile_name"] = arguments['profile_name']
+    session = boto3.Session(**session_data)
+    organizations_client = session.client('organizations')
+  else:
+    organizations_client = boto3.client('organizations')
+  
   has_more = True
   next_token = None
   accounts = []
