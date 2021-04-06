@@ -411,7 +411,7 @@
   Custom_collection: True
 - Service: accessanalyzer
   Request: list-analyzers
-- Service: glue
-  Request: get-jobs
-- Service: glue
-  Request: get-triggers
+# - Service: glue
+#   Request: get-jobs
+# - Service: glue
+#   Request: get-triggers

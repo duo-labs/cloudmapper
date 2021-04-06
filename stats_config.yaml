@@ -50,12 +50,12 @@
 - name: Lambda functions
   query: .Functions|length
   source: lambda-list-functions
-- name: Glue Jobs
-  query: .Jobs|length
-  source: glue-get-jobs
-- name: Glue Triggers
-  query: .Triggers|length
-  source: glue-get-triggers
+# - name: Glue Jobs
+#   query: .Jobs|length
+#   source: glue-get-jobs
+# - name: Glue Triggers
+#   query: .Triggers|length
+#   source: glue-get-triggers
 # - name: Kafka clusters
 #   query: .ClusterInfoList|length
 #   source: kafka-list-clusters

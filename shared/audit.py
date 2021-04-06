@@ -882,7 +882,7 @@ def audit_sg(findings, region):
 
     cidrs = {}
     sg_json = query_aws(region.account, "ec2-describe-security-groups", region)
-    sgs = pyjq.all(".SecurityGroups[]?", sg_json)
+    sgs = pyjq.all(".SecurityGroups[]", sg_json)
     for sg in sgs:
         cidr_and_name_list = pyjq.all(
             ".IpPermissions[]?.IpRanges[]|[.CidrIp,.Description]", sg

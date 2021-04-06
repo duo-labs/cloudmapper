@@ -407,7 +407,7 @@ class Elb(Leaf):
 
     @property
     def security_groups(self):
-        return pyjq.all(".SecurityGroups[]?", self._json_blob)
+        return pyjq.all(".SecurityGroups[]", self._json_blob)
 
     def __init__(self, parent, json_blob):
         self._type = "elb"
@@ -460,7 +460,7 @@ class Elbv2(Leaf):
 
     @property
     def security_groups(self):
-        return pyjq.all(".SecurityGroups[]?", self._json_blob)
+        return pyjq.all(".SecurityGroups[]", self._json_blob)
 
     def __init__(self, parent, json_blob):
         self._type = "elbv2"

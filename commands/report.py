@@ -4,7 +4,7 @@ import json
 import yaml
 import os.path
 from jinja2 import Template
-
+from datetime import datetime
 from shared.common import (
     parse_arguments,
     get_regions,
@@ -20,7 +20,7 @@ from cloudmapper import __version__
 
 __description__ = "Create report"
 
-REPORT_OUTPUT_FILE = os.path.join("web", "account-data", "report.html")
+REPORT_OUTPUT_FILE = os.path.join("web", "account-data", f"report_{datetime.now().strftime('%d_%m_%Y__%H_%M_%S')}.html")
 
 COLOR_PALETTE = [
     "rgba(141,211,199,1)",

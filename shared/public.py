@@ -175,6 +175,7 @@ def get_public_nodes(account, config, use_cache=False):
                     )
                 )
             public_sgs[sg["GroupId"]] = {
+                "GroupId": sg["GroupId"],
                 "GroupName": sg["GroupName"],
                 "public_ports": port_ranges_string(regroup_ranges(sg_port_ranges)),
             }

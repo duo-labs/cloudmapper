@@ -16,7 +16,8 @@ from botocore.config import Config
 
 __description__ = "Run AWS API calls to collect data from the account"
 
-MAX_RETRIES = 3
+MAX_RETRIES = 10
+SLEEP_TIMEOUT = 10
 
 def snakecase(s):
     return s.replace("-", "_")
@@ -106,7 +107,7 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
                         )
                     )
                 print("  Sleeping and retrying")
-                time.sleep(3)
+                time.sleep(SLEEP_TIMEOUT)
             else:
                 break
 
