@@ -677,7 +677,6 @@ def run(arguments):
     parser.add_argument(
         "--output", 
         help="Output data file path",
-        required=False, 
         default="web/data.json", 
         type=str,
         dest="outputfile"
