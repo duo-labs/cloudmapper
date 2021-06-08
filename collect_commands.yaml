@@ -110,6 +110,8 @@
   Request: describe-volumes
 - Service: ec2
   Request: describe-addresses
+- Service: ec2
+  Request: describe-internet-gateways
 - Service: cloudtrail
   Request: describe-trails
 - Service: cloudtrail

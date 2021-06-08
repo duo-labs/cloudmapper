@@ -128,3 +128,15 @@
   query: .logGroups|length
   source: logs-describe-log-groups
   verbose: true
+- name: ACM Certificates 
+  query: .CertificateSummaryList|length
+  source: acm-list-certificates  
+  verbose: true
+- name: DynamoDB Tables 
+  query: .TableNames|length
+  source: dynamodb-list-tables  
+  verbose: true
+- name: Internet Gateways
+  query: '[.InternetGateways[]?.Attachments[]?|select(.State == "available")]|length'
+  source: describe-internet-gateways 
+  verbose: true
