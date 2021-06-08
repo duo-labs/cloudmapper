@@ -415,3 +415,10 @@
   Request: get-jobs
 - Service: glue
   Request: get-triggers
+- Service: dynamodb
+  Request: list-tables
+- Service: dynamodb
+  Request: describe-table
+  Parameters:
+    - Name: TableName
+      Value: dynamodb-list-tables.json|.TableNames[]?|.
