@@ -26,7 +26,7 @@ pyflakes==2.2.0
 pyjq==2.3.1
 pylint==2.5.2
 python-dateutil==2.8.1
-PyYAML==4.2b4
+PyYAML==5.4
 requests==2.22.0
 s3transfer==0.3.0
 seaborn==0.10.1
