@@ -203,7 +203,11 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
 
                         if 'saml-provider/okta' in saml_provider_arn.lower():
                             node = Account(
-                                json_blob={"id": "okta", "name": "okta", "type": "Okta"}
+                                json_blob={
+                                    "id": "okta", 
+                                    "name": "okta", 
+                                    "type": "Okta"    
+                                }
                             )
                             assume_role_nodes.add(node)
                         elif "saml-provider/onelogin" in saml_provider_arn.lower():
@@ -233,14 +237,31 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 }
                             )
                             assume_role_nodes.add(node)
+                        elif "saml-provider/awssso" in saml_provider_arn.lower():
+                            node = Account(
+                                json_blob={
+                                    "id": "AWSSSO",
+                                    "name": "AWS SSO",
+                                    "type": "Amazon",
+                                }
+                            )
+                            assume_role_nodes.add(node)
                         elif "saml-provider/adfs" in saml_provider_arn.lower():
                             node = Account(
-                                json_blob={"id": "adfs", "name": "adfs", "type": "ADFS"}
+                                json_blob={
+                                    "id": "adfs", 
+                                    "name": "adfs", 
+                                    "type": "ADFS"
+                                }
                             )
                             assume_role_nodes.add(node)
                         elif "saml-provider/auth0" in saml_provider_arn.lower():
                             node = Account(
-                                json_blob={"id": "auth0", "name": "auth0", "type": "auth0"}
+                                json_blob={
+                                    "id": "auth0", 
+                                    "name": "auth0", 
+                                    "type": "auth0"
+                                }
                             )
                             assume_role_nodes.add(node)
                         elif "saml-provider/google" in saml_provider_arn.lower():
