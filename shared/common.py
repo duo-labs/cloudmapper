@@ -285,11 +285,9 @@ def get_account_stats(account, all_resources=False):
         for resource in resources:
             if resource.get("verbose", False) and not all_resources:
                 continue
-
             # Skip global services (just CloudFront)
             if ("region" in resource) and (resource["region"] != region.name):
                 continue
-
             # S3 buckets require special code to identify their location
             if resource["name"] == "S3 buckets":
                 if region.name == "us-east-1":
@@ -297,6 +295,7 @@ def get_account_stats(account, all_resources=False):
                         ".Buckets[].Name",
                         query_aws(region.account, "s3-list-buckets", region),
                     )
+                    
                     for bucket in buckets:
                         # Get the bucket's location
                         bucket_region = get_parameter_file(
@@ -313,6 +312,7 @@ def get_account_stats(account, all_resources=False):
                         # Increment the count
                         tmp = stats[resource["name"]].get(bucket_region, 0)
                         stats[resource["name"]][bucket_region] = tmp + 1
+
             else:
                 # Normal path
                 stats[resource["name"]][region.name] = sum(
@@ -321,7 +321,6 @@ def get_account_stats(account, all_resources=False):
                         query_aws(region.account, resource["source"], region),
                     )
                 )
-
     return stats
 
 
