@@ -1,19 +1,14 @@
 import json
-from datetime import datetime
-import pyjq
-import traceback
 import re
-import os.path
-
 from logging import CRITICAL
 from logging import getLogger
-from policyuniverse.policy import Policy
-from parliament import analyze_policy_string
 
-from netaddr import IPNetwork
+from parliament import analyze_policy_string
+from policyuniverse.policy import Policy
+
 from shared.common import Finding, make_list, get_us_east_1, get_current_policy_doc
-from shared.query import query_aws, get_parameter_file
-from shared.nodes import Account, Region
+from shared.json_wrapper import json_dumps
+from shared.nodes import Account
 
 getLogger("policyuniverse").setLevel(CRITICAL)
 KNOWN_BAD_POLICIES = {
@@ -32,8 +27,8 @@ def action_matches(action_from_policy, actions_to_match_against):
     return False
 
 
-def policy_action_count(policy_doc, location):
-    # Counts how many unrestricted actions a policy grants
+def policy_action_count(policy_doc):
+    """Counts how many unrestricted actions a policy grants"""
     policy = Policy(policy_doc)
     actions_count = 0
     for stmt in policy.statements:
@@ -93,14 +88,11 @@ def is_admin_policy(
                         )
                     return True
                 # Look for privilege escalations
-                if action_matches(action, privs_to_look_for):
-                    if include_retricted:
-                        return True
-                    elif (
+                if action_matches(action, privs_to_look_for) and (include_retricted or (
                         stmt.get("Resource", "") == "*"
                         and stmt.get("Condition", "") == ""
-                    ):
-                        return True
+                )):
+                    return True
 
     return False
 
@@ -193,7 +185,7 @@ def find_admins_in_account(
 
         check_for_bad_policy(findings, region, policy["Arn"], policy_doc)
 
-        analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+        analyzed_policy = analyze_policy_string(json_dumps(policy_doc))
         for f in analyzed_policy.findings:
             findings.add(
                     Finding(
@@ -204,7 +196,7 @@ def find_admins_in_account(
                     )
                 )
 
-        policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc, location)
+        policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc)
 
         if is_admin_policy(
             policy_doc,
@@ -269,7 +261,7 @@ def find_admins_in_account(
         for policy in role["RolePolicyList"]:
             policy_doc = policy["PolicyDocument"]
 
-            analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+            analyzed_policy = analyze_policy_string(json_dumps(policy_doc))
             for f in analyzed_policy.findings:
                 findings.add(
                         Finding(
@@ -451,7 +443,7 @@ def find_admins_in_account(
         for policy in user.get("UserPolicyList", []):
             policy_doc = policy["PolicyDocument"]
 
-            analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
+            analyzed_policy = analyze_policy_string(json_dumps(policy_doc))
             for f in analyzed_policy.findings:
                 findings.add(
                         Finding(

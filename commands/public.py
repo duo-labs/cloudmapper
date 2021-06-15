@@ -1,7 +1,9 @@
 from __future__ import print_function
+
 import sys
-import json
+
 from shared.common import parse_arguments
+from shared.json_wrapper import json_dumps
 from shared.public import get_public_nodes
 
 __description__ = "Find publicly exposed services and their ports"
@@ -17,7 +19,7 @@ def public(accounts, config):
         for warning in warnings:
             print("WARNING: {}".format(warning), file=sys.stderr)
     
-    print(json.dumps(all_accounts, indent=4, sort_keys=True))
+    print(json_dumps(all_accounts, indent=4))
 
 
 def run(arguments):

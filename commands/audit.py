@@ -1,14 +1,14 @@
 import argparse
-import yaml
 import json
 
 from shared.common import parse_arguments
 from shared.audit import audit, load_audit_config, finding_is_filtered
+from shared.json_wrapper import json_dumps
 
 __description__ = "Identify potential issues such as public S3 buckets"
 
 
-def audit_command(accounts, config, args):
+def audit_command(accounts, args):
     """Audit the accounts"""
 
     findings = audit(accounts)
@@ -24,7 +24,7 @@ def audit_command(accounts, config, args):
         if args.json:
             finding = json.loads(str(finding))
             finding['finding_type_metadata']= conf
-            print(json.dumps(finding, sort_keys=True))
+            print(json_dumps(finding))
         elif args.markdown:
             print(
                 "*Audit Finding: [{}] - {}*\\nAccount: {} ({}) - {}\\nDescription: {}\\nResource: `{}`\\nDetails:```{}```".format(
@@ -72,4 +72,4 @@ def run(arguments):
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
-    audit_command(accounts, config, args)
+    audit_command(accounts, args)

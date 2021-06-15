@@ -1,8 +1,8 @@
 import argparse
-import json
 
 from shared.common import parse_arguments
 from shared.iam_audit import find_admins
+from shared.json_wrapper import json_dumps
 
 __description__ = "Find privileged users and roles in accounts"
 
@@ -32,6 +32,6 @@ def run(arguments):
 
     for admin in admins:
         if args.json:
-            print(json.dumps(admin, sort_keys=True))
+            print(json_dumps(admin))
         else:
             print("{}\t{}\t{}".format(admin["account"], admin["type"], admin["name"]))

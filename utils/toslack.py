@@ -1,8 +1,10 @@
-import json
-import requests
-import sys
 import os
+import sys
 import time
+
+import requests
+
+from shared.json_wrapper import json_dumps
 
 # Usage: Set the environment variable SLACK_WEBHOOK to https://hooks.slack.com/services/XXXX/YYYYY
 
@@ -16,14 +18,16 @@ for line in sys.stdin:
     slack_data = {'text': line}
 
     response = requests.post(
-        webhook_url, data=json.dumps(slack_data),
+        webhook_url,
+        data=json_dumps(slack_data),
         headers={'Content-Type': 'application/json'}
     )
     if response.status_code == 429:
         # Rate-limited. Sleep and retry
         time.sleep(5)
         response = requests.post(
-            webhook_url, data=json.dumps(slack_data),
+            webhook_url,
+            data=json_dumps(slack_data),
             headers={'Content-Type': 'application/json'}
         )
 

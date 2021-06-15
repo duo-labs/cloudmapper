@@ -1,19 +1,22 @@
 from __future__ import print_function
+
 import argparse
-import json
 import datetime
+import json
 import os.path
 from abc import ABCMeta
-from six import add_metaclass
-from jinja2 import Template
-from enum import Enum
-
 from logging import CRITICAL
 from logging import getLogger
+
+from enum import Enum
+from jinja2 import Template
 from policyuniverse.policy import Policy
+from six import add_metaclass
+
 from shared.common import parse_arguments, get_regions
-from shared.query import query_aws, get_parameter_file
+from shared.json_wrapper import json_dumps
 from shared.nodes import Account, Region
+from shared.query import query_aws, get_parameter_file
 
 __description__ = "Create IAM report"
 getLogger("policyuniverse").setLevel(CRITICAL)
@@ -558,13 +561,13 @@ def iam_report(accounts, config, args):
             p["inline_policies"].append(
                 {
                     "name": policy["PolicyName"],
-                    "document": json.dumps(policy["PolicyDocument"], indent=4),
+                    "document": json_dumps(policy["PolicyDocument"], indent=4),
                 }
             )
 
         # Show AssumeRolePolicyDocument
         if "RoleName" in stats["auth"]:
-            p["assume_role"] = json.dumps(
+            p["assume_role"] = json_dumps(
                 stats["auth"]["AssumeRolePolicyDocument"], indent=4
             )
 
@@ -593,7 +596,7 @@ def iam_report(accounts, config, args):
             g["inline_policies"].append(
                 {
                     "name": policy["PolicyName"],
-                    "document": json.dumps(policy["PolicyDocument"], indent=4),
+                    "document": json_dumps(policy["PolicyDocument"], indent=4),
                 }
             )
 
@@ -620,7 +623,7 @@ def iam_report(accounts, config, args):
 
         for version in policy["PolicyVersionList"]:
             if version["IsDefaultVersion"]:
-                p["document"] = json.dumps(version["Document"], indent=4)
+                p["document"] = json_dumps(version["Document"], indent=4)
 
         t["policies"].append(p)
 

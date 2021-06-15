@@ -1,10 +1,12 @@
 from __future__ import print_function
+
 import argparse
-import json
-import yaml
 import os.path
+
 from jinja2 import Template
 
+from cloudmapper import __version__
+from shared.audit import audit, load_audit_config, finding_is_filtered
 from shared.common import (
     parse_arguments,
     get_regions,
@@ -12,11 +14,9 @@ from shared.common import (
     get_collection_date,
     get_access_advisor_active_counts,
 )
+from shared.json_wrapper import json_dumps
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
-from shared.audit import audit, load_audit_config, finding_is_filtered
-
-from cloudmapper import __version__
 
 __description__ = "Create report"
 
@@ -428,7 +428,7 @@ def report(accounts, config, args):
         region_hits["hits"].append(
             {
                 "resource": finding.resource_id,
-                "details": json.dumps(finding.resource_details, indent=4),
+                "details": json_dumps(finding.resource_details, indent=4),
             }
         )
 

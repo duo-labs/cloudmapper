@@ -1,8 +1,10 @@
+import argparse
 import json
 import os.path
-import netaddr
-import argparse
 
+import netaddr
+
+from shared.json_wrapper import json_dumps
 from shared.organization import get_organization_accounts
 
 __description__ = "Add and remove items from the config file"
@@ -72,7 +74,7 @@ def configure(action, arguments):
                 config["accounts"].append(organization_account)
             
     with open(arguments.config_file, "w+") as f:
-        f.write(json.dumps(config, indent=4, sort_keys=True))
+        f.write(json_dumps(config, indent=4))
 
 
 def run(arguments):

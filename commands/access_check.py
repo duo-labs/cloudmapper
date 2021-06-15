@@ -8,12 +8,11 @@ get_privilege_statements(...) works by looking for statements that match each pr
 """
 
 import argparse
-import yaml
 import json
 import parliament
-from parliament.policy import Policy
 
-from shared.common import parse_arguments, get_current_policy_doc, make_list
+from shared.common import parse_arguments, get_current_policy_doc
+from shared.json_wrapper import json_dumps
 
 __description__ = "[proof-of-concept] Check who has access to a resource"
 
@@ -85,7 +84,7 @@ def apply_condition_function(condition_function, left_side, right_side):
     return None
 
 
-def get_condition_result(condition_function, condition_values, resource_arn, principal):
+def get_condition_result(condition_function, condition_values, principal):
     """
     Given a condition_function such as: 'StringEquals'
       and values, such as: {'aws:PrincipalTag/project': 'web'}
@@ -155,14 +154,12 @@ def get_privilege_statements(
                         condition_result = get_condition_result(
                             condition_function,
                             condition_values,
-                            resource_arn,
                             principal,
                         )
                         # TODO Need to do something different for Deny, to avoid false negatives
-                        if condition_result is not None:
-                            if condition_result == False:
-                                allowed_by_conditions = False
-                                break
+                        if condition_result is not None and condition_result == False:
+                            allowed_by_conditions = False
+                            break
                     if allowed_by_conditions:
                         condition_allowed_stmts.append(stmt)
                 references[reference] = condition_allowed_stmts
@@ -323,7 +320,7 @@ def access_check_command(accounts, config, args):
                     "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
                     "references": list(priv["references"]),
                 }
-                print(json.dumps(priv_object))
+                print(json_dumps(priv_object))
 
         # Check the users
         for user in iam["UserDetailList"]:
@@ -417,7 +414,7 @@ def access_check_command(accounts, config, args):
                     "privilege": f"{priv['privilege_prefix']}:{priv['privilege_name']}",
                     "references": list(priv["references"]),
                 }
-                print(json.dumps(priv_object))
+                print(json_dumps(priv_object))
 
 
 def get_managed_policy(iam, policy_arn):
@@ -457,17 +454,16 @@ def is_allowed(privilege_prefix, privilege_name, statements):
 def get_allowed_privileges(
     privilege_matches, privileged_statements, boundary_statements
 ):
-    """
+    """Gets allowed privileges
     """
     allowed_privileges = []
     for privilege in privilege_matches:
-        if boundary_statements is not None:
-            if not is_allowed(
+        if boundary_statements is not None and not is_allowed(
                 privilege["privilege_prefix"],
                 privilege["privilege_name"],
                 boundary_statements,
-            ):
-                continue
+        ):
+            continue
 
         allowed_stmts = is_allowed(
             privilege["privilege_prefix"],
