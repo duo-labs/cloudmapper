@@ -1,5 +1,20 @@
 {
-    "GroupDetailList": [],
+    "GroupDetailList": [
+        {
+            "Arn": "arn:aws:iam::aws:group/GROUP_WITH_BAD_INLINE_POLICY",
+            "AttachedManagedPolicies": [
+                {
+                    "PolicyArn": "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM",
+                    "PolicyName": "AmazonEC2RoleforSSM"
+                }
+            ],
+            "CreateDate": "2021-03-13T18:40:54+00:00",
+            "GroupId": "AGPAS2OTVRSQPU55LUWSO",
+            "GroupName": "GROUP_WITH_BAD_INLINE_POLICY",
+            "GroupPolicyList": [],
+            "Path": "/"
+        }
+    ],
     "Policies": [
         {
             "Arn": "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM",
@@ -401,5 +416,33 @@
             "Tags": []
         }
     ],
-    "UserDetailList": []
+    "UserDetailList": [
+        {
+            "Arn": "arn:aws:iam::aws:user/USER_WITH_BAD_INLINE_POLICY",
+            "AttachedManagedPolicies": [
+                {
+                    "PolicyArn": "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM",
+                    "PolicyName": "AmazonEC2RoleforSSM"
+                }
+            ],
+            "CreateDate": "2021-03-13T18:42:09+00:00",
+            "GroupList": [],
+            "Path": "/",
+            "Tags": [],
+            "UserId": "AIDAS2OTVRSQMBNO326VD",
+            "UserName": "USER_WITH_BAD_INLINE_POLICY"
+        },
+        {
+            "Arn": "arn:aws:iam::aws:user/USER",
+            "AttachedManagedPolicies": [],
+            "CreateDate": "2021-03-13T18:42:34+00:00",
+            "GroupList": [
+                "GROUP_WITH_BAD_INLINE_POLICY"
+            ],
+            "Path": "/",
+            "Tags": [],
+            "UserId": "AIDAS2OTVRSQISETXJGWF",
+            "UserName": "USER"
+        }
+    ]
 }
