@@ -71,10 +71,9 @@ def get_public_nodes(account, config, use_cache=False):
 
     # Try reading from cache
     cache_file_path = "account-data/{}/public_nodes.json".format(account["name"])
-    # if use_cache:
-    #     if os.path.isfile(cache_file_path):
-    #         with open(cache_file_path) as f:
-    #             return json.load(f), []
+    if use_cache and os.path.isfile(cache_file_path):
+        with open(cache_file_path) as f:
+            return json.load(f), []
 
     # Get the data from the `prepare` command
     outputfilter = {
