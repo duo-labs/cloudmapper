@@ -22,3 +22,6 @@ auditor/.cdk.staging
 auditor/cdk.out
 auditor/.env
 auditor/resources/cloudmapper
+
+# IntelliJ IDEA files and folders
+.idea
