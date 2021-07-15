@@ -20,7 +20,6 @@ from cloudmapper import __version__
 
 __description__ = "Create report"
 
-REPORT_OUTPUT_FILE = os.path.join("web", "account-data", "report.html")
 
 COLOR_PALETTE = [
     "rgba(141,211,199,1)",
@@ -65,6 +64,7 @@ INACTIVE_COLOR = "rgb(244, 178, 178)"
 def report(accounts, config, args):
     """Create report"""
 
+    REPORT_OUTPUT_FILE = os.path.join("web", "account-data", args.output_file)
     # Create directory for output file if it doesn't already exists
     try:
         os.mkdir(os.path.dirname(REPORT_OUTPUT_FILE))
@@ -465,6 +465,12 @@ def run(arguments):
         help="Only report issues that are greater than this. Default: INFO",
         default="INFO",
         choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
+    )
+    parser.add_argument(
+        "--output_file",
+        help="Output filename of the report. Default: report.html",
+        default="report.html",
+        dest="output_file",
     )
     args, accounts, config = parse_arguments(arguments, parser)
 

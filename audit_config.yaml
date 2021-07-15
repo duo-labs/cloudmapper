@@ -394,3 +394,8 @@ ELBV1_DESYNC_MITIGATION:
   description: "Desync mitigation mode protects your application from issues due to HTTP Desync and should be set to 'Strictest'. https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/config-desync-mitigation-mode.html"
   severity: Low
   group: ELB
+EFS_NOT_ENCRYPTED:
+  title: EFS is no encrypted
+  description: "The EFS is not encrypted at rest with a KMS Key"
+  severity: Medium 
+  group: EFS

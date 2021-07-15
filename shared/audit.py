@@ -1147,6 +1147,22 @@ def audit_lightsail(findings, region):
             )
         )
 
+def audit_efs(findings, region):
+    #check if efs is encrypted at rest
+    json_blob = query_aws(region.account, "efs-describe-file-systems", region)
+    if json_blob is None:
+        # Service not supported in the region
+        return
+    for efs in json_blob.get("FileSystems",[]):
+        # Check Encryption
+        if not efs["Encrypted"]:
+            filesystem_name = efs["FileSystemId"]
+            findings.add(
+                Finding(
+                    region, "EFS_NOT_ENCRYPTED", filesystem_name, resource_details=None
+                )
+            )
+
 
 def audit(accounts):
     findings = Findings()
@@ -1201,6 +1217,7 @@ def audit(accounts):
                 audit_sqs(findings, region)
                 audit_sns(findings, region)
                 audit_lightsail(findings, region)
+                audit_efs(findings, region)
             except Exception as e:
                 findings.add(
                     Finding(
