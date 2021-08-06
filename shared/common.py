@@ -158,7 +158,7 @@ def get_regions(account, outputfilter={}):
             outputfilter["regions"]
         )
 
-    regions = pyjq.all(".Regions[]{}".format(region_filter), region_data)
+    regions = pyjq.all(".Regions[]?{}".format(region_filter), region_data)
     return regions
 
 

@@ -495,7 +495,7 @@ class Rds(Leaf):
             return self._subnet
         else:
             return pyjq.all(
-                ".DBSubnetGroup.Subnets[].SubnetIdentifier", self._json_blob
+                ".DBSubnetGroup.Subnets[]?.SubnetIdentifier", self._json_blob
             )
 
     @property
@@ -571,7 +571,7 @@ class VpcEndpoint(Leaf):
 
     @property
     def security_groups(self):
-        return pyjq.all(".Groups[].GroupId", self._json_blob)
+        return pyjq.all(".Groups[]?.GroupId", self._json_blob)
 
     def __init__(self, parent, json_blob):
         self._type = "vpc_endpoint"
