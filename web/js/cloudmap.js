@@ -37,7 +37,7 @@ $(window).on('load', function(){
     
     $.when(
         $.getJSON("./data.json"),
-        $.getJSON("./style.json")
+        $.getJSON("./../style.json")
     ).done(function(datafile, stylefile) {
         loadCytoscape({
             wheelSensitivity: 0.1,
