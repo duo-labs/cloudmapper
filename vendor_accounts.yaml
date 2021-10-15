@@ -21,7 +21,7 @@
   source: ['https://segment.com/docs/destinations/amazon-s3/', 'https://segment.com/docs/destinations/amazon-kinesis/']
   accounts: ['107630771604', '595280932656']
 - name: 'StackDriver'
-  source: 'https://web.archive.org/web/20150423044518/https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account'
+  source: ['https://web.archive.org/web/20150423044518/https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account', 'https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account']
   accounts: ['314658760392']
 - name: 'Zencoder'
   source: 'https://support.brightcove.com/using-zencoder-s3'
@@ -30,7 +30,7 @@
   source: 'https://docs.datadoghq.com/integrations/amazon_web_services/'
   accounts: ['464622532012']
 - name: 'Cloudability'
-  source: 'https://github.com/edrans/tf-aws-iam-cloudability'
+  source: ['https://github.com/edrans/tf-aws-iam-cloudability', 'https://developers.cloudability.com/docs/vendor-credentials-end-point']
   accounts: ['165736516723']
 - name: 'Rackspace'
   source: 'https://manage.rackspace.com/aws/docs/product-guide/patching/ec2/meltdown.html'
@@ -65,9 +65,6 @@
   type: 'aws'
   source: 'https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-getting-started.html#step-2'
   accounts: ['386209384616']
-- name: 'stackdriver'
-  source: 'https://support.stackdriver.com/customer/portal/articles/1491790-setting-up-stackdriver-for-your-aws-account'
-  accounts: ['314658760392']
 - name: 'skeddly'
   source: 'http://thecloudmarket.com/owner/478299826944'
   accounts: ['478299826944']
@@ -255,8 +252,6 @@
 - name: 'Densify'
   source: 'https://www.densify.com/docs/Content/Data_Collection_for_Public_Cloud_Systems/AWS_Data_Collection_Prerequisites_for_an_IAM_Role.htm'
   accounts: ['036437403198']
-- name: 'Dyntrace'
-  accounts: ['509560245411']
 - name: 'Armor Anywhere'
   source: ['https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-partner-providers.html', 'https://docs.armor.com/pages/viewpage.action?pageId=20709565']
   accounts: ['679703615338', '345186984524']
@@ -316,8 +311,6 @@
 - name: 'Weave Cloud'
   source: 'https://eksctl.io/'
   accounts: ['376248598259']
-- name: 'Lucidchart'
-  accounts: ['799803075172']
 - name: 'ChaosSearch'
   source: 'https://docs.chaossearch.io/docs/prerequisites'
   accounts: ['515570774723']
@@ -342,9 +335,6 @@
 - name: 'MediaMath'
   source: 'https://apidocs.mediamath.com/reporting/log-level-data-service/overview#data-security-and-authorization'
   accounts: ['794878508631']
-- name: 'Databricks'
-  source: 'https://docs.databricks.com/administration-guide/account-settings/aws-accounts.html'
-  accounts: ['414351767826']
 - name: 'Presidio'
   source: 'customer IAM policy'
   accounts: ['118652503430']
