@@ -566,7 +566,7 @@ def run(arguments):
     )
     parser.add_argument(
         "--clean",
-        help="Remove any existing data for the account before gathering",
+        help="Remove any existing local, previously collected data for the account before gathering",
         action="store_true",
     )
     parser.add_argument(
