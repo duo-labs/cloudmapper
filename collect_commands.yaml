@@ -415,3 +415,5 @@
   Request: get-jobs
 - Service: glue
   Request: get-triggers
+- Service: securityhub
+  Request: describe-hub
