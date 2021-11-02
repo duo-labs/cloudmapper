@@ -13,7 +13,7 @@ Jinja2==2.11.3
 jmespath==0.9.5
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
-matplotlib==3.2.2
+matplotlib==3.3.3
 mccabe==0.6.1
 mock==4.0.2
 netaddr==0.7.19
