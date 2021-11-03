@@ -365,7 +365,7 @@
   accounts: ['066549572091']
 - name: 'Turbot'
   source: 'https://turbot.com/v5/docs/integrations/aws/import-aws-account'
-  accounts: ['255798382450','287590803701']
+  accounts: ['287590803701', '255798382450']
 - name: 'Qualys AWS EC2 Connector'
   source: 'https://qualys-secure.force.com/discussions/s/question/0D52L00004TnxTqSAJ/aws-ec2-connector-creation-automation'
   accounts: ['805950163170']
