@@ -393,7 +393,7 @@ def find_admins_in_account(
                     Finding(
                         region,
                         "IAM_KNOWN_BAD_POLICY",
-                        role["Arn"],
+                        group["Arn"],
                         resource_details={
                             "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
                             "policy": policy["PolicyArn"],
@@ -442,7 +442,7 @@ def find_admins_in_account(
                     Finding(
                         region,
                         "IAM_KNOWN_BAD_POLICY",
-                        role["Arn"],
+                        user["Arn"],
                         resource_details={
                             "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
                             "policy": policy["PolicyArn"],
