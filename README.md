@@ -1,6 +1,11 @@
 CloudMapper
 ========
-CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality, including auditing for security issues.
+
+**Note** the Network Visualization functionality (command `prepare`) is no longer maintained.
+
+CloudMapper helps you analyze your Amazon Web Services (AWS) environments. 
+The original purpose was to generate network diagrams and display them in your browser (functionality no longer maintained). 
+It now contains much more functionality, including auditing for security issues.
 
 - [Network mapping demo](https://duo-labs.github.io/cloudmapper/)
 - [Report demo](https://duo-labs.github.io/cloudmapper/account-data/report.html)
@@ -53,7 +58,7 @@ On macOS:
 # clone the repo
 git clone https://github.com/duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool jq awscli python3
+brew install autoconf automake awscli freetype jq libtool python3
 cd cloudmapper/
 python3 -m venv ./venv && source venv/bin/activate
 pip install -r requirements.txt

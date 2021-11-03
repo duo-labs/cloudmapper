@@ -422,3 +422,5 @@
   Parameters:
     - Name: TableName
       Value: dynamodb-list-tables.json|.TableNames[]?|.
+- Service: securityhub
+  Request: describe-hub

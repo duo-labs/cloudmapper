@@ -1,0 +1,9 @@
+{
+    "User": {
+        "Arn": "arn:aws:iam::aws:user/USER",
+        "CreateDate": "2021-03-13T18:42:34+00:00",
+        "Path": "/",
+        "UserId": "AIDAS2OTVRSQISETXJGWF",
+        "UserName": "USER"
+    }
+}
