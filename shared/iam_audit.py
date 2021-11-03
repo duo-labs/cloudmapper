@@ -36,7 +36,7 @@ def action_matches(action_from_policy, actions_to_match_against):
 
 
 def policy_action_count(policy_doc, location):
-    # Counts how many unrestricted actions a policy grants
+    """Counts how many unrestricted actions a policy grants"""
     policy = Policy(policy_doc)
     actions_count = 0
     for stmt in policy.statements:
@@ -395,7 +395,7 @@ def find_admins_in_account(
                     Finding(
                         region,
                         "IAM_KNOWN_BAD_POLICY",
-                        role["Arn"],
+                        group["Arn"],
                         resource_details={
                             "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
                             "policy": policy["PolicyArn"],
@@ -444,7 +444,7 @@ def find_admins_in_account(
                     Finding(
                         region,
                         "IAM_KNOWN_BAD_POLICY",
-                        role["Arn"],
+                        user["Arn"],
                         resource_details={
                             "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
                             "policy": policy["PolicyArn"],
