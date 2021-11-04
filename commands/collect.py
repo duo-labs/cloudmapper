@@ -147,6 +147,12 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
         ):
             print("  - No policy exists")
         elif (
+            "ResourceNotFoundException" in str(e)
+            and call_summary["service"] == "glacier"
+            and call_summary["action"] == "get_vault_access_policy"
+        ):
+            print("  - No policy exists")
+        elif (
             "AccessDeniedException" in str(e)
             and call_summary["service"] == "kms"
             and call_summary["action"] == "list_key_policies"
@@ -170,6 +176,12 @@ def call_function(outputfile, handler, method_to_call, parameters, check, summar
             and call_summary["action"] == "get_key_rotation_status"
         ):
             print("  - Denied, which should mean this KMS has restricted access")
+        elif (
+            "InvalidAccessException" in str(e)
+            and call_summary["service"] == "securityhub"
+            and call_summary["action"] == "describe_hub"
+        ):
+            print("  - Securityhub is not enabled")
         elif "AWSOrganizationsNotInUseException" in str(e):
             print(' - Your account is not a member of an organization.')
         else:
