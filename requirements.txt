@@ -31,7 +31,7 @@ platformdirs==2.4.0
 policyuniverse==1.4.0.20210819
 pycodestyle==2.8.0
 pyflakes==2.4.0
-pyjq==2.5.2
+pyjq==2.4.0
 pylint==2.11.1
 pyparsing==3.0.4
 python-dateutil==2.8.2

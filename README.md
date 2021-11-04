@@ -61,7 +61,7 @@ git clone https://github.com/duo-labs/cloudmapper.git
 brew install autoconf automake awscli freetype jq libtool python3
 cd cloudmapper/
 python3 -m venv ./venv && source venv/bin/activate
-pip install -r requirements.txt
+pip install --prefer-binary -r requirements.txt
 ```
 
 On Linux:
