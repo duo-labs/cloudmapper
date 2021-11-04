@@ -307,6 +307,7 @@ def collect(arguments):
     # Services that will only be queried in the default_
     # TODO: Identify these from boto
     universal_services = [
+        "account",
         "sts",
         "iam",
         "route53",
