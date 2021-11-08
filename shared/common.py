@@ -401,6 +401,9 @@ def get_access_advisor_active_counts(account, max_age=90):
         json_last_access_details = get_parameter_file(
             region, "iam", "get-service-last-accessed-details", job_id
         )
+        if json_last_access_details is None:
+            print("Missing data for job id {} in {}".format(job_id, account.name))
+            continue
         stats["last_access"] = json_last_access_details
 
         stats["is_inactive"] = True
