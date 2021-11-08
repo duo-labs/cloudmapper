@@ -68,9 +68,9 @@ def configure(action, arguments):
         current_account_ids = set(map(lambda entry: entry["id"], current_accounts))
         for organization_account in organization_accounts:
             # Don't overwrite any account already in the configuration file
-            if organization_account['id'] not in current_account_ids:
+            if organization_account["id"] not in current_account_ids:
                 config["accounts"].append(organization_account)
-            
+
     with open(arguments.config_file, "w+") as f:
         f.write(json.dumps(config, indent=4, sort_keys=True))
 

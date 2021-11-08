@@ -77,8 +77,8 @@ def amis(args, accounts, config):
             )
             if args.instance_filter != "":
                 resource_filter += "|{}".format(args.instance_filter)
-            
-            if 'Reservations' not in instances:
+
+            if "Reservations" not in instances:
                 print(f"** skipping: {account.name} in {region_name}")
                 continue
 
@@ -86,7 +86,7 @@ def amis(args, accounts, config):
 
             account_images = query_aws(account, "ec2-describe-images", region)
             resource_filter = ".Images[]"
-            if 'Images' not in account_images:
+            if "Images" not in account_images:
                 print(f"** skipping: {account.name} in {region_name}")
                 continue
             account_images = pyjq.all(resource_filter, account_images)

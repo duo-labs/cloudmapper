@@ -20,7 +20,7 @@ __description__ = "[proof-of-concept] Check who has access to a resource"
 
 def replace_principal_variables(reference, principal):
     """
-    Given a resource reference string (ie. the Resource string from an IAM policy) and a prinicipal, replace any variables in the resource string that are principal related. 
+    Given a resource reference string (ie. the Resource string from an IAM policy) and a prinicipal, replace any variables in the resource string that are principal related.
     """
     reference = reference.lower()
     for tag in principal.tags:
@@ -189,22 +189,22 @@ class Principal:
 
     @property
     def tags(self):
-        """ aws:PrincipalTag """
+        """aws:PrincipalTag"""
         return self._tags
 
     @property
     def mytype(self):
-        """ aws:PrincipalType """
+        """aws:PrincipalType"""
         return self._type
 
     @property
     def username(self):
-        """ aws:username """
+        """aws:username"""
         return self._username
 
     @property
     def userid(self):
-        """ aws:userid """
+        """aws:userid"""
         return self._userid
 
     def __init__(self, mytype, tags, username="", userid=""):
@@ -422,7 +422,7 @@ def access_check_command(accounts, config, args):
 
 def get_managed_policy(iam, policy_arn):
     """
-    Given the IAM data for an account and the ARN for a policy, 
+    Given the IAM data for an account and the ARN for a policy,
     return the policy document
     """
     for policy in iam["Policies"]:
@@ -457,8 +457,7 @@ def is_allowed(privilege_prefix, privilege_name, statements):
 def get_allowed_privileges(
     privilege_matches, privileged_statements, boundary_statements
 ):
-    """
-    """
+    """ """
     allowed_privileges = []
     for privilege in privilege_matches:
         if boundary_statements is not None:

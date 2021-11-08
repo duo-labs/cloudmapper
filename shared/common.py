@@ -79,7 +79,6 @@ class InvalidAccountData(Exception):
     """Raised when collect results are missing or malformed"""
 
 
-
 class Finding(object):
     """Used for auditing"""
 
@@ -210,11 +209,7 @@ def get_account_by_id(account_id, config=None, config_filename="config.json"):
                 config_filename
             )
         )
-    exit(
-        'ERROR: Account ID "{}" not found in {}'.format(
-            account_id, config_filename
-        )
-    )
+    exit('ERROR: Account ID "{}" not found in {}'.format(account_id, config_filename))
 
 
 def parse_arguments(arguments, parser=None):
@@ -342,7 +337,7 @@ def get_us_east_1(account):
 
 
 def iso_date(d):
-    """ Convert ISO format date string such as 2018-04-08T23:33:20+00:00"""
+    """Convert ISO format date string such as 2018-04-08T23:33:20+00:00"""
     time_format = "%Y-%m-%dT%H:%M:%S"
     return datetime.datetime.strptime(d.split("+")[0], time_format)
 
@@ -363,7 +358,9 @@ def get_collection_date(account):
     )
     if not json_blob:
         raise InvalidAccountData(
-            "File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for account {}".format(account.name)
+            "File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for account {}".format(
+                account.name
+            )
         )
 
     # GeneratedTime looks like "2019-01-30T15:43:24+00:00"
@@ -399,9 +396,13 @@ def get_access_advisor_active_counts(account, max_age=90):
             principal_auth["Arn"],
         )
         if job_details is None:
-            print("Missing data for arn {} in {}".format(principal_auth["Arn"], account.name))
+            print(
+                "Missing data for arn {} in {}".format(
+                    principal_auth["Arn"], account.name
+                )
+            )
             continue
-        
+
         job_id = job_details["JobId"]
         json_last_access_details = get_parameter_file(
             region, "iam", "get-service-last-accessed-details", job_id
@@ -439,4 +440,3 @@ def get_current_policy_doc(policy):
         if doc["IsDefaultVersion"]:
             return doc["Document"]
     raise Exception("No default document version in policy {}".format(policy["Arn"]))
-
