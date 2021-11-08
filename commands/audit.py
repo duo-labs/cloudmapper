@@ -23,7 +23,7 @@ def audit_command(accounts, config, args):
 
         if args.json:
             finding = json.loads(str(finding))
-            finding['finding_type_metadata']= conf
+            finding["finding_type_metadata"] = conf
             print(json.dumps(finding, sort_keys=True))
         elif args.markdown:
             print(
@@ -35,7 +35,7 @@ def audit_command(accounts, config, args):
                     finding.region.name,
                     conf["description"],
                     finding.resource_id,
-                    str(finding.resource_details).replace('\n', '\\n')
+                    str(finding.resource_details).replace("\n", "\\n"),
                 )
             )
         else:
@@ -68,7 +68,7 @@ def run(arguments):
         "--minimum_severity",
         help="Only report issues that are greater than this. Default: INFO",
         default="INFO",
-        choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
+        choices=["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO", "MUTE"],
     )
     args, accounts, config = parse_arguments(arguments, parser)
 

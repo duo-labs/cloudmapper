@@ -5,7 +5,13 @@ import yaml
 import pyjq
 import urllib.parse
 
-from shared.common import parse_arguments, make_list, query_aws, get_regions, get_account_by_id
+from shared.common import (
+    parse_arguments,
+    make_list,
+    query_aws,
+    get_regions,
+    get_account_by_id,
+)
 
 __description__ = "Create Web Of Trust diagram for accounts"
 
@@ -174,9 +180,7 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
     )
 
     saml_providers = query_aws(
-        account,
-        "iam-list-saml-providers",
-        Region(account, {"RegionName": "us-east-1"})
+        account, "iam-list-saml-providers", Region(account, {"RegionName": "us-east-1"})
     )["SAMLProviderList"]
 
     for role in pyjq.all(".RoleDetailList[]", iam):
@@ -195,19 +199,19 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                         # WoT will show us the direction of that trust for further inspection.
                         # this enables cross_account_admin_sts (STS between accounts)
                         for saml in saml_providers:
-                            if saml['Arn'] == federated_principal:
-                                saml_provider_arn = saml['Arn']
-                            elif get_account_by_id(account_id=federated_principal.split(':')[4]):
-                                if get_account_by_id(account_id=saml['Arn'].split(':')[4]):
-                                    saml_provider_arn = saml['Arn']
+                            if saml["Arn"] == federated_principal:
+                                saml_provider_arn = saml["Arn"]
+                            elif get_account_by_id(
+                                account_id=federated_principal.split(":")[4]
+                            ):
+                                if get_account_by_id(
+                                    account_id=saml["Arn"].split(":")[4]
+                                ):
+                                    saml_provider_arn = saml["Arn"]
 
-                        if 'saml-provider/okta' in saml_provider_arn.lower():
+                        if "saml-provider/okta" in saml_provider_arn.lower():
                             node = Account(
-                                json_blob={
-                                    "id": "okta", 
-                                    "name": "okta", 
-                                    "type": "Okta"    
-                                }
+                                json_blob={"id": "okta", "name": "okta", "type": "Okta"}
                             )
                             assume_role_nodes.add(node)
                         elif "saml-provider/onelogin" in saml_provider_arn.lower():
@@ -248,19 +252,15 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                             assume_role_nodes.add(node)
                         elif "saml-provider/adfs" in saml_provider_arn.lower():
                             node = Account(
-                                json_blob={
-                                    "id": "adfs", 
-                                    "name": "adfs", 
-                                    "type": "ADFS"
-                                }
+                                json_blob={"id": "adfs", "name": "adfs", "type": "ADFS"}
                             )
                             assume_role_nodes.add(node)
                         elif "saml-provider/auth0" in saml_provider_arn.lower():
                             node = Account(
                                 json_blob={
-                                    "id": "auth0", 
-                                    "name": "auth0", 
-                                    "type": "auth0"
+                                    "id": "auth0",
+                                    "name": "auth0",
+                                    "type": "auth0",
                                 }
                             )
                             assume_role_nodes.add(node)
@@ -282,7 +282,10 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 }
                             )
                             assume_role_nodes.add(node)
-                        elif "cognito-identity.amazonaws.com" in saml_provider_arn.lower():
+                        elif (
+                            "cognito-identity.amazonaws.com"
+                            in saml_provider_arn.lower()
+                        ):
                             continue
                         elif "www.amazon.com" in saml_provider_arn.lower():
                             node = Account(
@@ -295,18 +298,27 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                             continue
                         else:
                             raise Exception(
-                                "Unknown federation provider: {}".format(saml_provider_arn.lower())
+                                "Unknown federation provider: {}".format(
+                                    saml_provider_arn.lower()
+                                )
                             )
 
                     except (StopIteration, IndexError):
-                        if "cognito-identity.amazonaws.com" in federated_principal.lower():
+                        if (
+                            "cognito-identity.amazonaws.com"
+                            in federated_principal.lower()
+                        ):
                             # TODO: Should show this somehow
                             continue
                         elif ":oidc-provider/" in federated_principal.lower():
                             # TODO: handle OpenID Connect identity providers
                             # https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html
                             continue
-                        raise Exception('Principal {} is not a configured SAML provider'.format(federated_principal))
+                        raise Exception(
+                            "Principal {} is not a configured SAML provider".format(
+                                federated_principal
+                            )
+                        )
             if principal.get("AWS", None):
                 principal = principal["AWS"]
                 if not isinstance(principal, list):
@@ -480,8 +492,12 @@ def weboftrust(args, accounts, config):
         if not was_scanned:
             for vendor in vendor_accounts:
                 if n.id in vendor["accounts"]:
-                    if 'source' not in vendor:
-                        print("WARNING: Unconfirmed vendor: {} ({})".format(vendor['name'], n.id))
+                    if "source" not in vendor:
+                        print(
+                            "WARNING: Unconfirmed vendor: {} ({})".format(
+                                vendor["name"], n.id
+                            )
+                        )
                     n.name = vendor["name"]
                     n.type = vendor.get("type", vendor["name"])
 

@@ -16,7 +16,7 @@ def public(accounts, config):
             all_accounts.append(public_node)
         for warning in warnings:
             print("WARNING: {}".format(warning), file=sys.stderr)
-    
+
     print(json.dumps(all_accounts, indent=4, sort_keys=True))
 
 

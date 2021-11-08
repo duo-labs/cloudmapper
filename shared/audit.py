@@ -558,7 +558,10 @@ def audit_route53(findings, region):
     regions = pyjq.all(".Regions[].RegionName", regions_json)
     for region_name in regions:
         vpc_json = query_aws(region.account, "ec2-describe-vpcs", region_name)
-        vpcs = pyjq.all(".Vpcs[]?.VpcId", vpc_json)
+        vpcs = pyjq.all(
+            '.Vpcs[]? | select(.OwnerId=="{}").VpcId'.format(region.account.local_id),
+            vpc_json,
+        )
         for vpc in vpcs:
             hosted_zone_file = f"account-data/{region.account.name}/{region.name}/route53-list-hosted-zones-by-vpc/{region_name}/{vpc}"
             hosted_zones_json = json.load(open(hosted_zone_file))
@@ -567,7 +570,15 @@ def audit_route53(findings, region):
                 if hosted_zone.get("Owner", {}).get("OwningAccount", "") != "":
                     if hosted_zone["Owner"]["OwningAccount"] != region.account.local_id:
                         findings.add(
-                            Finding(region, "FOREIGN_HOSTED_ZONE", hosted_zone)
+                            Finding(
+                                region,
+                                "FOREIGN_HOSTED_ZONE",
+                                hosted_zone,
+                                resource_datails={
+                                    "vpc_id": vpc,
+                                    "vpc_regions": region_name,
+                                },
+                            )
                         )
 
 
@@ -721,7 +732,7 @@ def audit_es(findings, region):
         )
         # Find the entity we need
         policy_string = policy_file_json["DomainStatus"]["AccessPolicies"]
-        if policy_string == '':
+        if policy_string == "":
             policy_string = "{}"
         # Load the string value as json
         policy = json.loads(policy_string)
@@ -731,7 +742,8 @@ def audit_es(findings, region):
         # they are VPC-only, in which case they have an "Endpoints" (plural) array containing a "vpc" element
         if (
             policy_file_json["DomainStatus"].get("Endpoint", "") != ""
-            or policy_file_json["DomainStatus"].get("Endpoints", {}).get("vpc", "") == ""
+            or policy_file_json["DomainStatus"].get("Endpoints", {}).get("vpc", "")
+            == ""
         ):
             if policy.is_internet_accessible() or policy_string == "{}":
                 findings.add(
@@ -849,7 +861,9 @@ def audit_elbv1(findings, region):
             region, "elb", "describe-load-balancer-attributes", lb_name
         )
 
-        for attribute in attributes_json.get("LoadBalancerAttributes", [])['AdditionalAttributes']:
+        for attribute in attributes_json.get("LoadBalancerAttributes", [])[
+            "AdditionalAttributes"
+        ]:
             if (
                 attribute["Key"] == "elb.http.desyncmitigationmode"
                 and attribute["Value"] != "strictest"
@@ -939,7 +953,7 @@ def audit_sg(findings, region):
                                     "SG description": sg["Description"],
                                     "SG tags": sg.get("Tags", {}),
                                     "cidr1": cidr,
-                                    "cidr2": cidr_seen
+                                    "cidr2": cidr_seen,
                                 },
                             )
                         )

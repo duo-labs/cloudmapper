@@ -9,7 +9,11 @@ from nose.tools import assert_equal, assert_true, assert_false
 
 class TestFindUnused(TestCase):
     mock_account = type("account", (object,), {"name": "a"})
-    mock_region = type("region", (object,), {"account": mock_account, "name": "a", "region": mock_account })
+    mock_region = type(
+        "region",
+        (object,),
+        {"account": mock_account, "name": "a", "region": mock_account},
+    )
 
     def test_find_unused_elastic_ips_empty(self):
         def mocked_query_side_effect(account, query, region):
@@ -281,7 +285,7 @@ class TestFindUnused(TestCase):
                             "AvailabilityZones": [
                                 "eu-west-1b",
                                 "eu-west-1c",
-                                "eu-west-1a"
+                                "eu-west-1a",
                             ],
                             "BackendServerDescriptions": [],
                             "CanonicalHostedZoneName": "some-elb-450109654.eu-west-1.elb.amazonaws.com",
@@ -293,7 +297,7 @@ class TestFindUnused(TestCase):
                                 "Interval": 300,
                                 "Target": "HTTP:8033/ping",
                                 "Timeout": 4,
-                                "UnhealthyThreshold": 2
+                                "UnhealthyThreshold": 2,
                             },
                             "Instances": [],
                             "ListenerDescriptions": [
@@ -303,46 +307,42 @@ class TestFindUnused(TestCase):
                                         "InstanceProtocol": "HTTP",
                                         "LoadBalancerPort": 443,
                                         "Protocol": "HTTPS",
-                                        "SSLCertificateId": "arn:aws:acm:eu-west-1:123456789011:certificate/1e43d2f8-8f31-4a29-ba3e-fce3d2c6c0ed"
+                                        "SSLCertificateId": "arn:aws:acm:eu-west-1:123456789011:certificate/1e43d2f8-8f31-4a29-ba3e-fce3d2c6c0ed",
                                     },
-                                    "PolicyNames": [
-                                        "ELBSecurityPolicy-2016-08"
-                                    ]
+                                    "PolicyNames": ["ELBSecurityPolicy-2016-08"],
                                 },
                                 {
                                     "Listener": {
                                         "InstancePort": 8033,
                                         "InstanceProtocol": "HTTP",
                                         "LoadBalancerPort": 80,
-                                        "Protocol": "HTTP"
+                                        "Protocol": "HTTP",
                                     },
-                                    "PolicyNames": []
-                                }
+                                    "PolicyNames": [],
+                                },
                             ],
                             "LoadBalancerName": "some-elb",
                             "Policies": {
                                 "AppCookieStickinessPolicies": [],
                                 "LBCookieStickinessPolicies": [],
-                                "OtherPolicies": [
-                                    "ELBSecurityPolicy-2019-08"
-                                ]
+                                "OtherPolicies": ["ELBSecurityPolicy-2019-08"],
                             },
                             "Scheme": "internet-facing",
                             "SecurityGroups": [
                                 "sg-82e9fce5",
                                 "sg-d2be0aaa",
-                                "sg-b1e9fcd6"
+                                "sg-b1e9fcd6",
                             ],
                             "SourceSecurityGroup": {
                                 "GroupName": "default-http-healthcheck",
-                                "OwnerAlias": "123456789011"
+                                "OwnerAlias": "123456789011",
                             },
                             "Subnets": [
                                 "subnet-67c99110",
                                 "subnet-a684b4c3",
-                                "subnet-ef6516b6"
+                                "subnet-ef6516b6",
                             ],
-                            "VPCId": "vpc-1234567"
+                            "VPCId": "vpc-1234567",
                         }
                     ]
                 }
@@ -357,5 +357,5 @@ class TestFindUnused(TestCase):
 
             assert_equal(
                 find_unused_elastic_load_balancers(self.mock_region),
-                [{"LoadBalancerName": "some-elb"}],
+                [{"LoadBalancerName": "some-elb", 'Type': 'classic'}],
             )

@@ -48,7 +48,7 @@ class TestAudit(unittest.TestCase):
                     "IAM_LINTER",
                     "EC2_IMDSV2_NOT_ENFORCED",
                     "REQUEST_SMUGGLING",
-                    "ELBV1_DESYNC_MITIGATION"
+                    "ELBV1_DESYNC_MITIGATION",
                 ]
             ),
         )

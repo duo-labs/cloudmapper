@@ -11,6 +11,7 @@ from shared.common import (
     get_account_stats,
     get_collection_date,
     get_access_advisor_active_counts,
+    InvalidAccountData,
 )
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
@@ -55,7 +56,7 @@ SEVERITIES = [
     {"name": "Low", "color": "rgba(255, 255, 102, 1)"},  # Yellow
     {"name": "Info", "color": "rgba(154, 214, 156, 1)"},  # Green
     {"name": "Verbose", "color": "rgba(133, 163, 198, 1)"},  # Blue
-] 
+]
 
 ACTIVE_COLOR = "rgb(139, 214, 140)"
 BAD_COLOR = "rgb(204, 120, 120)"
@@ -67,7 +68,7 @@ def report(accounts, config, args):
 
     # Create directory for output file if it doesn't already exists
     try:
-        os.mkdir(os.path.dirname(REPORT_OUTPUT_FILE))
+        os.mkdir(os.path.dirname(args.output_file))
     except OSError:
         # Already exists
         pass
@@ -342,9 +343,7 @@ def report(accounts, config, args):
         severity_counts_by_account = []
         for _ in accounts:
             severity_counts_by_account.append(
-                len(
-                    findings_severity_by_account[_["name"]][severity["name"]]
-                )
+                len(findings_severity_by_account[_["name"]][severity["name"]])
             )
 
         t["findings_severity_by_account_chart"].append(
@@ -439,10 +438,10 @@ def report(accounts, config, args):
         t["findings"][conf["group"]] = group
 
     # Generate report from template
-    with open(REPORT_OUTPUT_FILE, "w") as f:
+    with open(args.output_file, "w") as f:
         f.write(template.render(t=t))
 
-    print("Report written to {}".format(REPORT_OUTPUT_FILE))
+    print("Report written to {}".format(args.output_file))
 
 
 def run(arguments):
@@ -452,6 +451,11 @@ def run(arguments):
         help="Number of days a user or role hasn't been used before it's marked inactive",
         default=90,
         type=int,
+    )
+    parser.add_argument(
+        "--output-file",
+        help="Path to write report output to",
+        default=REPORT_OUTPUT_FILE,
     )
     parser.add_argument(
         "--stats_all_resources",
@@ -464,8 +468,11 @@ def run(arguments):
         "--minimum_severity",
         help="Only report issues that are greater than this. Default: INFO",
         default="INFO",
-        choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
+        choices=["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO", "MUTE"],
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
-    report(accounts, config, args)
+    try:
+        report(accounts, config, args)
+    except InvalidAccountData as e:
+        print("Invalid account data: {}".format(e))

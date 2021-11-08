@@ -67,7 +67,9 @@ def find_unused_elastic_ips(region):
     unused_ips = []
     ips = query_aws(region.account, "ec2-describe-addresses", region)
     for ip in pyjq.all(".Addresses[]? | select(.AssociationId == null)", ips):
-        unused_ips.append({"id": ip.get("AllocationId", "Un-allocated IP"), "ip": ip["PublicIp"]})
+        unused_ips.append(
+            {"id": ip.get("AllocationId", "Un-allocated IP"), "ip": ip["PublicIp"]}
+        )
 
     return unused_ips
 
@@ -86,18 +88,48 @@ def find_unused_network_interfaces(region):
 
     return unused_network_interfaces
 
+
 def find_unused_elastic_load_balancers(region):
     unused_elastic_load_balancers = []
-    elastic_load_balancers = query_aws(region.account, "elb-describe-load-balancers", region)
-    for elastic_load_balancer in pyjq.all(".LoadBalancerDescriptions[]? | select(.Instances == [])", elastic_load_balancers):
-        unused_elastic_load_balancers.append({"LoadBalancerName": elastic_load_balancer["LoadBalancerName"], "Type": "classic"})
+    elastic_load_balancers = query_aws(
+        region.account, "elb-describe-load-balancers", region
+    )
+    for elastic_load_balancer in pyjq.all(
+        ".LoadBalancerDescriptions[]? | select(.Instances == [])",
+        elastic_load_balancers,
+    ):
+        unused_elastic_load_balancers.append(
+            {
+                "LoadBalancerName": elastic_load_balancer["LoadBalancerName"],
+                "Type": "classic",
+            }
+        )
 
-    elastic_load_balancers_v2 = query_aws(region.account, "elbv2-describe-load-balancers", region)
-    for elastic_load_balancer in pyjq.all(".LoadBalancers[]?", elastic_load_balancers_v2):
-        target_groups = get_parameter_file(region, "elbv2", "describe-target-groups", elastic_load_balancer["LoadBalancerArn"])
-        unused_elastic_load_balancers.append({"LoadBalancerName": elastic_load_balancer["LoadBalancerName"], "Type": elastic_load_balancer["Type"]})
+    elastic_load_balancers_v2 = query_aws(
+        region.account, "elbv2-describe-load-balancers", region
+    )
+    for elastic_load_balancer in pyjq.all(
+        ".LoadBalancers[]?", elastic_load_balancers_v2
+    ):
+        target_groups = get_parameter_file(
+            region,
+            "elbv2",
+            "describe-target-groups",
+            elastic_load_balancer["LoadBalancerArn"],
+        )
+        unused_elastic_load_balancers.append(
+            {
+                "LoadBalancerName": elastic_load_balancer["LoadBalancerName"],
+                "Type": elastic_load_balancer["Type"],
+            }
+        )
         for target_group in pyjq.all(".TargetGroups[]?", target_groups):
-            target_healths = get_parameter_file(region, "elbv2", "describe-target-health", target_group["TargetGroupArn"])
+            target_healths = get_parameter_file(
+                region,
+                "elbv2",
+                "describe-target-health",
+                target_group["TargetGroupArn"],
+            )
             instances = pyjq.one(".TargetHealthDescriptions? | length", target_healths)
             if instances > 0:
                 unused_elastic_load_balancers.pop()

@@ -153,7 +153,7 @@ def get_public_nodes(account, config, use_cache=False):
             )
             # I would need to redo this code in order to get the name of the security group
             public_sgs[sg_group_allowing_all_protocols] = {"public_ports": "0-65535"}
-        
+
         # from_port and to_port mean the beginning and end of a port range
         # We only care about TCP (6) and UDP (17)
         # For more info see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html
@@ -163,15 +163,11 @@ def get_public_nodes(account, config, use_cache=False):
             for ip_permission in sg.get("IpPermissions", []):
                 selection = 'select((.IpProtocol=="tcp") or (.IpProtocol=="udp")) | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
                 sg_port_ranges.extend(
-                    pyjq.all(
-                        "{}| [.FromPort,.ToPort]".format(selection), ip_permission
-                    )
+                    pyjq.all("{}| [.FromPort,.ToPort]".format(selection), ip_permission)
                 )
                 selection = 'select(.IpProtocol=="-1") | select(.IpRanges[].CidrIp=="0.0.0.0/0")'
                 sg_port_ranges.extend(
-                    pyjq.all(
-                        "{}| [0,65535]".format(selection), ip_permission
-                    )
+                    pyjq.all("{}| [0,65535]".format(selection), ip_permission)
                 )
             public_sgs[sg["GroupId"]] = {
                 "GroupId": sg["GroupId"],
