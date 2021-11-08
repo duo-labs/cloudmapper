@@ -558,7 +558,7 @@ def audit_route53(findings, region):
     regions = pyjq.all(".Regions[].RegionName", regions_json)
     for region_name in regions:
         vpc_json = query_aws(region.account, "ec2-describe-vpcs", region_name)
-        vpcs = pyjq.all(".Vpcs[]?.VpcId", vpc_json)
+        vpcs = pyjq.all('.Vpcs[]? | select(.OwnerId=="{}").VpcId'.format(region.account.local_id), vpc_json)
         for vpc in vpcs:
             hosted_zone_file = f"account-data/{region.account.name}/{region.name}/route53-list-hosted-zones-by-vpc/{region_name}/{vpc}"
             hosted_zones_json = json.load(open(hosted_zone_file))
