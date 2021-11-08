@@ -67,7 +67,7 @@ def report(accounts, config, args):
 
     # Create directory for output file if it doesn't already exists
     try:
-        os.mkdir(os.path.dirname(REPORT_OUTPUT_FILE))
+        os.mkdir(os.path.dirname(args.output_file))
     except OSError:
         # Already exists
         pass
@@ -439,10 +439,10 @@ def report(accounts, config, args):
         t["findings"][conf["group"]] = group
 
     # Generate report from template
-    with open(REPORT_OUTPUT_FILE, "w") as f:
+    with open(args.output_file, "w") as f:
         f.write(template.render(t=t))
 
-    print("Report written to {}".format(REPORT_OUTPUT_FILE))
+    print("Report written to {}".format(args.output_file))
 
 
 def run(arguments):
@@ -452,6 +452,11 @@ def run(arguments):
         help="Number of days a user or role hasn't been used before it's marked inactive",
         default=90,
         type=int,
+    )
+    parser.add_argument(
+        "--output-file",
+        help="Path to write report output to",
+        default=REPORT_OUTPUT_FILE,
     )
     parser.add_argument(
         "--stats_all_resources",
