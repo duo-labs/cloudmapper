@@ -357,5 +357,5 @@ class TestFindUnused(TestCase):
 
             assert_equal(
                 find_unused_elastic_load_balancers(self.mock_region),
-                [{"LoadBalancerName": "some-elb"}],
+                [{"LoadBalancerName": "some-elb", 'Type': 'classic'}],
             )
