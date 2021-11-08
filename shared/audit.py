@@ -567,7 +567,8 @@ def audit_route53(findings, region):
                 if hosted_zone.get("Owner", {}).get("OwningAccount", "") != "":
                     if hosted_zone["Owner"]["OwningAccount"] != region.account.local_id:
                         findings.add(
-                            Finding(region, "FOREIGN_HOSTED_ZONE", hosted_zone)
+                            Finding(region, "FOREIGN_HOSTED_ZONE", hosted_zone,
+                            resource_datails={"vpc_id": vpc, "vpc_regions": region_name})
                         )
 
 
