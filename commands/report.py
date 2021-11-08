@@ -11,7 +11,7 @@ from shared.common import (
     get_account_stats,
     get_collection_date,
     get_access_advisor_active_counts,
-    InvalidAccountData
+    InvalidAccountData,
 )
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
@@ -56,7 +56,7 @@ SEVERITIES = [
     {"name": "Low", "color": "rgba(255, 255, 102, 1)"},  # Yellow
     {"name": "Info", "color": "rgba(154, 214, 156, 1)"},  # Green
     {"name": "Verbose", "color": "rgba(133, 163, 198, 1)"},  # Blue
-] 
+]
 
 ACTIVE_COLOR = "rgb(139, 214, 140)"
 BAD_COLOR = "rgb(204, 120, 120)"
@@ -343,9 +343,7 @@ def report(accounts, config, args):
         severity_counts_by_account = []
         for _ in accounts:
             severity_counts_by_account.append(
-                len(
-                    findings_severity_by_account[_["name"]][severity["name"]]
-                )
+                len(findings_severity_by_account[_["name"]][severity["name"]])
             )
 
         t["findings_severity_by_account_chart"].append(
@@ -470,10 +468,11 @@ def run(arguments):
         "--minimum_severity",
         help="Only report issues that are greater than this. Default: INFO",
         default="INFO",
-        choices=['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO', 'MUTE']
+        choices=["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO", "MUTE"],
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
     try:
         report(accounts, config, args)
-    except("Invalid account data: {}".format(e))
+    except InvalidAccountData as e:
+        print("Invalid account data: {}".format(e))
