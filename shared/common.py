@@ -392,12 +392,17 @@ def get_access_advisor_active_counts(account, max_age=90):
         if "UserName" in principal_auth:
             principal_type = "users"
 
-        job_id = get_parameter_file(
+        job_details = get_parameter_file(
             region,
             "iam",
             "generate-service-last-accessed-details",
             principal_auth["Arn"],
-        )["JobId"]
+        )
+        if job_details is None:
+            print("Missing data for arn {} in {}".format(principal_auth["Arn"], account.name))
+            continue
+        
+        job_id = job_details["JobId"]
         json_last_access_details = get_parameter_file(
             region, "iam", "get-service-last-accessed-details", job_id
         )
