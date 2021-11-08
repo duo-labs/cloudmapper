@@ -75,6 +75,11 @@ def log_issue(severity, msg, location=None, reasons=[]):
         print(json.dumps(json_issue, sort_keys=True), file=sys.stderr)
 
 
+class InvalidAccountData(Exception):
+    """Raised when collect results are missing or malformed"""
+
+
+
 class Finding(object):
     """Used for auditing"""
 
@@ -151,6 +156,8 @@ def is_unblockable_cidr(cidr):
 def get_regions(account, outputfilter={}):
     # aws ec2 describe-regions
     region_data = query_aws(account, "describe-regions")
+    if not region_data:
+        raise InvalidAccountData("region data not found for {}".format(account.name))
 
     region_filter = ""
     if "regions" in outputfilter:
@@ -331,7 +338,7 @@ def get_us_east_1(account):
         if region.name == "us-east-1":
             return region
 
-    raise Exception("us-east-1 not found")
+    raise InvalidAccountData("us-east-1 not found in {}".format(account.name))
 
 
 def iso_date(d):
@@ -355,8 +362,8 @@ def get_collection_date(account):
         account_struct, "iam-get-credential-report", get_us_east_1(account_struct)
     )
     if not json_blob:
-        raise Exception(
-            "File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for this account."
+        raise InvalidAccountData(
+            "File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for account {}".format(account.name)
         )
 
     # GeneratedTime looks like "2019-01-30T15:43:24+00:00"
@@ -424,3 +431,4 @@ def get_current_policy_doc(policy):
         if doc["IsDefaultVersion"]:
             return doc["Document"]
     raise Exception("No default document version in policy {}".format(policy["Arn"]))
+

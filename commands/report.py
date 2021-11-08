@@ -11,6 +11,7 @@ from shared.common import (
     get_account_stats,
     get_collection_date,
     get_access_advisor_active_counts,
+    InvalidAccountData
 )
 from shared.nodes import Account, Region
 from shared.public import get_public_nodes
@@ -473,4 +474,6 @@ def run(arguments):
     )
     args, accounts, config = parse_arguments(arguments, parser)
 
-    report(accounts, config, args)
+    try:
+        report(accounts, config, args)
+    except("Invalid account data: {}".format(e))
