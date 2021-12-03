@@ -574,7 +574,7 @@ def audit_route53(findings, region):
                                 region,
                                 "FOREIGN_HOSTED_ZONE",
                                 hosted_zone,
-                                resource_datails={
+                                resource_details={
                                     "vpc_id": vpc,
                                     "vpc_regions": region_name,
                                 },
