@@ -8,7 +8,7 @@ WORKDIR /opt/cloudmapper
 ENV AWS_DEFAULT_REGION=us-east-1 
 
 RUN apt-get update -y
-RUN apt-get install -y build-essential autoconf automake libtool python3.7-dev python3-tk jq awscli
+RUN apt-get install -y build-essential autoconf automake libtool python3-tk jq awscli
 RUN apt-get install -y bash
 
 COPY . /opt/cloudmapper
