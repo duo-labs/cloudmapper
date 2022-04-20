@@ -153,7 +153,7 @@
   accounts: ['896126563706']
 - name: 'Cloudyn'
   source: 'https://docs.microsoft.com/bs-latn-ba/azure/cost-management/connect-aws-account'
-  accounts: ['432263259397']
+  accounts: ['432263259397', '147690223836']
 - name: 'Lucidchart'
   source: 'https://lucidchart.zendesk.com/hc/en-us/articles/208018563-Create-an-IAM-User-or-a-Cross-Account-Role-in-AWS-for-Lucidchart'
   accounts: ['799803075172']
@@ -366,3 +366,30 @@
 - name: 'Slack EKM'
   source: 'https://slackhq.com/dotcom/dotcom/wp-content/uploads/sites/6/2019/08/Slack-EKM-Implementation-Guide-1.pdf'
   accounts: ['152659312504', '429538831549']
+- name: 'CloudZero'
+  source: 'https://docs.cloudzero.com/docs/account-connection'
+  accounts: ['061190967865']
+- name: 'CloudDyn'
+  source: 'https://docs.cloudzero.com/docs/account-connection'
+  accounts: ['147690223836', '432263259397']
+- name: 'Pileus'
+  source: 'https://support.pileuscloud.com/support/solutions/articles/70000473181-connect-your-aws-account-aws-console-'
+  accounts: ['932213950603']
+- name: 'AWS Cost Explorer'
+  source: #Couldn't locate
+  accounts: ['023825257053']
+- name: 'CloudHealth'
+  source: #Couldn't locate
+  accounts: ['080626737206']
+- name: 'Zesty / CloudVisor'
+  source: 'http://static.cloudvisor.io/scripts/CV_enterprise_onboarding.py'
+  accounts: ['672188301118']
+- name: 'Wiz'
+  source: #Couldn't locate
+  accounts: ['197171649850']
+- name: 'Orca'
+  source: 'https://orcasecurity.force.com/s/article/Orca-Scanner-Accounts-for-AWS-Trusted-Entities?topic=Onboarding&subtopic=AWS&article=Orca-Scanner-Accounts-for-AWS-Trusted-Entities'
+  accounts: ['976280145156', '727815099310', '553950354547', '135916806842', '463932680998', '784971140435']
+ - name: 'Dome9 / Checkpoint'
+  source: 'http://support.dome9.com/knowledgebase/articles/796419-convert-dome9-aws-account-connection-from-iam-user'
+  accounts: ['634729597623']
