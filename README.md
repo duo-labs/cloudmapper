@@ -78,6 +78,23 @@ python3 -m venv ./venv && source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### With Poetry
+
+Requirements:
+- Python 3.7 somewhere on your system
+
+```
+# clone the repo
+git clone https://github.com/duo-labs/cloudmapper.git && cd cloudmapper
+# if your Python 3.7 isn't available in $PATH you can configure the environment manually
+# e.g. `poetry env use /usr/local/opt/python@3.7/bin/python`
+# Install the environment
+poetry install
+# Enter the interactive shell
+poetry shell
+# Run the application without worry
+./cloudmapper.py
+```
 
 ## Run with demo data
 
