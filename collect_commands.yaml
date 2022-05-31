@@ -63,6 +63,11 @@
   - Name: AccountId
     Value: sts-get-caller-identity.json|.Account
 - Service: s3
+  Request: get-public-access-block
+  Parameters:
+  - Name: Bucket
+    Value: s3-list-buckets.json|.Buckets[]?|.Name
+- Service: s3
   Request: list-buckets
 - Service: s3
   Request: get-bucket-acl
