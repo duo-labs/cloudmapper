@@ -1,6 +1,11 @@
 CloudMapper
 ========
-CloudMapper helps you analyze your Amazon Web Services (AWS) environments.  The original purpose was to generate network diagrams and display them in your browser.  It now contains much more functionality, including auditing for security issues.
+
+**Note** the Network Visualization functionality (command `prepare`) is no longer maintained.
+
+CloudMapper helps you analyze your Amazon Web Services (AWS) environments. 
+The original purpose was to generate network diagrams and display them in your browser (functionality no longer maintained). 
+It now contains much more functionality, including auditing for security issues.
 
 - [Network mapping demo](https://duo-labs.github.io/cloudmapper/)
 - [Report demo](https://duo-labs.github.io/cloudmapper/account-data/report.html)
@@ -53,10 +58,10 @@ On macOS:
 # clone the repo
 git clone https://github.com/duo-labs/cloudmapper.git
 # Install pre-reqs for pyjq
-brew install autoconf automake libtool jq awscli python3
+brew install autoconf automake awscli freetype jq libtool python3
 cd cloudmapper/
 python3 -m venv ./venv && source venv/bin/activate
-pip install -r requirements.txt
+pip install --prefer-binary -r requirements.txt
 ```
 
 On Linux:
@@ -172,6 +177,7 @@ Cloudmapper needs to make IAM calls and cannot use session credentials for colle
     docker run -ti \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+        -p 8000:8000 \
         cloudmapper /bin/bash
 )
 ```
@@ -182,6 +188,8 @@ This will drop you into the container. Run `aws sts get-caller-identity` to conf
 python cloudmapper.py configure add-account --config-file config.json --name YOUR_ACCOUNT --id YOUR_ACCOUNT_NUMBER
 python cloudmapper.py collect --account YOUR_ACCOUNT
 python cloudmapper.py report --account YOUR_ACCOUNT
+python cloudmapper.py prepare --account YOUR_ACCOUNT
+python cloudmapper.py webserver --public
 ```
 
 You should then be able to view the report by visiting http://127.0.0.1:8000/account-data/report.html

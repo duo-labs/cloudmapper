@@ -226,7 +226,7 @@ class user_node(graph_node):
             auth_graph[policy_node.key()] = policy_node
 
         for group_name in auth.get("GroupList", []):
-            group_key = self.key()[0:26] + "group" + auth['Path'] + group_name
+            group_key = self.key()[0:26] + "group" + auth["Path"] + group_name
             group_node = auth_graph[group_key]
             group_node.add_parent(self)
             self.add_child(group_node)
@@ -632,29 +632,33 @@ def iam_report(accounts, config, args):
         with open("{}.json".format(REPORT_OUTPUT_FILE), "w") as f:
             json.dump(t, f)
 
-    print("Report written to {}.{}".format(REPORT_OUTPUT_FILE, args.requested_output.value))
+    print(
+        "Report written to {}.{}".format(
+            REPORT_OUTPUT_FILE, args.requested_output.value
+        )
+    )
 
 
 def run(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--max-age",
-        help="Number of days a user or role hasn't been used before it's marked dead",
+        help="Number of days a user or role hasn't been used before it's marked dead. Default: 90",
         default=90,
         type=int,
     )
     parser.add_argument(
         "--graph",
-        help="Do not create and display a graph",
+        help="Display a graph. Default: False",
         dest="show_graph",
         action="store_true",
     )
     parser.add_argument(
         "--output",
-        help="Set the output type for the report",
+        help="Set the output type for the report. [json | html]. Default: html",
         default=OutputFormat.html,
         type=OutputFormat,
-        dest="requested_output"
+        dest="requested_output",
     )
     parser.set_defaults(show_graph=False)
     args, accounts, config = parse_arguments(arguments, parser)

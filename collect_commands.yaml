@@ -110,6 +110,8 @@
   Request: describe-volumes
 - Service: ec2
   Request: describe-addresses
+- Service: ec2
+  Request: describe-internet-gateways
 - Service: cloudtrail
   Request: describe-trails
 - Service: cloudtrail
@@ -133,6 +135,11 @@
     Value: rds-describe-db-instances.json|.DBInstances[]?|.DBInstanceArn
 - Service: elb
   Request: describe-load-balancers
+- Service: elb
+  Request: describe-load-balancer-attributes
+  Parameters:
+  - Name: LoadBalancerName
+    Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[].LoadBalancerName
 - Service: elb
   Request: describe-load-balancer-policies
 - Service: elb
@@ -410,3 +417,12 @@
   Request: get-jobs
 - Service: glue
   Request: get-triggers
+- Service: dynamodb
+  Request: list-tables
+- Service: dynamodb
+  Request: describe-table
+  Parameters:
+    - Name: TableName
+      Value: dynamodb-list-tables.json|.TableNames[]?|.
+- Service: securityhub
+  Request: describe-hub

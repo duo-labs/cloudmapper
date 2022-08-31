@@ -18,7 +18,10 @@ from shared.nodes import Account, Region
 getLogger("policyuniverse").setLevel(CRITICAL)
 KNOWN_BAD_POLICIES = {
     "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM": "Use AmazonSSMManagedInstanceCore instead and add privs as needed",
-    "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV2 instead",
+    "arn:aws:iam::aws:policy/service-role/AmazonMachineLearningRoleforRedshiftDataSource": "Use AmazonMachineLearningRoleforRedshiftDataSourceV3 instead",
+    "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetRole": "Use AmazonEC2SpotFleetTaggingRole instead",
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaReadOnlyAccess": "Use AWSLambda_ReadOnlyAccess instead",
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaFullAccess": "Use AWSLambda_FullAccess instead",
 }
 
 
@@ -33,7 +36,7 @@ def action_matches(action_from_policy, actions_to_match_against):
 
 
 def policy_action_count(policy_doc, location):
-    # Counts how many unrestricted actions a policy grants
+    """Counts how many unrestricted actions a policy grants"""
     policy = Policy(policy_doc)
     actions_count = 0
     for stmt in policy.statements:
@@ -196,13 +199,18 @@ def find_admins_in_account(
         analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
         for f in analyzed_policy.findings:
             findings.add(
-                    Finding(
-                        region,
-                        "IAM_LINTER",
-                        policy["Arn"],
-                        resource_details={"issue": str(f.issue), "severity": str(f.severity), "location": str(f.location), "policy": policy_doc},
-                    )
+                Finding(
+                    region,
+                    "IAM_LINTER",
+                    policy["Arn"],
+                    resource_details={
+                        "issue": str(f.issue),
+                        "severity": str(f.severity),
+                        "location": str(f.location),
+                        "policy": policy_doc,
+                    },
                 )
+            )
 
         policy_action_counts[policy["Arn"]] = policy_action_count(policy_doc, location)
 
@@ -272,13 +280,18 @@ def find_admins_in_account(
             analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
             for f in analyzed_policy.findings:
                 findings.add(
-                        Finding(
-                            region,
-                            "IAM_LINTER",
-                            role["Arn"],
-                            resource_details={"issue": str(f.issue), "severity": str(f.severity), "location": str(f.location), "policy": policy_doc},
-                        )
+                    Finding(
+                        region,
+                        "IAM_LINTER",
+                        role["Arn"],
+                        resource_details={
+                            "issue": str(f.issue),
+                            "severity": str(f.severity),
+                            "location": str(f.location),
+                            "policy": policy_doc,
+                        },
                     )
+                )
 
             if is_admin_policy(
                 policy_doc,
@@ -288,13 +301,15 @@ def find_admins_in_account(
                 privs_to_look_for,
                 include_restricted,
             ):
-                if ':role/OrganizationAccountAccessRole' in role['Arn']:
+                if ":role/OrganizationAccountAccessRole" in role["Arn"]:
                     # AWS creates this role and adds an inline policy to it granting full
                     # privileges, so this just causes false positives as the purpose
                     # of this detection rule is to find unexpected admins
                     continue
 
-                reasons_for_being_admin.append("Custom policy: {}".format(policy["PolicyName"]))
+                reasons_for_being_admin.append(
+                    "Custom policy: {}".format(policy["PolicyName"])
+                )
                 findings.add(
                     Finding(
                         region,
@@ -350,7 +365,10 @@ def find_admins_in_account(
                                 },
                             )
                         )
-            elif stmt["Action"] in ["sts:AssumeRoleWithSAML", "sts:AssumeRoleWithWebIdentity"]:
+            elif stmt["Action"] in [
+                "sts:AssumeRoleWithSAML",
+                "sts:AssumeRoleWithWebIdentity",
+            ]:
                 continue
             else:
                 findings.add(
@@ -392,7 +410,7 @@ def find_admins_in_account(
                     Finding(
                         region,
                         "IAM_KNOWN_BAD_POLICY",
-                        role["Arn"],
+                        group["Arn"],
                         resource_details={
                             "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
                             "policy": policy["PolicyArn"],
@@ -441,7 +459,7 @@ def find_admins_in_account(
                     Finding(
                         region,
                         "IAM_KNOWN_BAD_POLICY",
-                        role["Arn"],
+                        user["Arn"],
                         resource_details={
                             "comment": KNOWN_BAD_POLICIES[policy["PolicyArn"]],
                             "policy": policy["PolicyArn"],
@@ -454,13 +472,18 @@ def find_admins_in_account(
             analyzed_policy = analyze_policy_string(json.dumps(policy_doc))
             for f in analyzed_policy.findings:
                 findings.add(
-                        Finding(
-                            region,
-                            "IAM_LINTER",
-                            user["Arn"],
-                            resource_details={"issue": str(f.issue), "severity": str(f.severity), "location": str(f.location), "policy": policy_doc},
-                        )
+                    Finding(
+                        region,
+                        "IAM_LINTER",
+                        user["Arn"],
+                        resource_details={
+                            "issue": str(f.issue),
+                            "severity": str(f.severity),
+                            "location": str(f.location),
+                            "policy": policy_doc,
+                        },
                     )
+                )
 
             if is_admin_policy(
                 policy_doc,
@@ -470,7 +493,9 @@ def find_admins_in_account(
                 privs_to_look_for,
                 include_restricted,
             ):
-                reasons_for_being_admin.append("Custom user policy: {}".format(policy["PolicyName"]))
+                reasons_for_being_admin.append(
+                    "Custom user policy: {}".format(policy["PolicyName"])
+                )
                 findings.add(
                     Finding(
                         region,

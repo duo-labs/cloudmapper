@@ -75,6 +75,10 @@ def log_issue(severity, msg, location=None, reasons=[]):
         print(json.dumps(json_issue, sort_keys=True), file=sys.stderr)
 
 
+class InvalidAccountData(Exception):
+    """Raised when collect results are missing or malformed"""
+
+
 class Finding(object):
     """Used for auditing"""
 
@@ -151,6 +155,8 @@ def is_unblockable_cidr(cidr):
 def get_regions(account, outputfilter={}):
     # aws ec2 describe-regions
     region_data = query_aws(account, "describe-regions")
+    if not region_data:
+        raise InvalidAccountData("region data not found for {}".format(account.name))
 
     region_filter = ""
     if "regions" in outputfilter:
@@ -184,6 +190,26 @@ def get_account(account_name, config=None, config_filename="config.json.demo"):
             account_name, config_filename
         )
     )
+
+
+def get_account_by_id(account_id, config=None, config_filename="config.json"):
+    if config is None:
+        config = json.load(open(config_filename))
+
+    for account in config["accounts"]:
+        if account["id"] == account_id:
+            return account
+        if account_id is None and account.get("default", False):
+            return account
+
+    # Else could not find account
+    if account_id is None:
+        exit(
+            "ERROR: Must specify an account, or set one in {} as a default".format(
+                config_filename
+            )
+        )
+    exit('ERROR: Account ID "{}" not found in {}'.format(account_id, config_filename))
 
 
 def parse_arguments(arguments, parser=None):
@@ -314,11 +340,11 @@ def get_us_east_1(account):
         if region.name == "us-east-1":
             return region
 
-    raise Exception("us-east-1 not found")
+    raise InvalidAccountData("us-east-1 not found in {}".format(account.name))
 
 
 def iso_date(d):
-    """ Convert ISO format date string such as 2018-04-08T23:33:20+00:00"""
+    """Convert ISO format date string such as 2018-04-08T23:33:20+00:00"""
     time_format = "%Y-%m-%dT%H:%M:%S"
     return datetime.datetime.strptime(d.split("+")[0], time_format)
 
@@ -338,8 +364,10 @@ def get_collection_date(account):
         account_struct, "iam-get-credential-report", get_us_east_1(account_struct)
     )
     if not json_blob:
-        raise Exception(
-            "File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for this account."
+        raise InvalidAccountData(
+            "File iam-get-credential-report.json does not exist or is not well-formed. Likely cause is you did not run the collect command for account {}".format(
+                account.name
+            )
         )
 
     # GeneratedTime looks like "2019-01-30T15:43:24+00:00"
@@ -368,15 +396,27 @@ def get_access_advisor_active_counts(account, max_age=90):
         if "UserName" in principal_auth:
             principal_type = "users"
 
-        job_id = get_parameter_file(
+        job_details = get_parameter_file(
             region,
             "iam",
             "generate-service-last-accessed-details",
             principal_auth["Arn"],
-        )["JobId"]
+        )
+        if job_details is None:
+            print(
+                "Missing data for arn {} in {}".format(
+                    principal_auth["Arn"], account.name
+                )
+            )
+            continue
+
+        job_id = job_details["JobId"]
         json_last_access_details = get_parameter_file(
             region, "iam", "get-service-last-accessed-details", job_id
         )
+        if json_last_access_details is None:
+            print("Missing data for job id {} in {}".format(job_id, account.name))
+            continue
         stats["last_access"] = json_last_access_details
 
         stats["is_inactive"] = True

@@ -1,6 +1,6 @@
 import pyjq
 
-from shared.common import query_aws, get_regions
+from shared.common import query_aws, get_regions, get_parameter_file
 from shared.nodes import Account, Region
 from commands.prepare import get_resource_nodes
 
@@ -18,11 +18,11 @@ def find_unused_security_groups(region):
 
     defined_sg_set = {}
 
-    for sg in pyjq.all(".SecurityGroups[]", defined_sgs):
+    for sg in pyjq.all(".SecurityGroups[]?", defined_sgs):
         defined_sg_set[sg["GroupId"]] = sg
 
     for used_sg in pyjq.all(
-        ".NetworkInterfaces[].Groups[].GroupId", network_interfaces
+        ".NetworkInterfaces[]?.Groups[].GroupId", network_interfaces
     ):
         used_sgs.add(used_sg)
 
@@ -57,7 +57,7 @@ def find_unused_security_groups(region):
 def find_unused_volumes(region):
     unused_volumes = []
     volumes = query_aws(region.account, "ec2-describe-volumes", region)
-    for volume in pyjq.all('.Volumes[]|select(.State=="available")', volumes):
+    for volume in pyjq.all('.Volumes[]?|select(.State=="available")', volumes):
         unused_volumes.append({"id": volume["VolumeId"]})
 
     return unused_volumes
@@ -66,8 +66,10 @@ def find_unused_volumes(region):
 def find_unused_elastic_ips(region):
     unused_ips = []
     ips = query_aws(region.account, "ec2-describe-addresses", region)
-    for ip in pyjq.all(".Addresses[] | select(.AssociationId == null)", ips):
-        unused_ips.append({"id": ip.get("AllocationId", "Un-allocated IP"), "ip": ip["PublicIp"]})
+    for ip in pyjq.all(".Addresses[]? | select(.AssociationId == null)", ips):
+        unused_ips.append(
+            {"id": ip.get("AllocationId", "Un-allocated IP"), "ip": ip["PublicIp"]}
+        )
 
     return unused_ips
 
@@ -78,7 +80,7 @@ def find_unused_network_interfaces(region):
         region.account, "ec2-describe-network-interfaces", region
     )
     for network_interface in pyjq.all(
-        '.NetworkInterfaces[]|select(.Status=="available")', network_interfaces
+        '.NetworkInterfaces[]?|select(.Status=="available")', network_interfaces
     ):
         unused_network_interfaces.append(
             {"id": network_interface["NetworkInterfaceId"]}
@@ -86,12 +88,53 @@ def find_unused_network_interfaces(region):
 
     return unused_network_interfaces
 
+
 def find_unused_elastic_load_balancers(region):
     unused_elastic_load_balancers = []
-    elastic_load_balancers = query_aws(region.account, "elb-describe-load-balancers", region)
-    for elastic_load_balancer in pyjq.all(".LoadBalancerDescriptions[] | select(.Instances == [])", elastic_load_balancers):
-        unused_elastic_load_balancers.append({"LoadBalancerName": elastic_load_balancer["LoadBalancerName"]})
-        
+    elastic_load_balancers = query_aws(
+        region.account, "elb-describe-load-balancers", region
+    )
+    for elastic_load_balancer in pyjq.all(
+        ".LoadBalancerDescriptions[]? | select(.Instances == [])",
+        elastic_load_balancers,
+    ):
+        unused_elastic_load_balancers.append(
+            {
+                "LoadBalancerName": elastic_load_balancer["LoadBalancerName"],
+                "Type": "classic",
+            }
+        )
+
+    elastic_load_balancers_v2 = query_aws(
+        region.account, "elbv2-describe-load-balancers", region
+    )
+    for elastic_load_balancer in pyjq.all(
+        ".LoadBalancers[]?", elastic_load_balancers_v2
+    ):
+        target_groups = get_parameter_file(
+            region,
+            "elbv2",
+            "describe-target-groups",
+            elastic_load_balancer["LoadBalancerArn"],
+        )
+        unused_elastic_load_balancers.append(
+            {
+                "LoadBalancerName": elastic_load_balancer["LoadBalancerName"],
+                "Type": elastic_load_balancer["Type"],
+            }
+        )
+        for target_group in pyjq.all(".TargetGroups[]?", target_groups):
+            target_healths = get_parameter_file(
+                region,
+                "elbv2",
+                "describe-target-health",
+                target_group["TargetGroupArn"],
+            )
+            instances = pyjq.one(".TargetHealthDescriptions? | length", target_healths)
+            if instances > 0:
+                unused_elastic_load_balancers.pop()
+                break
+
     return unused_elastic_load_balancers
 
 

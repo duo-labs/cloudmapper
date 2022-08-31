@@ -5,7 +5,14 @@ import yaml
 import pyjq
 import urllib.parse
 
-from shared.common import parse_arguments, make_list, query_aws, get_regions, get_saml_providers
+from shared.common import (
+    parse_arguments,
+    make_list,
+    query_aws,
+    get_regions,
+    get_account_by_id,
+    get_saml_providers,
+)
 
 __description__ = "Create Web Of Trust diagram for accounts"
 
@@ -15,6 +22,7 @@ __description__ = "Create Web Of Trust diagram for accounts"
 # - More vendors, and a dozen don't have logos
 # - How IAM admins are identified (need to leverage code from find_admins better)
 # - More services and their trust policies.
+
 
 def get_regional_vpc_peerings(region):
     vpc_peerings = query_aws(
@@ -173,9 +181,7 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
     )
 
     saml_providers = query_aws(
-        account,
-        "iam-list-saml-providers",
-        Region(account, {"RegionName": "us-east-1"})
+        account, "iam-list-saml-providers", Region(account, {"RegionName": "us-east-1"})
     )["SAMLProviderList"]
 
     for role in pyjq.all(".RoleDetailList[]", iam):
@@ -190,33 +196,58 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
 
                 for federated_principal in federated_principals:
                     try:
-                        saml_provider_arn = next(saml for saml in saml_providers if saml['Arn'] == federated_principal)['Arn']
+                        # Validate that the federated principal and the SAML provider is coming from known accounts.
+                        # WoT will show us the direction of that trust for further inspection.
+                        # this enables cross_account_admin_sts (STS between accounts)
+                        for saml in saml_providers:
+                            if saml["Arn"] == federated_principal:
+                                saml_provider_arn = saml["Arn"]
+                            elif get_account_by_id(
+                                account_id=federated_principal.split(":")[4]
+                            ):
+                                if get_account_by_id(
+                                    account_id=saml["Arn"].split(":")[4]
+                                ):
+                                    saml_provider_arn = saml["Arn"]
 
                         found = False
                         for p in get_saml_providers():
-                            if p['name'] in saml_provider_arn.lower():
+                            if p["name"] in saml_provider_arn.lower():
                                 found = True
-                                if p.get('node') != None:
-                                        node = Account(**p['node'])
+                                if p.get("node") != None:
+                                    node = Account(**p["node"])
 
-                                if p.get('assumed'):
+                                if p.get("assumed"):
                                     assume_role_nodes.add(node)
 
                                 break
 
                         if not found:
-                            node = Account( json_blob={"id": "unknown", "name": "saml-unknown", "type": "saml-unknown"})
+                            node = Account(
+                                json_blob={
+                                    "id": "unknown",
+                                    "name": "saml-unknown",
+                                    "type": "saml-unknown",
+                                }
+                            )
                             assume_role_nodes.add(node)
 
-                    except StopIteration:
-                        if "cognito-identity.amazonaws.com" in federated_principal.lower():
+                    except (StopIteration, IndexError):
+                        if (
+                            "cognito-identity.amazonaws.com"
+                            in federated_principal.lower()
+                        ):
                             # TODO: Should show this somehow
                             continue
                         elif ":oidc-provider/" in federated_principal.lower():
                             # TODO: handle OpenID Connect identity providers
                             # https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html
                             continue
-                        raise Exception('Principal {} is not a configured SAML provider'.format(federated_principal))
+                        raise Exception(
+                            "Principal {} is not a configured SAML provider".format(
+                                federated_principal
+                            )
+                        )
             if principal.get("AWS", None):
                 principal = principal["AWS"]
                 if not isinstance(principal, list):
@@ -390,6 +421,12 @@ def weboftrust(args, accounts, config):
         if not was_scanned:
             for vendor in vendor_accounts:
                 if n.id in vendor["accounts"]:
+                    if "source" not in vendor:
+                        print(
+                            "WARNING: Unconfirmed vendor: {} ({})".format(
+                                vendor["name"], n.id
+                            )
+                        )
                     n.name = vendor["name"]
                     n.type = vendor.get("type", vendor["name"])
 

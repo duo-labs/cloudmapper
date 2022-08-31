@@ -327,7 +327,11 @@ def add_node_to_subnets(region, node, nodes):
 
     # Add a new node (potentially the same one) back to the dictionary
     for vpc in region.children:
-        if len(node.subnets) == 0 and node._parent and vpc.local_id == node._parent.local_id:
+        if (
+            len(node.subnets) == 0
+            and node._parent
+            and vpc.local_id == node._parent.local_id
+        ):
             # VPC Gateway Endpoints (S3 and DynamoDB) reside in a VPC, not a subnet
             # So set the relationship between the VPC and the node
             nodes[node.arn] = node
@@ -458,12 +462,13 @@ def build_data_structure(account_data, config, outputfilter):
                     # For a tag set, see if all conditions match, ex. [["Team","Dev"],["Name","Bastion"]]
                     for pair in conditions:
                         # Given ["Team","Dev"], see if it matches one of the tags in the node
-                        for tag in node.tags:
-                            if (
-                                tag.get("Key", "") == pair[0]
-                                and tag.get("Value", "") == pair[1]
-                            ):
-                                condition_matches += 1
+                        if node.tags:
+                            for tag in node.tags:
+                                if (
+                                    tag.get("Key", "") == pair[0]
+                                    and tag.get("Value", "") == pair[1]
+                                ):
+                                    condition_matches += 1
                     # We have a match if all of the conditions matched
                     if condition_matches == len(conditions):
                         has_match = True
@@ -657,13 +662,16 @@ def build_data_structure(account_data, config, outputfilter):
 
 
 def prepare(account, config, outputfilter):
-    """Collect the data and write it to a file"""
+    """NO LONGER MAINTAINED
+    Collect the data and write it to a file
+    """
+    log("WARNING: This functionality is no longer maintained")
     cytoscape_json = build_data_structure(account, config, outputfilter)
     if not outputfilter["node_data"]:
-        filtered_cytoscape_json=[]
+        filtered_cytoscape_json = []
         for node in cytoscape_json:
             filtered_node = node.copy()
-            filtered_node['data']['node_data'] = {}
+            filtered_node["data"]["node_data"] = {}
             filtered_cytoscape_json.append(filtered_node)
         cytoscape_json = filtered_cytoscape_json
     with open("web/data.json", "w") as outfile:
@@ -671,6 +679,8 @@ def prepare(account, config, outputfilter):
 
 
 def run(arguments):
+    """NO LONGER MAINTAINED"""
+    log("WARNING: This functionality is no longer maintained")
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(

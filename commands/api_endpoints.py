@@ -50,6 +50,8 @@ def api_endpoints(accounts, config):
 
 
 def run(arguments):
-    print("*** DEPRECARTED: Not enough of data is collected for this command to run successfully ***\n\n")
+    print(
+        "*** DEPRECARTED: Not enough of data is collected for this command to run successfully ***\n\n"
+    )
     _, accounts, config = parse_arguments(arguments)
     api_endpoints(accounts, config)

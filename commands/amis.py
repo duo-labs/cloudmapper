@@ -60,16 +60,16 @@ def amis(args, accounts, config):
         )
     )
 
-    for region in listdir("data/aws/"):
+    for region_name in listdir("data/aws/"):
         # Get public images
-        public_images_file = "data/aws/{}/ec2-describe-images.json".format(region)
+        public_images_file = "data/aws/{}/ec2-describe-images.json".format(region_name)
         public_images = json.load(open(public_images_file))
         resource_filter = ".Images[]"
         public_images = pyjq.all(resource_filter, public_images)
 
         for account in accounts:
             account = Account(None, account)
-            region = Region(account, {"RegionName": region})
+            region = Region(account, {"RegionName": region_name})
 
             instances = query_aws(account, "ec2-describe-instances", region)
             resource_filter = (
@@ -77,10 +77,18 @@ def amis(args, accounts, config):
             )
             if args.instance_filter != "":
                 resource_filter += "|{}".format(args.instance_filter)
+
+            if "Reservations" not in instances:
+                print(f"** skipping: {account.name} in {region_name}")
+                continue
+
             instances = pyjq.all(resource_filter, instances)
 
             account_images = query_aws(account, "ec2-describe-images", region)
             resource_filter = ".Images[]"
+            if "Images" not in account_images:
+                print(f"** skipping: {account.name} in {region_name}")
+                continue
             account_images = pyjq.all(resource_filter, account_images)
 
             for instance in instances:
