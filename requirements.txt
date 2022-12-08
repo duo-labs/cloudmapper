@@ -3,7 +3,7 @@ autoflake==1.4
 autopep8==1.6.0
 boto3==1.19.10
 botocore==1.22.10
-certifi==2021.10.8
+certifi==2022.12.7
 chardet==4.0.0
 charset-normalizer==2.0.7
 coverage==6.1.1
