@@ -811,12 +811,12 @@ class Redshift(Leaf):
         for vpc in parent.children:
             if vpc.local_id == json_blob["VpcId"]:
                 self._parent = vpc
-        if self._parent is None:
-            raise Exception(
-                "Could not find parent for Redshift node, was looking for VPC {}".format(
-                    json_blob["VpcId"]
-                )
-            )
+        # if self._parent is None:
+        #     raise Exception(
+        #         "Could not find parent for Redshift node, was looking for VPC {}".format(
+        #             json_blob["VpcId"]
+        #         )
+        #     )
 
         self._local_id = json_blob["ClusterIdentifier"]
         self._arn = json_blob["Endpoint"]["Address"]
