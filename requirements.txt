@@ -1,6 +1,7 @@
 astroid==2.8.4
 autoflake==1.4
 autopep8==1.6.0
+aws-google-auth
 boto3==1.19.10
 botocore==1.22.10
 certifi==2021.10.8
