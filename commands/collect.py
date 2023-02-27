@@ -337,7 +337,8 @@ def collect(arguments):
             if runner["Service"] in universal_services:
                 if region["RegionName"] != default_region:
                     continue
-            elif region["RegionName"] not in session.get_available_regions(
+            # GovCloud doesn't seem to have this mapping in boto3
+            elif "gov" not in region["RegionName"] and region["RegionName"] not in session.get_available_regions(
                 runner["Service"]
             ):
                 print(

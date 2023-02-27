@@ -365,6 +365,15 @@ def iam_report(accounts, config, args):
     principal_stats = {}
     json_account_auth_details = None
 
+    # Identify the default region used by global services such as IAM
+    default_region = os.environ.get("AWS_REGION", "us-east-1")
+    if "gov-" in default_region:
+        default_region = "us-gov-west-1"
+    elif "cn-" in default_region:
+        default_region = "cn-north-1"
+    else:
+        default_region = "us-east-1"
+
     # Ensure only one account is given
     if len(accounts) > 1:
         raise Exception("This command only works with one account at a time")
@@ -399,7 +408,7 @@ def iam_report(accounts, config, args):
 
     for region_json in get_regions(account):
         region = Region(account, region_json)
-        if region.name == "us-east-1":
+        if region.name == default_region: 
             json_account_auth_details = query_aws(
                 region.account, "iam-get-account-authorization-details", region
             )

@@ -172,15 +172,26 @@ def get_direct_connects(account, nodes, connections):
 
 
 def get_iam_trusts(account, nodes, connections, connections_to_get):
+
+    # Identify the default region used by global services such as IAM
+    default_region = os.environ.get("AWS_REGION", "us-east-1")
+    if "gov-" in default_region:
+        default_region = "us-gov-west-1"
+    elif "cn-" in default_region:
+        default_region = "cn-north-1"
+    else:
+        default_region = "us-east-1"
+
+
     # Get IAM
     iam = query_aws(
         account,
         "iam-get-account-authorization-details",
-        Region(account, {"RegionName": "us-east-1"}),
+        Region(account, {"RegionName": default_region}),
     )
 
     saml_providers = query_aws(
-        account, "iam-list-saml-providers", Region(account, {"RegionName": "us-east-1"})
+        account, "iam-list-saml-providers", Region(account, {"RegionName": default_region)
     )["SAMLProviderList"]
 
     for role in pyjq.all(".RoleDetailList[]", iam):
@@ -356,8 +367,17 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
 
 
 def get_s3_trusts(account, nodes, connections):
-    policy_dir = "./account-data/{}/us-east-1/s3-get-bucket-policy/".format(
-        account.name
+    # Identify the default region used by global services such as IAM
+    default_region = os.environ.get("AWS_REGION", "us-east-1")
+    if "gov-" in default_region:
+        default_region = "us-gov-west-1"
+    elif "cn-" in default_region:
+        default_region = "cn-north-1"
+    else:
+        default_region = "us-east-1"
+
+    policy_dir = "./account-data/{}/{}/s3-get-bucket-policy/".format(
+        account.name, default_region
     )
     for s3_policy_file in [
         f
@@ -446,14 +466,22 @@ def get_nodes_and_connections(account_data, nodes, connections, args):
 
 def weboftrust(args, accounts, config):
     """Collect the data and write it to a file"""
+    # Identify the default region used by global services such as IAM
+    default_region = os.environ.get("AWS_REGION", "us-east-1")
+    if "gov-" in default_region:
+        default_region = "us-gov-west-1"
+    elif "cn-" in default_region:
+        default_region = "cn-north-1"
+    else:
+        default_region = "us-east-1"
 
     nodes = {}
     connections = {}
     for account in accounts:
         # Check if the account data exists
         if not path.exists(
-            "./account-data/{}/us-east-1/iam-get-account-authorization-details.json".format(
-                account["name"]
+            "./account-data/{}/{}/iam-get-account-authorization-details.json".format(
+                account["name"], default_region
             )
         ):
             print("INFO: Skipping account {}".format(account["name"]))
