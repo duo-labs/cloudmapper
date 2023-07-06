@@ -39,7 +39,7 @@ pytz==2021.3
 PyYAML==6.0
 requests==2.26.0
 s3transfer==0.5.0
-scipy==1.7.1
+scipy==1.10.0
 seaborn==0.11.2
 six==1.16.0
 toml==0.10.2
