@@ -234,9 +234,6 @@ def collect(arguments):
     regions_filter = None
     if len(arguments.regions_filter) > 0:
         regions_filter = arguments.regions_filter.lower().split(",")
-        # Force include of default region -- seems to be required
-        if default_region not in regions_filter:
-            regions_filter.append(default_region)
 
     session_data = {"region_name": default_region}
 
@@ -295,6 +292,8 @@ def collect(arguments):
             r for r in region_list["Regions"] if r["RegionName"] in regions_filter
         ]
         region_list["Regions"] = filtered_regions
+    else:
+        region_list["Regions"] = [ default_region ]
 
     with open("account-data/{}/describe-regions.json".format(account_dir), "w+") as f:
         f.write(json.dumps(region_list, indent=4, sort_keys=True))

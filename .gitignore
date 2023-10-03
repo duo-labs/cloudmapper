@@ -1,5 +1,7 @@
 .vscode
-config.json
+.python-version
+!config.json.demo
+config.json.*
 config/
 .DS_Store
 *.pyc

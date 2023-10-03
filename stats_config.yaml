@@ -1,9 +1,24 @@
 - name: S3 buckets
   query: .Buckets|length
   source: s3-list-buckets
-- name: EC2 instances
+- name: EC2 Elastic IPs
+  query: '.Addresses | length'
+  source: ec2-describe-addresses
+- name: EC2 Instances
   query: '[.Reservations[]?.Instances[]?|select(.State.Name == "running")]|length'
   source: ec2-describe-instances
+- name: EC2 Network Interfaces
+  query: '.InternetGateways|length'
+  source: ec2-describe-network-interfaces
+- name: EC2 Subnets
+  query: .Subnets|length
+  source: ec2-describe-subnets
+- name: EC2 Volumes
+  query: .Volumes|length
+  source: ec2-describe-volumes
+- name: EC2 VPCs
+  query: .Vpcs|length
+  source: ec2-describe-vpcs
 - name: ELBs
   query: .LoadBalancerDescriptions|length
   source: elb-describe-load-balancers
@@ -13,6 +28,9 @@
 - name: RDS instances
   query: .DBInstances|length
   source: rds-describe-db-instances
+- name: RDS Snapshots
+  query: .DBSnapshots|length
+  source: rds-describe-db-snapshots
 - name: Redshift clusters
   query: .Clusters|length
   source: redshift-describe-clusters
@@ -72,6 +90,26 @@
   query: .Images|length
   source: ec2-describe-images
   verbose: true
+- name: EC2 Availability Zone
+  query: '.AvailabilityZones | length'
+  source: ec2-describe-addresses
+  verbose: true
+- name: EC2 snapshots
+  query: .Snapshots|length
+  source: ec2-describe-snapshots
+  verbose: true
+- name: EC2 Security Groups
+  query: .SecurityGroups|length
+  source: ec2-describe-security-groups
+  verbose: true
+- name: EC2 VPCEndpoints
+  query: .VPCEndpoints|length
+  source: ec2-describe-vpc-endpoints
+  verbose: true
+- name: EC2 Internet Gateways
+  query: '[.InternetGateways[]?.Attachments[]?|select(.State == "available")]|length'
+  source: describe-internet-gateways
+  verbose: true
 - name: Network ACLs
   query: .NetworkAcls|length
   source: ec2-describe-network-acls
@@ -79,10 +117,6 @@
 - name: Route tables
   query: .RouteTables|length
   source: ec2-describe-route-tables
-  verbose: true
-- name: EC2 snapshots
-  query: .Snapshots|length
-  source: ec2-describe-snapshots
   verbose: true
 - name: VPC endpoints
   query: .VpcEndpointConnections|length
@@ -128,15 +162,15 @@
   query: .logGroups|length
   source: logs-describe-log-groups
   verbose: true
-- name: ACM Certificates 
+- name: ACM Certificates
   query: .CertificateSummaryList|length
-  source: acm-list-certificates  
+  source: acm-list-certificates
   verbose: true
-- name: DynamoDB Tables 
+- name: DynamoDB Tables
   query: .TableNames|length
-  source: dynamodb-list-tables  
+  source: dynamodb-list-tables
   verbose: true
-- name: Internet Gateways
-  query: '[.InternetGateways[]?.Attachments[]?|select(.State == "available")]|length'
-  source: describe-internet-gateways 
+- name: ELBs Policies
+  query: .PolicyDescriptions|length
+  source: elb-describe-load-balancer-policies
   verbose: true
