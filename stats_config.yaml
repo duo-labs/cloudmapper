@@ -1,150 +1,21 @@
-- name: S3 buckets
-  query: .Buckets|length
-  source: s3-list-buckets
-- name: EC2 Elastic IPs
-  query: '.Addresses | length'
-  source: ec2-describe-addresses
-- name: EC2 Instances
-  query: '[.Reservations[]?.Instances[]?|select(.State.Name == "running")]|length'
-  source: ec2-describe-instances
-- name: EC2 Network Interfaces
-  query: '.InternetGateways|length'
-  source: ec2-describe-network-interfaces
-- name: EC2 Subnets
-  query: .Subnets|length
-  source: ec2-describe-subnets
-- name: EC2 Volumes
-  query: .Volumes|length
-  source: ec2-describe-volumes
-- name: EC2 VPCs
-  query: .Vpcs|length
-  source: ec2-describe-vpcs
-- name: ELBs
-  query: .LoadBalancerDescriptions|length
-  source: elb-describe-load-balancers
-- name: ELBv2s
-  query: .LoadBalancers|length
-  source: elbv2-describe-load-balancers
-- name: RDS instances
-  query: .DBInstances|length
-  source: rds-describe-db-instances
-- name: RDS Snapshots
-  query: .DBSnapshots|length
-  source: rds-describe-db-snapshots
-- name: Redshift clusters
-  query: .Clusters|length
-  source: redshift-describe-clusters
-- name: ElasticSearch domains
-  query: .DomainNames|length
-  source: es-list-domain-names
-- name: Elasticache clusters
-  query: .CacheClusters|length
-  source: elasticache-describe-cache-clusters
-- name: SNS topics
-  query: .Topics|length
-  source: sns-list-topics
-- name: SQS queues
-  query: .QueueUrls|length
-  source: sqs-list-queues
-- name: CloudFronts
-  query: .DistributionList.Items|length
-  source: cloudfront-list-distributions
-  region: us-east-1
+- name: ACM Certificates
+  query: .CertificateSummaryList|length
+  source: acm-list-certificates
+  verbose: true
 - name: Autoscaling groups
   query: .AutoScalingGroups|length
   source: autoscaling-describe-auto-scaling-groups
-- name: ElasticBeanstalks
-  query: .Applications|length
-  source: elasticbeanstalk-describe-applications
-- name: Firehose streams
-  query: .DeliveryStreamNames|length
-  source: firehose-list-delivery-streams
-- name: Glacier vaults
-  query: .VaultList|length
-  source: glacier-list-vaults
-- name: KMS keys
-  query: .Keys|length
-  source: kms-list-keys
-- name: Lambda functions
-  query: .Functions|length
-  source: lambda-list-functions
-- name: Glue Jobs
-  query: .Jobs|length
-  source: glue-get-jobs
-- name: Glue Triggers
-  query: .Triggers|length
-  source: glue-get-triggers
-# - name: Kafka clusters
-#   query: .ClusterInfoList|length
-#   source: kafka-list-clusters
-# Verbose resources
-- name: Route53 hosted zones
-  query: .HostedZones|length
-  source: route53-list-hosted-zones
-  verbose: true
-- name: Route53 domains
-  query: .Domains|length
-  source: route53domains-list-domains
-  verbose: true
-- name: EC2 AMIs
-  query: .Images|length
-  source: ec2-describe-images
-  verbose: true
-- name: EC2 Availability Zone
-  query: '.AvailabilityZones | length'
-  source: ec2-describe-addresses
-  verbose: true
-- name: EC2 snapshots
-  query: .Snapshots|length
-  source: ec2-describe-snapshots
-  verbose: true
-- name: EC2 Security Groups
-  query: .SecurityGroups|length
-  source: ec2-describe-security-groups
-  verbose: true
-- name: EC2 VPCEndpoints
-  query: .VPCEndpoints|length
-  source: ec2-describe-vpc-endpoints
-  verbose: true
-- name: EC2 Internet Gateways
-  query: '[.InternetGateways[]?.Attachments[]?|select(.State == "available")]|length'
-  source: describe-internet-gateways
-  verbose: true
-- name: Network ACLs
-  query: .NetworkAcls|length
-  source: ec2-describe-network-acls
-  verbose: true
-- name: Route tables
-  query: .RouteTables|length
-  source: ec2-describe-route-tables
-  verbose: true
-- name: VPC endpoints
-  query: .VpcEndpointConnections|length
-  source: ec2-describe-vpc-endpoint-connections
-  verbose: true
-- name: VPN connections
-  query: .VpnConnections|length
-  source: ec2-describe-vpn-connections
-  verbose: true
-- name: DirectConnects
-  query: .connections|length
-  source: directconnect-describe-connections
-  verbose: true
-- name: CloudSearch domains
-  query: .DomainStatusList|length
-  source: cloudsearch-describe-domains
-  verbose: true
-- name: ECR repositories
-  query: .repositories|length
-  source: ecr-describe-repositories
-  verbose: true
 - name: CloudFormation stacks
   query: .Stacks|length
   source: cloudformation-describe-stacks
   verbose: true
-- name: EFS
-  query: .FileSystems|length
-  source: efs-describe-file-systems
+- name: CloudFronts
+  query: .DistributionList.Items|length
+  source: cloudfront-list-distributions
+  region: us-east-1
+- name: CloudSearch domains
+  query: .DomainStatusList|length
+  source: cloudsearch-describe-domains
   verbose: true
 - name: Cloudwatch alarms
   query: .MetricAlarms|length
@@ -154,23 +25,155 @@
   query: .ConfigRules|length
   source: config-describe-config-rules
   verbose: true
-- name: Event rules
-  query: .Rules|length
-  source: events-list-rules
-  verbose: true
-- name: Log groups
-  query: .logGroups|length
-  source: logs-describe-log-groups
-  verbose: true
-- name: ACM Certificates
-  query: .CertificateSummaryList|length
-  source: acm-list-certificates
+- name: DirectConnects
+  query: .connections|length
+  source: directconnect-describe-connections
   verbose: true
 - name: DynamoDB Tables
   query: .TableNames|length
   source: dynamodb-list-tables
   verbose: true
+- name: EC2 AMIs
+  query: .Images|length
+  source: ec2-describe-images
+  verbose: true
+- name: EC2 Availability Zone
+  query: '.AvailabilityZones | length'
+  source: ec2-describe-addresses
+  verbose: true
+- name: EC2 Elastic IPs
+  query: '.Addresses | length'
+  source: ec2-describe-addresses
+- name: EC2 Instances
+  query: '[.Reservations[]?.Instances[]?|select(.State.Name == "running")]|length'
+  source: ec2-describe-instances
+- name: EC2 Internet Gateways
+  query: '[.InternetGateways[]?.Attachments[]?|select(.State == "available")]|length'
+  source: describe-internet-gateways
+  verbose: true
+- name: EC2 Network ACLs
+  query: .NetworkAcls|length
+  source: ec2-describe-network-acls
+  verbose: true
+- name: EC2 Network Interfaces
+  query: '.InternetGateways|length'
+  source: ec2-describe-network-interfaces
+- name: EC2 Route tables
+  query: .RouteTables|length
+  source: ec2-describe-route-tables
+  verbose: true
+- name: EC2 Security Groups
+  query: .SecurityGroups|length
+  source: ec2-describe-security-groups
+  verbose: true
+- name: EC2 snapshots
+  query: .Snapshots|length
+  source: ec2-describe-snapshots
+  verbose: true
+- name: EC2 Subnets
+  query: .Subnets|length
+  source: ec2-describe-subnets
+- name: EC2 Volumes
+  query: .Volumes|length
+  source: ec2-describe-volumes
+- name: EC2 VPCs
+  query: .Vpcs|length
+  source: ec2-describe-vpcs
+- name: EC2 VPCEndpoints
+  query: .VPCEndpoints|length
+  source: ec2-describe-vpc-endpoints
+  verbose: true
+- name: EC2 VPCEndpoints con.
+  query: .VpcEndpointConnections|length
+  source: ec2-describe-vpc-endpoint-connections
+  verbose: true
+- name: EC2 VPN connections
+  query: .VpnConnections|length
+  source: ec2-describe-vpn-connections
+  verbose: true
+- name: ECR repositories
+  query: .repositories|length
+  source: ecr-describe-repositories
+  verbose: true
+- name: EFS
+  query: .FileSystems|length
+  source: efs-describe-file-systems
+  verbose: true
+- name: ElasticBeanstalks
+  query: .Applications|length
+  source: elasticbeanstalk-describe-applications
+- name: Elasticache clusters
+  query: .CacheClusters|length
+  source: elasticache-describe-cache-clusters
+- name: ElasticSearch domains
+  query: .DomainNames|length
+  source: es-list-domain-names
+- name: ELBs
+  query: .LoadBalancerDescriptions|length
+  source: elb-describe-load-balancers
 - name: ELBs Policies
   query: .PolicyDescriptions|length
   source: elb-describe-load-balancer-policies
   verbose: true
+- name: ELBv2s
+  query: .LoadBalancers|length
+  source: elbv2-describe-load-balancers
+- name: Event rules
+  query: .Rules|length
+  source: events-list-rules
+  verbose: true
+- name: Firehose streams
+  query: .DeliveryStreamNames|length
+  source: firehose-list-delivery-streams
+- name: Glacier vaults
+  query: .VaultList|length
+  source: glacier-list-vaults
+- name: Glue Jobs
+  query: .Jobs|length
+  source: glue-get-jobs
+- name: Glue Triggers
+  query: .Triggers|length
+  source: glue-get-triggers
+- name: KMS keys
+  query: .Keys|length
+  source: kms-list-keys
+- name: Lambda functions
+  query: .Functions|length
+  source: lambda-list-functions
+- name: Log groups
+  query: .logGroups|length
+  source: logs-describe-log-groups
+  verbose: true
+- name: RDS instances
+  query: .DBInstances|length
+  source: rds-describe-db-instances
+- name: RDS Snapshots
+  query: .DBSnapshots|length
+  source: rds-describe-db-snapshots
+- name: Redshift clusters
+  query: .Clusters|length
+  source: redshift-describe-clusters
+- name: Route53 domains
+  query: .Domains|length
+  source: route53domains-list-domains
+  verbose: true
+- name: Route53 hosted zones
+  query: .HostedZones|length
+  source: route53-list-hosted-zones
+  verbose: true
+- name: S3 buckets
+  query: .Buckets|length
+  source: s3-list-buckets
+- name: Secret
+  query: .SecretList|length
+  source: secretsmanager-list-secrets
+- name: SNS topics
+  query: .Topics|length
+  source: sns-list-topics
+- name: SQS queues
+  query: .QueueUrls|length
+  source: sqs-list-queues
+# - name: Kafka clusters
+#   query: .ClusterInfoList|length
+#   source: kafka-list-clusters
+# Verbose resources
