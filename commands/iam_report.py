@@ -85,12 +85,15 @@ def get_access_advisor(region, principal_stats, json_account_auth_details, args)
     ]:
         stats = {}
         stats["auth"] = principal_auth
-        job_id = get_parameter_file(
+        parameter_file = get_parameter_file(
             region,
             "iam",
             "generate-service-last-accessed-details",
             principal_auth["Arn"],
-        )["JobId"]
+        )
+        if not parameter_file:
+            continue
+        job_id = parameter_file["JobId"]
         json_last_access_details = get_parameter_file(
             region, "iam", "get-service-last-accessed-details", job_id
         )

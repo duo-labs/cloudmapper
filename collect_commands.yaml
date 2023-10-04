@@ -20,13 +20,13 @@
 - Service: iam
   Request: get-role # Need to get IAM boundaries
   Parameters:
-  - Name: RoleName
-    Value: iam-get-account-authorization-details.json|.RoleDetailList[]?|.RoleName
+    - Name: RoleName
+      Value: iam-get-account-authorization-details.json|.RoleDetailList[]?|.RoleName
 - Service: iam
   Request: get-user # Needed to get IAM boundaries
   Parameters:
-  - Name: UserName
-    Value: iam-get-account-authorization-details.json|.UserDetailList[]?|.UserName
+    - Name: UserName
+      Value: iam-get-account-authorization-details.json|.UserDetailList[]?|.UserName
 - Service: iam
   Request: get-account-password-policy
 - Service: iam
@@ -48,54 +48,54 @@
 - Service: iam
   Request: get-saml-provider
   Parameters:
-  - Name: SAMLProviderArn
-    Value: iam-list-saml-providers.json|.SAMLProviderList[]?|.Arn
+    - Name: SAMLProviderArn
+      Value: iam-list-saml-providers.json|.SAMLProviderList[]?|.Arn
 - Service: iam
   Request: list-open-id-connect-providers
 - Service: iam
   Request: get-open-id-connect-provider
   Parameters:
-  - Name: OpenIDConnectProviderArn
-    Value: iam-list-open-id-connect-providers.json|.OpenIDConnectProviderList[]?|.Arn
+    - Name: OpenIDConnectProviderArn
+      Value: iam-list-open-id-connect-providers.json|.OpenIDConnectProviderList[]?|.Arn
 - Service: s3control
   Request: get-public-access-block
   Parameters:
-  - Name: AccountId
-    Value: sts-get-caller-identity.json|.Account
+    - Name: AccountId
+      Value: sts-get-caller-identity.json|.Account
 - Service: s3
   Request: list-buckets
 - Service: s3
   Request: get-bucket-acl
   Parameters:
-  - Name: Bucket
-    Value: s3-list-buckets.json|.Buckets[]?|.Name
+    - Name: Bucket
+      Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: s3
   Request: get-bucket-policy
   Parameters:
-  - Name: Bucket
-    Value: s3-list-buckets.json|.Buckets[]?|.Name
+    - Name: Bucket
+      Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: s3
   Request: get-bucket-logging
   Parameters:
-  - Name: Bucket
-    Value: s3-list-buckets.json|.Buckets[]?|.Name
+    - Name: Bucket
+      Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: s3
   Request: get-bucket-location
   Parameters:
-  - Name: Bucket
-    Value: s3-list-buckets.json|.Buckets[]?|.Name
+    - Name: Bucket
+      Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: s3
   Request: get-bucket-encryption
   Parameters:
-  - Name: Bucket
-    Value: s3-list-buckets.json|.Buckets[]?|.Name
+    - Name: Bucket
+      Value: s3-list-buckets.json|.Buckets[]?|.Name
 - Service: route53
   Request: list-hosted-zones
 - Service: route53
   Request: list-resource-record-sets
   Parameters:
-  - Name: HostedZoneId
-    Value: route53-list-hosted-zones.json|.HostedZones[]?|[.Id,.Name]
+    - Name: HostedZoneId
+      Value: route53-list-hosted-zones.json|.HostedZones[]?|[.Id,.Name]
 - Service: route53domains
   Request: list-domains
 - Service: ec2
@@ -112,13 +112,15 @@
   Request: describe-addresses
 - Service: ec2
   Request: describe-internet-gateways
+- Service: ec2
+  Request: describe-addresses
 - Service: cloudtrail
   Request: describe-trails
 - Service: cloudtrail
   Request: get-event-selectors
   Parameters:
-  - Name: TrailName
-    Value: cloudtrail-describe-trails.json|.trailList[].TrailARN
+    - Name: TrailName
+      Value: cloudtrail-describe-trails.json|.trailList[].TrailARN
 - Service: rds
   Request: describe-db-instances
 - Service: rds
@@ -126,49 +128,49 @@
 - Service: rds
   Request: describe-db-snapshot-attributes
   Parameters:
-  - Name: DBSnapshotIdentifier
-    Value: rds-describe-db-snapshots.json|.DBSnapshots[]?|.DBSnapshotIdentifier
+    - Name: DBSnapshotIdentifier
+      Value: rds-describe-db-snapshots.json|.DBSnapshots[]?|.DBSnapshotIdentifier
 - Service: rds
   Request: list-tags-for-resource
   Parameters:
-  - Name: ResourceName
-    Value: rds-describe-db-instances.json|.DBInstances[]?|.DBInstanceArn
+    - Name: ResourceName
+      Value: rds-describe-db-instances.json|.DBInstances[]?|.DBInstanceArn
 - Service: elb
   Request: describe-load-balancers
 - Service: elb
   Request: describe-load-balancer-attributes
   Parameters:
-  - Name: LoadBalancerName
-    Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[].LoadBalancerName
+    - Name: LoadBalancerName
+      Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[].LoadBalancerName
 - Service: elb
   Request: describe-load-balancer-policies
 - Service: elb
   Request: describe-tags
   Parameters:
-  - Name: LoadBalancerNames
-    Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[]?|[[.LoadBalancerName]]
+    - Name: LoadBalancerNames
+      Value: elb-describe-load-balancers.json|.LoadBalancerDescriptions[]?|[[.LoadBalancerName]]
 - Service: elbv2
   Request: describe-load-balancers
 - Service: elbv2
   Request: describe-target-groups
   Parameters:
-  - Name: LoadBalancerArn
-    Value: elbv2-describe-load-balancers.json|.LoadBalancers[].LoadBalancerArn
+    - Name: LoadBalancerArn
+      Value: elbv2-describe-load-balancers.json|.LoadBalancers[].LoadBalancerArn
 - Service: elbv2
   Request: describe-target-health
   Parameters:
-  - Name: TargetGroupArn
-    Value: elbv2-describe-target-groups/*|.TargetGroups[].TargetGroupArn
+    - Name: TargetGroupArn
+      Value: elbv2-describe-target-groups/*|.TargetGroups[].TargetGroupArn
 - Service: elbv2
   Request: describe-load-balancer-attributes
   Parameters:
-  - Name: LoadBalancerArn
-    Value: elbv2-describe-load-balancers.json|.LoadBalancers[].LoadBalancerArn
+    - Name: LoadBalancerArn
+      Value: elbv2-describe-load-balancers.json|.LoadBalancers[].LoadBalancerArn
 - Service: elbv2
   Request: describe-tags
   Parameters:
-  - Name: ResourceArns
-    Value: elbv2-describe-load-balancers.json|.LoadBalancers[]?|[[.LoadBalancerArn]]
+    - Name: ResourceArns
+      Value: elbv2-describe-load-balancers.json|.LoadBalancers[]?|[[.LoadBalancerArn]]
 - Service: redshift
   Request: describe-clusters
 - Service: redshift
@@ -178,17 +180,17 @@
 - Service: sqs
   Request: get-queue-attributes
   Parameters:
-  - Name: QueueUrl
-    Value: sqs-list-queues.json|.QueueUrls[]?
-  - Name: AttributeNames
-    Value: [All]
+    - Name: QueueUrl
+      Value: sqs-list-queues.json|.QueueUrls[]?
+    - Name: AttributeNames
+      Value: [All]
 - Service: sns
   Request: list-topics
 - Service: sns
   Request: get-topic-attributes
   Parameters:
-  - Name: TopicArn
-    Value: sns-list-topics.json|.Topics[]?|.TopicArn
+    - Name: TopicArn
+      Value: sns-list-topics.json|.Topics[]?|.TopicArn
 - Service: ec2
   Request: describe-security-groups
 - Service: ec2
@@ -206,13 +208,13 @@
 - Service: cloudformation
   Request: get-template
   Parameters:
-  - Name: StackName
-    Value: cloudformation-describe-stacks.json|.Stacks[]?|.StackName
+    - Name: StackName
+      Value: cloudformation-describe-stacks.json|.Stacks[]?|.StackName
 - Service: cloudformation
   Request: describe-stack-resources
   Parameters:
-  - Name: StackName
-    Value: cloudformation-describe-stacks.json|.Stacks[]?|.StackName
+    - Name: StackName
+      Value: cloudformation-describe-stacks.json|.Stacks[]?|.StackName
 - Service: cloudfront
   Request: list-distributions
 - Service: cloudsearch
@@ -220,8 +222,8 @@
 - Service: cloudsearch
   Request: describe-service-access-policies
   Parameters:
-  - Name: DomainName
-    Value: cloudsearch-describe-domains.json|.DomainStatusList[]?|.DomainName
+    - Name: DomainName
+      Value: cloudsearch-describe-domains.json|.DomainStatusList[]?|.DomainName
 - Service: cloudwatch
   Request: describe-alarms
 - Service: config
@@ -233,9 +235,9 @@
 - Service: ec2
   Request: describe-images
   Parameters:
-  - Name: Owners
-    Value:
-    - "self"
+    - Name: Owners
+      Value:
+        - "self"
 - Service: ec2
   Request: describe-network-acls
 - Service: ec2
@@ -245,16 +247,16 @@
 - Service: ec2
   Request: describe-snapshots
   Parameters:
-  - Name: OwnerIds
-    Value:
-    - "self"
+    - Name: OwnerIds
+      Value:
+      - "self"
 - Service: ec2
   Request: describe-snapshot-attribute
   Parameters:
-  - Name: SnapshotId
-    Value: ec2-describe-snapshots.json|.Snapshots[]?|.SnapshotId
-  - Name: Attribute
-    Value: 'createVolumePermission'
+    - Name: SnapshotId
+      Value: ec2-describe-snapshots.json|.Snapshots[]?|.SnapshotId
+    - Name: Attribute
+      Value: 'createVolumePermission'
 - Service: ec2
   Request: describe-vpc-endpoint-connections
 - Service: ec2
@@ -268,8 +270,8 @@
 - Service: ecr
   Request: get-repository-policy
   Parameters:
-  - Name: repositoryName
-    Value: ecr-describe-repositories.json|.repositories[]|.repositoryName
+    - Name: repositoryName
+      Value: ecr-describe-repositories.json|.repositories[]|.repositoryName
 - Service: elasticache
   Request: describe-cache-clusters
 - Service: elasticbeanstalk
@@ -281,8 +283,8 @@
 - Service: es
   Request: describe-elasticsearch-domain
   Parameters:
-  - Name: DomainName
-    Value: es-list-domain-names.json|.DomainNames[]?|.DomainName
+    - Name: DomainName
+      Value: es-list-domain-names.json|.DomainNames[]?|.DomainName
 - Service: events
   Request: describe-event-bus
 - Service: events
@@ -292,65 +294,65 @@
 - Service: firehose
   Request: describe-delivery-stream
   Parameters:
-  - Name: DeliveryStreamName
-    Value: firehose-list-delivery-streams.json|.DeliveryStreamNames[]?
+    - Name: DeliveryStreamName
+      Value: firehose-list-delivery-streams.json|.DeliveryStreamNames[]?
 - Service: glacier
   Request: list-vaults
   Parameters:
-  - Name: accountId
-    Value: "-"
+    - Name: accountId
+      Value: "-"
 - Service: glacier
   Request: get-vault-access-policy
   Parameters:
-  - Name: vaultName
-    Value: glacier-list-vaults.json|.VaultList[]?|.VaultName
-  - Name: accountId
-    Value: "-"
+    - Name: vaultName
+      Value: glacier-list-vaults.json|.VaultList[]?|.VaultName
+    - Name: accountId
+      Value: "-"
 - Service: kms
   Request: list-keys
 - Service: kms
   Request: list-grants
   Parameters:
-  - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]?|.KeyId
+    - Name: KeyId
+      Value: kms-list-keys.json|.Keys[]?|.KeyId
 - Service: kms
   Request: list-key-policies
   Parameters:
-  - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]?|.KeyId
+    - Name: KeyId
+      Value: kms-list-keys.json|.Keys[]?|.KeyId
 - Service: kms
   Request: get-key-policy
   Parameters:
-  - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]?|.KeyId
-  - Name: PolicyName
-    Value: 'default'
+    - Name: KeyId
+      Value: kms-list-keys.json|.Keys[]?|.KeyId
+    - Name: PolicyName
+      Value: 'default'
 - Service: kms
   Request: get-key-rotation-status
   Parameters:
-  - Name: KeyId
-    Value: kms-list-keys.json|.Keys[]?|.KeyId
+    - Name: KeyId
+      Value: kms-list-keys.json|.Keys[]?|.KeyId
 - Service: lambda
   Request: list-functions
 - Service: lambda
   Request: get-policy
   Parameters:
-  - Name: FunctionName
-    Value: lambda-list-functions.json|.Functions[]?|.FunctionName
+    - Name: FunctionName
+      Value: lambda-list-functions.json|.Functions[]?|.FunctionName
 - Service: lambda
   Request: list-layers
 - Service: lambda
   Request: list-layer-versions
   Parameters:
-  - Name: LayerName
-    Value: lambda-list-layers.json|.Layers[]?|.LayerName
+    - Name: LayerName
+      Value: lambda-list-layers.json|.Layers[]?|.LayerName
 - Service: ecs
   Request: list-clusters
 - Service: ecs
   Request: list-tasks
   Parameters:
-  - Name: cluster
-    Value: ecs-list-clusters.json|.clusterArns[]
+    - Name: cluster
+      Value: ecs-list-clusters.json|.clusterArns[]
 - Service: ecs
   Request: describe-tasks
   Custom_collection: True
@@ -359,8 +361,8 @@
 - Service: eks
   Request: describe-cluster
   Parameters:
-  - Name: name
-    Value: eks-list-clusters.json|.clusters[]
+    - Name: name
+      Value: eks-list-clusters.json|.clusters[]
 - Service: logs
   Request: describe-destinations
 - Service: logs
@@ -393,8 +395,8 @@
 - Service: guardduty
   Request: get-detector
   Parameters:
-  - Name: DetectorId
-    Value: guardduty-list-detectors.json|.DetectorIds[]?|.
+    - Name: DetectorId
+      Value: guardduty-list-detectors.json|.DetectorIds[]?|.
 - Service: organizations
   Request: describe-organization
 - Service: organizations
@@ -406,8 +408,8 @@
 - Service: secretsmanager
   Request: get-resource-policy
   Parameters:
-  - Name: SecretId
-    Value: secretsmanager-list-secrets.json|.SecretList[]?|.Name
+    - Name: SecretId
+      Value: secretsmanager-list-secrets.json|.SecretList[]?|.Name
 - Service: route53
   Request: list-hosted-zones-by-vpc
   Custom_collection: True
