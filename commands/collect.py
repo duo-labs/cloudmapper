@@ -10,6 +10,7 @@ import boto3
 import yaml
 import pyjq
 import urllib.parse
+import copy
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError
 from shared.common import get_account, custom_serializer
 from botocore.config import Config
@@ -223,19 +224,19 @@ def collect(arguments):
     make_directory("account-data/{}".format(account_dir))
 
     # Identify the default region used by global services such as IAM
-    default_region = os.environ.get("AWS_REGION", "us-east-1")
-    if "gov-" in default_region:
-        default_region = "us-gov-west-1"
-    elif "cn-" in default_region:
-        default_region = "cn-north-1"
+    default_region_name = os.environ.get("AWS_REGION", "us-east-1")
+    if "gov-" in default_region_name:
+        default_region_name = "us-gov-west-1"
+    elif "cn-" in default_region_name:
+        default_region_name = "cn-north-1"
     else:
-        default_region = "us-east-1"
+        default_region_name = "us-east-1"
 
     regions_filter = None
     if len(arguments.regions_filter) > 0:
         regions_filter = arguments.regions_filter.lower().split(",")
 
-    session_data = {"region_name": default_region}
+    session_data = {"region_name": default_region_name}
 
     if arguments.profile_name:
         session_data["profile_name"] = arguments.profile_name
@@ -286,17 +287,22 @@ def collect(arguments):
     print("* Getting region names", flush=True)
     ec2 = session.client("ec2")
     region_list = ec2.describe_regions()
+    
+    default_region_array = [ r for r in region_list["Regions"] if r["RegionName"] == default_region_name ]
+    default_region = default_region_array[0]
 
+    region_list_services = copy.deepcopy(region_list)
     if regions_filter is not None:
         filtered_regions = [
             r for r in region_list["Regions"] if r["RegionName"] in regions_filter
         ]
         region_list["Regions"] = filtered_regions
-    else:
-        region_list["Regions"] = [ default_region ]
+        region_list_services = copy.deepcopy(region_list)
+        if not arguments.exclude_universal_services and default_region_name not in regions_filter:
+            region_list_services["Regions"].append(default_region)
 
     with open("account-data/{}/describe-regions.json".format(account_dir), "w+") as f:
-        f.write(json.dumps(region_list, indent=4, sort_keys=True))
+        f.write(json.dumps(region_list_services, indent=4, sort_keys=True))
 
     print("* Creating directory for each region name", flush=True)
     for region in region_list["Regions"]:
@@ -331,11 +337,19 @@ def collect(arguments):
 
         parameters = {}
         for region in region_list["Regions"]:
-            dynamic_parameter = None
+            region_service = copy.deepcopy(region)
             # Only call universal services in default region
             if runner["Service"] in universal_services:
-                if region["RegionName"] != default_region:
-                    continue
+                if region["RegionName"] != default_region_name:
+                    if not arguments.exclude_universal_services:
+                        region_service["RegionName"] = default_region_name
+                        make_directory(
+                            "account-data/{}/{}".format(
+                                account_dir, region_service.get("RegionName", "Unknown")
+                            )
+                        )
+                    else:
+                        continue
             elif region["RegionName"] not in session.get_available_regions(
                 runner["Service"]
             ):
@@ -345,209 +359,11 @@ def collect(arguments):
                     )
                 )
                 continue
-            handler = session.client(
-                runner["Service"],
-                region_name=region["RegionName"],
-                config=Config(retries={"max_attempts": arguments.max_attempts}),
-            )
 
-            filepath = "account-data/{}/{}/{}-{}".format(
-                account_dir, region["RegionName"], runner["Service"], runner["Request"]
-            )
-
-            method_to_call = snakecase(runner["Request"])
-
-            # Identify any parameters
-            if runner.get("Parameters", False):
-                for parameter in runner["Parameters"]:
-                    parameters[parameter["Name"]] = parameter["Value"]
-
-                    # Look for any dynamic values (ones that jq parse a file)
-                    if "|" in parameter["Value"]:
-                        dynamic_parameter = parameter["Name"]
-
-            if runner.get("Custom_collection", False):
-                # The data to collect for this function is too complicated for my existing code,
-                # so I have to write custom code.
-                if runner["Service"] == "ecs" and runner["Request"] == "describe-tasks":
-                    action_path = filepath
-                    make_directory(action_path)
-
-                    # Read the ecs-list-clusters.json file
-                    list_clusters_file = "account-data/{}/{}/{}".format(
-                        account_dir, region["RegionName"], "ecs-list-clusters.json"
-                    )
-
-                    if os.path.isfile(list_clusters_file):
-                        with open(list_clusters_file, "r") as f:
-                            list_clusters = json.load(f)
-
-                            # For each cluster, read the `ecs list-tasks`
-                            for clusterArn in list_clusters["clusterArns"]:
-                                cluster_path = (
-                                    action_path
-                                    + "/"
-                                    + urllib.parse.quote_plus(clusterArn)
-                                )
-                                make_directory(cluster_path)
-
-                                list_tasks_file = "account-data/{}/{}/{}/{}".format(
-                                    account_dir,
-                                    region["RegionName"],
-                                    "ecs-list-tasks",
-                                    urllib.parse.quote_plus(clusterArn),
-                                )
-
-                                with open(list_tasks_file, "r") as f2:
-                                    list_tasks = json.load(f2)
-
-                                    # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
-                                    for taskArn in list_tasks["taskArns"]:
-                                        outputfile = (
-                                            action_path
-                                            + "/"
-                                            + urllib.parse.quote_plus(clusterArn)
-                                            + "/"
-                                            + urllib.parse.quote_plus(taskArn)
-                                        )
-
-                                        call_parameters = {}
-                                        call_parameters["cluster"] = clusterArn
-                                        call_parameters["tasks"] = [taskArn]
-
-                                        call_function(
-                                            outputfile,
-                                            handler,
-                                            method_to_call,
-                                            call_parameters,
-                                            runner.get("Check", None),
-                                            summary,
-                                        )
-                elif (
-                    runner["Service"] == "route53"
-                    and runner["Request"] == "list-hosted-zones-by-vpc"
-                ):
-                    action_path = filepath
-                    make_directory(action_path)
-
-                    # Read the regions file
-                    regions_file = "account-data/{}/{}".format(
-                        account_dir, "describe-regions.json"
-                    )
-                    with open(regions_file, "r") as f:
-                        describe_regions = json.load(f)
-
-                        # For each region
-                        for collect_region in describe_regions["Regions"]:
-                            cluster_path = (
-                                action_path
-                                + "/"
-                                + urllib.parse.quote_plus(collect_region["RegionName"])
-                            )
-                            make_directory(cluster_path)
-
-                            # Read the VPC file
-                            describe_vpcs_file = "account-data/{}/{}/{}".format(
-                                account_dir,
-                                collect_region["RegionName"],
-                                "ec2-describe-vpcs.json",
-                            )
-
-                            if os.path.isfile(describe_vpcs_file):
-                                with open(describe_vpcs_file, "r") as f2:
-                                    describe_vpcs = json.load(f2)
-
-                                    for vpc in describe_vpcs["Vpcs"]:
-                                        outputfile = (
-                                            action_path
-                                            + "/"
-                                            + urllib.parse.quote_plus(
-                                                collect_region["RegionName"]
-                                            )
-                                            + "/"
-                                            + urllib.parse.quote_plus(vpc["VpcId"])
-                                        )
-
-                                        call_parameters = {}
-                                        call_parameters["VPCRegion"] = collect_region[
-                                            "RegionName"
-                                        ]
-                                        call_parameters["VPCId"] = vpc["VpcId"]
-                                        call_function(
-                                            outputfile,
-                                            handler,
-                                            method_to_call,
-                                            call_parameters,
-                                            runner.get("Check", None),
-                                            summary,
-                                        )
-
-            elif dynamic_parameter is not None:
-                # Set up directory for the dynamic value
-                make_directory(filepath)
-
-                # The dynamic parameter must always be the first value
-                parameter_file = parameters[dynamic_parameter].split("|")[0]
-                parameter_file = "account-data/{}/{}/{}".format(
-                    account_dir, region["RegionName"], parameter_file
-                )
-
-                # Get array if a globbing pattern is used (ex. "*.json")
-                parameter_files = glob.glob(parameter_file)
-
-                for parameter_file in parameter_files:
-                    if not os.path.isfile(parameter_file):
-                        # The file where parameters are obtained from does not exist
-                        # Need to manually add the failure to our list of calls made as this failure
-                        # occurs before the call is attempted.
-                        call_summary = {
-                            "service": handler.meta.service_model.service_name,
-                            "action": method_to_call,
-                            "parameters": parameters,
-                            "exception": "Parameter file does not exist: {}".format(
-                                parameter_file
-                            ),
-                        }
-                        summary.append(call_summary)
-                        print(
-                            "  The file where parameters are obtained from does not exist: {}".format(
-                                parameter_file
-                            ),
-                            flush=True,
-                        )
-                        continue
-
-                    with open(parameter_file, "r") as f:
-                        parameter_values = json.load(f)
-                        pyjq_parse_string = "|".join(
-                            parameters[dynamic_parameter].split("|")[1:]
-                        )
-                        for parameter in pyjq.all(pyjq_parse_string, parameter_values):
-                            filename = get_filename_from_parameter(parameter)
-                            identifier = get_identifier_from_parameter(parameter)
-                            call_parameters = dict(parameters)
-                            call_parameters[dynamic_parameter] = identifier
-
-                            outputfile = "{}/{}".format(filepath, filename)
-
-                            call_function(
-                                outputfile,
-                                handler,
-                                method_to_call,
-                                call_parameters,
-                                runner.get("Check", None),
-                                summary,
-                            )
-            else:
-                filepath = filepath + ".json"
-                call_function(
-                    filepath,
-                    handler,
-                    method_to_call,
-                    parameters,
-                    runner.get("Check", None),
-                    summary,
-                )
+            summary_rep, cont = gather(runner, region_service, arguments, session, account_dir, parameters)
+            summary.append(summary_rep)
+            if cont:
+                continue
 
     # Print summary
     print("--------------------------------------------------------------------")
@@ -571,6 +387,213 @@ def collect(arguments):
         # Ensure errors can be detected
         exit(-1)
 
+def gather(runner, region, arguments, session, account_dir, parameters):
+    dynamic_parameter = None
+    summary = []
+    handler = session.client(
+        runner["Service"],
+        region_name=region["RegionName"],
+        config=Config(retries={"max_attempts": arguments.max_attempts}),
+    )
+
+    filepath = "account-data/{}/{}/{}-{}".format(
+        account_dir, region["RegionName"], runner["Service"], runner["Request"]
+    )
+
+    method_to_call = snakecase(runner["Request"])
+
+    # Identify any parameters
+    if runner.get("Parameters", False):
+        for parameter in runner["Parameters"]:
+            parameters[parameter["Name"]] = parameter["Value"]
+
+            # Look for any dynamic values (ones that jq parse a file)
+            if "|" in parameter["Value"]:
+                dynamic_parameter = parameter["Name"]
+
+    if runner.get("Custom_collection", False):
+        # The data to collect for this function is too complicated for my existing code,
+        # so I have to write custom code.
+        if runner["Service"] == "ecs" and runner["Request"] == "describe-tasks":
+            action_path = filepath
+            make_directory(action_path)
+
+            # Read the ecs-list-clusters.json file
+            list_clusters_file = "account-data/{}/{}/{}".format(
+                account_dir, region["RegionName"], "ecs-list-clusters.json"
+            )
+
+            if os.path.isfile(list_clusters_file):
+                with open(list_clusters_file, "r") as f:
+                    list_clusters = json.load(f)
+
+                    # For each cluster, read the `ecs list-tasks`
+                    for clusterArn in list_clusters["clusterArns"]:
+                        cluster_path = (
+                            action_path
+                            + "/"
+                            + urllib.parse.quote_plus(clusterArn)
+                        )
+                        make_directory(cluster_path)
+
+                        list_tasks_file = "account-data/{}/{}/{}/{}".format(
+                            account_dir,
+                            region["RegionName"],
+                            "ecs-list-tasks",
+                            urllib.parse.quote_plus(clusterArn),
+                        )
+
+                        with open(list_tasks_file, "r") as f2:
+                            list_tasks = json.load(f2)
+
+                            # For each task, call `ecs describe-tasks` using the `cluster` and `task` as arguments
+                            for taskArn in list_tasks["taskArns"]:
+                                outputfile = (
+                                    action_path
+                                    + "/"
+                                    + urllib.parse.quote_plus(clusterArn)
+                                    + "/"
+                                    + urllib.parse.quote_plus(taskArn)
+                                )
+
+                                call_parameters = {}
+                                call_parameters["cluster"] = clusterArn
+                                call_parameters["tasks"] = [taskArn]
+
+                                call_function(
+                                    outputfile,
+                                    handler,
+                                    method_to_call,
+                                    call_parameters,
+                                    runner.get("Check", None),
+                                    summary,
+                                )
+        elif (
+            runner["Service"] == "route53"
+            and runner["Request"] == "list-hosted-zones-by-vpc"
+        ):
+            action_path = filepath
+            make_directory(action_path)
+
+            # Read the regions file
+            regions_file = "account-data/{}/{}".format(
+                account_dir, "describe-regions.json"
+            )
+            with open(regions_file, "r") as f:
+                describe_regions = json.load(f)
+
+                # For each region
+                for collect_region in describe_regions["Regions"]:
+                    cluster_path = (
+                        action_path
+                        + "/"
+                        + urllib.parse.quote_plus(collect_region["RegionName"])
+                    )
+                    make_directory(cluster_path)
+
+                    # Read the VPC file
+                    describe_vpcs_file = "account-data/{}/{}/{}".format(
+                        account_dir,
+                        collect_region["RegionName"],
+                        "ec2-describe-vpcs.json",
+                    )
+
+                    if os.path.isfile(describe_vpcs_file):
+                        with open(describe_vpcs_file, "r") as f2:
+                            describe_vpcs = json.load(f2)
+
+                            for vpc in describe_vpcs["Vpcs"]:
+                                outputfile = (
+                                    action_path
+                                    + "/"
+                                    + urllib.parse.quote_plus(
+                                        collect_region["RegionName"]
+                                    )
+                                    + "/"
+                                    + urllib.parse.quote_plus(vpc["VpcId"])
+                                )
+
+                                call_parameters = {}
+                                call_parameters["VPCRegion"] = collect_region[
+                                    "RegionName"
+                                ]
+                                call_parameters["VPCId"] = vpc["VpcId"]
+                                call_function(
+                                    outputfile,
+                                    handler,
+                                    method_to_call,
+                                    call_parameters,
+                                    runner.get("Check", None),
+                                    summary,
+                                )
+
+    elif dynamic_parameter is not None:
+        # Set up directory for the dynamic value
+        make_directory(filepath)
+
+        # The dynamic parameter must always be the first value
+        parameter_file = parameters[dynamic_parameter].split("|")[0]
+        parameter_file = "account-data/{}/{}/{}".format(
+            account_dir, region["RegionName"], parameter_file
+        )
+
+        # Get array if a globbing pattern is used (ex. "*.json")
+        parameter_files = glob.glob(parameter_file)
+
+        for parameter_file in parameter_files:
+            if not os.path.isfile(parameter_file):
+                # The file where parameters are obtained from does not exist
+                # Need to manually add the failure to our list of calls made as this failure
+                # occurs before the call is attempted.
+                call_summary = {
+                    "service": handler.meta.service_model.service_name,
+                    "action": method_to_call,
+                    "parameters": parameters,
+                    "exception": "Parameter file does not exist: {}".format(
+                        parameter_file
+                    ),
+                }
+                summary.append(call_summary)
+                print(
+                    "  The file where parameters are obtained from does not exist: {}".format(
+                        parameter_file
+                    ),
+                    flush=True,
+                )
+                return summary, True
+
+            with open(parameter_file, "r") as f:
+                parameter_values = json.load(f)
+                pyjq_parse_string = "|".join(
+                    parameters[dynamic_parameter].split("|")[1:]
+                )
+                for parameter in pyjq.all(pyjq_parse_string, parameter_values):
+                    filename = get_filename_from_parameter(parameter)
+                    identifier = get_identifier_from_parameter(parameter)
+                    call_parameters = dict(parameters)
+                    call_parameters[dynamic_parameter] = identifier
+
+                    outputfile = "{}/{}".format(filepath, filename)
+
+                    call_function(
+                        outputfile,
+                        handler,
+                        method_to_call,
+                        call_parameters,
+                        runner.get("Check", None),
+                        summary,
+                    )
+    else:
+        filepath = filepath + ".json"
+        call_function(
+            filepath,
+            handler,
+            method_to_call,
+            parameters,
+            runner.get("Check", None),
+            summary,
+        )
+    return summary, False
 
 def run(arguments):
     parser = argparse.ArgumentParser()
@@ -595,6 +618,12 @@ def run(arguments):
         "--clean",
         help="Remove any existing local, previously collected data for the account before gathering",
         action="store_true",
+    )
+    parser.add_argument(
+        "--exclude-universal-services",
+        help="Do not gather the universal services for region different than default region",
+        action="store_true",
+        dest="exclude_universal_services"
     )
     parser.add_argument(
         "--max-attempts",
