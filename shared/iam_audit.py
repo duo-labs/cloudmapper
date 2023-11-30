@@ -146,7 +146,7 @@ def find_admins(accounts, args, findings):
     admins = []
     for account in accounts:
         account = Account(None, account)
-        region = get_us_east_1(account)
+        region = get_default_region(account)
         admins.extend(
             find_admins_in_account(
                 region, findings, privs_to_look_for, include_restricted
@@ -159,6 +159,15 @@ def find_admins(accounts, args, findings):
 def find_admins_in_account(
     region, findings, privs_to_look_for=None, include_restricted=False
 ):
+     # Identify the default region used by global services such as IAM
+    default_region = os.environ.get("AWS_REGION", "us-east-1")
+    if "gov-" in default_region:
+        default_region = "us-gov-west-1"
+    elif "cn-" in default_region:
+        default_region = "cn-north-1"
+    else:
+        default_region = "us-east-1"
+
     if privs_to_look_for is None:
         privs_to_look_for = [
             "iam:PutRolePolicy",
@@ -182,7 +191,7 @@ def find_admins_in_account(
 
     try:
         file_name = "account-data/{}/{}/{}".format(
-            account.name, "us-east-1", "iam-get-account-authorization-details.json"
+            account.name, default_region, "iam-get-account-authorization-details.json"
         )
         iam = json.load(open(file_name))
     except:

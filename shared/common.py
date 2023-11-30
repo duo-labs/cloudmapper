@@ -327,13 +327,22 @@ def get_account_stats(account, all_resources=False):
     return stats
 
 
-def get_us_east_1(account):
+def get_default_region(account):
+    # Identify the default region used by global services such as IAM
+    default_region = os.environ.get("AWS_REGION", "us-east-1")
+    if "gov-" in default_region:
+        default_region = "us-gov-west-1"
+    elif "cn-" in default_region:
+        default_region = "cn-north-1"
+    else:
+        default_region = "us-east-1"
+
     for region_json in get_regions(account):
         region = Region(account, region_json)
-        if region.name == "us-east-1":
+        if region.name == default_region:
             return region
 
-    raise InvalidAccountData("us-east-1 not found in {}".format(account.name))
+    raise InvalidAccountData("default_region not found in {}".format(account.name))
 
 
 def iso_date(d):
@@ -354,7 +363,7 @@ def get_collection_date(account):
         account = Account(None, account)
     account_struct = account
     json_blob = query_aws(
-        account_struct, "iam-get-credential-report", get_us_east_1(account_struct)
+        account_struct, "iam-get-credential-report", get_default_region(account_struct)
     )
     if not json_blob:
         raise InvalidAccountData(
@@ -368,7 +377,7 @@ def get_collection_date(account):
 
 
 def get_access_advisor_active_counts(account, max_age=90):
-    region = get_us_east_1(account)
+    region = get_default_region(account)
 
     json_account_auth_details = query_aws(
         region.account, "iam-get-account-authorization-details", region
