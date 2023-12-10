@@ -366,3 +366,6 @@
 - name: 'Slack EKM'
   source: 'https://slackhq.com/dotcom/dotcom/wp-content/uploads/sites/6/2019/08/Slack-EKM-Implementation-Guide-1.pdf'
   accounts: ['152659312504', '429538831549']
+- name: 'Wiz'
+  source: 'observed in multiple customer environments'
+  accounts: ['197171649850', '935122746343']
