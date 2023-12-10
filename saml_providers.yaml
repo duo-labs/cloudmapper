@@ -1,0 +1,73 @@
+- name: saml-provider/okta
+  node:
+    json_blob:
+      id: okta
+      name: okta
+      type: Okta
+  assumed: true
+
+- name: saml-provider/onelogin
+  node:
+    json_blob:
+      id: onelogin
+      name: onelogin
+      type: Onelogin
+  assumed: true
+
+- name: saml-provider/waad
+  node:
+    json_blob:
+      id: WAAD
+      name: WAAD
+      type: waad
+  assumed: true
+
+- name: saml-provider/allcloud-sso
+  node:
+    json_blob:
+      id: AllCloud-SSO
+      name: AllCloud-SSO
+      type: AllCloud-SSO
+  assumed: true
+
+- name: saml-provider/adfs
+  node:
+    json_blob:
+      id: adfs
+      name: adfs
+      type: ADFS
+  assumed: true
+
+- name: saml-provider/auth0
+  node:
+    json_blob:
+      id: auth0
+      name: auth0
+      type: auth0
+  assumed: true
+
+- name: saml-provider/google
+  node:
+    json_blob:
+      id: google
+      name: google
+      type: google
+  assumed: true
+
+- name: saml-provider/gsuite
+  node:
+    json_blob:
+      id: gsuite
+      name: gsuite
+      type: gsuite
+  assumed: true
+
+- name: cognito-identity.amazonaws.com
+  node: null
+
+- name: www.amazon.com
+  node:
+    json_blob:
+      id: Amazon.com
+      name: Amazon.com
+      type: Amazon

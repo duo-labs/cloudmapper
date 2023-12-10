@@ -11,6 +11,7 @@ from shared.common import (
     query_aws,
     get_regions,
     get_account_by_id,
+    get_saml_providers,
 )
 
 __description__ = "Create Web Of Trust diagram for accounts"
@@ -209,99 +210,27 @@ def get_iam_trusts(account, nodes, connections, connections_to_get):
                                 ):
                                     saml_provider_arn = saml["Arn"]
 
-                        if "saml-provider/okta" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={"id": "okta", "name": "okta", "type": "Okta"}
-                            )
-                            assume_role_nodes.add(node)
-                        elif "saml-provider/onelogin" in saml_provider_arn.lower():
+                        found = False
+                        for p in get_saml_providers():
+                            if p["name"] in saml_provider_arn.lower():
+                                found = True
+                                if p.get("node") != None:
+                                    node = Account(**p["node"])
+
+                                if p.get("assumed"):
+                                    assume_role_nodes.add(node)
+
+                                break
+
+                        if not found:
                             node = Account(
                                 json_blob={
-                                    "id": "onelogin",
-                                    "name": "onelogin",
-                                    "type": "Onelogin",
+                                    "id": "unknown",
+                                    "name": "saml-unknown",
+                                    "type": "saml-unknown",
                                 }
                             )
                             assume_role_nodes.add(node)
-                        elif "saml-provider/waad" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={
-                                    "id": "WAAD",
-                                    "name": "WAAD",
-                                    "type": "waad",
-                                }
-                            )
-                            assume_role_nodes.add(node)
-                        elif "saml-provider/allcloud-sso" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={
-                                    "id": "AllCloud-SSO",
-                                    "name": "AllCloud-SSO",
-                                    "type": "AllCloud-SSO",
-                                }
-                            )
-                            assume_role_nodes.add(node)
-                        elif "saml-provider/awssso" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={
-                                    "id": "AWSSSO",
-                                    "name": "AWS SSO",
-                                    "type": "Amazon",
-                                }
-                            )
-                            assume_role_nodes.add(node)
-                        elif "saml-provider/adfs" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={"id": "adfs", "name": "adfs", "type": "ADFS"}
-                            )
-                            assume_role_nodes.add(node)
-                        elif "saml-provider/auth0" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={
-                                    "id": "auth0",
-                                    "name": "auth0",
-                                    "type": "auth0",
-                                }
-                            )
-                            assume_role_nodes.add(node)
-                        elif "saml-provider/google" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={
-                                    "id": "google",
-                                    "name": "google",
-                                    "type": "google",
-                                }
-                            )
-                            assume_role_nodes.add(node)
-                        elif "saml-provider/gsuite" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={
-                                    "id": "gsuite",
-                                    "name": "gsuite",
-                                    "type": "gsuite",
-                                }
-                            )
-                            assume_role_nodes.add(node)
-                        elif (
-                            "cognito-identity.amazonaws.com"
-                            in saml_provider_arn.lower()
-                        ):
-                            continue
-                        elif "www.amazon.com" in saml_provider_arn.lower():
-                            node = Account(
-                                json_blob={
-                                    "id": "Amazon.com",
-                                    "name": "Amazon.com",
-                                    "type": "Amazon",
-                                }
-                            )
-                            continue
-                        else:
-                            raise Exception(
-                                "Unknown federation provider: {}".format(
-                                    saml_provider_arn.lower()
-                                )
-                            )
 
                     except (StopIteration, IndexError):
                         if (

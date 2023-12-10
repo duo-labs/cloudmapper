@@ -261,6 +261,13 @@ def parse_arguments(arguments, parser=None):
     return (args, accounts, config)
 
 
+def get_saml_providers():
+    """Returns support SAML providers"""
+
+    with open("saml_providers.yaml", "r") as f:
+        return yaml.safe_load(f)
+
+
 def get_account_stats(account, all_resources=False):
     """Returns stats for an account"""
 
