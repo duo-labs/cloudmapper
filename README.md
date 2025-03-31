@@ -1,11 +1,60 @@
-CloudMapper
-========
+CloudMapper Flake Fork
+======================
 
-**Note** the Network Visualization functionality (command `prepare`) is no longer maintained.
+## About this flake fork
 
-CloudMapper helps you analyze your Amazon Web Services (AWS) environments. 
-The original purpose was to generate network diagrams and display them in your browser (functionality no longer maintained). 
-It now contains much more functionality, including auditing for security issues.
+The upstream Cloudmapper project has been abandoned. The used python libraries
+are obsolete and therefor it's difficult, even using docker, to get cloudmapper
+working. This is sad, because cloudmapper still is very useful.
+
+This fork adds a flake.nix file to preserve a working cloudmapper for
+the future. If you wanna try it make sure you have [nix](https://nixos.org)
+installed with flakes enabled.
+
+## Usage
+
+First read upstream [Setup](#setup) documentation.
+
+### nix develop
+
+Open the development shell.
+
+```bash
+nix development github:wearetechnative/cloudmapper-flake
+```
+
+You can now run `python cloudmapper [command]` e.g. `python cloudmapper collect`
+
+### ~~nix run~~
+
+~~Alternatively you can run cloudmapper instantly using the `nix run` method.~~
+
+## Supported commands
+
+Not all commands are working because not all python modules are backported.
+These commands has been tested to function correctly.
+
+- collect
+- configure
+- find_admins
+- find_unused
+- iam_report
+- prepare
+- public
+ stats
+- report
+- weboftrust
+- webserver
+
+# CloudMapper (upstream readme)
+
+**Note** the Network Visualization functionality (command `prepare`) is no
+longer maintained.
+
+CloudMapper helps you analyze your Amazon Web Services (AWS) environments. The
+original purpose was to generate network diagrams and display them in your
+browser (functionality no longer maintained). It now contains much more
+functionality, including auditing for security issues.
 
 - [Network mapping demo](https://duo-labs.github.io/cloudmapper/)
 - [Report demo](https://duo-labs.github.io/cloudmapper/account-data/report.html)
