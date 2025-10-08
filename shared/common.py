@@ -2,7 +2,7 @@ from __future__ import print_function
 import argparse
 import json
 import datetime
-import pyjq
+import jq as pyjq
 import yaml
 import sys
 from netaddr import IPNetwork

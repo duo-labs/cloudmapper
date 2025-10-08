@@ -1,7 +1,7 @@
 import json
 import yaml
 from os.path import exists
-import pyjq
+import jq as pyjq
 import traceback
 import re
 import pkgutil

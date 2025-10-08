@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from os import path
 from netaddr import IPNetwork
-import pyjq
+import jq as pyjq
 
 from shared.common import (
     parse_arguments,

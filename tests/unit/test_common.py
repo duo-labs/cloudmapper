@@ -1,6 +1,5 @@
 import unittest
 import argparse
-from nose.tools import assert_equal, assert_true, assert_false
 
 from shared.common import (
     make_list,
@@ -14,8 +13,8 @@ from shared.common import (
 
 class TestCommon(unittest.TestCase):
     def test_make_list(self):
-        assert_equal(["hello"], make_list("hello"))
-        assert_equal(["hello"], make_list(["hello"]))
+        self.assertEqual(["hello"], make_list("hello"))
+        self.assertEqual(["hello"], make_list(["hello"]))
 
     def test_parse_arguments(self):
         parser = argparse.ArgumentParser()
@@ -29,17 +28,17 @@ class TestCommon(unittest.TestCase):
             ["--json", "--accounts", "demo", "--config", "config.json.demo"], parser
         )
 
-        assert_equal(args.json, True)
+        self.assertEqual(args.json, True)
 
     def test_get_account_stats(self):
         account = get_account("demo")
 
         stats = get_account_stats(account, True)
-        assert_equal(stats["EC2 instances"]["us-east-1"], 3)
+        self.assertEqual(stats["EC2 instances"]["us-east-1"], 3)
 
     def test_get_collection_date(self):
         account = get_account("demo")
-        assert_equal("2019-05-07T15:40:22+00:00", get_collection_date(account))
+        self.assertEqual("2019-05-07T15:40:22+00:00", get_collection_date(account))
 
     # def test_get_access_advisor_active_counts(self):
     #     account = get_account("demo")

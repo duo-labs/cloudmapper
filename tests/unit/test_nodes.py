@@ -24,7 +24,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 import unittest
-from nose.tools import assert_equal, assert_true, assert_false
 
 from shared.nodes import truncate, get_name, is_public_ip, Account
 
@@ -33,28 +32,28 @@ class TestNodes(unittest.TestCase):
     """Test class for nodes"""
 
     def test_truncate(self):
-        assert_equal("hello", truncate("hello"))
-        assert_equal(
+        self.assertEqual("hello", truncate("hello"))
+        self.assertEqual(
             "012345678900123456789001234567890012345..",
             truncate("0123456789001234567890012345678900123456789001234567890"),
         )
 
     def test_is_public_ip(self):
-        assert_true(is_public_ip("1.1.1.1"))
-        assert_false(is_public_ip("10.0.0.0"))
+        self.assertTrue(is_public_ip("1.1.1.1"))
+        self.assertFalse(is_public_ip("10.0.0.0"))
 
     def test_Account(self):
         json_blob = {u"id": 111111111111, u"name": u"prod"}
         account = Account(None, json_blob)
-        assert_equal(111111111111, account.local_id)
-        assert_equal("prod", account.name)
-        assert_equal("account", account.node_type)
-        assert_equal("arn:aws:::111111111111:", account.arn)
-        assert_false(account.isLeaf)
-        assert_equal("prod", get_name(json_blob, "name"))
-        assert_false(account.has_leaves)
-        assert_equal([], account.leaves)
-        assert_equal(
+        self.assertEqual(111111111111, account.local_id)
+        self.assertEqual("prod", account.name)
+        self.assertEqual("account", account.node_type)
+        self.assertEqual("arn:aws:::111111111111:", account.arn)
+        self.assertFalse(account.isLeaf)
+        self.assertEqual("prod", get_name(json_blob, "name"))
+        self.assertFalse(account.has_leaves)
+        self.assertEqual([], account.leaves)
+        self.assertEqual(
             {
                 "data": {
                     "node_data": {"id": 111111111111, "name": "prod"},

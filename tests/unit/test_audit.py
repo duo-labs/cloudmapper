@@ -1,6 +1,5 @@
 import unittest
 import json
-from nose.tools import assert_equal, assert_true, assert_false
 
 from shared.common import parse_arguments
 from shared.audit import audit
@@ -18,7 +17,7 @@ class TestAudit(unittest.TestCase):
             print(finding)
             issue_ids.add(finding.issue_id)
 
-        assert_equal(
+        self.assertEqual(
             issue_ids,
             set(
                 [

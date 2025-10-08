@@ -25,8 +25,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import unittest
 from mock import patch
-from nose.tools import assert_equal, assert_true, assert_false
-import pyjq
+import jq as pyjq
 
 from commands.prepare import is_external_cidr, get_ec2s, get_vpcs, build_data_structure
 from shared.nodes import Account, Region, Subnet, Vpc
@@ -36,8 +35,8 @@ class TestPrepare(unittest.TestCase):
     """Test class for prepare"""
 
     def test_is_external_cidr(self):
-        assert_true(is_external_cidr("1.1.1.1/32"))
-        assert_false(is_external_cidr("10.0.0.0/32"))
+        self.assertTrue(is_external_cidr("1.1.1.1/32"))
+        self.assertFalse(is_external_cidr("10.0.0.0/32"))
 
     def test_get_vpcs(self):
         # This actually uses the demo data files provided
@@ -47,7 +46,7 @@ class TestPrepare(unittest.TestCase):
             account,
             {"Endpoint": "ec2.us-east-1.amazonaws.com", "RegionName": "us-east-1"},
         )
-        assert_equal(
+        self.assertEqual(
             [
                 {
                     "VpcId": "vpc-12345678",
@@ -111,46 +110,46 @@ class TestPrepare(unittest.TestCase):
 
         # Now check it
         # Check number of connections
-        assert_equal(
+        self.assertEqual(
             35, len(pyjq.all('.[].data|select(.type == "edge")|keys', cytoscape_json))
         )
 
         # Check number of nodes
-        assert_equal(
+        self.assertEqual(
             2, len(pyjq.all('.[].data|select(.type == "ip")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             2, len(pyjq.all('.[].data|select(.type == "rds")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             3, len(pyjq.all('.[].data|select(.type == "ec2")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             2, len(pyjq.all('.[].data|select(.type == "elb")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             1, len(pyjq.all('.[].data|select(.type == "elbv2")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             4, len(pyjq.all('.[].data|select(.type == "subnet")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             1, len(pyjq.all('.[].data|select(.type == "region")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             1, len(pyjq.all('.[].data|select(.type == "vpc")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             1, len(pyjq.all('.[].data|select(.type == "sqs")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             1, len(pyjq.all('.[].data|select(.type == "s3")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             2,
             len(pyjq.all('.[].data|select(.type == "redshift")|keys', cytoscape_json)),
         )
-        assert_equal(
+        self.assertEqual(
             1,
             len(
                 pyjq.all(
@@ -158,10 +157,10 @@ class TestPrepare(unittest.TestCase):
                 )
             ),
         )
-        assert_equal(
+        self.assertEqual(
             2, len(pyjq.all('.[].data|select(.type == "lambda")|keys', cytoscape_json))
         )
-        assert_equal(
+        self.assertEqual(
             1, len(pyjq.all('.[].data|select(.type == "ecs")|keys', cytoscape_json))
         )
 
@@ -170,7 +169,7 @@ class TestPrepare(unittest.TestCase):
         cytoscape_json = build_data_structure(json_blob, config, outputfilter)
 
         # Check number of connections
-        assert_equal(
+        self.assertEqual(
             19, len(pyjq.all('.[].data|select(.type == "edge")|keys', cytoscape_json))
         )
 
@@ -180,7 +179,7 @@ class TestPrepare(unittest.TestCase):
         cytoscape_json = build_data_structure(json_blob, config, outputfilter)
 
         # Check number of connections
-        assert_equal(
+        self.assertEqual(
             2, len(pyjq.all('.[].data|select(.type == "az")|keys', cytoscape_json))
         )
 
@@ -190,6 +189,6 @@ class TestPrepare(unittest.TestCase):
         cytoscape_json = build_data_structure(json_blob, config, outputfilter)
 
         # Check number of connections
-        assert_equal(
+        self.assertEqual(
             3, len(pyjq.all('.[].data|select(.type == "ec2")|keys', cytoscape_json))
         )

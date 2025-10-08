@@ -2,7 +2,7 @@ from __future__ import print_function
 import sys
 import json
 import argparse
-import pyjq
+import jq as pyjq
 import os.path
 from shared.nodes import Account, Region
 from shared.common import parse_arguments, query_aws

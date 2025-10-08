@@ -1,7 +1,7 @@
 from __future__ import print_function
 import json
 import os
-import pyjq
+import jq as pyjq
 
 from shared.nodes import Account, Region, is_public_ip
 from commands.prepare import build_data_structure
@@ -97,9 +97,12 @@ def get_public_nodes(account, config, use_cache=False):
 
         # Find the node at the other end of this edge
         target = {"arn": edge["target"], "account": account["name"]}
-        target_node = pyjq.first(
-            '.[].data|select(.id=="{}")'.format(target["arn"]), network, {}
-        )
+        try:
+            target_node = pyjq.first(
+                '.[].data|select(.id=="{}")'.format(target["arn"]), network
+            )
+        except StopIteration:
+            target_node = {}
 
         # Depending on the type of node, identify what the IP or hostname is
         if target_node["type"] == "elb":
@@ -141,9 +144,12 @@ def get_public_nodes(account, config, use_cache=False):
         # Check if any protocol is allowed (indicated by IpProtocol == -1)
         ingress = pyjq.all(".[]", edge.get("node_data", {}))
 
-        sg_group_allowing_all_protocols = pyjq.first(
-            '.[]|select(.IpPermissions[]?|.IpProtocol=="-1")|.GroupId', ingress, None
-        )
+        try:
+            sg_group_allowing_all_protocols = pyjq.first(
+                '.[]|select(.IpPermissions[]?|.IpProtocol=="-1")|.GroupId', ingress
+            )
+        except StopIteration:
+            sg_group_allowing_all_protocols = None
         public_sgs = {}
         if sg_group_allowing_all_protocols is not None:
             warnings.append(

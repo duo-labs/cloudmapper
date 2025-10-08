@@ -1,0 +1,14 @@
+[run]
+source =
+    shared
+    commands.prepare
+
+[report]
+fail_under = 60
+show_missing = True
+include =
+    commands/prepare.py
+    shared/*
+
+[html]
+directory = htmlcov

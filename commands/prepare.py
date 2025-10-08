@@ -27,7 +27,7 @@ import json
 import operator
 import itertools
 import argparse
-import pyjq
+import jq as pyjq
 import copy
 import urllib.parse
 from netaddr import IPNetwork, IPAddress

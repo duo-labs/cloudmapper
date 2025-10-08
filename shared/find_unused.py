@@ -1,4 +1,4 @@
-import pyjq
+import jq as pyjq
 
 from shared.common import query_aws, get_regions, get_parameter_file
 from shared.nodes import Account, Region
@@ -130,7 +130,12 @@ def find_unused_elastic_load_balancers(region):
                 "describe-target-health",
                 target_group["TargetGroupArn"],
             )
-            instances = pyjq.one(".TargetHealthDescriptions? | length", target_healths)
+            try:
+                instances = pyjq.first(
+                    ".TargetHealthDescriptions? | length", target_healths
+                )
+            except StopIteration:
+                instances = 0
             if instances > 0:
                 unused_elastic_load_balancers.pop()
                 break

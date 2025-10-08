@@ -4,7 +4,6 @@ from importlib import reload
 
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
-from nose.tools import assert_equal, assert_true, assert_false
 
 
 class TestFindUnused(TestCase):
@@ -41,7 +40,7 @@ class TestFindUnused(TestCase):
             mock_query.side_effect = mocked_query_side_effect
             from shared.find_unused import find_unused_elastic_ips
 
-            assert_equal(find_unused_elastic_ips(self.mock_region), [])
+            self.assertEqual(find_unused_elastic_ips(self.mock_region), [])
 
     def test_find_unused_elastic_ips(self):
         def mocked_query_side_effect(account, query, region):
@@ -74,7 +73,7 @@ class TestFindUnused(TestCase):
             mock_query.side_effect = mocked_query_side_effect
             from shared.find_unused import find_unused_elastic_ips
 
-            assert_equal(
+            self.assertEqual(
                 find_unused_elastic_ips(self.mock_region),
                 [{"id": "eipalloc-2", "ip": "2.3.4.5"}],
             )
@@ -137,7 +136,7 @@ class TestFindUnused(TestCase):
             mock_query.side_effect = mocked_query_side_effect
             from shared.find_unused import find_unused_volumes
 
-            assert_equal(find_unused_volumes(self.mock_region), [{"id": "vol-2222"}])
+            self.assertEqual(find_unused_volumes(self.mock_region), [{"id": "vol-2222"}])
 
     def test_find_unused_security_groups(self):
         def mocked_query_side_effect(account, query, region):
@@ -198,7 +197,7 @@ class TestFindUnused(TestCase):
             mock_query.side_effect = mocked_query_side_effect
             from shared.find_unused import find_unused_security_groups
 
-            assert_equal(
+            self.assertEqual(
                 find_unused_security_groups(self.mock_region),
                 [
                     {
@@ -271,7 +270,7 @@ class TestFindUnused(TestCase):
             mock_query.side_effect = mocked_query_side_effect
             from shared.find_unused import find_unused_network_interfaces
 
-            assert_equal(
+            self.assertEqual(
                 find_unused_network_interfaces(self.mock_region),
                 [{"id": "eni-00000001"}],
             )
@@ -355,7 +354,7 @@ class TestFindUnused(TestCase):
             mock_query.side_effect = mocked_query_side_effect
             from shared.find_unused import find_unused_elastic_load_balancers
 
-            assert_equal(
+            self.assertEqual(
                 find_unused_elastic_load_balancers(self.mock_region),
                 [{"LoadBalancerName": "some-elb", 'Type': 'classic'}],
             )
